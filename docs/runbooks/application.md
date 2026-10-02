@@ -29,3 +29,11 @@ Encrypted application database/intent-key restore has passed; see [backup/restor
 ## Browser participant wallet
 
 At /account, Create wallet opens the PIN keypad popup. Choose/confirm a PIN, write down both recovery phrases, confirm their first words, then finish. This generates real native Ootle keys locally without a chain transaction. The PIN unlocks locally encrypted IndexedDB data; reloading locks it. Recover wallet takes both Hauntbox phrases and sets a new PIN. The public address should match on the same network. Do not import native daemon seed words into this two-phrase format. Legacy app accounts are in the secondary Existing app account / passkey sign-in panel. See ADR 004 for storage, compatibility and mainnet limits.
+
+## Simplified production-only entrance — October 2 update
+
+Open http://localhost:8180/admin for local admin setup and inbox management. The existing production port is bound to 127.0.0.1; /admin is rejected by the future public HTTPS overlay. This page separates host authentication, receipt contract/wallet prerequisites, room creation and participant readiness. Contract publication and private wallet configuration remain pending operator operations, not automatic UI provisioning.
+
+Participants use / for rooms, /submit for stories, /account only for an optional reward wallet, and /demo for the guided fixture journey. A participant can submit without a wallet when a real room is open. The current production preview keeps intake/anchoring/rewards paused; only web, API and PostgreSQL run. Stopped test/wallet stacks retain their volumes.
+
+The PIN popup accepts keyboard digits immediately; clicking numbers keeps typing active. Enter continues or confirms, Backspace edits, and non-digits are ignored. Production browser-only validation no longer requires a running local chain.

@@ -743,3 +743,11 @@ Static review of `6dee866` identified three correctness issues. All three are no
 | BW-03 | P2 | Distinguish incorrect PINs from unavailable storage/SDK and corrupted wallet data. Inject failures and prove correct-PIN infrastructure failures do not exhaust the PIN allowance. | Complete: separate safe errors; SDK/IndexedDB fault injection and ciphertext corruption pass without consuming PIN failures |
 
 Detailed findings and correction evidence are in [ADR 004: code review](docs/adr/004-browser-wallet-recovery.md#code-review--october-2-2026). CI now runs the concurrency/fault regression. Web Locks are required; unsupported browsers fail closed. Next ready engineering package: specify and prove browser stealth-output detection and independently verified recipient spending using established Tari SDK APIs. Public M2b, PM-00 human trials and operations/release gates remain open; public mutations and mainnet remain disabled.
+
+### Production-only UX follow-up — October 2
+
+Stopped all 15 previously running Docker containers at the owner's request, preserving data volumes. Rebuilt and started only the production web/API/PostgreSQL stack. The web binding remains 127.0.0.1:8180; no operator wallet, validator, indexer, development server or old preview remains running.
+
+Simplified participant navigation/account copy, collapsed host/legacy options, added localhost /admin entry to the existing host sign-in/room/inbox flow, and added a setup/readiness checklist. Public HTTPS routing rejects /admin. Contract publication/connection is still operator deployment work; this UI change does not close M2b or activate chain operations. Full admin contract provisioning remains a follow-up.
+
+Fixed PIN popup keyboard focus, digits after keypad clicks, Enter advancement, numeric filtering and confirmation focus. Fixed premature storage errors while network status is loading. Chromium and Firefox passed the extended production wallet flow, including keyboard, click and mixed entry, Backspace, invalid characters, reload, lockout and clean-browser recovery. Evidence: docs/evidence/m2/embedded-wallet-production.json, wallet-pin-keyboard.png and production-admin.png. Type checks and production build passed. Local chain integration was not rerun because that stack was deliberately stopped. Browser-only production tests now run without a local chain witness.

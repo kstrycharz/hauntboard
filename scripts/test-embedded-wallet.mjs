@@ -5,8 +5,9 @@ import { randomInt } from 'node:crypto';
 import { writeFile } from 'node:fs/promises';
 import { writePrivateJson } from './lib/private-json.mjs';
 import { localNetworkWitness } from './lib/local-network-witness.mjs';
-await localNetworkWitness();
 const production = process.env.WALLET_BROWSER_TARGET === 'production';
+// Production browser-only checks do not depend on a running local validator/indexer.
+if (!production) await localNetworkWitness();
 const network = production ? 'esmeralda' : 'localnet';
 const origin = production ? 'http://localhost:8180' : 'http://localhost:5173';
 const target = production ? 'http://hauntbox-production-web-1:8080' : 'http://web:5173';
@@ -75,11 +76,34 @@ try {
     await page.getByRole('button', { name: 'Create wallet', exact: true }).click();
     await page.getByRole('dialog').waitFor();
     const pin = String(randomInt(10000000, 100000000));
+    assert.ok(
+      await page
+        .getByLabel('Wallet PIN', { exact: true })
+        .evaluate((input) => input === document.activeElement),
+    );
+    await page.keyboard.type(pin);
+    assert.equal(await page.getByLabel('Wallet PIN', { exact: true }).inputValue(), pin);
+    await page.keyboard.press('Backspace');
+    assert.equal(
+      await page.getByLabel('Wallet PIN', { exact: true }).inputValue(),
+      pin.slice(0, -1),
+    );
+    await page.getByRole('button', { name: 'PIN digit ' + pin.at(-1), exact: true }).click();
+    await page.keyboard.type('a');
+    assert.equal(await page.getByLabel('Wallet PIN', { exact: true }).inputValue(), pin);
+    await page.getByRole('button', { name: 'Clear PIN', exact: true }).click();
     for (const digit of pin)
       await page.getByRole('button', { name: `PIN digit ${digit}`, exact: true }).click();
-    await page.getByRole('button', { name: 'Continue', exact: true }).click();
-    await enterPin(page, pin, true);
-    await page.getByRole('button', { name: 'Generate wallet', exact: true }).click();
+    await page.keyboard.press('Enter');
+    await page.getByLabel('Confirm wallet PIN', { exact: true }).waitFor();
+    assert.ok(
+      await page
+        .getByLabel('Confirm wallet PIN', { exact: true })
+        .evaluate((input) => input === document.activeElement),
+    );
+    await page.getByRole('button', { name: `PIN digit ${pin[0]}`, exact: true }).click();
+    await page.keyboard.type(pin.slice(1));
+    await page.keyboard.press('Enter');
     phase = `${name}_recovery_display`;
     const owner = await page
       .getByLabel('Spending-key recovery phrase', { exact: true })
@@ -176,6 +200,10 @@ try {
     checks[name] = {
       nativeWalletGenerated: true,
       keypadAndDialog: true,
+      keyboardTypingAndAutoFocus: true,
+      mixedKeyboardAndKeypad: true,
+      backspaceAndNonDigits: true,
+      enterAdvancesPinSteps: true,
       recoveryShownOnce: true,
       localEncryptedStorage: true,
       noPinOrSeedRequests: true,

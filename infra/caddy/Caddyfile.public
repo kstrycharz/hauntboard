@@ -4,6 +4,8 @@
  https_port 8443
 }
 {$APP_DOMAIN} {
+ @admin path /admin /admin/*
+ respond @admin "Admin setup is available through the private operator interface." 404
  header {
   Strict-Transport-Security "max-age=31536000"
   X-Content-Type-Options nosniff

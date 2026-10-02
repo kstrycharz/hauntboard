@@ -65,3 +65,16 @@ Original code is [MIT](LICENSE). [Third-party notices](THIRD_PARTY_NOTICES.md) r
 Browser wallet implementation/security: docs/adr/004-browser-wallet-recovery.md. Real Chromium/Firefox generation, PIN unlock, clean-browser recovery and production-CSP tests are recorded in docs/evidence/m2/embedded-wallet*.json. Mainnet wallet generation is disabled.
 
 Browser wallet review fixes BW-01–BW-03 are complete: creation/recovery/unlock are serialized across tabs using Web Locks, conflicting recovery preserves the saved wallet, and SDK/storage failures have separate messages without consuming failed-PIN allowances. Chromium/Firefox race and fault evidence: docs/evidence/m2/wallet-concurrency.json. Run with `docker compose -f compose.app.yaml -f compose.app.localnet.yaml -f compose.app.browser.yaml run --rm --no-deps browser-tests node scripts/test-wallet-concurrency.mjs`. Web Locks support is required. Balance scanning, recipient spending and native single-seed import remain unfinished.
+
+## Current local production preview
+
+Only the production web/API/PostgreSQL stack is running. Start it with `docker compose -f compose.production.yaml up -d --build --wait`. The web port binds to `127.0.0.1:8180`; databases and API have no published host ports. Named data volumes are retained when other stacks stop.
+
+- Participant app: http://localhost:8180/
+- Optional reward wallet: http://localhost:8180/account
+- Private local admin entrance: http://localhost:8180/admin
+- Guided demo while live setup is pending: http://localhost:8180/demo
+
+The admin entrance separates host sign-in, deployment prerequisites, room creation and inbox/reward management. It does not automatically publish a receipt template or connect operator wallets. Those operations and public release proof remain pending; the production stack keeps submissions, anchoring and payouts paused. The public HTTPS overlay rejects `/admin` routes.
+
+The wallet popup now focuses the PIN field on opening and confirmation. Keyboard digits, mixed keypad clicks/typing, Backspace and Enter are tested in Chromium and Firefox against the production build. Host funding, legacy account access and wallet details are collapsed on the participant page.

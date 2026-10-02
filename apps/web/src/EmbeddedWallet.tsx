@@ -17,6 +17,7 @@ export function EmbeddedWallet({
   onUseAddress: (address: string) => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const pinInput = useRef<HTMLInputElement>(null);
   const [mode, setMode] = useState<'create' | 'unlock' | 'recover'>('create');
   const [storedAddress, setStoredAddress] = useState(''),
     [unlockedAddress, setUnlockedAddress] = useState('');
@@ -31,8 +32,13 @@ export function EmbeddedWallet({
     [error, setError] = useState(''),
     [loaded, setLoaded] = useState(false);
   useEffect(() => {
+    if (dialog.current?.open && !busy && !recovery && mode !== 'recover') pinInput.current?.focus();
+  }, [mode, firstPin, busy, recovery]);
+  useEffect(() => {
     let active = true;
     setLoaded(false);
+    setError('');
+    if (network === 'checking') return;
     const refresh = () => {
       void walletInfo(network)
         .then((info) => {
@@ -74,6 +80,7 @@ export function EmbeddedWallet({
     clear();
     setMode(next);
     dialog.current?.showModal();
+    if (next !== 'recover') pinInput.current?.focus();
   }
   async function run(action: () => Promise<void>) {
     setBusy(true);
@@ -170,12 +177,15 @@ export function EmbeddedWallet({
     <section className="live-card">
       <h2>Your testnet wallet</h2>
       <p>
-        Create a wallet here, save its recovery phrases, then unlock with your PIN. Your wallet
-        stays on this device; PINs and recovery phrases are never sent to Hauntbox.
+        {unlockedAddress
+          ? 'Your wallet is unlocked. Continue to your story with this reward address.'
+          : storedAddress
+            ? 'Your wallet is saved on this device. Enter your PIN to use it.'
+            : 'New here? Create a wallet, choose a PIN and save your recovery phrases.'}
       </p>
       <p>
-        This wallet receives optional {network} rewards. It does not open the host’s inbox. Balance
-        scanning and sending are separate wallet features still pending.
+        Your PIN and recovery phrases stay on this device. Rewards are optional testnet tokens;
+        balance scanning and sending are still in development.
       </p>
       <div className="hero-actions">
         {unlockedAddress ? (
@@ -214,6 +224,23 @@ export function EmbeddedWallet({
         ref={dialog}
         className="wallet-dialog"
         aria-labelledby="wallet-dialog-title"
+        onKeyDown={(event) => {
+          if (busy || recovery || event.ctrlKey || event.metaKey || event.altKey) return;
+          const target = event.target as HTMLElement;
+          if (['INPUT', 'TEXTAREA'].includes(target.tagName)) return;
+          if (/^[0-9]$/.test(event.key)) {
+            event.preventDefault();
+            setPin((value) => (value + event.key).slice(0, 12));
+            pinInput.current?.focus();
+          } else if (['Backspace', 'Delete'].includes(event.key)) {
+            event.preventDefault();
+            setPin((value) => (event.key === 'Delete' ? '' : value.slice(0, -1)));
+            pinInput.current?.focus();
+          } else if (event.key === 'Enter' && target.closest('.wallet-keypad')) {
+            event.preventDefault();
+            void submitPin();
+          }
+        }}
         onCancel={(event) => {
           if (busy) event.preventDefault();
           else clear();
@@ -242,6 +269,17 @@ export function EmbeddedWallet({
             Close
           </button>
         </div>
+        {mode !== 'unlock' && (
+          <p className="wallet-step" role="status">
+            {recovery
+              ? 'Step 3 of 3 · Save your recovery phrases'
+              : firstPin
+                ? 'Step 2 of 3 · Confirm your PIN'
+                : mode === 'recover'
+                  ? 'Restore with your saved phrases and a new PIN'
+                  : 'Step 1 of 3 · Choose your PIN'}
+          </p>
+        )}
         {recovery ? (
           <>
             <p>
@@ -329,17 +367,25 @@ export function EmbeddedWallet({
             <label>
               {firstPin ? 'Confirm wallet PIN' : 'Wallet PIN'}
               <input
+                ref={pinInput}
                 type="password"
                 inputMode="numeric"
                 maxLength={12}
                 value={pin}
+                disabled={busy}
                 autoComplete={mode === 'unlock' ? 'current-password' : 'new-password'}
-                onChange={(e) => setPin(e.target.value)}
+                onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 12))}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !busy) void submitPin();
+                  if (e.key === 'Enter' && !busy) {
+                    e.preventDefault();
+                    void submitPin();
+                  }
                 }}
               />
             </label>
+            <p id="wallet-pin-help">
+              Type with your keyboard or click the numbers below. Press Enter to continue.
+            </p>
             <div className="wallet-keypad" role="group" aria-label="PIN keypad">
               {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Clear', '0', 'Delete'].map((key) => (
                 <button
@@ -353,7 +399,7 @@ export function EmbeddedWallet({
                         ? 'Clear PIN'
                         : `PIN digit ${key}`
                   }
-                  onClick={() =>
+                  onClick={() => {
                     setPin((value) =>
                       key === 'Clear'
                         ? ''
@@ -362,8 +408,9 @@ export function EmbeddedWallet({
                           : value.length < 12
                             ? value + key
                             : value,
-                    )
-                  }
+                    );
+                    pinInput.current?.focus();
+                  }}
                 >
                   {key}
                 </button>

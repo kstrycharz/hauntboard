@@ -106,14 +106,17 @@ function units(value: string) {
 }
 
 export function LiveApp() {
+  const adminPage = window.location.pathname === '/admin';
   const [rooms, setRooms] = useState<Room[]>([]),
     [selected, setSelected] = useState<string>(''),
     [view, setView] = useState(
-      window.location.pathname === '/account'
-        ? 'wallet'
-        : window.location.pathname === '/submit'
-          ? 'desk'
-          : 'entrance',
+      adminPage
+        ? 'curator'
+        : window.location.pathname === '/account'
+          ? 'wallet'
+          : window.location.pathname === '/submit'
+            ? 'desk'
+            : 'entrance',
     );
   const [error, setError] = useState(''),
     [notice, setNotice] = useState(''),
@@ -124,6 +127,11 @@ export function LiveApp() {
     [story, setStory] = useState(''),
     [address, setAddress] = useState(''),
     [nickname, setNickname] = useState('');
+  const [releaseStatus, setReleaseStatus] = useState({
+    submissionsEnabled: false,
+    anchoringEnabled: false,
+    payoutsEnabled: false,
+  });
   const [fundingStatus, setFundingStatus] = useState<FundingStatus | null>(null);
   const [saved, setSaved] = useState<SavedEntry | null>(null),
     [receipt, setReceipt] = useState<Receipt | null>(null);
@@ -189,8 +197,14 @@ export function LiveApp() {
   useEffect(() => {
     void run(async () => {
       await refreshRooms();
-      const status = await api<{ network: string }>('/api/status');
+      const status = await api<{
+        network: string;
+        submissionsEnabled: boolean;
+        anchoringEnabled: boolean;
+        payoutsEnabled: boolean;
+      }>('/api/status');
       setNetwork(status.network);
+      setReleaseStatus(status);
       setFundingStatus(await api<FundingStatus>('/api/funding/status'));
       await session();
       setSaved((await vaultGet<SavedEntry>('last-submission')) ?? null);
@@ -486,22 +500,30 @@ export function LiveApp() {
           ✦ Hauntbox
         </a>
         <nav aria-label="Main">
-          <button className="text-button" onClick={() => setView('entrance')}>
-            The room
-          </button>
-          <button className="text-button" onClick={() => setView('receipt')}>
-            Your receipt
-          </button>
-          <button className="text-button" onClick={() => setView('privacy')}>
-            Privacy
-          </button>
-          <button className="text-button" onClick={() => setView('wallet')}>
-            Sign in / My account
-          </button>
-          <button className="text-button" onClick={() => setView('curator')}>
-            Host / Curator
-          </button>
-          <a href="/demo">Try the guided demo</a>
+          {adminPage ? (
+            <>
+              <button className="text-button" onClick={() => setView('curator')}>
+                Admin setup and inbox
+              </button>
+              <a href="/">Open participant app</a>
+            </>
+          ) : (
+            <>
+              <button className="text-button" onClick={() => setView('entrance')}>
+                The room
+              </button>
+              <button className="text-button" onClick={() => setView('receipt')}>
+                Your receipt
+              </button>
+              <button className="text-button" onClick={() => setView('privacy')}>
+                Privacy
+              </button>
+              <button className="text-button" onClick={() => setView('wallet')}>
+                My wallet
+              </button>
+              <a href="/demo">Try the guided demo</a>
+            </>
+          )}
         </nav>
       </header>
       <main className="live-main">
@@ -597,7 +619,7 @@ export function LiveApp() {
                 />
               </label>
               <button className="text-button" onClick={() => setView('wallet')}>
-                Sign in or set up my participant account
+                Create or unlock a reward wallet
               </button>
               <p>
                 The address travels inside the encrypted envelope. The curator sees it when opening
@@ -708,7 +730,53 @@ export function LiveApp() {
         )}
         {view === 'curator' && (
           <>
-            <h1>Curator’s desk</h1>
+            <h1>{adminPage ? 'Admin setup' : 'Curator’s desk'}</h1>
+            {adminPage && (
+              <section className="live-card">
+                <h2>Set up a room, then share it</h2>
+                <p>
+                  This admin entrance is served by the production stack on localhost. Participants
+                  use the main app to submit stories; you use this desk to open them and choose
+                  rewards.
+                </p>
+                <ol className="admin-steps">
+                  <li>
+                    <strong>Sign in as host.</strong>{' '}
+                    {authenticated
+                      ? 'Signed in.'
+                      : 'Use your host credentials below. For first setup, use the private installation code.'}
+                  </li>
+                  <li>
+                    <strong>Connect the receipt contract and wallets.</strong>{' '}
+                    {fundingStatus?.operatorWalletsConnected
+                      ? 'Wallet services connected.'
+                      : 'Pending: the production wallet connection is not active. The receipt template must be published and its address configured by the operator.'}{' '}
+                    This is deployment setup; a participant wallet cannot perform it.
+                  </li>
+                  <li>
+                    <strong>Create a room below.</strong> Set the story prompt, save the room
+                    recovery file and code, verify recovery, then create its chain component.{' '}
+                    {releaseStatus.anchoringEnabled
+                      ? 'Anchoring is enabled.'
+                      : 'Contract creation is currently paused by the release gate.'}
+                  </li>
+                  <li>
+                    <strong>Open submissions and share the app.</strong>{' '}
+                    {releaseStatus.submissionsEnabled
+                      ? 'Submissions enabled.'
+                      : 'Submissions paused.'}{' '}
+                    {releaseStatus.payoutsEnabled ? 'Rewards enabled.' : 'Rewards paused.'} Wait for
+                    an open room and verified receipt funding before inviting participants.
+                  </li>
+                </ol>
+                <p>
+                  {rooms.some((row) => row.state === 'open')
+                    ? 'An open room is available.'
+                    : 'No open room is ready for participants yet.'}{' '}
+                  You can explore the <a href="/demo">guided demo</a> while setup is pending.
+                </p>
+              </section>
+            )}
             {!authenticated ? (
               <>
                 <HostPinSignIn

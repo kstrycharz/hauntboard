@@ -25,7 +25,7 @@ async function visit(page) {
     await route.fulfill({ response });
   });
   await page.goto('http://localhost:5173/account');
-  await page.getByRole('heading', { name: 'Your account and the host', exact: true }).waitFor();
+  await page.getByRole('heading', { name: 'Your wallet', exact: true }).waitFor();
   await page.getByText('Existing app account / passkey sign-in', { exact: true }).click();
 }
 try {

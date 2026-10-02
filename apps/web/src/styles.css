@@ -947,6 +947,20 @@ pre {
   font-weight: 400;
   line-height: 1.8;
 }
+.tari-role {
+  margin-bottom: 2.5rem;
+  border-color: var(--amber);
+}
+.tari-role .visibility-grid {
+  margin: 1.5rem 0;
+}
+.tari-role .visibility-grid article {
+  min-width: 0;
+}
+.tari-role h3 {
+  font-size: 25px;
+  margin-bottom: 12px;
+}
 .privacy-intro {
   max-width: 650px;
   margin-bottom: 35px;

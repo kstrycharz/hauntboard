@@ -951,6 +951,60 @@ export function App() {
 
         {route === 'privacy' && (
           <>
+            <section className="panel tari-role" aria-labelledby="tari-role-title">
+              <p className="eyebrow">POWERED BY TARI L2 · OOTLE</p>
+              <h2 id="tari-role-title">
+                An on-chain receipt. A private story. An optional reward.
+              </h2>
+              <p className="muted">
+                Hauntbox uses Tari L2 for room contracts and verifiable receipts, with native
+                private transfers for host-selected testnet rewards. The story itself stays off
+                chain.
+              </p>
+              <div className="visibility-grid">
+                <article>
+                  <h3>1. Record the sealed envelope</h3>
+                  <p>
+                    A Tari Ootle smart contract represents each room. The operator records a
+                    submission ID and the encrypted envelope’s digest; the contract stores the
+                    inclusion epoch and enforces the room’s capacity and closing rules.
+                  </p>
+                  <p className="field-help">
+                    A receipt lets you check that your sealed envelope was recorded. It proves
+                    neither authorship nor payment.
+                  </p>
+                </article>
+                <article>
+                  <h3>2. Keep the story off chain</h3>
+                  <p>
+                    Your browser encrypts the story and optional payout address for the host.
+                    Hauntbox stores that encrypted envelope in its database. Tari receives the
+                    digest, never the story text or the room’s private decryption key.
+                  </p>
+                  <p className="field-help">
+                    The host can decrypt on arrival. Encryption comes from the app; the contract
+                    does not provide timed decryption or anonymous submission.
+                  </p>
+                </article>
+                <article>
+                  <h3>3. Let the host choose a reward</h3>
+                  <p>
+                    The host may send testnet tTARI through Tari’s native private transfer system,
+                    using funds held by the operator wallet. This is a separate transaction from the
+                    room receipt, with no guaranteed payout.
+                  </p>
+                  <p className="field-help">
+                    The host and wallet service know the selected recipient and amount. Fees,
+                    timing, and transaction structure can still reveal information.
+                  </p>
+                </article>
+              </div>
+              <p className="field-help">
+                Demo mode: receipts and rewards on this page are simulated; no funds move. Local
+                integration has been tested, but public testnet verification is still pending and
+                production submissions, anchoring, and payouts remain paused.
+              </p>
+            </section>
             <div className="privacy-intro">
               <p>Same letter. Three different views.</p>
               <h2>

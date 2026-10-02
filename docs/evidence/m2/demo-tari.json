@@ -1,0 +1,17 @@
+{
+  "fixture": true,
+  "checks": {
+    "chromium": {
+      "tariExplanation": true,
+      "simulatedDisclosure": true,
+      "mobileFits": true,
+      "hostSetupError": true
+    },
+    "firefox": {
+      "tariExplanation": true,
+      "simulatedDisclosure": true,
+      "mobileFits": true,
+      "hostSetupError": true
+    }
+  }
+}

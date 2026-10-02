@@ -68,7 +68,24 @@ const friendly: Record<string, string> = {
   NotAllowedError:
     'The passkey request was cancelled or timed out. Open this same address in your regular browser and complete its passkey prompt.',
   CURATOR_SETUP_REQUIRED:
-    'The curator has not registered a passkey yet. Use the private setup code supplied by the operator.',
+    'Create the host account on this localhost admin page first, then sign in with the PIN or passkey you configured.',
+  CURATOR_ALREADY_REGISTERED:
+    'A host account already exists. Sign in using its saved login code and PIN, or its registered passkey.',
+  REGISTRATION_NOT_AVAILABLE:
+    'Host setup is available only at the configured admin address. Open http://localhost:8180/admin on this installation and try again.',
+  AUTH_CHALLENGE_EXPIRED: 'The sign-in request expired. Start sign-in again.',
+  PASSKEY_NOT_VERIFIED:
+    'The passkey could not be verified. Use the original host passkey and try again.',
+  PASSKEY_CANCELLED: 'The passkey request was cancelled. Try again or use host PIN sign-in.',
+  SecurityError:
+    'The browser could not use a passkey at this address. Open the configured localhost admin address in your regular browser, or use host PIN sign-in.',
+  NotSupportedError:
+    'This browser cannot complete the passkey request. Use host PIN sign-in or open the admin page in your regular browser.',
+  CSRF_CHECK_FAILED: 'Your host session needs refreshing. Reload the admin page and sign in again.',
+  ANCHORING_PAUSED:
+    'Creating rooms on Tari is paused. The operator must finish the receipt contract and network setup before a room can be created.',
+  RECEIPT_FUNDING_PAUSED:
+    'The receipt wallet is not ready. Check its network and fee funding before creating a room.',
   ROOM_FULL: 'This room has reached its entry limit.',
   ROOM_NOT_OPEN: 'This room is not accepting entries.',
   INTAKE_PAUSED: 'Submissions are paused. Your encrypted draft is still saved in this browser.',
@@ -174,7 +191,9 @@ export function LiveApp() {
       setError(
         friendly[code] ??
           (e instanceof DOMException ? friendly[e.name] : undefined) ??
-          'The operation could not complete. Keep your saved files and retry the status check.',
+          (adminPage
+            ? 'This admin action could not complete. Reload the page and check your host sign-in and setup status before trying again.'
+            : 'The operation could not complete. Keep your saved files and retry the status check.'),
       );
     } finally {
       setBusy(false);

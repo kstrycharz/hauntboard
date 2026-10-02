@@ -1,0 +1,24 @@
+# ADR 001 — candidate network/wallet set; compatibility decision pending
+
+Date: October 2, 2026. Status: **provisional, M2 has not passed**.
+
+Use Esmeralda for the intended beta and keep every public fixture separate from live evidence. The candidate released set is wallet **0.43.0**, template library **0.33.0**, test tooling **0.43.0**, Rust **1.97.1**, TS bindings **1.56.0**, and JS wallet client **1.24.0**. These are inspected published artifacts, not a declaration of interoperable network behavior. GitHub marks wallet v0.43.0 as a prerelease; it is an explicit preflight candidate and not approved as a release runtime.
+
+The wallet guide advertised 0.43.0 when checked. Both candidate wallet containers report Esmeralda / byte 38. Both public indexers return the same network and current epoch. The library compiles the original ABI probe to an 89,766-byte WASM. The probe's Cargo.lock and pnpm's frontend lockfile are committed deliverables. Engine harness compilation, behavior tests, scoped API-key management, source-to-published-WASM linkage, native privacy and independent receiver spend are still unverified.
+
+The wallet binary is pinned by SHA-256 `61ff7763cadf6236b58ee625c656e7aec55104ef910310a7281b746853c02749`, with a pinned Ubuntu 24.04 base. The source release hashes and npm package integrity values are retained in `docs/evidence/m2/release-research.json`. Frontend/browser/Rust base images are independently pinned by digest in `infra/docker/`. The research wallet's apt package resolution is not an immutable release package set; production approval requires the final runtime digest and vulnerability review.
+
+Observed integration details affect the next implementation:
+
+1. With the secret TOML config provided, runtime defaults selected a localhost indexer. Always set the verified indexer explicitly. `--network esme` alone did not establish actual network connectivity in this configuration.
+2. Keyring override config deserializes a byte sequence, not a TOML string. The ignored initializer creates random separate per-wallet configs. A one-shot init service copies them into separately owned, read-only unlock volumes without passing passwords in process arguments. Named wallet data volumes are separate.
+3. Authentication `none` still requires a scoped JWT for account/substate/settings reads. Unauthenticated `accounts.list` returns RPC 401. Read-only sessions are created in memory and never exported.
+4. The released permission model uses structured CRUD capabilities, e.g. `{"Accounts":["Read",null]}` and `{"Substates":"Read"}`. The older `AccountInfo` permission example in the official guide is insufficient for this release. Use the generated types of the selected package and verify every scope at runtime.
+5. The template macro rejects fixed-array ABI arguments. The original spike uses a `Vec<u8>` bounded to exactly 32 bytes. Freeze the full receipt ABI only after engine and live-call tests.
+6. The public faucet read succeeds after the endpoint fix and confirms **empty**. No alternate funding source or spend budget is authorized. Do not perform an L1 burn or silently fund with mainnet assets.
+
+Decision: retain the M1 mock as the usable deliverable and continue INT-01 with funded, independently keyed and authenticated test wallets. Require a concrete sender/receiver target, fee quote and owner-approved testnet spend cap before any publication or transfer. The proposed evidence sequence is: prepare private inputs → native concealed transfer with memo → receiver detect → receiver spend → public-field inspection → publish/create/call minimal receipt → reconcile success/rejection/timeout → go/no-go review.
+
+Do not start M3 backend features or claim live/native privacy on these preflight results. If the native RPC gate fails after funding, follow the plan's compatible-wallet then bounded Rust adapter fallback. If public testnet cannot meet the gate, prepare the explicitly labeled localnet/recorded contingency and revise the release scope with the owner.
+
+Sources: [official wallet guide](https://ootle.tari.com/guides/setup-a-wallet/), [tagged release](https://github.com/tari-project/tari-ootle/releases/tag/v0.43.0), [released permission definitions](https://github.com/tari-project/tari-ootle/blob/v0.43.0/clients/wallet_daemon_client/src/permissions.rs), [template library registry](https://crates.io/crates/tari_template_lib/0.33.0), [test tooling registry](https://crates.io/crates/tari_template_test_tooling/0.43.0). The read-only sibling snapshot helped locate interfaces; released source/runtime observations govern this decision.

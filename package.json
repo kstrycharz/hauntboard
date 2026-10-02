@@ -1,0 +1,22 @@
+{
+  "name": "hauntbox",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@10.18.3",
+  "scripts": {
+    "dev": "pnpm --filter @hauntbox/web dev --host 0.0.0.0",
+    "build": "pnpm --filter @hauntbox/web build",
+    "check": "pnpm --filter @hauntbox/web check",
+    "test": "pnpm --filter @hauntbox/web test",
+    "test:e2e": "playwright test",
+    "format": "prettier --write apps tests scripts .github *.json *.yaml *.ts",
+    "format:check": "prettier --check apps tests scripts .github *.json *.yaml *.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@axe-core/playwright": "4.10.2",
+    "prettier": "3.6.2",
+    "@types/node": "22.18.10"
+  }
+}

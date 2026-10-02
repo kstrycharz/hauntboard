@@ -1,0 +1,41 @@
+# Local secrets and runtime state
+.env
+.env.*
+!.env.example
+secrets/
+data/
+wallet-data/
+*.pem
+*.key
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
+*.log
+*.recovery.json
+
+# Build and test output
+node_modules/
+target/
+dist/
+coverage/
+playwright-report/
+test-results/
+docs/evidence/m1/walkthrough/
+.cache/
+.next/
+.vercel/
+
+# Reference snapshots must never be vendored
+/tari-development/
+/tari-ootle-development/
+/references/
+
+# Local editor and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Commit package lockfiles, migrations, public deployment manifests,
+# and intentionally sanitized evidence. Do not ignore these globally.

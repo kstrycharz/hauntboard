@@ -1,0 +1,77 @@
+# Isolated M2 research. No RPC/UI ports are published, and the web app has no access.
+# Authentication is deliberately disabled ONLY inside this unfunded disposable probe network.
+name: hauntbox-spike
+x-wallet: &wallet
+  build:
+    context: .
+    dockerfile: infra/docker/wallet.Dockerfile
+  command:
+    [
+      '--network',
+      'esme',
+      '--base-path',
+      '/wallet',
+      '--config',
+      '/run/hauntbox/wallet.toml',
+      '--indexer-api-url',
+      'https://ootle-indexer-a.tari.com/',
+      '--listen-on',
+      '0.0.0.0:5100',
+      '--auth',
+      'none',
+    ]
+  read_only: true
+  tmpfs: ['/tmp']
+  networks: [probe]
+  logging:
+    driver: none
+services:
+  secrets-init:
+    build:
+      context: .
+      dockerfile: infra/docker/wallet.Dockerfile
+    user: '0:0'
+    entrypoint: [sh, -c]
+    command:
+      [
+        'install -o 10001 -g 10001 -m 400 /run/secrets/sender.toml /sender/wallet.toml && install -o 10001 -g 10001 -m 400 /run/secrets/receiver.toml /receiver/wallet.toml',
+      ]
+    volumes: [sender_unlock:/sender, receiver_unlock:/receiver]
+    secrets:
+      - source: sender_config
+        target: sender.toml
+      - source: receiver_config
+        target: receiver.toml
+    network_mode: none
+  sender:
+    <<: *wallet
+    volumes: [sender_data:/wallet, 'sender_unlock:/run/hauntbox:ro']
+    depends_on:
+      secrets-init:
+        condition: service_completed_successfully
+  receiver:
+    <<: *wallet
+    volumes: [receiver_data:/wallet, 'receiver_unlock:/run/hauntbox:ro']
+    depends_on:
+      secrets-init:
+        condition: service_completed_successfully
+  probe:
+    build:
+      context: .
+      dockerfile: infra/docker/node.Dockerfile
+      target: tools
+    volumes: ['.:/workspace']
+    command: ['node', 'scripts/probe-wallets.mjs']
+    networks: [probe]
+networks:
+  probe:
+volumes:
+  sender_data:
+  receiver_data:
+  sender_unlock:
+  receiver_unlock:
+secrets:
+  sender_config:
+    file: ./secrets/spike-sender.toml
+  receiver_config:
+    file: ./secrets/spike-receiver.toml

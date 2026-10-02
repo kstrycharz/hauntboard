@@ -1,0 +1,36 @@
+{
+  "inspectedAt": "2026-10-02T16:11:20.306Z",
+  "status": "UNFUNDED_READ_ONLY_PREFLIGHT_NOT_M2_COMPLETION",
+  "wallets": [
+    {
+      "role": "sender",
+      "info": {
+        "network": "esmeralda",
+        "network_byte": 38,
+        "version": "0.43.0"
+      },
+      "unauthenticatedAccountRead": "RPC error 401",
+      "accountCount": 0,
+      "accountReadError": null,
+      "faucetState": "empty",
+      "faucetErrorCategory": null,
+      "configuredIndexer": "https://ootle-indexer-a.tari.com/",
+      "currentEpoch": 11760
+    },
+    {
+      "role": "receiver",
+      "info": {
+        "network": "esmeralda",
+        "network_byte": 38,
+        "version": "0.43.0"
+      },
+      "unauthenticatedAccountRead": "RPC error 401",
+      "accountCount": 0,
+      "accountReadError": null,
+      "faucetState": "empty",
+      "faucetErrorCategory": null,
+      "configuredIndexer": "https://ootle-indexer-a.tari.com/",
+      "currentEpoch": 11760
+    }
+  ]
+}

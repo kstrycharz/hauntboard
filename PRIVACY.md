@@ -1,0 +1,9 @@
+# Privacy status
+
+Hauntbox currently implements a **mock prototype**. It does not encrypt text, upload envelopes, authenticate a curator, anchor a transaction, or transfer funds. Use synthetic stories and the provided sample recipient only. Text and recipient input remain in the current tab's memory; reset or reload clears this fixture session. Sample receipt downloads contain synthetic bytes and their fingerprint, without the entered story or sample recipient. There is no analytics or session-replay service, and fonts are served locally.
+
+The intended live boundary is browser encryption for a specific curator, public fingerprints of encrypted bytes, and native stealth testnet rewards. The curator can decrypt on arrival. A selected reward discloses its recipient and amount to the operator wallet service. The operator controls testnet funds. Public fees, output keys, signatures, timing and transaction structure remain visible or inferable. A receipt establishes inclusion only, not authorship or payment; rewards are discretionary.
+
+The live encryption, key recovery, metadata handling/retention, native privacy, authorization, and operational controls are pending M2–M6 evidence. No anonymity, guaranteed reward, noncustodial service, timed decryption, or mainnet safety claim is made. An actively malicious operator could serve modified JavaScript, and a compromised browser or curator could reveal content.
+
+The separate M2 wallet preflight has no published ports and is disconnected from the app's Docker network. Its public evidence includes versions, network IDs, aggregate account counts and bounded error codes only. Unlock material and wallet state are ignored local files/named volumes. Do not fund the authentication-disabled preflight wallets for public use; authenticated integration needs its own gate.

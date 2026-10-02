@@ -1,0 +1,12 @@
+{
+  "scope": "LOCAL_MOCK_BUILD_NOT_A_PRODUCTION_RELEASE",
+  "checkedDate": "2026-10-02",
+  "packageManager": "pnpm@10.18.3",
+  "nodeBase": "node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c",
+  "browserBase": "mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27",
+  "previewLocalImageId": "sha256:b7d279e66c2dd9143a3c625ab0b215cc932534d907492cc4230a7e5bc45de790",
+  "previewUser": "node",
+  "previewHttpStatus": 200,
+  "sourceCommit": null,
+  "sourceNote": "Local uncommitted implementation; no public registry image or release tag exists. Docker source build is authoritative for reproduction."
+}

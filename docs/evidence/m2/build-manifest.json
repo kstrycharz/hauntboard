@@ -1,0 +1,18 @@
+{
+  "scope": "PREFLIGHT_CANDIDATE_NOT_APPROVED_LIVE_COMPATIBILITY",
+  "checkedDate": "2026-10-02",
+  "walletVersion": "0.43.0",
+  "walletSha256": "61ff7763cadf6236b58ee625c656e7aec55104ef910310a7281b746853c02749",
+  "walletBase": "ubuntu:24.04@sha256:a853f94d226358a79c740cfc7bce0c289748f3fe3488d921d038ccd752c61b60",
+  "walletSenderLocalImageId": "sha256:e55600bff4a005ea315566c3fe0c75cc3b5733683e51a446058bfa1421e1d0e5",
+  "walletUser": "10001",
+  "walletPublishedPorts": [],
+  "rustBase": "rust:1.97.1-slim-bookworm@sha256:2775a09d208ff0d7c1f50490c45b62db929e87ba1dcbc3f2132ac71a704bcdd3",
+  "templateLibrary": "0.33.0",
+  "probeWasmBytes": 89766,
+  "probeWasmSha256": "ba6533705ef822fa35cb097567e8bde10c20511170fd7e46887aff1ddad351a9",
+  "templateAddress": null,
+  "componentAddress": null,
+  "transactionEvidence": [],
+  "sourceCommit": null
+}

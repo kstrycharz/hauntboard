@@ -1,0 +1,18 @@
+name: Mock quality gates
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  mock:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Frozen install, style, types, unit tests, production build and dependency audit
+        run: docker compose --profile tools run --rm node-tools sh -c 'pnpm install --frozen-lockfile && pnpm format:check && pnpm check && pnpm test && pnpm build && pnpm audit --prod'
+      - name: Chromium and Firefox acceptance
+        run: docker compose --profile test run --rm e2e
+      - name: Non-root preview image build
+        run: docker compose --profile preview build web-preview
+      - name: Stop containers and retain volumes
+        if: always()
+        run: docker compose down

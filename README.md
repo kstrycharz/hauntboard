@@ -14,7 +14,7 @@ docker compose -f compose.production.yaml up --build -d
 
 Its API and PostgreSQL are private. Receipt anchoring and payouts are disabled in this Esmeralda preview. `/api/funding/status` explains funding readiness without exposing operator balances; authenticated operators can inspect their private funding status. `/api/openapi.json` serves the request-schema API specification. `/health/ready` checks database readiness; it does not certify wallet or chain readiness.
 
-**Participant sign-in:** [localhost:8180/account](http://localhost:8180/account). Choose **PIN** or **passkey** inside Hauntbox. PIN account creation returns a separate private sign-in code; keep it separately from your PIN. Sign-in is an app account, not a generated Tari wallet or spending key. You can save your existing same-network payout address in this browser.
+**Participant wallet:** [localhost:8180/account](http://localhost:8180/account). **Create wallet** opens a popup with a PIN keypad: choose and confirm an 8–12 digit PIN, generate native Ootle spending/view keys, save both 24-word Hauntbox recovery phrases shown once, then finish setup. **Sign in with PIN** unlocks encrypted browser data. **Recover wallet** restores from both phrases with a new local PIN. The PIN and recovery phrases never reach the server. These phrases restore the Hauntbox wallet; they are not the native daemon's single seed phrase. Use the generated address for optional rewards. Balance scanning and outgoing spending remain pending. Existing PIN/passkey app accounts are retained under **Existing app account / passkey sign-in**.
 
 **Host/operator:** the person running the installation, initially Kyle, who also curates rooms and funds receipt fees/rewards. Use **Host / Curator** for frontend PIN/passkey setup. Initial host setup requires the private installation setup code. Participant credentials cannot authorize host operations. Native wallet services remain private infrastructure; the app no longer links to their built-in Wallet UI. The old participant companion is stopped with its volumes preserved.
 
@@ -61,3 +61,5 @@ The standalone frontend also serves `/demo`. Avoid starting its `web-dev` while 
 Read [AGENTS.md](AGENTS.md). Keep all package managers, Rust, databases, browser CI and Tari binaries inside Docker. Sibling Tari snapshots are read-only references. Runtime data and private material belong in named volumes or ignored private directories.
 
 Original code is [MIT](LICENSE). [Third-party notices](THIRD_PARTY_NOTICES.md) retain React/font licenses and Tari provenance. No mainnet funds, participant deposits or public posting are authorized by these local setup commands.
+
+Browser wallet implementation/security: docs/adr/004-browser-wallet-recovery.md. Real Chromium/Firefox generation, PIN unlock, clean-browser recovery and production-CSP tests are recorded in docs/evidence/m2/embedded-wallet*.json. Mainnet wallet generation is disabled.

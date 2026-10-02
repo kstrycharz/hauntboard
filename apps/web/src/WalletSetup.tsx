@@ -1,4 +1,5 @@
 import { ParticipantSignIn } from './ParticipantSignIn';
+import { EmbeddedWallet } from './EmbeddedWallet';
 export interface FundingStatus {
   operatorWalletsConnected: boolean;
   receiptFundingReady: boolean;
@@ -33,7 +34,11 @@ export function WalletSetup({
           chooses optional rewards and pays the network fees.
         </p>
       </section>
-      <ParticipantSignIn network={network} onUseAddress={onUseAddress} />
+      <EmbeddedWallet network={network} onUseAddress={onUseAddress} />
+      <details className="live-card">
+        <summary>Existing app account / passkey sign-in</summary>
+        <ParticipantSignIn network={network} onUseAddress={onUseAddress} />
+      </details>
       <section className="live-card">
         <h2>Who is the operator?</h2>
         <p>

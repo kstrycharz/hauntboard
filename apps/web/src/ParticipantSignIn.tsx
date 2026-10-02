@@ -79,6 +79,12 @@ export function ParticipantSignIn({
         setError('Use 8–12 digits; both PIN entries must match.');
         return;
       }
+      if (!creating && !/^[A-Za-z0-9_-]{43}$/.test(loginCode.trim())) {
+        setError(
+          'Enter the account sign-in code saved at creation. To make a new account, choose Create an account.',
+        );
+        return;
+      }
       const result = await request<Session>(
         `pin/${creating ? 'register' : 'login'}`,
         creating ? { pin } : { loginCode: loginCode.trim(), pin },

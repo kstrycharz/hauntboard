@@ -12,6 +12,8 @@
   "dependencies": {
     "@fontsource/cormorant-garamond": "5.3.0",
     "@fontsource/dm-sans": "5.3.0",
+    "@scure/bip39": "2.0.1",
+    "@tari-project/ootle-wasm": "0.43.0",
     "jose": "6.2.12",
     "react": "19.3.0",
     "react-dom": "19.3.0"
@@ -21,6 +23,7 @@
     "@types/react-dom": "19.1.9",
     "typescript": "5.9.3",
     "vite": "8.3.2",
+    "vite-plugin-wasm": "3.6.0",
     "vitest": "5.0.3"
   }
 }

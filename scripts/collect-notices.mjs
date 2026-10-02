@@ -5,6 +5,7 @@ const packages = [
   'scheduler',
   '@fontsource/cormorant-garamond',
   '@fontsource/dm-sans',
+  '@scure/bip39',
 ];
 await mkdir('docs/licenses', { recursive: true });
 for (const name of packages) {
@@ -28,6 +29,17 @@ for (const name of packages) {
   await writeFile(`docs/licenses/${name.replaceAll('/', '-').replace('@', '')}.txt`, license);
 }
 console.log('Copied required React, scheduler, and font license notices.');
+const { readdir } = await import('node:fs/promises');
+for (const name of ['@scure/base', '@noble/hashes']) {
+  const prefix = `${name.replace('/', '+')}@`;
+  const folder = (await readdir('node_modules/.pnpm')).find((entry) => entry.startsWith(prefix));
+  if (!folder) throw new Error('Missing recovery codec dependency notice');
+  const license = await readFile(
+    `node_modules/.pnpm/${folder}/node_modules/${name}/LICENSE`,
+    'utf8',
+  );
+  await writeFile(`docs/licenses/${name.replaceAll('/', '-').replace('@', '')}.txt`, license);
+}
 const upstream = await fetch(
   'https://raw.githubusercontent.com/tari-project/tari-ootle/v0.43.0/LICENSE',
   { signal: AbortSignal.timeout(15000) },

@@ -38,6 +38,8 @@ jobs:
         run: docker compose -f compose.app.yaml -f compose.app.localnet.yaml -f compose.app.browser.yaml run --build --rm --no-deps browser-tests
       - name: Frontend PIN and passkey sign-in with role separation
         run: docker compose -f compose.app.yaml -f compose.app.localnet.yaml -f compose.app.browser.yaml run --rm --no-deps browser-tests node --experimental-strip-types scripts/test-participant-sign-in.mjs
+      - name: Browser wallet keypad, encrypted storage and clean-device recovery
+        run: docker compose -f compose.app.yaml -f compose.app.localnet.yaml -f compose.app.browser.yaml run --rm --no-deps browser-tests node scripts/test-embedded-wallet.mjs
       - name: Restart application and verify no transaction resubmission
         run: |
           docker compose -f compose.app.yaml -f compose.app.localnet.yaml -f compose.app.auth.yaml restart api worker

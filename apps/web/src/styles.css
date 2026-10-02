@@ -1625,3 +1625,45 @@ pre {
     flex-wrap: wrap;
   }
 }
+
+.wallet-dialog {
+  width: min(540px, calc(100vw - 32px));
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  background: #211a2b;
+  color: #f3e9d9;
+  border: 1px solid #79677e;
+  border-radius: 16px;
+  padding: 24px;
+}
+.wallet-dialog::backdrop {
+  background: rgb(8 5 15 / 80%);
+}
+.wallet-dialog-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+.wallet-dialog-header h2 {
+  margin: 0;
+}
+.wallet-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+.wallet-keypad button {
+  min-height: 52px;
+  border: 1px solid #79677e;
+  border-radius: 8px;
+  background: #33273f;
+  color: #f3e9d9;
+  font: inherit;
+  font-size: 1.15rem;
+}
+.wallet-dialog > .primary {
+  width: 100%;
+  min-height: 48px;
+}

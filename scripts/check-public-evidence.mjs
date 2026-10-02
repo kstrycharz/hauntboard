@@ -14,6 +14,17 @@ const failures = [];
 let localCiValuesChecked = 0;
 try {
   for (const name of await readdir('/private')) {
+    if (name === 'embedded-wallet-ui.json') {
+      const fixtures = JSON.parse(await readFile(`/private/${name}`, 'utf8'));
+      for (const fixture of Object.values(fixtures)) {
+        for (const field of ['pin', 'ownerPhrase', 'viewPhrase']) {
+          if (typeof fixture?.[field] === 'string') {
+            materials.push(fixture[field]);
+            localCiValuesChecked++;
+          }
+        }
+      }
+    }
     if (name === 'participant-ui.json') {
       const fixtures = JSON.parse(await readFile(`/private/${name}`, 'utf8'));
       for (const fixture of Object.values(fixtures)) {
@@ -64,7 +75,7 @@ const record = {
   leaks: failures,
   status: failures.length ? 'FAILED' : 'PASSED',
   scope:
-    'Exact local preflight/beta unlock values and any mounted local CI passkey/token/PIN/account-code values in apps, docs, scripts, tests, infra, spikes, packages and templates. This is not a general secret scanner or a full live data-leak test.',
+    'Exact local preflight/beta unlock values and any mounted local CI passkey/token/PIN/account-code/recovery-phrase values in apps, docs, scripts, tests, infra, spikes, packages and templates. This is not a general secret scanner or a full live data-leak test.',
 };
 await writeFile('docs/evidence/m1/secret-scan.json', JSON.stringify(record, null, 2) + '\n');
 console.log(JSON.stringify(record, null, 2));

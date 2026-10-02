@@ -25,3 +25,7 @@ Host room encryption keys are separate from account sign-in and wallet keys. Exp
 The production preview keeps public mutations paused. `compose.public.yaml` prepares HTTPS with owner-approved domain/DNS/infrastructure. Mainnet requires the separate gates in ADR 003: reviewed participant custody, key recovery, spending authorization and treasury controls. The current PIN endpoints reject mainnet.
 
 Encrypted application database/intent-key restore has passed; see [backup/restore](backup-restore.md). Schema v4 includes participant authentication tables. Restore invalidates participant and host sessions/ceremonies. Wallet data/unlock recovery, off-host custody and rollback remain separate release gates. Unknown payment outcomes preserve reservations and require reconciliation, never an automatic replacement transfer.
+
+## Browser participant wallet
+
+At /account, Create wallet opens the PIN keypad popup. Choose/confirm a PIN, write down both recovery phrases, confirm their first words, then finish. This generates real native Ootle keys locally without a chain transaction. The PIN unlocks locally encrypted IndexedDB data; reloading locks it. Recover wallet takes both Hauntbox phrases and sets a new PIN. The public address should match on the same network. Do not import native daemon seed words into this two-phrase format. Legacy app accounts are in the secondary Existing app account / passkey sign-in panel. See ADR 004 for storage, compatibility and mainnet limits.

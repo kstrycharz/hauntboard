@@ -26,6 +26,7 @@ async function visit(page) {
   });
   await page.goto('http://localhost:5173/account');
   await page.getByRole('heading', { name: 'Your account and the host', exact: true }).waitFor();
+  await page.getByText('Existing app account / passkey sign-in', { exact: true }).click();
 }
 try {
   for (const [name, engine] of [
@@ -62,6 +63,7 @@ try {
     await page.getByRole('button', { name: 'Sign in', exact: true }).click();
     await page.getByRole('heading', { name: 'Your participant account', exact: true }).waitFor();
     await page.reload();
+    await page.getByText('Existing app account / passkey sign-in', { exact: true }).click();
     await page.getByRole('heading', { name: 'Your participant account', exact: true }).waitFor();
     assert.equal(
       await page.locator('a[href*="5101"],a[href*="5102"],a[href*="5103"],iframe').count(),

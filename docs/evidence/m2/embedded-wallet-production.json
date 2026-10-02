@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-10-02T21:36:50.294Z",
+  "status": "PASSED_EMBEDDED_TESTNET_WALLET",
+  "network": "esmeralda",
+  "productionBuild": true,
+  "checks": {
+    "chromium": {
+      "nativeWalletGenerated": true,
+      "keypadAndDialog": true,
+      "recoveryShownOnce": true,
+      "localEncryptedStorage": true,
+      "noPinOrSeedRequests": true,
+      "pinUnlockAfterReload": true,
+      "durableLockout": true,
+      "cleanBrowserRecoverySameAddress": true,
+      "submissionUsesGeneratedAddress": true
+    },
+    "firefox": {
+      "nativeWalletGenerated": true,
+      "keypadAndDialog": true,
+      "recoveryShownOnce": true,
+      "localEncryptedStorage": true,
+      "noPinOrSeedRequests": true,
+      "pinUnlockAfterReload": true,
+      "durableLockout": true,
+      "cleanBrowserRecoverySameAddress": true,
+      "submissionUsesGeneratedAddress": true
+    }
+  },
+  "scope": "Browser wallet generation/unlock/key recovery only. No faucet, chain submission, deposits, balance scan or spending."
+}

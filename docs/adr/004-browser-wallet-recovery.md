@@ -1,0 +1,31 @@
+# Browser-held participant wallet — testnet
+
+October 2, 2026. The user requested prominent popup account creation, a PIN keypad, real wallet generation, recovery material shown once and phrase-based recovery. This supersedes ADR 003's existing-wallet-only participant path. Host/operator identity and native host wallet service isolation remain as documented in ADR 003.
+
+The main account page now offers Create wallet and Recover wallet. Create opens a native modal dialog, chooses and confirms an 8–12 digit PIN, generates native Ootle owner/view keys in the browser, displays recovery material once, asks for a saved-word confirmation and persists the encrypted wallet. The wallet is then unlocked for choosing the submission's reward address. Reload/remount locks it. Recovery imports both phrases, chooses a new local PIN and restores the same network address. An existing wallet cannot be overwritten by a different recovered address.
+
+## Native key and recovery format
+
+`@tari-project/ootle-wasm` is pinned to 0.43.0, matching the selected native engine/wallet release. `generateOotleSecretKey`, `ootlePublicKeyFromSecretKey` and `generateOotleAddress` perform the native operations. No Ristretto scalar arithmetic or wallet key derivation is handwritten in JavaScript. The address contains native owner and view public keys for the selected network.
+
+This released WASM API restores raw owner/view keys but does not expose the daemon's cipher-seed mnemonic derivation. Hauntbox uses `@scure/bip39` 2.0.1's established checksum encoding to represent each native 32-byte key as a 24-word phrase: one spending phrase and one view phrase. Both are required. These are explicitly labelled Hauntbox recovery phrases, not a native Tari daemon seed phrase. They reconstruct the exact generated keys and address; they do not promise compatibility with a daemon's single-seed import UI. A separately verified official cipher-seed browser adapter is required before offering native single-seed import. No arbitrary native seed input is silently accepted as a Hauntbox phrase.
+
+Official source references: [released WASM key bindings](https://github.com/tari-project/tari-ootle/tree/v0.43.0/bindings), [Ootle TypeScript SDK](https://github.com/tari-project/ootle.ts), [scure BIP39 implementation](https://github.com/paulmillr/scure-bip39). Package versions and integrity are recorded in pnpm-lock.yaml.
+
+## Local storage and authentication
+
+The new wallet PIN and both phrases never enter a server request. The PIN itself is not persisted. Browser IndexedDB contains an AES-GCM encrypted recovery payload, salt/IVs, a public receive address, local attempt state and a nonextractable device AES key. A PBKDF2-SHA256 key with 600,000 iterations encrypts the payload using the PIN. A second AES-GCM layer uses the nonextractable device key. Both layers authenticate a version/network/address context. Device loss requires both recovery phrases; a ciphertext export without its original device key cannot restore this wallet.
+
+Five failed local unlock attempts trigger a 15-minute local lock that survives reload. This is a convenience control, not a tamper-resistant hardware counter: the browser owner or malicious same-origin code can manipulate browser storage or invoke its keys. A short PIN, nonextractable WebCrypto key and local attempt limits do not establish mainnet custody security. JavaScript strings cannot be reliably zeroized; temporary recovery/PIN form state is removed on finish/cancel, byte buffers are wiped where possible, and the SDK's key objects are freed.
+
+Unlock decrypts the wallet and re-derives its address before accepting it. It does not grant a host session, native daemon permission or spending permission to the API. The original database-backed participant app accounts remain under Existing app account / passkey sign-in for compatibility. Their PIN hashes remain server-side as ADR 003 describes. The new browser wallet and those old account credentials are distinct; no automatic migration or invented identity link occurs.
+
+## Boundaries and remaining work
+
+The wallet generation, PIN unlock, recovery and payout-address selection are implemented for localnet and Esmeralda. Mainnet fails closed. No wallet seed is retained by the API, and there is no new public faucet, deposit, signing or transaction endpoint. Browser balance scanning and outgoing spending, independently confirmed receiving/spending from this new browser implementation, native cipher-seed import and passkey PRF wrapping of browser wallet keys remain work packages. Existing passkeys authenticate application accounts; they do not yet unlock this browser wallet's keys. The prior native daemon private-reward flow remains separately verified.
+
+Before mainnet: use reviewed entropy/key wrapping and stronger authentication than a PIN-only browser session, explicitly detect passkey PRF support and define a supported recovery alternative, review secret exposure/XSS/dependencies, prove native recovery and real recipient spending, and complete the independent custody/operations gates in ADR 003. Reuse neither testnet seeds nor faucet wallets for mainnet.
+
+## Evidence
+
+Chromium and Firefox passed actual UI wallet generation, keypad/modal behavior, encrypted IndexedDB storage with a nonextractable device key, no PIN/phrase POST requests, PIN unlock after reload, local lockout after failed attempts, clean-browser recovery to the identical address and address selection in the submission form. Production-build tests also passed through Caddy with the actual WASM content-security policy. These tests make no chain transactions or faucet claims. Sanitized records are docs/evidence/m2/embedded-wallet.json and embedded-wallet-production.json; fixture seeds stay in the private local CI volume and are included in bounded exact-value leakage checks.

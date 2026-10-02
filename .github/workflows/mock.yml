@@ -40,6 +40,8 @@ jobs:
         run: docker compose -f compose.app.yaml -f compose.app.localnet.yaml -f compose.app.browser.yaml run --rm --no-deps browser-tests node --experimental-strip-types scripts/test-participant-sign-in.mjs
       - name: Browser wallet keypad, encrypted storage and clean-device recovery
         run: docker compose -f compose.app.yaml -f compose.app.localnet.yaml -f compose.app.browser.yaml run --rm --no-deps browser-tests node scripts/test-embedded-wallet.mjs
+      - name: Browser wallet cross-tab races and infrastructure failures
+        run: docker compose -f compose.app.yaml -f compose.app.localnet.yaml -f compose.app.browser.yaml run --rm --no-deps browser-tests node scripts/test-wallet-concurrency.mjs
       - name: Restart application and verify no transaction resubmission
         run: |
           docker compose -f compose.app.yaml -f compose.app.localnet.yaml -f compose.app.auth.yaml restart api worker

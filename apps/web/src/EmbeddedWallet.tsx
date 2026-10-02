@@ -5,6 +5,7 @@ import {
   saveWallet,
   unlockWallet,
   walletInfo,
+  walletTabId,
   type Recovery,
 } from './participant-wallet';
 
@@ -30,16 +31,34 @@ export function EmbeddedWallet({
     [error, setError] = useState(''),
     [loaded, setLoaded] = useState(false);
   useEffect(() => {
+    let active = true;
     setLoaded(false);
-    void walletInfo(network)
-      .then((info) => {
-        setStoredAddress(info?.address ?? '');
-        setLoaded(true);
-      })
-      .catch(() => {
-        setLoaded(true);
-        setError('Wallet storage is unavailable on this device or network.');
-      });
+    const refresh = () => {
+      void walletInfo(network)
+        .then((info) => {
+          if (!active) return;
+          setStoredAddress(info?.address ?? '');
+          setLoaded(true);
+        })
+        .catch(() => {
+          if (!active) return;
+          setLoaded(true);
+          setError('Wallet storage is unavailable on this device or network.');
+        });
+    };
+    const channel = new BroadcastChannel('hauntbox-wallet-updates');
+    channel.onmessage = (event) => {
+      if (event.data?.network !== network || event.data?.source === walletTabId) return;
+      setUnlockedAddress('');
+      refresh();
+    };
+    window.addEventListener('focus', refresh);
+    refresh();
+    return () => {
+      active = false;
+      channel.close();
+      window.removeEventListener('focus', refresh);
+    };
   }, [network]);
   function clear() {
     setPin('');
@@ -63,6 +82,9 @@ export function EmbeddedWallet({
       await action();
     } catch (e) {
       const code = e instanceof Error ? e.message : '';
+      const info = await walletInfo(network).catch(() => null);
+      setStoredAddress(info?.address ?? '');
+      setUnlockedAddress('');
       setError(
         code === 'WALLET_PIN_INCORRECT'
           ? 'Incorrect PIN. Try again, or recover with both phrases.'
@@ -70,9 +92,19 @@ export function EmbeddedWallet({
             ? 'Wallet unlock is locked for 15 minutes. You can still recover with both phrases.'
             : code === 'WALLET_EXISTS'
               ? 'This browser already has a wallet. Unlock it or recover it instead.'
-              : mode === 'recover'
-                ? 'Recovery could not complete. Check both 24-word Hauntbox phrases and their order.'
-                : 'Wallet setup could not complete. Browser storage and WebAssembly must be available.',
+              : code === 'WALLET_CONFLICT'
+                ? 'Another wallet is saved in this browser. Recover with its matching phrases; the saved wallet has been preserved.'
+                : code === 'BROWSER_STORAGE_UNAVAILABLE'
+                  ? 'Wallet storage is unavailable. Retry when browser storage is working; your PIN was not rejected.'
+                  : code === 'WALLET_SDK_UNAVAILABLE'
+                    ? 'Wallet software could not load. Check your connection and reload; your PIN was not rejected.'
+                    : code === 'WALLET_DATA_INVALID'
+                      ? 'Saved wallet data could not be read. Recover with both saved phrases.'
+                      : code === 'WALLET_COORDINATION_UNAVAILABLE'
+                        ? 'This browser cannot safely coordinate wallet updates. Use a browser with Web Locks support.'
+                        : mode === 'recover'
+                          ? 'Recovery could not complete. Check both 24-word Hauntbox phrases and their order.'
+                          : 'Wallet setup could not complete. Browser storage and WebAssembly must be available.',
       );
     } finally {
       setBusy(false);
@@ -108,8 +140,6 @@ export function EmbeddedWallet({
         setRecovery(await generateWallet(network));
       } else {
         const restored = await recoverWallet(ownerPhrase, viewPhrase, network);
-        if (storedAddress && storedAddress !== restored.address)
-          throw new Error('WALLET_RECOVERY_INVALID');
         await saveWallet(restored, pin, network, true);
         setStoredAddress(restored.address);
         setUnlockedAddress(restored.address);

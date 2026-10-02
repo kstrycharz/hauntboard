@@ -25,6 +25,13 @@ function networkByte(network: string) {
   throw new Error('WALLET_TESTNET_ONLY');
 }
 const id = (network: string) => `participant-wallet:v1:${network}`;
+export const walletTabId = crypto.randomUUID();
+// Web Locks coordinate the entire read/crypto/write operation across same-origin tabs.
+// Do not fall back to a per-tab mutex when cross-tab coordination is unavailable.
+async function walletLock<T>(network: string, action: () => Promise<T>): Promise<T> {
+  if (!navigator.locks) throw new Error('WALLET_COORDINATION_UNAVAILABLE');
+  return navigator.locks.request(id(network), action);
+}
 const bytes = (value: Uint8Array) => new Uint8Array(value).buffer;
 function validatePin(pin: string) {
   if (!/^[0-9]{8,12}$/.test(pin)) throw new Error('WALLET_PIN_LENGTH');
@@ -62,7 +69,9 @@ export async function recoverWallet(
   const view = mnemonicToEntropy(normalize(viewPhrase), wordlist);
   try {
     if (owner.length !== 32 || view.length !== 32) throw new Error('WALLET_RECOVERY_INVALID');
-    const sdk = await import('@tari-project/ootle-wasm');
+    const sdk = await import('@tari-project/ootle-wasm').catch(() => {
+      throw new Error('WALLET_SDK_UNAVAILABLE');
+    });
     const publicKeys = sdk.ootlePublicKeyFromSecretKey(owner, view);
     try {
       return {
@@ -104,92 +113,130 @@ export async function saveWallet(
 ) {
   networkByte(network);
   validatePin(pin);
-  if (!restoring && (await walletInfo(network))) throw new Error('WALLET_EXISTS');
-  const verified = await recoverWallet(recovery.ownerPhrase, recovery.viewPhrase, network);
-  if (verified.address !== recovery.address) throw new Error('WALLET_RECOVERY_INVALID');
-  const salt = crypto.getRandomValues(new Uint8Array(32));
-  const pinIv = crypto.getRandomValues(new Uint8Array(12));
-  const deviceIv = crypto.getRandomValues(new Uint8Array(12));
-  const aad = new TextEncoder().encode(
-    `hauntbox:participant-wallet:v1:${network}:${recovery.address}`,
-  );
-  const key = await pinKey(pin, salt);
-  const deviceKey = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, false, [
-    'encrypt',
-    'decrypt',
-  ]);
-  const plain = new TextEncoder().encode(
-    JSON.stringify({ ownerPhrase: recovery.ownerPhrase, viewPhrase: recovery.viewPhrase }),
-  );
-  try {
-    const inner = await crypto.subtle.encrypt(
-      { name: 'AES-GCM', iv: bytes(pinIv), additionalData: aad },
-      key,
-      plain,
+  return walletLock(network, async () => {
+    const current = await walletInfo(network);
+    if (current && !restoring) throw new Error('WALLET_EXISTS');
+    if (current && current.address !== recovery.address) throw new Error('WALLET_CONFLICT');
+    const verified = await recoverWallet(recovery.ownerPhrase, recovery.viewPhrase, network);
+    if (verified.address !== recovery.address) throw new Error('WALLET_RECOVERY_INVALID');
+    const salt = crypto.getRandomValues(new Uint8Array(32));
+    const pinIv = crypto.getRandomValues(new Uint8Array(12));
+    const deviceIv = crypto.getRandomValues(new Uint8Array(12));
+    const aad = new TextEncoder().encode(
+      `hauntbox:participant-wallet:v1:${network}:${recovery.address}`,
     );
-    const encrypted = await crypto.subtle.encrypt(
-      { name: 'AES-GCM', iv: bytes(deviceIv), additionalData: aad },
-      deviceKey,
-      inner,
+    const key = await pinKey(pin, salt);
+    const deviceKey = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, false, [
+      'encrypt',
+      'decrypt',
+    ]);
+    const plain = new TextEncoder().encode(
+      JSON.stringify({ ownerPhrase: recovery.ownerPhrase, viewPhrase: recovery.viewPhrase }),
     );
-    await vaultPut(id(network), {
-      version: 1,
-      network,
-      address: recovery.address,
-      deviceKey,
-      salt,
-      pinIv,
-      deviceIv,
-      encrypted,
-      failures: 0,
-      lockedUntil: 0,
-    } satisfies StoredWallet);
-  } finally {
-    plain.fill(0);
-  }
+    try {
+      const inner = await crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv: bytes(pinIv), additionalData: aad },
+        key,
+        plain,
+      );
+      const encrypted = await crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv: bytes(deviceIv), additionalData: aad },
+        deviceKey,
+        inner,
+      );
+      await vaultPut(id(network), {
+        version: 1,
+        network,
+        address: recovery.address,
+        deviceKey,
+        salt,
+        pinIv,
+        deviceIv,
+        encrypted,
+        failures: 0,
+        lockedUntil: 0,
+      } satisfies StoredWallet);
+      const channel = new BroadcastChannel('hauntbox-wallet-updates');
+      channel.postMessage({ network, source: walletTabId });
+      channel.close();
+    } finally {
+      plain.fill(0);
+    }
+  });
 }
 export async function unlockWallet(pin: string, network: string): Promise<string> {
   networkByte(network);
   validatePin(pin);
-  const stored = await vaultGet<StoredWallet>(id(network));
-  if (!stored) throw new Error('WALLET_NOT_FOUND');
-  if (stored.lockedUntil > Date.now()) throw new Error('WALLET_LOCKED');
-  if (stored.lockedUntil) {
-    stored.failures = 0;
-    stored.lockedUntil = 0;
-  }
-  // Count attempts before expensive work; a cancelled/reloaded attempt still counts.
-  stored.failures++;
-  if (stored.failures >= 5) stored.lockedUntil = Date.now() + 15 * 60 * 1000;
-  await vaultPut(id(network), stored);
-  const aad = new TextEncoder().encode(
-    `hauntbox:participant-wallet:v1:${network}:${stored.address}`,
-  );
-  let plain: Uint8Array | undefined;
-  try {
-    const key = await pinKey(pin, stored.salt);
-    const inner = await crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv: bytes(stored.deviceIv), additionalData: aad },
-      stored.deviceKey,
-      stored.encrypted,
+  return walletLock(network, async () => {
+    const stored = await vaultGet<StoredWallet>(id(network));
+    if (!stored) throw new Error('WALLET_NOT_FOUND');
+    if (
+      stored.version !== 1 ||
+      stored.network !== network ||
+      typeof stored.address !== 'string' ||
+      !(stored.deviceKey instanceof CryptoKey) ||
+      !(stored.salt instanceof Uint8Array) ||
+      stored.salt.length !== 32 ||
+      !(stored.pinIv instanceof Uint8Array) ||
+      stored.pinIv.length !== 12 ||
+      !(stored.deviceIv instanceof Uint8Array) ||
+      stored.deviceIv.length !== 12 ||
+      !(stored.encrypted instanceof ArrayBuffer) ||
+      !Number.isInteger(stored.failures) ||
+      stored.failures < 0 ||
+      !Number.isFinite(stored.lockedUntil)
+    )
+      throw new Error('WALLET_DATA_INVALID');
+    if (stored.lockedUntil > Date.now()) throw new Error('WALLET_LOCKED');
+    if (stored.lockedUntil) {
+      stored.failures = 0;
+      stored.lockedUntil = 0;
+    }
+    const aad = new TextEncoder().encode(
+      `hauntbox:participant-wallet:v1:${network}:${stored.address}`,
     );
-    plain = new Uint8Array(
-      await crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv: bytes(stored.pinIv), additionalData: aad },
-        key,
-        inner,
-      ),
-    );
-    const recovery = JSON.parse(new TextDecoder().decode(plain));
-    const verified = await recoverWallet(recovery.ownerPhrase, recovery.viewPhrase, network);
-    if (verified.address !== stored.address) throw new Error('WALLET_RECOVERY_INVALID');
-    stored.failures = 0;
-    stored.lockedUntil = 0;
-    await vaultPut(id(network), stored);
-    return verified.address;
-  } catch {
-    throw new Error('WALLET_PIN_INCORRECT');
-  } finally {
-    plain?.fill(0);
-  }
+    let plain: Uint8Array | undefined;
+    try {
+      const key = await pinKey(pin, stored.salt);
+      let inner: ArrayBuffer;
+      try {
+        inner = await crypto.subtle.decrypt(
+          { name: 'AES-GCM', iv: bytes(stored.deviceIv), additionalData: aad },
+          stored.deviceKey,
+          stored.encrypted,
+        );
+      } catch {
+        throw new Error('WALLET_DATA_INVALID');
+      }
+      try {
+        plain = new Uint8Array(
+          await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv: bytes(stored.pinIv), additionalData: aad },
+            key,
+            inner,
+          ),
+        );
+      } catch {
+        stored.failures++;
+        if (stored.failures >= 5) stored.lockedUntil = Date.now() + 15 * 60 * 1000;
+        await vaultPut(id(network), stored);
+        throw new Error('WALLET_PIN_INCORRECT');
+      }
+      let verified: Recovery;
+      try {
+        const recovery = JSON.parse(new TextDecoder().decode(plain));
+        verified = await recoverWallet(recovery.ownerPhrase, recovery.viewPhrase, network);
+        if (verified.address !== stored.address) throw new Error('WALLET_DATA_INVALID');
+      } catch (error) {
+        if (error instanceof Error && error.message === 'WALLET_SDK_UNAVAILABLE') throw error;
+        throw new Error('WALLET_DATA_INVALID');
+      }
+      stored.failures = 0;
+      stored.lockedUntil = 0;
+      await vaultPut(id(network), stored);
+      return verified.address;
+    } finally {
+      plain?.fill(0);
+    }
+  });
 }

@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-10-02T21:52:07.127Z",
+  "status": "PASSED_WALLET_CONCURRENCY",
+  "checks": {
+    "chromium": {
+      "oneCreationWinner": true,
+      "staleRecoveryPreservesWallet": true,
+      "otherTabRefreshes": true,
+      "concurrentFailuresCounted": true,
+      "recoveryKeepsNewPin": true,
+      "storageFailureNotPinFailure": true,
+      "sdkFailureNotPinFailure": true,
+      "corruptionRequiresRecovery": true
+    },
+    "firefox": {
+      "oneCreationWinner": true,
+      "staleRecoveryPreservesWallet": true,
+      "otherTabRefreshes": true,
+      "concurrentFailuresCounted": true,
+      "recoveryKeepsNewPin": true,
+      "storageFailureNotPinFailure": true,
+      "sdkFailureNotPinFailure": true,
+      "corruptionRequiresRecovery": true
+    }
+  },
+  "scope": "Isolated browser contexts; no chain transactions or faucet claims."
+}

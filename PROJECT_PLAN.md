@@ -732,14 +732,14 @@ Implemented prominent Create wallet and Recover wallet buttons, popup PIN keypad
 
 Remaining: official cipher-seed import adapter; browser balance/stealth-output scan and independent recipient spend; passkey PRF key wrapping with explicit unsupported-device recovery; mainnet custody/security review. Keep mainnet and public mutations disabled.
 
-### Browser wallet review follow-up — open, October 2
+### Browser wallet review follow-up — fixed and browser-verified, October 2
 
-Static review of `6dee866` identified three correctness issues. The implemented wallet flow is not accepted for release while these remain open. Prior Chromium/Firefox evidence covers sequential operations; it does not cover cross-tab races or SDK/storage fault handling. No fixes or additional runtime verification were performed as part of this documentation update.
+Static review of `6dee866` identified three correctness issues. All three are now fixed, with shared-profile Chromium/Firefox races and injected infrastructure failures recorded in docs/evidence/m2/wallet-concurrency.json. The sequential setup/unlock/recovery suite was also rerun. These results close the bounded review findings; public release, native recovery compatibility and mainnet custody gates remain independent.
 
 | Task | Priority | Required work | Status |
 | --- | --- | --- | --- |
-| BW-01 | P1 | Make creation/recovery atomic across tabs; prevent competing tabs or stale recovery state from silently replacing another wallet. Prove one winner under concurrent creation and preserve the existing wallet under a stale recovery attempt. | Open; next implementation priority, before further wallet acceptance/funding tests |
-| BW-02 | P2 | Serialize unlock/counter updates and prevent stale unlock writes from undoing recovered wallet data or a new PIN. Add shared-profile, concurrent-tab regression coverage. | Open; coordinate with BW-01 |
-| BW-03 | P2 | Distinguish incorrect PINs from unavailable storage/SDK and corrupted wallet data. Inject failures and prove correct-PIN infrastructure failures do not exhaust the PIN allowance. | Open |
+| BW-01 | P1 | Make creation/recovery atomic across tabs; prevent competing tabs or stale recovery state from silently replacing another wallet. Prove one winner under concurrent creation and preserve the existing wallet under a stale recovery attempt. | Complete: same-origin Web Lock; persisted-address guard; exactly one creation winner; conflicting recovery rejected; other tab refreshed |
+| BW-02 | P2 | Serialize unlock/counter updates and prevent stale unlock writes from undoing recovered wallet data or a new PIN. Add shared-profile, concurrent-tab regression coverage. | Complete: same lock covers unlock and PIN recovery; five concurrent failures persist; new PIN survives competing old unlock |
+| BW-03 | P2 | Distinguish incorrect PINs from unavailable storage/SDK and corrupted wallet data. Inject failures and prove correct-PIN infrastructure failures do not exhaust the PIN allowance. | Complete: separate safe errors; SDK/IndexedDB fault injection and ciphertext corruption pass without consuming PIN failures |
 
-Detailed findings, affected functions and acceptance criteria are in [ADR 004: code review](docs/adr/004-browser-wallet-recovery.md#code-review--october-2-2026). Close these findings with recorded regression results before returning to browser balance/spending or mainnet readiness claims. Existing public mutation gates remain closed.
+Detailed findings and correction evidence are in [ADR 004: code review](docs/adr/004-browser-wallet-recovery.md#code-review--october-2-2026). CI now runs the concurrency/fault regression. Web Locks are required; unsupported browsers fail closed. Next ready engineering package: specify and prove browser stealth-output detection and independently verified recipient spending using established Tari SDK APIs. Public M2b, PM-00 human trials and operations/release gates remain open; public mutations and mainnet remain disabled.

@@ -13,9 +13,16 @@ async function vault<T>(
     open.onupgradeneeded = () => open.result.createObjectStore('private');
     open.onerror = () => reject(new Error('BROWSER_STORAGE_UNAVAILABLE'));
     open.onsuccess = () => {
-      const db = open.result,
-        transaction = db.transaction('private', mode),
+      const db = open.result;
+      let transaction: IDBTransaction, request: IDBRequest;
+      try {
+        transaction = db.transaction('private', mode);
         request = operation(transaction.objectStore('private'));
+      } catch {
+        db.close();
+        reject(new Error('BROWSER_STORAGE_UNAVAILABLE'));
+        return;
+      }
       let value: T;
       request.onsuccess = () => {
         value = request.result as T;
@@ -24,7 +31,7 @@ async function vault<T>(
         db.close();
         resolve(value);
       };
-      transaction.onerror = () => {
+      transaction.onerror = transaction.onabort = () => {
         db.close();
         reject(new Error('BROWSER_STORAGE_UNAVAILABLE'));
       };

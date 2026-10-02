@@ -1,6 +1,6 @@
 # M2 capability gate — unfunded preflight
 
-Inspected October 2, 2026. **Gate not passed.** The local mock is complete; no actual stealth transfer, recipient spend, template publication or live receipt has been demonstrated.
+Inspected October 2, 2026. **Gate not passed.** The local mock and in-process engine tests are available; wallet-level stealth transfer, recipient scanning/spend, network template publication and live receipts remain unproved. The table records the unfunded public preflight; subsequent engine evidence is linked below.
 
 | Capability | Result / evidence |
 |---|---|
@@ -16,9 +16,11 @@ Inspected October 2, 2026. **Gate not passed.** The local mock is complete; no a
 | Native concealed transfer / memo / change / fees | Not executed |
 | Receiver detection / recovery / spend | Not executed |
 | Public observer transaction/substate inspection | Not executed; no fabricated transaction IDs |
-| Engine test harness / publication / call / receipt | Not executed; compile alone is not engine or network compatibility |
+| Engine test harness / publication / call / receipt | Six in-process engine tests now pass; network publication/call/receipt remain unexecuted |
 | WebAuthn / scoped API keys / expiry / revoke | Ten unfunded disposable virtual-passkey checks pass in `wallet-auth.json`; persistent operator setup/restart remains unverified |
 | Final go/no-go ADR | Pending; see `docs/adr/001-network-wallet-versions.md` |
+
+October 2 implementation update: [funding-engine.md](funding-engine.md) records the funding core (34 tests) and six real-engine faucet/fee/receipt/native-concealed-transfer tests. Full wallet/local-network integration, memo recovery, scanning and public proof remain open. These results do not pass M2a/M2b or alter the earlier public-faucet observation.
 
 The wallet preflight files intentionally retain only allowlisted public/aggregate fields. Token/password/seed/recipient/amount fields are not exported. `wallet-preflight.json` and `wallet-restart.json` are actual runtime observations. `release-research.json` is registry/source/network research, not transfer proof.
 
@@ -64,6 +66,6 @@ Compile probe SHA-256: `ba6533705ef822fa35cb097567e8bde10c20511170fd7e46887aff1d
 
 ## Next ready package
 
-Continue **INT-01** using the [prepared operation worksheet](operation-review.md). The owner confirmed faucet-only funding on October 2. A fresh read at 16:47:39 UTC found the faucet empty from both zero-account wallets. Ten disposable authentication checks now pass, including scope enforcement, API-key expiry and revoke; human passkey and persistent authenticated restart remain unverified. Prepare authenticated persistent wallets, independent test keys/accounts, exact native-transfer/publication operations, fee estimates and a bounded owner-approved testnet budget before funds move. An L1 burn or purchased funding is outside scope. Keep the full M2 transfer/public inspection/receiver spend checklist open.
+Continue **FUND-01/TEST-01** with the normalized wallet adapter, funding job and full local-network profile described in [funding-engine.md](funding-engine.md). Use the [prepared operation worksheet](operation-review.md) for later public verification. The owner confirmed faucet-only funding on October 2. A fresh read at 16:47:39 UTC found the public faucet empty from both zero-account wallets. Ten disposable authentication checks pass, including scope enforcement, API-key expiry and revoke; human passkey and persistent authenticated restart remain unverified. Prepare authenticated persistent wallets, independent test keys/accounts, exact native-transfer/publication operations, fee estimates and a bounded owner-approved public testnet budget before public funds move. An L1 burn or purchased funding is outside scope. Keep the full M2 transfer/public inspection/receiver spend checklist open.
 
 Funding-plan amendment: [docs/funding-plan.md](../../funding-plan.md) makes FUND-01/TEST-01 the next work, with local faucet-funded tests and separate M2a/M2b gates. The earlier empty result is a balance observation; no claim was attempted. Deterministic work can proceed now and M3–M5 integration after M2a; public release still requires M2b. Both gates remain open. Existing observations are unchanged by this planning revision.

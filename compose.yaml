@@ -43,6 +43,16 @@ services:
       - rust_spike_target:/target
       - rust_registry:/usr/local/cargo/registry
     command: cargo build --locked --release --target wasm32-unknown-unknown
+  engine-tests:
+    profiles: [engine]
+    build:
+      context: .
+      dockerfile: infra/docker/rust-spike.Dockerfile
+    volumes:
+      - .:/workspace
+      - engine_test_target:/target
+      - rust_registry:/usr/local/cargo/registry
+    command: cargo test --locked --test engine -- --test-threads=1
   web-preview:
     profiles: [preview]
     build:
@@ -69,3 +79,4 @@ volumes:
   pnpm_store:
   rust_spike_target:
   rust_registry:
+  engine_test_target:

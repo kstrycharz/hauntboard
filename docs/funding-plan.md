@@ -1,6 +1,6 @@
 # Funding plan: automated tests, public testnet, and production
 
-Date: October 2, 2026. Status: implementation specification; funding automation is not implemented. Owner direction: automated transaction tests use faucet funds; preserve a production path. This expands the earlier public-testnet-only development gate into separate local and public evidence gates. It authorizes planning, not mainnet spending or publication.
+Date: October 2, 2026. Status: FUND-01 core and TEST-01 engine layer implemented; runtime funding automation/full local-network integration remain in progress. [Implementation evidence](evidence/m2/funding-engine.md) records 32 funding tests and six faucet-funded engine tests. Owner direction: automated transaction tests use faucet funds; preserve a production path. This expands the earlier public-testnet-only development gate into separate local and public evidence gates. Mainnet spending and publication remain outside this work.
 
 ## 1. What the faucet actually does
 

@@ -8,7 +8,8 @@
     "dev": "pnpm --filter @hauntbox/web dev --host 0.0.0.0",
     "build": "pnpm --filter @hauntbox/web build",
     "check": "pnpm --filter @hauntbox/web check",
-    "test": "pnpm --filter @hauntbox/web test",
+    "test": "pnpm --filter @hauntbox/web test && pnpm test:funding",
+    "test:funding": "node --test tests/funding/*.test.mjs",
     "test:e2e": "playwright test",
     "format": "prettier --write apps tests scripts .github *.json *.yaml *.ts",
     "format:check": "prettier --check apps tests scripts .github *.json *.yaml *.ts"

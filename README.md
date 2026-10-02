@@ -20,7 +20,7 @@ Coding agents must also read [AGENTS.md](AGENTS.md).
 
 **Funding plan:** [automated tests, public testnet and production migration](docs/funding-plan.md) specifies faucet configuration, claim/recovery logic, isolated CI funding, and future treasury funding. FUND-01/TEST-01 are in progress; the local bootstrap job works. Deterministic work may continue now; M3–M5 integration follows M2a local proof, while public deployment still requires M2b public proof. The public empty-faucet observation does not block local development. Both gates remain open. This repository is not a live testnet beta or a completed contest entry.
 
-**FUND-01/TEST-01 in progress:** 42 funding/RPC/adapter tests and six actual Tari engine tests pass. A pinned, isolated local validator/indexer and two independently keyed, WebAuthn-authenticated wallets now execute actual faucet bootstrap, funding-job reuse, concealed rewards with receiver memo recovery, receiver spending, and restart recovery without resubmission. The local CI workflow is implemented; hosted CI has not yet run. Original receipt publication/call is still required for M2a, and M2b public proof remains open. [Local wallet evidence and commands](docs/evidence/m2/local-wallet.md), [engine evidence](docs/evidence/m2/funding-engine.md).
+**FUND-01/TEST-01 in progress:** 46 funding/RPC/adapter/beta-config tests and six actual Tari engine tests pass. A pinned, isolated local validator/indexer and two independently keyed, WebAuthn-authenticated wallets now execute actual faucet bootstrap, funding-job reuse, concealed rewards with receiver memo recovery, receiver spending, and restart recovery without resubmission. The local CI workflow is implemented; hosted CI has not yet run. Original receipt publication/call is still required for M2a, and M2b public proof remains open. [Local wallet evidence and commands](docs/evidence/m2/local-wallet.md), [engine evidence](docs/evidence/m2/funding-engine.md).
 
 Run the new layers in Docker:
 
@@ -30,6 +30,8 @@ docker compose --profile engine run --rm engine-tests
 ```
 
 ## Run the mock
+
+Production Esmeralda wallet configuration now uses Tari's maintained primary/secondary public indexers; no production indexer/validator is included. See the [configuration and operator runbook](docs/runbooks/esmeralda-beta.md). The beta wallets are authenticated and separate from local test wallets; funded public proof and the application backend remain unfinished.
 
 From this directory, with Docker Desktop using Linux containers:
 

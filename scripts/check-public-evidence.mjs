@@ -1,9 +1,9 @@
 // Checks actual local probe unlock material without printing it or its config.
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 const materials = [];
-for (const role of ['sender', 'receiver']) {
+for (const name of ['spike-sender', 'spike-receiver', 'beta-receipt', 'beta-reward']) {
   try {
-    const config = await readFile(`secrets/spike-${role}.toml`, 'utf8');
+    const config = await readFile(`secrets/${name}.toml`, 'utf8');
     const match = config.match(/override_keyring_password\s*=\s*\[([^\]]+)\]/);
     if (match) materials.push(Buffer.from(match[1].split(',').map(Number)).toString());
   } catch (error) {
@@ -52,7 +52,7 @@ const record = {
   leaks: failures,
   status: failures.length ? 'FAILED' : 'PASSED',
   scope:
-    'Exact local preflight unlock values and any mounted local CI passkey/token values in web assets, docs, scripts, tests, infra and spikes. This is not a general secret scanner or a full live data-leak test.',
+    'Exact local preflight/beta unlock values and any mounted local CI passkey/token values in web assets, docs, scripts, tests, infra and spikes. This is not a general secret scanner or a full live data-leak test.',
 };
 await writeFile('docs/evidence/m1/secret-scan.json', JSON.stringify(record, null, 2) + '\n');
 console.log(JSON.stringify(record, null, 2));

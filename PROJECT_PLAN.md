@@ -191,6 +191,7 @@ The default public app does not require a wallet to submit a story. A visitor ma
 | Vercel frontend + container VPS | Optional after core works | Familiar frontend previews; adds origins and deployment coordination. Wallet/worker remain on VPS |
 | Supabase managed database/auth | Optional if operations become the bottleneck | Reduces database operations; adds third-party metadata exposure and requires authorization/RLS testing |
 | Full L1/L2 network in production | Excluded | App uses public testnet indexer; localnet containers are only a development fallback |
+| Production Esmeralda wallet preparation | Implemented, release gates open | compose.beta.yaml uses Tari public indexers with separate WebAuthn wallets; optional loopback-only admin UIs; docs/runbooks/esmeralda-beta.md |
 
 Use the owner's existing domain with an app subdomain chosen at deployment. Initial VPS sizing assumption: 2–4 vCPU, 4–8 GB RAM, 40–80 GB disk for the application and wallet services, not full nodes. Measure during M2; do Rust builds in CI or a build container. Reserve a provisional USD 50–100 monthly operating ceiling including backups, not a provider quote. Obtain current pricing and the owner's spend authorization before renting anything.
 

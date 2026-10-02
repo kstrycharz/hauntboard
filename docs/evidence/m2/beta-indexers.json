@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-10-02T18:29:32.367Z",
+  "status": "PASSED_READ_ONLY_BETA_INDEXERS",
+  "network": "esmeralda",
+  "indexers": [
+    {
+      "origin": "https://ootle-indexer-a.tari.com/",
+      "reachable": true,
+      "networkMatches": true
+    },
+    {
+      "origin": "https://ootle-indexer-b.tari.com/",
+      "reachable": true,
+      "networkMatches": true
+    }
+  ],
+  "wallets": [
+    {
+      "role": "receipt-wallet",
+      "networkAndVersionMatches": true,
+      "unauthenticatedAccountReadBlocked": true
+    },
+    {
+      "role": "reward-wallet",
+      "networkAndVersionMatches": true,
+      "unauthenticatedAccountReadBlocked": true
+    }
+  ],
+  "scope": "Endpoint availability, network name/byte and optional wallet startup version only; not reset identity, faucet availability, funded compatibility or release acceptance."
+}

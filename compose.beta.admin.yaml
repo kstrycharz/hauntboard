@@ -1,0 +1,6 @@
+# Local operator access only; on a server, use an administrator SSH tunnel.
+services:
+  receipt-wallet:
+    ports: ['127.0.0.1:5101:5101']
+  reward-wallet:
+    ports: ['127.0.0.1:5102:5102']

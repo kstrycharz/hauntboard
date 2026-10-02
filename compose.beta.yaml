@@ -1,0 +1,82 @@
+# Prepared production Esmeralda wallet infrastructure. No self-hosted indexer or validator.
+name: hauntbox-beta
+x-settings: &settings
+  APP_ENV: ${APP_ENV:-production}
+  NETWORK: ${NETWORK:-esmeralda}
+  BETA_INDEXER_URL: ${BETA_INDEXER_URL:-https://ootle-indexer-a.tari.com/}
+  BETA_SECONDARY_INDEXER_URL: ${BETA_SECONDARY_INDEXER_URL:-https://ootle-indexer-b.tari.com/}
+  PUBLIC_APP_ORIGIN: ${PUBLIC_APP_ORIGIN:-}
+  FUNDING_PROVIDER: ${FUNDING_PROVIDER:-public-faucet}
+  FAUCET_ENABLED: ${FAUCET_ENABLED:-true}
+  FUNDING_AUTOMATION_ENABLED: ${FUNDING_AUTOMATION_ENABLED:-false}
+  SUBMISSIONS_ENABLED: ${SUBMISSIONS_ENABLED:-false}
+  ANCHORING_ENABLED: ${ANCHORING_ENABLED:-false}
+  PAYOUTS_ENABLED: ${PAYOUTS_ENABLED:-false}
+x-wallet: &wallet
+  image: hauntbox-beta-wallet:0.43.0-candidate
+  build:
+    context: .
+    dockerfile: infra/docker/wallet.Dockerfile
+  command:
+    [
+      --network,
+      esme,
+      --base-path,
+      /wallet,
+      --config,
+      /run/hauntbox/wallet.toml,
+      --indexer-api-url,
+      '${BETA_INDEXER_URL:-https://ootle-indexer-a.tari.com/}',
+      --auth,
+      webauthn,
+    ]
+  read_only: true
+  tmpfs: [/tmp]
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  networks: [wallet-egress]
+  logging: { driver: none }
+  restart: unless-stopped
+  depends_on:
+    secrets-init: { condition: service_completed_successfully }
+services:
+  secrets-init:
+    build: { context: ., dockerfile: infra/docker/node.Dockerfile, target: tools }
+    command: [node, scripts/init-beta-volumes.mjs]
+    environment: *settings
+    volumes:
+      [
+        '.:/workspace:ro',
+        receipt_unlock:/unlock-receipt,
+        reward_unlock:/unlock-reward,
+        receipt_data:/data-receipt,
+        reward_data:/data-reward,
+      ]
+    secrets:
+      - { source: receipt_config, target: receipt.toml }
+      - { source: reward_config, target: reward.toml }
+    network_mode: none
+  receipt-wallet:
+    <<: *wallet
+    environment: { JRPC_LISTEN_ON: '0.0.0.0:5101' }
+    volumes: [receipt_data:/wallet, 'receipt_unlock:/run/hauntbox:ro']
+  reward-wallet:
+    <<: *wallet
+    environment: { JRPC_LISTEN_ON: '0.0.0.0:5102' }
+    volumes: [reward_data:/wallet, 'reward_unlock:/run/hauntbox:ro']
+  indexer-check:
+    build: { context: ., dockerfile: infra/docker/node.Dockerfile, target: tools }
+    command: [node, scripts/probe-beta-indexers.mjs]
+    environment: *settings
+    volumes: ['.:/workspace']
+    networks: [wallet-egress]
+networks:
+  wallet-egress:
+volumes:
+  receipt_data:
+  reward_data:
+  receipt_unlock:
+  reward_unlock:
+secrets:
+  receipt_config: { file: '${BETA_RECEIPT_UNLOCK_FILE:-./secrets/beta-receipt.toml}' }
+  reward_config: { file: '${BETA_REWARD_UNLOCK_FILE:-./secrets/beta-reward.toml}' }

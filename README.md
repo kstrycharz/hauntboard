@@ -2,11 +2,11 @@
 
 **Seal your story. Prove it arrived. Reward it privately.**
 
-A haunted submission room with browser encryption, original Tari Ootle inclusion receipts, curator passkeys and native private testnet rewards. The full application has passed against an isolated faucet-funded local chain. A production build runs with Esmeralda configuration; public mutations remain paused pending public proof and release gates.
+A haunted submission room with browser encryption, original Tari Ootle inclusion receipts, participant/host PIN or passkey sign-in and native private testnet rewards. The full application has passed against an isolated faucet-funded local chain. A production build runs with Esmeralda configuration; public mutations remain paused pending public proof and release gates.
 
 ## Open the application
 
-The production-built website is [http://localhost:8180/submit](http://localhost:8180/submit), container `hauntbox-production-web-1`. This is the application, with an optional payout-address field and **Get a wallet** setup for both participants and operators.
+The production-built website is [http://localhost:8180/submit](http://localhost:8180/submit), container `hauntbox-production-web-1`. This is the application, with an optional payout-address field and **Sign in / My account** and **Host / Curator** setup.
 
 ```sh
 docker compose -f compose.production.yaml up --build -d
@@ -14,23 +14,18 @@ docker compose -f compose.production.yaml up --build -d
 
 Its API and PostgreSQL are private. Receipt anchoring and payouts are disabled in this Esmeralda preview. `/api/funding/status` explains funding readiness without exposing operator balances; authenticated operators can inspect their private funding status. `/api/openapi.json` serves the request-schema API specification. `/health/ready` checks database readiness; it does not certify wallet or chain readiness.
 
-**Participant wallet:** [http://localhost:5103/](http://localhost:5103/), container `hauntbox-participant-wallet-1`. Run the companion on the participant's own computer:
+**Participant sign-in:** [localhost:8180/account](http://localhost:8180/account). Choose **PIN** or **passkey** inside Hauntbox. PIN account creation returns a separate private sign-in code; keep it separately from your PIN. Sign-in is an app account, not a generated Tari wallet or spending key. You can save your existing same-network payout address in this browser.
 
-```sh
-docker compose -f compose.participant.yaml up --build -d
-```
+**Host/operator:** the person running the installation, initially Kyle, who also curates rooms and funds receipt fees/rewards. Use **Host / Curator** for frontend PIN/passkey setup. Initial host setup requires the private installation setup code. Participant credentials cannot authorize host operations. Native wallet services remain private infrastructure; the app no longer links to their built-in Wallet UI. The old participant companion is stopped with its volumes preserved.
 
-The native Tari wallet creates its own keys. Register a wallet passkey, create an account, then copy **Account details → Address** into Hauntbox. The app never receives wallet spending keys or seeds. A hosted site's companion link refers to the participant's own localhost. Do not create a server-controlled wallet and describe it as participant-owned.
-
-**Operator wallets:** receipt UI [localhost:5101](http://localhost:5101/) and reward UI [localhost:5102](http://localhost:5102/). These are separate wallets, not the application website. Follow the [Esmeralda runbook](docs/runbooks/esmeralda-beta.md) and [application setup runbook](docs/runbooks/application.md). Use a regular browser if the embedded browser cannot complete the operating system's passkey prompt.
-
+See [sign-in and mainnet security](docs/adr/003-sign-in-and-mainnet-security.md) and the [application runbook](docs/runbooks/application.md). Passkeys are optional for testnet app access; this PIN fallback does not enable mainnet spending.
 ## Implementation and evidence
 
 - M1 accepted. The fixture tour remains at `/demo`, permanently marked as simulated.
 - M2a local capability passed: native faucet funding, concealed transfer/memo recovery, independent receiver spend, original template publication through the Wallet UI, verified component reads and restart recovery.
 - M3–M5 core application implemented locally: fixed-size JWE, encrypted key export/restore, immutable room configuration, signed contract access, ciphertext-only upload API, durable outbox, passkey/CSRF authorization, bounded exact payout confirmation and native wallet reconciliation.
 - Real application journey passed: actual room and receipt, encrypted submission/reload, local curator decryption, native private reward and independent recipient scanning. Restart/recovery reused existing transactions with zero new submissions.
-- Verification: 11 web unit tests, 50 funding/config/RPC tests, 14 PostgreSQL API/worker tests, six spike engine tests, four room engine tests and 24 Chromium/Firefox browser tests. Hosted CI is configured but has not yet run.
+- Verification: 11 web unit tests, 50 funding/config/RPC tests, 20 PostgreSQL API/auth/worker tests, six spike engine tests, four room engine tests and 24 Chromium/Firefox browser tests. Hosted CI is configured but has not yet run.
 - M2b public Esmeralda proof remains open. Public wallets are unfunded; no public funds moved. Encrypted application backup/restore passed against the populated local database and production preview. Human trials, wallet recovery/rollback drills, public HTTPS deployment and soak/release gates remain outstanding. This is not a completed public beta or contest entry.
 
 See [the project plan](PROJECT_PLAN.md), [local capability acceptance](docs/evidence/m2/local-capability.md), [full application evidence](docs/evidence/m2/local-app-journey.json), [funding plan](docs/funding-plan.md), [privacy](PRIVACY.md) and [security](SECURITY.md).

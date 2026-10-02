@@ -626,6 +626,279 @@
           }
         }
       }
+    },
+    "/api/participant/auth/pin/register": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pin": {
+                    "type": "string",
+                    "pattern": "^[0-9]{8,12}$"
+                  }
+                },
+                "required": [
+                  "pin"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role-bound sign-in result; HttpOnly session cookie; PIN routes are testnet only"
+          }
+        }
+      }
+    },
+    "/api/participant/auth/pin/login": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pin": {
+                    "type": "string",
+                    "pattern": "^[0-9]{8,12}$"
+                  },
+                  "loginCode": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{43}$"
+                  }
+                },
+                "required": [
+                  "pin",
+                  "loginCode"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role-bound sign-in result; HttpOnly session cookie; PIN routes are testnet only"
+          }
+        }
+      }
+    },
+    "/api/auth/pin/register": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pin": {
+                    "type": "string",
+                    "pattern": "^[0-9]{8,12}$"
+                  },
+                  "bootstrapCode": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{43}$"
+                  }
+                },
+                "required": [
+                  "pin",
+                  "bootstrapCode"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role-bound sign-in result; HttpOnly session cookie; PIN routes are testnet only"
+          }
+        }
+      }
+    },
+    "/api/auth/pin/login": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pin": {
+                    "type": "string",
+                    "pattern": "^[0-9]{8,12}$"
+                  },
+                  "loginCode": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{43}$"
+                  }
+                },
+                "required": [
+                  "pin",
+                  "loginCode"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role-bound sign-in result; HttpOnly session cookie; PIN routes are testnet only"
+          }
+        }
+      }
+    },
+    "/api/participant/auth/register/options": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role-bound sign-in result; HttpOnly session cookie; PIN routes are testnet only"
+          }
+        }
+      }
+    },
+    "/api/participant/auth/login/options": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role-bound sign-in result; HttpOnly session cookie; PIN routes are testnet only"
+          }
+        }
+      }
+    },
+    "/api/participant/auth/register/verify": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ceremonyId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "response": {
+                    "type": "object",
+                    "additionalProperties": {}
+                  }
+                },
+                "required": [
+                  "ceremonyId",
+                  "response"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role-bound sign-in result; HttpOnly session cookie; PIN routes are testnet only"
+          }
+        }
+      }
+    },
+    "/api/participant/auth/login/verify": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ceremonyId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "response": {
+                    "type": "object",
+                    "additionalProperties": {}
+                  }
+                },
+                "required": [
+                  "ceremonyId",
+                  "response"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role-bound sign-in result; HttpOnly session cookie; PIN routes are testnet only"
+          }
+        }
+      }
+    },
+    "/api/participant/auth/logout": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role-bound sign-in result; HttpOnly session cookie; PIN routes are testnet only"
+          }
+        }
+      }
+    },
+    "/api/participant/auth/session": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Participant session only; does not authorize host operations"
+          }
+        }
+      }
     }
   }
 }

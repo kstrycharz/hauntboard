@@ -164,3 +164,28 @@ export const openapi = {
     },
   },
 };
+const emptySignIn = z.object({}).strict();
+const pinValue = z.string().regex(/^[0-9]{8,12}$/);
+const loginCode = z.string().regex(/^[A-Za-z0-9_-]{43}$/);
+for (const [path, schema] of [
+  ['/api/participant/auth/pin/register', z.object({ pin: pinValue }).strict()],
+  ['/api/participant/auth/pin/login', z.object({ pin: pinValue, loginCode }).strict()],
+  ['/api/auth/pin/register', z.object({ pin: pinValue, bootstrapCode: loginCode }).strict()],
+  ['/api/auth/pin/login', z.object({ pin: pinValue, loginCode }).strict()],
+  ['/api/participant/auth/register/options', emptySignIn],
+  ['/api/participant/auth/login/options', emptySignIn],
+  ['/api/participant/auth/register/verify', schemas.authResponse],
+  ['/api/participant/auth/login/verify', schemas.authResponse],
+  ['/api/participant/auth/logout', emptySignIn],
+])
+  openapi.paths[path] = {
+    post: {
+      requestBody: body(schema),
+      responses: result(
+        'Role-bound sign-in result; HttpOnly session cookie; PIN routes are testnet only',
+      ),
+    },
+  };
+openapi.paths['/api/participant/auth/session'] = {
+  get: { responses: result('Participant session only; does not authorize host operations') },
+};

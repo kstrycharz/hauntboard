@@ -18,6 +18,10 @@ const tables = [
   'rewards',
   'rate_limits',
   'audit',
+  'participants',
+  'participant_passkeys',
+  'participant_ceremonies',
+  'participant_sessions',
 ];
 const maximum = 64 * 1024 * 1024;
 const demand = (condition) => {
@@ -187,6 +191,8 @@ try {
     });
   await targetClient.query('DELETE FROM sessions');
   await targetClient.query('DELETE FROM ceremonies');
+  await targetClient.query('DELETE FROM participant_sessions');
+  await targetClient.query('DELETE FROM participant_ceremonies');
   const evidence = {
     checkedAt: new Date().toISOString(),
     status: 'PASSED_ISOLATED_APPLICATION_RESTORE',

@@ -16,6 +16,7 @@ import type { JWK } from 'jose';
 import { vaultGet, vaultPut } from './browser-vault';
 import { passkeyCeremony } from './passkeys';
 import { WalletSetup, type FundingStatus } from './WalletSetup';
+import { HostPinSignIn } from './HostPinSignIn';
 
 interface Room {
   id: string;
@@ -60,7 +61,7 @@ interface Receipt {
   transactionId: string;
 }
 const friendly: Record<string, string> = {
-  CURATOR_SIGN_IN_REQUIRED: 'Sign in with your curator passkey.',
+  CURATOR_SIGN_IN_REQUIRED: 'Sign in as host using the PIN or passkey originally configured.',
   FRESH_PASSKEY_REQUIRED: 'Sign in again before creating a room or sending a reward.',
   PASSKEY_BROWSER_UNAVAILABLE:
     'Passkeys need a secure browser. Open this page in Chrome, Edge, or Firefox with HTTPS or localhost.',
@@ -107,7 +108,13 @@ function units(value: string) {
 export function LiveApp() {
   const [rooms, setRooms] = useState<Room[]>([]),
     [selected, setSelected] = useState<string>(''),
-    [view, setView] = useState(window.location.pathname === '/submit' ? 'desk' : 'entrance');
+    [view, setView] = useState(
+      window.location.pathname === '/account'
+        ? 'wallet'
+        : window.location.pathname === '/submit'
+          ? 'desk'
+          : 'entrance',
+    );
   const [error, setError] = useState(''),
     [notice, setNotice] = useState(''),
     [busy, setBusy] = useState(false),
@@ -489,10 +496,10 @@ export function LiveApp() {
             Privacy
           </button>
           <button className="text-button" onClick={() => setView('wallet')}>
-            Get a wallet
+            Sign in / My account
           </button>
           <button className="text-button" onClick={() => setView('curator')}>
-            Curator
+            Host / Curator
           </button>
           <a href="/demo">Try the guided demo</a>
         </nav>
@@ -590,7 +597,7 @@ export function LiveApp() {
                 />
               </label>
               <button className="text-button" onClick={() => setView('wallet')}>
-                Need a wallet? Create or open a Tari wallet
+                Sign in or set up my participant account
               </button>
               <p>
                 The address travels inside the encrypted envelope. The curator sees it when opening
@@ -703,41 +710,58 @@ export function LiveApp() {
           <>
             <h1>Curator’s desk</h1>
             {!authenticated ? (
-              <section className="live-card">
-                <h2>Sign in with your passkey</h2>
-                <p>
-                  Use your device or security key. Open this same address in a regular browser if
-                  its embedded browser cannot complete the passkey prompt.
-                </p>
-                <button
-                  className="primary"
-                  disabled={busy}
-                  onClick={() => void run(() => signIn('login'))}
-                >
-                  Sign in with passkey
-                </button>
-                <details>
-                  <summary>First-time operator setup</summary>
-                  <label>
-                    Private setup code
-                    <input
-                      type="password"
-                      value={bootstrap}
-                      onChange={(e) => setBootstrap(e.target.value)}
-                      autoComplete="off"
-                    />
-                  </label>
+              <>
+                <HostPinSignIn
+                  onSignedIn={(value) => {
+                    setCsrf(value);
+                    setAuthenticated(true);
+                  }}
+                />
+                <section className="live-card">
+                  <h2>Sign in with your passkey</h2>
+                  <p>
+                    Use your device or security key. Open this same address in a regular browser if
+                    its embedded browser cannot complete the passkey prompt.
+                  </p>
                   <button
-                    className="secondary"
-                    disabled={busy || !bootstrap}
-                    onClick={() => void run(() => signIn('register'))}
+                    className="primary"
+                    disabled={busy}
+                    onClick={() => void run(() => signIn('login'))}
                   >
-                    Register curator passkey
+                    Sign in with passkey
                   </button>
-                </details>
-              </section>
+                  <details>
+                    <summary>First-time operator setup</summary>
+                    <label>
+                      Private setup code
+                      <input
+                        type="password"
+                        value={bootstrap}
+                        onChange={(e) => setBootstrap(e.target.value)}
+                        autoComplete="off"
+                      />
+                    </label>
+                    <button
+                      className="secondary"
+                      disabled={busy || !bootstrap}
+                      onClick={() => void run(() => signIn('register'))}
+                    >
+                      Register curator passkey
+                    </button>
+                  </details>
+                </section>
+              </>
             ) : (
               <>
+                <details>
+                  <summary>Refresh host authorization with PIN</summary>
+                  <HostPinSignIn
+                    onSignedIn={(value) => {
+                      setCsrf(value);
+                      setAuthenticated(true);
+                    }}
+                  />
+                </details>
                 <div className="hero-actions">
                   <button
                     className="secondary"
@@ -1024,6 +1048,11 @@ export function LiveApp() {
             network={network}
             funding={fundingStatus}
             onReturn={() => setView('desk')}
+            onOperator={() => setView('curator')}
+            onUseAddress={(value) => {
+              setAddress(value);
+              setView('desk');
+            }}
             onRefresh={() =>
               void run(async () => {
                 const publicStatus = await api<FundingStatus>('/api/funding/status');

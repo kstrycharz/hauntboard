@@ -15,6 +15,7 @@ import {
   openIntent,
 } from './security.mjs';
 import { installAuth } from './auth.mjs';
+import { installParticipantAuth } from './participant-auth.mjs';
 import { openapi } from './openapi.mjs';
 import { fundingService } from './funding.mjs';
 
@@ -67,6 +68,7 @@ export async function createApp(db, config, wallet) {
     }
   });
   const authorize = await installAuth(app, db, config);
+  installParticipantAuth(app, db, config);
   const funding = fundingService(db, config, wallet);
   app.get('/api/funding/status', async () => funding.publicStatus(await funding.inspect()));
   app.get('/api/curator/funding/status', async (req) => {

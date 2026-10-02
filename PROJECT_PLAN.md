@@ -719,3 +719,9 @@ tari-development/README.md
 ~~~
 
 The upstream stealth example is for learning: it prints generated secrets and uses example funding/fee choices. Reimplement the necessary flow with safe logging and estimated, capped fees. Preserve upstream notices where required; do not copy example shortcuts into production code.
+
+## Frontend sign-in follow-up — implemented October 2
+
+Participant and host sign-in now run inside Hauntbox with PIN or passkey options. The operator is the installation owner, initially Kyle, who also curates rooms and maintains separate receipt-fee and reward wallets. Participants retain their own payout wallets. The native wallet administration page is removed from application onboarding, and its participant companion is stopped with volumes preserved. PIN accounts require an 8–12 digit PIN plus a separately saved random account code; host setup remains bootstrap-protected and roles remain isolated. Mainnet PIN routes are blocked. The staged mainnet security/custody/recovery plan is docs/adr/003-sign-in-and-mainnet-security.md.
+
+Verification: 20 PostgreSQL API/auth/worker tests passed. Actual Chromium and Firefox PIN sign-in/reload/logout passed; Chromium also passed real participant WebAuthn register/login. The native local application journey passed again without submitting new transactions. Encrypted database restore includes participant credential tables and revokes participant and host sessions. Public Esmeralda mutations remain paused pending the existing release gates.

@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-10-02T21:09:30.157Z",
+  "network": "localnet",
+  "status": "PASSED_FRONTEND_SIGN_IN",
+  "checks": {
+    "chromiumPinCreateLoginReloadLogout": true,
+    "participantCannotAccessHost": true,
+    "noNativeWalletPageOrIframe": true,
+    "firefoxPinCreateLoginReloadLogout": true,
+    "realParticipantPasskeyRegisterAndLogin": true
+  }
+}

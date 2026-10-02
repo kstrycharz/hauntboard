@@ -88,7 +88,7 @@ page.on('request', (request) => {
 try {
   await page.goto('http://localhost:5173/');
   await page.getByText('Local test network', { exact: true }).waitFor();
-  await page.getByRole('button', { name: 'Curator', exact: true }).click();
+  await page.getByRole('button', { name: 'Host / Curator', exact: true }).click();
   phase = 'passkey';
   if (stored) await page.getByRole('button', { name: 'Sign in with passkey', exact: true }).click();
   else {
@@ -243,7 +243,7 @@ try {
   checks.requestContainsOnlyCiphertextAndPublicContext = true;
   checks.exactUploadRetryIsIdempotent = true;
   phase = 'open';
-  await page.getByRole('button', { name: 'Curator', exact: true }).click();
+  await page.getByRole('button', { name: 'Host / Curator', exact: true }).click();
   await page.getByLabel('Choose room', { exact: true }).selectOption(journal.room);
   await page.getByRole('button', { name: 'Load encrypted inbox', exact: true }).click();
   if (

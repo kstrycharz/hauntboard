@@ -11,3 +11,7 @@ Verification: 11 web units; 50 funding/config/RPC units; 14 actual PostgreSQL AP
 The production build serves localhost:8180 through non-root Caddy and a non-root API, both with read-only root filesystems and all capabilities dropped. The API/database are private. Browser inspection confirms the optional wallet-address field and both participant/operator wallet setup paths. Funding checks show local receipt/reward reserves ready, while production operator credentials are not connected. Public mutation flags remain false.
 
 Prepared HTTPS and operator-wallet overlays pass configuration validation with a dummy domain; no public deployment, certificate issuance, faucet claim or token movement was performed. Public M2b proof, owner inputs, wallet backup/restore, off-host custody and rollback drills, external trials and soak remain release gates. See the application runbook and current project plan.
+
+### Frontend account follow-up, October 2
+
+The native application journey passed again after the account migration and Host / Curator navigation change, reusing the existing confirmed operations with zero new submitted transactions. Separate participant PIN sign-in passed in Chromium and Firefox; real participant WebAuthn register/login passed in Chromium. Role isolation and PIN retry/lock controls passed in the expanded 20-test PostgreSQL API suite. Sanitized account evidence is frontend-sign-in.json. The schema-v4 restore covers the participant tables and revokes all restored account sessions.

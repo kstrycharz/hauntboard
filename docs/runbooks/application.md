@@ -1,33 +1,27 @@
-# Application and wallet setup
+# Frontend sign-in and host setup
 
-October 2, 2026. Production-built Esmeralda preview: http://localhost:8180/submit. Full local-chain application: http://localhost:5173/. The optional wallet-address input is visible on the submission form; **Get a wallet** provides participant and operator paths.
+October 2, 2026. Open http://localhost:8180/account for PIN/passkey sign-in inside Hauntbox. The production submission form is http://localhost:8180/submit. The local-chain application is http://localhost:5173/account.
 
 ## Participant
 
-Run `docker compose -f compose.participant.yaml up --build -d` on the participant's own computer. Open http://localhost:5103 in a regular browser, register a native Tari wallet passkey and create an account. Copy Account details → Address into the submission form. The wallet persists its own keys in its named volumes; Hauntbox accepts only its receive address. Receiving an optional reward does not require depositing funds with Hauntbox. The companion is Esmeralda testnet only.
+Choose **Use PIN** or **Use passkey**, then **Create an account**. PINs use 8–12 digits and must be confirmed. Save the separate account sign-in code privately; another browser needs that code plus the PIN. Passkeys use the device/browser authenticator. Neither sign-in method is a Tari wallet spending key or creates a payout wallet.
 
-Wallet passkey dialogs depend on the browser and operating system. A `NotAllowedError` can represent cancellation, timeout or an unavailable authenticator; it does not prove a single cause. If the embedded browser cannot complete the prompt, open the same localhost URL in a regular browser. Keep the hostname consistent with its configured WebAuthn origin.
+After sign-in you can save your optional same-network payout address in this browser and use it in a submission. The address remains inside the encrypted story payload when submitted. Receiving a discretionary reward does not require paying an entry fee or accessing host funding wallets.
 
-## Operator
+The previous participant companion at 5103 is stopped, its named volumes retained, and there are no application links or frames to Tari's built-in wallet page. The application does not collect wallet seeds or spending keys. If an embedded participant wallet is introduced later, it must use a reviewed native SDK and explicitly define custody/recovery; do not label an operator-held wallet participant-controlled.
 
-Receipt wallet: http://localhost:5101. Reward wallet: http://localhost:5102. Register real passkeys in both native wallet UIs and create separate accounts. Follow the Esmeralda runbook for Docker startup and private unlock backups. Wallet account generation and application curator registration are separate operations.
+## Host and operator
 
-The application curator uses its own passkey at http://localhost:8180. Its first registration requires the private bootstrap code in the `hauntbox-production_production_secrets` volume. The owner may retrieve that code privately with `docker compose -f compose.production.yaml exec api cat /run/hauntbox/bootstrap-code`. Do not paste it into a public issue, recording or chat. Register it only at the intended app origin; domain migration requires an explicit credential migration plan.
+The **host/curator** creates rooms, reads submissions and chooses optional rewards. The **operator** runs the service and manages its separate receipt-fee/reward wallets. Initially Kyle has both roles. Participants cannot access the host inbox.
 
-A curator creates a room encryption key in the browser, exports its encrypted recovery file and stores the separate recovery code privately. The application verifies an actual recovery/decryption roundtrip before submitting room creation. Neither wallet backups nor the app bootstrap code replace room-key recovery.
+Choose **Host / Curator** in the application. New setup offers PIN or passkey and requires the installation's private bootstrap code. The owner can retrieve it privately with `docker compose -f compose.production.yaml exec api cat /run/hauntbox/bootstrap-code`. Keep it out of recordings, public issues and chat. A PIN-configured host must save its separate host sign-in code before continuing. An existing host cannot be overwritten with the bootstrap code; use its originally enrolled method.
 
-## Reviewable public connection
+Host room encryption keys are separate from account sign-in and wallet keys. Export the encrypted room recovery file, keep its separate recovery code, and perform the required restore/decryption check before room creation.
 
-`compose.production.wallets.yaml` connects private API/worker services to the existing beta wallet network. It is prepared, not activated. Create ignored `secrets/operator/wallet-settings.json` only after verifying public deployment identity and publishing the reviewed template. Its fields are `network` (esmeralda), `instance` (verified deployment witness), `template` (64 lowercase hex digits), `indexerUrl` (maintained Tari indexer), and separate `receipt`/`reward` objects with `account`, `rpcUrl` and `tokenFile`. Internal RPC URLs are `http://receipt-wallet:5101/json_rpc` and `http://reward-wallet:5102/json_rpc`. Token files belong under `/operator`, mounted read-only. Preserve strict private filesystem permissions and node runtime readability.
+## Private wallet connection and release
 
-Obtain limited-lived scoped API keys through authenticated native wallet administration. Required reads are wallet/network info, balances/faucet balance and transaction lookup; receipt execution needs measured dry manifest plus instruction submission, reward execution needs native stealth transfer. Do not grant template publication, arbitrary key export or administration to the running app. Do not expose these credentials in the browser or public reverse proxy.
+`compose.production.wallets.yaml` remains a prepared internal connection, not activated. Ignored `secrets/operator/wallet-settings.json` contains verified network/deployment witness, template address, maintained indexer URL and independent receipt/reward RPC accounts/token-file references. Native operator wallet services remain internal infrastructure. Scoped expiring service credentials and exact reviewed public faucet-only operations are required before M2b/activation; no sign-in account receives wallet Admin credentials.
 
-The overlay keeps all mutation flags false and the worker behind the `live-worker` profile. It does not perform public faucet claims. First complete M2b with exact public targets and reviewed fee limits using faucet-origin funds; verify the template and deployment witness, then review an explicit activation configuration. Matching network name/byte alone cannot detect a public reset. Mainnet needs a separately reviewed treasury provider and budget rather than faucet automation.
+The production preview keeps public mutations paused. `compose.public.yaml` prepares HTTPS with owner-approved domain/DNS/infrastructure. Mainnet requires the separate gates in ADR 003: reviewed participant custody, key recovery, spending authorization and treasury controls. The current PIN endpoints reject mainnet.
 
-`compose.public.yaml` prepares HTTPS deployment with owner-approved `APP_DOMAIN`, DNS and infrastructure. It has not been launched. It exposes only the web proxy on 80/443; wallet/database listeners stay private. Keep registration origins and cookies consistent with the final HTTPS domain.
-
-## Recovery and controls
-
-Private backups must preserve PostgreSQL plus the matching intent key, both wallets' data plus their matching unlock material, and separate curator recovery material. The encrypted application database/intent-key restore drill passes for local and production-preview databases; see [backup/restore instructions](backup-restore.md). Wallet recovery, off-host custody and rollback drills remain required before public release; named-volume persistence alone is not a backup.
-
-Keep submissions, anchoring and payouts off during maintenance. Do not automatically resubmit an unknown payment. Preserve its job and fee reservation, inspect the original transaction and wallet state privately, and reconcile before allowing any replacement operation. `/health/ready` checks the database; use `/api/funding/status` and authenticated funding details to assess wallet readiness separately.
+Encrypted application database/intent-key restore has passed; see [backup/restore](backup-restore.md). Schema v4 includes participant authentication tables. Restore invalidates participant and host sessions/ceremonies. Wallet data/unlock recovery, off-host custody and rollback remain separate release gates. Unknown payment outcomes preserve reservations and require reconciliation, never an automatic replacement transfer.

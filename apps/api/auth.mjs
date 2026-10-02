@@ -7,6 +7,7 @@ import {
 } from '@simplewebauthn/server';
 import { bootstrapRegistration, authResponse } from '../../packages/schema/index.mjs';
 import { hash, token, same, problem, rateLimit, privateRateKey } from './security.mjs';
+import { installOperatorPinAuth } from './operator-pin-auth.mjs';
 
 export async function installAuth(app, db, config) {
   const userId = 'hauntbox-curator';
@@ -31,7 +32,7 @@ export async function installAuth(app, db, config) {
       throw problem('REGISTRATION_NOT_AVAILABLE', 403);
     return db.transaction(async (client) => {
       await client.query('SELECT pg_advisory_xact_lock(47389111)');
-      const existing = await client.query('SELECT count(*)::int AS count FROM passkeys');
+      const existing = await client.query('SELECT count(*)::int AS count FROM curator');
       if (existing.rows[0].count) throw problem('CURATOR_ALREADY_REGISTERED', 409);
       // The fixed single-operator user handle is public credential metadata, never a secret.
       const options = await generateRegistrationOptions({
@@ -55,7 +56,7 @@ export async function installAuth(app, db, config) {
     const input = authResponse.parse(req.body);
     const verified = await db.transaction(async (client) => {
       await client.query('SELECT pg_advisory_xact_lock(47389111)');
-      if ((await client.query('SELECT 1 FROM passkeys LIMIT 1')).rowCount)
+      if ((await client.query('SELECT 1 FROM curator LIMIT 1')).rowCount)
         throw problem('CURATOR_ALREADY_REGISTERED', 409);
       const row = await ceremony(client, input.ceremonyId, 'register');
       const result = await verifyRegistrationResponse({
@@ -132,15 +133,15 @@ export async function installAuth(app, db, config) {
     });
     return startSession(curatorId, reply);
   });
-  async function startSession(curatorId, reply) {
+  async function startSession(curatorId, reply, method = 'passkey') {
     const session = token(),
       csrf = token();
     await db.query(
-      "INSERT INTO sessions(token_hash,curator_id,csrf_hash,authenticated_at,expires_at) VALUES($1,$2,$3,now(),now()+interval '8 hours')",
-      [hash(session), curatorId, hash(csrf)],
+      "INSERT INTO sessions(token_hash,curator_id,csrf_hash,authenticated_at,expires_at,auth_method) VALUES($1,$2,$3,now(),now()+interval '8 hours',$4)",
+      [hash(session), curatorId, hash(csrf), method],
     );
     reply.header('Set-Cookie', cookie(session, 28800));
-    return { authenticated: true, csrf };
+    return { authenticated: true, csrf, authMethod: method };
   }
   async function authorize(req, fresh = false) {
     const sessionToken = /(?:^|;\s*)hauntbox_session=([A-Za-z0-9_-]{43})(?:;|$)/.exec(
@@ -170,7 +171,7 @@ export async function installAuth(app, db, config) {
       session.token_hash,
       hash(csrf),
     ]);
-    return { authenticated: true, csrf };
+    return { authenticated: true, csrf, authMethod: session.auth_method };
   });
   app.post('/api/auth/logout', async (req, reply) => {
     const session = await authorize(req);
@@ -178,5 +179,6 @@ export async function installAuth(app, db, config) {
     reply.header('Set-Cookie', cookie('', 0));
     return { authenticated: false };
   });
+  installOperatorPinAuth(app, db, config, startSession, limited);
   return authorize;
 }

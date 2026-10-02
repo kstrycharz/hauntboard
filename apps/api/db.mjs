@@ -32,14 +32,18 @@ export function database(connectionString) {
           const version = await client.query(
             'SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1',
           );
-          if (version.rows[0]?.version === 3) return;
-          if ([1, 2].includes(version.rows[0]?.version)) {
+          if (version.rows[0]?.version === 4) return;
+          if ([1, 2, 3].includes(version.rows[0]?.version)) {
             if (version.rows[0].version === 1)
               await client.query(
                 await readFile(new URL('./migrations/002.sql', import.meta.url), 'utf8'),
               );
+            if (version.rows[0].version < 3)
+              await client.query(
+                await readFile(new URL('./migrations/003.sql', import.meta.url), 'utf8'),
+              );
             await client.query(
-              await readFile(new URL('./migrations/003.sql', import.meta.url), 'utf8'),
+              await readFile(new URL('./migrations/004.sql', import.meta.url), 'utf8'),
             );
             return;
           }
@@ -53,6 +57,9 @@ export function database(connectionString) {
         );
         await client.query(
           await readFile(new URL('./migrations/003.sql', import.meta.url), 'utf8'),
+        );
+        await client.query(
+          await readFile(new URL('./migrations/004.sql', import.meta.url), 'utf8'),
         );
       });
     },

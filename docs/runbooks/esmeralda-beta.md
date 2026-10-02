@@ -29,3 +29,5 @@ Stop while keeping wallet volumes:
 ```powershell
 docker compose --env-file .env.beta -f compose.beta.yaml -f compose.beta.admin.yaml down
 ```
+
+Frontend onboarding now uses Hauntbox /account and Host / Curator, with testnet PIN or passkey sign-in. The native UIs above are private operator administration tools; they are not linked from participant onboarding. App account credentials do not unlock the native wallets. The participant companion is stopped and its volumes retained. See docs/adr/003-sign-in-and-mainnet-security.md for the mainnet gates.

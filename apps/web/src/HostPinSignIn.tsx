@@ -15,19 +15,39 @@ export function HostPinSignIn({ onSignedIn }: { onSignedIn: (csrf: string) => vo
     method: string | null;
     localSetupAvailable: boolean;
   } | null>(null);
+  async function loadSetup() {
+    setBusy(true);
+    setError('');
+    try {
+      const response = await fetch('/api/auth/setup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}',
+      });
+      const status = await response.json().catch(() => ({ code: 'SERVICE_UNAVAILABLE' }));
+      if (!response.ok) {
+        const code =
+          typeof status.code === 'string' && /^[A-Z_]{1,60}$/.test(status.code)
+            ? status.code
+            : 'SERVICE_UNAVAILABLE';
+        throw new Error(code);
+      }
+      setSetup(status);
+      setCreating(!status.registered && status.localSetupAvailable);
+    } catch (e) {
+      const code =
+        e instanceof Error && /^[A-Z_]{1,60}$/.test(e.message) ? e.message : 'SERVICE_UNAVAILABLE';
+      setError(
+        code === 'ORIGIN_CHECK_FAILED'
+          ? 'Host setup was blocked by an address mismatch. Open the configured localhost admin address.'
+          : `Host setup is temporarily unavailable (${code}). Click Retry host setup below.`,
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
   useEffect(() => {
-    void fetch('/api/auth/setup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: '{}',
-    })
-      .then(async (response) => {
-        if (!response.ok) throw new Error('SETUP_UNAVAILABLE');
-        const status = await response.json();
-        setSetup(status);
-        setCreating(!status.registered && status.localSetupAvailable);
-      })
-      .catch(() => setError('Host setup status could not load. Reload this page to try again.'));
+    void loadSetup();
     void vaultGet<string>('host-login-code')
       .then((saved) => setCode(saved ?? ''))
       .catch(() => {});
@@ -92,6 +112,16 @@ export function HostPinSignIn({ onSignedIn }: { onSignedIn: (csrf: string) => vo
           if (!busy && setup && !newCode) void submit();
         }}
       >
+        {!setup && error && (
+          <button
+            type="button"
+            className="secondary"
+            disabled={busy}
+            onClick={() => void loadSetup()}
+          >
+            Retry host setup
+          </button>
+        )}
         {!newCode && (
           <>
             {creating && !setup?.localSetupAvailable ? (

@@ -17,6 +17,7 @@ import { vaultGet, vaultPut } from './browser-vault';
 import { passkeyCeremony } from './passkeys';
 import { WalletSetup, type FundingStatus } from './WalletSetup';
 import { HostPinSignIn } from './HostPinSignIn';
+import { EmbeddedWallet } from './EmbeddedWallet';
 
 interface Room {
   id: string;
@@ -61,6 +62,27 @@ interface Receipt {
   transactionId: string;
 }
 const friendly: Record<string, string> = {
+  ORIGIN_CHECK_FAILED:
+    'This address does not match the configured sign-in address. Open the admin page at the installation’s configured address.',
+  TRY_AGAIN_LATER: 'Too many sign-in attempts. Wait five minutes before trying again.',
+  BROWSER_STORAGE_UNAVAILABLE:
+    'This browser could not save or read the room key. Keep your downloaded recovery backup and code; allow site storage or try a regular browser.',
+  RECOVERY_REQUIRED:
+    'Verify the room-key backup and its separate recovery code before activating the room.',
+  INVALID_RECOVERY_BUNDLE:
+    'Choose the room-key backup file and its matching 43-character recovery code. A host login code or wallet seed cannot restore a room key.',
+  INVALID_RECOVERY_HEADER:
+    'This file is not a Hauntbox room-key backup. Choose hauntbox-room-recovery.json.',
+  INVALID_RECOVERY_KEY:
+    'The room-key backup is damaged or invalid. Choose your original saved backup.',
+  RECOVERY_KEY_MISMATCH:
+    'This backup belongs to a different room. Choose the matching room-key backup.',
+  RECOVERY_FAILED:
+    'The room-key backup could not be restored. Check the file and its matching recovery code.',
+  ERR_JWE_DECRYPTION_FAILED:
+    'The recovery code does not unlock this room-key backup. Use the separate code saved with this exact file.',
+  ERR_JWE_INVALID: 'The room-key backup file is invalid. Choose the original saved file.',
+  ERR_JOSE_NOT_SUPPORTED: 'The selected file is not a supported Hauntbox room-key backup.',
   CURATOR_SIGN_IN_REQUIRED: 'Sign in as host using the PIN or passkey originally configured.',
   FRESH_PASSKEY_REQUIRED: 'Sign in again before creating a room or sending a reward.',
   PASSKEY_BROWSER_UNAVAILABLE:
@@ -151,6 +173,7 @@ export function LiveApp() {
   });
   const [fundingStatus, setFundingStatus] = useState<FundingStatus | null>(null);
   const [localHostSetupAvailable, setLocalHostSetupAvailable] = useState(false);
+  const [adminOriginReady, setAdminOriginReady] = useState(!adminPage);
   const [saved, setSaved] = useState<SavedEntry | null>(null),
     [receipt, setReceipt] = useState<Receipt | null>(null);
   const [bootstrap, setBootstrap] = useState(''),
@@ -188,11 +211,17 @@ export function LiveApp() {
       await action();
     } catch (e) {
       const code = e instanceof Error ? e.message : 'SERVICE_UNAVAILABLE';
+      const detailCode =
+        e && typeof e === 'object' && 'code' in e && typeof e.code === 'string' ? e.code : '';
+      const diagnostic =
+        [detailCode, code].find((value) => /^[A-Z][A-Z0-9_]{0,59}$/.test(value)) ??
+        (e instanceof Error ? e.name : 'UNKNOWN_ERROR');
       setError(
         friendly[code] ??
+          friendly[detailCode] ??
           (e instanceof DOMException ? friendly[e.name] : undefined) ??
           (adminPage
-            ? 'This admin action could not complete. Reload the page and check your host sign-in and setup status before trying again.'
+            ? `This admin action failed (${/^[A-Za-z_]{1,60}$/.test(diagnostic) ? diagnostic : 'UNKNOWN_ERROR'}). Keep your room-key backup and tell us which button failed; signing in again may not resolve this action.`
             : 'The operation could not complete. Keep your saved files and retry the status check.'),
       );
     } finally {
@@ -216,15 +245,25 @@ export function LiveApp() {
   const authHeaders = () => ({ 'x-hauntbox-csrf': csrf });
   useEffect(() => {
     void run(async () => {
-      await refreshRooms();
       const status = await api<{
+        origin: string;
         network: string;
         submissionsEnabled: boolean;
         anchoringEnabled: boolean;
         payoutsEnabled: boolean;
       }>('/api/status');
+      if (adminPage && window.location.origin !== status.origin) {
+        const target = new URL(status.origin);
+        target.pathname = window.location.pathname;
+        target.search = window.location.search;
+        target.hash = window.location.hash;
+        window.location.replace(target.href);
+        return;
+      }
+      setAdminOriginReady(true);
       setNetwork(status.network);
       setReleaseStatus(status);
+      await refreshRooms();
       setFundingStatus(await api<FundingStatus>('/api/funding/status'));
       await session();
       if (adminPage) {
@@ -281,7 +320,7 @@ export function LiveApp() {
   async function checkRecovery() {
     const expected = generated?.thumbprint ?? room?.keyThumbprint;
     if (!expected) throw new Error('ROOM_NOT_OPEN');
-    const restored = await restoreRoomKey(recoveryFile, recoveryCode, expected);
+    const restored = await restoreRoomKey(recoveryFile.trim(), recoveryCode.trim(), expected);
     const selfTest = {
       network: 'localnet',
       component: `component_${'0'.repeat(64)}`,
@@ -303,6 +342,7 @@ export function LiveApp() {
     setNotice('Recovery file and code verified. The working key remains in this browser.');
   }
   async function createRoom() {
+    if (!releaseStatus.anchoringEnabled) throw new Error('ANCHORING_PAUSED');
     if (!generated || !recoveryChecked) throw new Error('RECOVERY_REQUIRED');
     const created = await api<Room>('/api/curator/rooms', {
       method: 'POST',
@@ -477,6 +517,11 @@ export function LiveApp() {
   function recoveryForm() {
     return (
       <div className="live-form">
+        <p>
+          Choose the encrypted room-key backup you downloaded and enter its separate recovery code.
+          This check runs in your browser; the file and code are not uploaded to Hauntbox or Tari.
+          It restores access to this room’s stories if the browser loses its working key.
+        </p>
         <label>
           Encrypted recovery file
           <input
@@ -490,7 +535,7 @@ export function LiveApp() {
           />
         </label>
         <label>
-          Separate recovery code
+          Recovery code for selected file
           <input
             type="password"
             autoComplete="off"
@@ -510,6 +555,17 @@ export function LiveApp() {
           recovery material makes the stories unreadable.
         </p>
       </div>
+    );
+  }
+  if (!adminOriginReady) {
+    return (
+      <main className="live-main">
+        <h1>Opening host admin</h1>
+        <p role={error ? 'alert' : 'status'}>
+          {error || 'Checking the configured sign-in address…'}
+        </p>
+        {error && <button onClick={() => window.location.reload()}>Retry loading admin</button>}
+      </main>
     );
   }
   return (
@@ -579,6 +635,26 @@ export function LiveApp() {
               Your story is encrypted here in your browser. The curator can open it, and a chain
               receipt proves that the encrypted bytes arrived. A testnet reward is optional.
             </p>
+            <div className="landing-wallet">
+              <EmbeddedWallet
+                network={network}
+                heading="My wallet"
+                recoveryLabel="Import / recover wallet"
+                onUseAddress={(walletAddress) => {
+                  setAddress(walletAddress);
+                  setView('desk');
+                }}
+              />
+              <p className="field-help">
+                Import uses both saved Hauntbox recovery phrases. Native Tari wallet seed import is
+                still in development.
+              </p>
+              <p className="field-help">
+                {fundingStatus?.operatorWalletsConnected && fundingStatus?.rewardFundingReady
+                  ? 'Host reward funds are ready. Rewards are chosen by the host.'
+                  : 'Faucet funding is not active in this deployment. Host reward wallets are not yet ready.'}
+              </p>
+            </div>
             <section className="live-card">
               <h2>{room?.title ?? 'Your private submission room'}</h2>
               {rooms.length > 0 && (
@@ -900,6 +976,20 @@ export function LiveApp() {
                     Sign out
                   </button>
                 </div>
+                {!releaseStatus.anchoringEnabled && (
+                  <section className="live-card" role="status">
+                    <h2>Host sign-in is complete. Tari room activation is pending.</h2>
+                    <p>
+                      This deployment still needs its receipt wallet connection, receipt template
+                      address, verified fee funding, and release checks before a room can go live.
+                      No file upload can complete those steps. You do not need to generate or
+                      restore a room key while activation is paused.
+                    </p>
+                    <a className="secondary" href="/demo">
+                      Try the guided demo while setup is pending
+                    </a>
+                  </section>
+                )}
                 <section className="live-card">
                   <h2>Create a private room</h2>
                   <div className="live-form">
@@ -932,7 +1022,11 @@ export function LiveApp() {
                     {!generated ? (
                       <button
                         className="secondary"
-                        disabled={busy}
+                        disabled={
+                          busy ||
+                          !releaseStatus.anchoringEnabled ||
+                          !fundingStatus?.receiptFundingReady
+                        }
                         onClick={() =>
                           void run(async () => {
                             setGenerated(await createRoomKey());
@@ -958,13 +1052,18 @@ export function LiveApp() {
                           Download encrypted recovery file
                         </button>
                         <label>
-                          Separate recovery code
+                          Room backup recovery code (save separately)
                           <input readOnly value={generated.recoveryCode} />
                         </label>
                         {recoveryForm()}
                         <button
                           className="primary"
-                          disabled={busy || !recoveryChecked}
+                          disabled={
+                            busy ||
+                            !recoveryChecked ||
+                            !releaseStatus.anchoringEnabled ||
+                            !fundingStatus?.receiptFundingReady
+                          }
                           onClick={() => void run(createRoom)}
                         >
                           Create room on chain

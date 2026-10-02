@@ -1,5 +1,5 @@
 // Actual production UI, isolated API test schema. Never create the real installation's host.
-import { chromium, firefox } from '@playwright/test';
+import { chromium, firefox, expect } from '@playwright/test';
 import { randomUUID, randomInt } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import { database } from '../apps/api/db.mjs';
@@ -45,6 +45,7 @@ try {
     browser = await engine.launch();
     const context = await browser.newContext(),
       page = await context.newPage();
+    let roomReady = false;
     await page.route(`${origin}/**`, async (route) => {
       const auth = route.request().url().startsWith(`${origin}/api/auth/`);
       const response = await route.fetch({
@@ -57,6 +58,20 @@ try {
           ),
         headers: { ...route.request().headers(), host: 'localhost:8180' },
       });
+      if (route.request().url() === `${origin}/api/status`) {
+        await route.fulfill({
+          response,
+          json: { ...(await response.json()), anchoringEnabled: roomReady },
+        });
+        return;
+      }
+      if (route.request().url() === `${origin}/api/funding/status` && roomReady) {
+        await route.fulfill({
+          response,
+          json: { ...(await response.json()), receiptFundingReady: true },
+        });
+        return;
+      }
       await route.fulfill({ response });
     });
     await page.goto(`${origin}/admin`);
@@ -96,6 +111,63 @@ try {
       loginCodeRemembered: true,
       signOutAndSignIn: true,
     };
+    await expect(
+      page.getByRole('heading', {
+        name: 'Host sign-in is complete. Tari room activation is pending.',
+        exact: true,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Generate browser encryption key', exact: true }),
+    ).toBeDisabled();
+    checks[name].pausedRoomPreparationBlocked = true;
+    // Only the readiness display is simulated. Real WebCrypto/download/restore/storage run;
+    // no room-create request or chain operation is sent.
+    roomReady = true;
+    await page.reload();
+    const generate = page.getByRole('button', {
+      name: 'Generate browser encryption key',
+      exact: true,
+    });
+    await expect(generate).toBeEnabled();
+    await generate.click();
+    await page
+      .getByRole('button', { name: 'Download encrypted recovery file', exact: true })
+      .waitFor();
+    const recoveryCode = await page
+      .getByLabel('Room backup recovery code (save separately)', { exact: true })
+      .inputValue();
+    const downloadPromise = page.waitForEvent('download');
+    await page
+      .getByRole('button', { name: 'Download encrypted recovery file', exact: true })
+      .click();
+    const download = await downloadPromise;
+    const backupPath = `/private/room-recovery-${name}.json`;
+    await download.saveAs(backupPath);
+    const backup = await readFile(backupPath);
+    await page.getByLabel('Encrypted recovery file', { exact: true }).setInputFiles({
+      name: 'hauntbox-room-recovery.json',
+      mimeType: 'application/json',
+      buffer: backup,
+    });
+    const recoveryInput = page.getByLabel('Recovery code for selected file', { exact: true });
+    await recoveryInput.fill(token());
+    await page.getByRole('button', { name: 'Verify and restore key', exact: true }).click();
+    await expect(page.getByRole('alert')).toContainText(
+      'The recovery code does not unlock this room-key backup.',
+    );
+    await expect(
+      page.getByRole('button', { name: 'Create room on chain', exact: true }),
+    ).toBeDisabled();
+    await recoveryInput.fill(`  ${recoveryCode}  `);
+    await page.getByRole('button', { name: 'Verify and restore key', exact: true }).click();
+    await expect(page.getByRole('status')).toContainText('Recovery file and code verified.');
+    await expect(
+      page.getByRole('button', { name: 'Create room on chain', exact: true }),
+    ).toBeEnabled();
+    checks[name].downloadedRoomBackupRestored = true;
+    checks[name].wrongRecoveryCodeRejectedClearly = true;
+    checks[name].pastedRecoveryWhitespaceAccepted = true;
     await browser.close();
     browser = null;
     await db.query('TRUNCATE curator CASCADE');

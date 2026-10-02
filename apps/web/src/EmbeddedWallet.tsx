@@ -12,9 +12,13 @@ import {
 export function EmbeddedWallet({
   network,
   onUseAddress,
+  heading = 'Your testnet wallet',
+  recoveryLabel = 'Recover wallet',
 }: {
   network: string;
   onUseAddress: (address: string) => void;
+  heading?: string;
+  recoveryLabel?: string;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const pinInput = useRef<HTMLInputElement>(null);
@@ -175,7 +179,7 @@ export function EmbeddedWallet({
   }
   return (
     <section className="live-card">
-      <h2>Your testnet wallet</h2>
+      <h2>{heading}</h2>
       <p>
         {unlockedAddress
           ? 'Your wallet is unlocked. Continue to your story with this reward address.'
@@ -215,7 +219,7 @@ export function EmbeddedWallet({
           disabled={!loaded || !['localnet', 'esmeralda'].includes(network)}
           onClick={() => open('recover')}
         >
-          Recover wallet
+          {recoveryLabel}
         </button>
       </div>
       {unlockedAddress && <p className="live-code">Your payout address: {unlockedAddress}</p>}

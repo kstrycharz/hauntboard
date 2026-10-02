@@ -1641,6 +1641,7 @@ pre {
 }
 
 .wallet-dialog {
+  text-align: left;
   width: min(540px, calc(100vw - 32px));
   max-height: calc(100dvh - 40px);
   overflow-y: auto;
@@ -1649,6 +1650,19 @@ pre {
   border: 1px solid #79677e;
   border-radius: 16px;
   padding: 24px;
+}
+.landing-wallet {
+  margin: 32px auto;
+  text-align: center;
+}
+.landing-wallet .live-card {
+  border-color: var(--amber);
+}
+.landing-wallet .hero-actions {
+  justify-content: center;
+}
+.landing-wallet > .field-help {
+  margin-top: 10px;
 }
 .wallet-dialog::backdrop {
   background: rgb(8 5 15 / 80%);

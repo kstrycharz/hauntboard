@@ -5,13 +5,25 @@
       "tariExplanation": true,
       "simulatedDisclosure": true,
       "mobileFits": true,
-      "hostSetupError": true
+      "hostSetupError": true,
+      "adminAliasRedirect": true,
+      "noAliasPostRequests": true,
+      "landingWalletCreateAndImport": true,
+      "landingWalletKeyboardPin": true,
+      "fundingPendingDisclosure": true,
+      "setupRetry": true
     },
     "firefox": {
       "tariExplanation": true,
       "simulatedDisclosure": true,
       "mobileFits": true,
-      "hostSetupError": true
+      "hostSetupError": true,
+      "adminAliasRedirect": true,
+      "noAliasPostRequests": true,
+      "landingWalletCreateAndImport": true,
+      "landingWalletKeyboardPin": true,
+      "fundingPendingDisclosure": true,
+      "setupRetry": true
     }
   }
 }

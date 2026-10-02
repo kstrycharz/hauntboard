@@ -49,6 +49,20 @@ function post(path, body, headers = {}) {
     },
   });
 }
+test('status identifies the configured origin and an IPv4 alias cannot bypass origin checks', async () => {
+  const status = await app.inject({ method: 'GET', url: '/api/status' });
+  assert.equal(status.json().origin, config.origin);
+  const alias = await post(
+    '/api/auth/setup',
+    {},
+    {
+      origin: 'http://127.0.0.1:8180',
+      host: '127.0.0.1:8180',
+    },
+  );
+  assert.equal(alias.statusCode, 403);
+  assert.equal(alias.json().code, 'ORIGIN_CHECK_FAILED');
+});
 test('local setup rejects remote origins, rebound hosts, cross-site requests and disabled configuration', async () => {
   const initial = await post('/api/auth/setup', {});
   assert.deepEqual(initial.json(), { registered: false, method: null, localSetupAvailable: true });

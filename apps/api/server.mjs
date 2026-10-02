@@ -86,6 +86,7 @@ export async function createApp(db, config, wallet) {
     }
   });
   app.get('/api/status', async () => ({
+    origin: config.origin,
     network: config.network,
     fixture: false,
     submissionsEnabled: config.submissions,

@@ -285,7 +285,7 @@ export function App() {
               {mainStep === 0
                 ? '1. Write your sample story and seal it.'
                 : mainStep === 1
-                  ? '2. Download the receipt, then visit the curator.'
+                  ? '2. Save your sample receipt. Your participant journey ends here.'
                   : mainStep === 2
                     ? '3. Open the envelope and simulate a discretionary reward.'
                     : 'Explore what each party can see.'}
@@ -304,8 +304,14 @@ export function App() {
           </div>
         )}
         {(route === 'desk' || route === 'receipt' || route === 'inbox' || route === 'reward') && (
-          <ol className="journey" aria-label="Submission journey">
-            {['Seal your story', 'Check its arrival', 'Open & reward'].map((title, index) => (
+          <ol
+            className="journey"
+            aria-label={isCurator ? 'Curator demo journey' : 'Participant journey'}
+          >
+            {(isCurator
+              ? ['Seal your story', 'Check its arrival', 'Curator demo: open & reward']
+              : ['Seal your story', 'Save your receipt']
+            ).map((title, index) => (
               <li
                 key={title}
                 className={mainStep === index ? 'active' : mainStep > index ? 'done' : ''}
@@ -345,14 +351,12 @@ export function App() {
                 </h1>
                 <p className="hero-description">
                   A haunted post office for stories you don’t want the world to read. Seal a letter,
-                  check that it arrived, and let the curator decide what deserves a candle.
+                  check that it arrived, and optionally receive a candle: a testnet reward chosen by
+                  the curator. Try the simulated experience with sample text.
                 </p>
                 <div className="hero-actions">
-                  <button className="primary" onClick={() => go('desk')}>
-                    Enter room <Icon name="arrow" />
-                  </button>
                   <button
-                    className="text-button"
+                    className="primary"
                     onClick={() => {
                       setTour(true);
                       setDraft({ text: SAMPLE_STORY, payoutAddress: SAMPLE_ADDRESS });
@@ -360,6 +364,9 @@ export function App() {
                     }}
                   >
                     Try the guided demo <span aria-hidden="true">↗</span>
+                  </button>
+                  <button className="text-button" onClick={() => go('desk')}>
+                    Enter room <Icon name="arrow" />
                   </button>
                 </div>
                 <p className="fine-print">
@@ -386,7 +393,7 @@ export function App() {
                 <p>
                   2,000 UTF-8 bytes
                   <br />
-                  Discretionary sample rewards
+                  Optional testnet rewards · simulated
                 </p>
                 <button className="text-button" onClick={() => go('desk')}>
                   Write your letter <Icon name="arrow" size={18} />
@@ -627,6 +634,11 @@ export function App() {
                   This downloadable fixture is not live evidence. There is no explorer transaction
                   link.
                 </p>
+                <p>
+                  Your participant journey ends here. Save the sample receipt to keep a record of
+                  this demo. A receipt does not prove authorship or promise a reward. Reloading
+                  clears this mock submission.
+                </p>
               </section>
               <aside className="side-stack">
                 <section className="panel">
@@ -637,12 +649,14 @@ export function App() {
                     of the envelope.
                   </h3>
                   <p>
-                    The fictitious curator can open this sample and decide whether to send a candle.
+                    Continue the tour as a fictitious curator who can open this sample and choose an
+                    optional testnet reward. This role switch does not grant access to real
+                    submissions.
                   </p>
                   <button className="primary full" onClick={() => go('inbox')}>
-                    Visit curator inbox <Icon name="arrow" />
+                    View the curator demo <Icon name="arrow" />
                   </button>
-                  <p className="fine-print">Switches demo roles. No authentication.</p>
+                  <p className="fine-print">Demo role transition · no authentication or funds.</p>
                 </section>
                 <button className="inspector-card" onClick={() => go('privacy')}>
                   <Icon name="eye" />

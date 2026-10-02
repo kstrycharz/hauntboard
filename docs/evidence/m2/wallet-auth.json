@@ -1,0 +1,31 @@
+{
+  "inspectedAt": "2026-10-02T16:55:05.117Z",
+  "status": "PASSED_UNFUNDED_DISPOSABLE_AUTH_PROBE",
+  "wallet": {
+    "network": "esmeralda",
+    "network_byte": 38,
+    "version": "0.43.0"
+  },
+  "checks": {
+    "unauthenticatedReadRejected": true,
+    "anonymousSessionRejected": true,
+    "virtualPasskeyEnrollment": true,
+    "secondEnrollmentRejected": true,
+    "scopedReadWorks": true,
+    "ungrantedSettingsReadRejected": true,
+    "apiKeyManagementRejected": true,
+    "revokedKeyRejected": true,
+    "expiringKeyWorksBeforeDeadline": true,
+    "expiredKeyRejected": true
+  },
+  "rejectionCodes": {
+    "unauthenticatedRead": 401,
+    "anonymousSession": 500,
+    "secondEnrollment": 400,
+    "ungrantedRead": 401,
+    "keyManagement": 401,
+    "revokedKey": 401,
+    "expiredKey": 401
+  },
+  "limitations": "Chromium virtual passkey; tmpfs wallet; no human passkey, persistent restart, account creation, funded transfer or production key lifecycle demonstrated."
+}

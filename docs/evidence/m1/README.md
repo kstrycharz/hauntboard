@@ -50,10 +50,14 @@ The browser test generates the screenshots and recording. A JSON result report i
 
 ## PM and architect reviews
 
-**PM:** The entrance explains the three actions in plain language. One button reaches a sample journey without account/wallet setup. Errors preserve the draft or intent and offer a recovery action. The curator reveal and candle decision give the theme a usable arc. External first-time-user comprehension trials belong to M6 and have not occurred.
+**PM:** The entrance explains the three actions in plain language. The primary button reaches a sample journey without account/wallet setup. The participant path ends at the receipt; “View the curator demo” explicitly switches roles. Optional testnet reward language accompanies the candle metaphor. Errors preserve the draft or intent and offer a recovery action. Early PM-00 comprehension trials are prepared but have not occurred; live M6 trials remain required.
 
 **Architect:** The adapter isolates wallet operations. Every chain/payment state is explicitly simulated. Unknown outcomes have no resend action; repeated/concurrent adapter confirmations return the same reserved result. The reward review discloses custody and operator visibility. Public receipt/inspector records omit the text, sample recipient, amount, and reward linkage. No native privacy or real encryption is claimed as implemented.
 
 **Limitations:** automated keyboard interaction and visual screenshot review are complete; manual assistive-technology testing, WebKit, real mobile hardware, real encryption, durable storage, authentication, live receipts, and native transfers are not verified. Reload clears fixture state and displays a useful empty state. Automated accessibility checks are evidence for the tested surfaces, not accessibility certification.
 
 Next work package: **INT-01 / M2**. See the dated capability report and pending compatibility ADR before any backend feature work.
+
+## October 2 continuation — UX-01a
+
+Fresh container verification: formatting, TypeScript, seven unit tests and production build pass; all 22 Chromium/Firefox browser tests pass (1.7 minutes). Journey checks now assert participant completion and the explicit curator transition. Screenshots, walkthrough and browser JSON were regenerated for this follow-up. Original acceptance evidence is retained in the `m1-accepted` tag; see `docs/source-baseline.md`. The existing quality/build manifests describe the original baseline run and image; the updated production preview is a local convenience, not a release image.

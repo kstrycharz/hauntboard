@@ -17,7 +17,7 @@ Inspected October 2, 2026. **Gate not passed.** The local mock is complete; no a
 | Receiver detection / recovery / spend | Not executed |
 | Public observer transaction/substate inspection | Not executed; no fabricated transaction IDs |
 | Engine test harness / publication / call / receipt | Not executed; compile alone is not engine or network compatibility |
-| WebAuthn / scoped API keys / expiry / revoke | Not tested; isolated `none` auth is only for unfunded research |
+| WebAuthn / scoped API keys / expiry / revoke | Ten unfunded disposable virtual-passkey checks pass in `wallet-auth.json`; persistent operator setup/restart remains unverified |
 | Final go/no-go ADR | Pending; see `docs/adr/001-network-wallet-versions.md` |
 
 The wallet preflight files intentionally retain only allowlisted public/aggregate fields. Token/password/seed/recipient/amount fields are not exported. `wallet-preflight.json` and `wallet-restart.json` are actual runtime observations. `release-research.json` is registry/source/network research, not transfer proof.
@@ -64,6 +64,6 @@ Compile probe SHA-256: `ba6533705ef822fa35cb097567e8bde10c20511170fd7e46887aff1d
 
 ## Next ready package
 
-Continue **INT-01** by resolving testnet funding, creating independent test keys/accounts and an authenticated wallet boundary, then preparing exact native-transfer and template-publication operations with fee estimates and a bounded owner-approved testnet budget. The current faucet is empty; an L1 burn or purchased funding is outside this preflight. The owner's funding-source answer is pending. Keep the full M2 transfer/public inspection/receiver spend checklist open.
+Continue **INT-01** using the [prepared operation worksheet](operation-review.md). The owner confirmed faucet-only funding on October 2. A fresh read at 16:47:39 UTC found the faucet empty from both zero-account wallets. Ten disposable authentication checks now pass, including scope enforcement, API-key expiry and revoke; human passkey and persistent authenticated restart remain unverified. Prepare authenticated persistent wallets, independent test keys/accounts, exact native-transfer/publication operations, fee estimates and a bounded owner-approved testnet budget before funds move. An L1 burn or purchased funding is outside scope. Keep the full M2 transfer/public inspection/receiver spend checklist open.
 
 The localnet/recorded fallback remains available if a funded public-testnet gate cannot pass. No public payment or mock is substituted for native privacy. M3–M7 remain unstarted until the explicit gate passes or the owner accepts a revised scope.

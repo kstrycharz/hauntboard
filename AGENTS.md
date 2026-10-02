@@ -2,7 +2,7 @@
 
 ## Objective and order
 
-Implement the Hauntbox plan in PROJECT_PLAN.md. Begin with M1: the frontend mockup. Complete each milestone's evidence and exit criteria before claiming it is complete. This repository currently contains planning documents only.
+Implement the Hauntbox plan in PROJECT_PLAN.md. M1 is implemented and accepted; continue from the documented M2 preflight. Complete each milestone's evidence and exit criteria before claiming it is complete. Keep backend feature work gated on M2; baseline/UX follow-ups and human mock trials may proceed independently.
 
 Use two review perspectives: the PM owns scope, usefulness, demo clarity, schedule, and acceptance; the architect owns privacy claims, trust boundaries, APIs, correctness, and operations. A single agent may perform both. If the user authorizes parallel agents, give each a bounded work package and a file ownership boundary; do not allow concurrent edits to shared schemas or lockfiles.
 

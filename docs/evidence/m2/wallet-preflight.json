@@ -1,5 +1,5 @@
 {
-  "inspectedAt": "2026-10-02T16:07:04.468Z",
+  "inspectedAt": "2026-10-02T16:47:39.067Z",
   "status": "UNFUNDED_READ_ONLY_PREFLIGHT_NOT_M2_COMPLETION",
   "wallets": [
     {
@@ -15,7 +15,7 @@
       "faucetState": "empty",
       "faucetErrorCategory": null,
       "configuredIndexer": "https://ootle-indexer-a.tari.com/",
-      "currentEpoch": 11760
+      "currentEpoch": 11762
     },
     {
       "role": "receiver",
@@ -30,7 +30,7 @@
       "faucetState": "empty",
       "faucetErrorCategory": null,
       "configuredIndexer": "https://ootle-indexer-a.tari.com/",
-      "currentEpoch": 11760
+      "currentEpoch": 11762
     }
   ]
 }

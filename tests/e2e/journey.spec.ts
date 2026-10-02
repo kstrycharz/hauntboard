@@ -55,7 +55,12 @@ test('whole fixture journey, receipt export, privacy, reset, and walkthrough', a
   const file = await download;
   expect(file.suggestedFilename()).toBe('hauntbox-mock-receipt.json');
   if (browserName === 'chromium') await file.saveAs(`${evidence}/sample-receipt.json`);
-  await tour.getByRole('button', { name: 'Visit curator inbox' }).click();
+  await expect(tour.getByLabel('Participant journey')).not.toContainText('reward');
+  await expect(
+    tour.getByText('Your participant journey ends here. Save', { exact: false }),
+  ).toBeVisible();
+  await tour.getByRole('button', { name: 'View the curator demo' }).click();
+  await expect(tour.getByLabel('Curator demo journey')).toContainText('Curator demo');
   if (browserName === 'chromium') await screenshot(tour, '04-curator-locked');
   await tour.getByRole('button', { name: 'Unlock sample key' }).click();
   await tour.getByRole('button', { name: 'Open envelope' }).click();
@@ -248,7 +253,7 @@ test('keyboard-only core journey and reduced motion', async ({ page }) => {
   await expect(page.locator('main')).toBeFocused();
   await keyboardActivate('Seal submission');
   await expect(page.getByRole('heading', { name: 'Your sample letter arrived.' })).toBeVisible();
-  await keyboardActivate('Visit curator inbox');
+  await keyboardActivate('View the curator demo');
   await expect(page.getByRole('button', { name: 'Unlock sample key' })).toBeVisible();
   await keyboardActivate('Unlock sample key');
   await expect(page.getByRole('button', { name: 'Open envelope' })).toBeVisible();

@@ -16,7 +16,7 @@ The review inspected the frontend/domain code, template compilation probe, miles
 
 **Execution priority:** close M2 feasibility → deliver one real end-to-end submission/reward flow → prove recovery and transaction correctness → polish from user evidence. Hold additional feature expansion. Completed screens are not a proxy for completion of the highest-risk integration work. The dated roadmap below remains a planning target, not evidence of feasibility.
 
-**Baseline housekeeping:** review the currently untracked project files and secret/ignore boundaries, establish an M1 source commit and local milestone tag, and record the source identity beside its evidence. This work is pending; do not describe the existing evidence as tied to a release commit until recorded. External publication remains subject to the existing release authorization boundary.
+**Baseline housekeeping — completed October 2:** reviewed untracked files and secret/ignore boundaries, saved local commit `bdfb77201d83c4db4b90732a479eb76209b4241e` and tag `m1-accepted`, and recorded provenance limitations in `docs/source-baseline.md`. This preserves the received evidence; it does not retroactively prove every earlier artifact was generated from that commit. External publication remains subject to the existing release authorization boundary.
 
 ### Focused product follow-up
 
@@ -440,7 +440,7 @@ Assumption: one primary builder using coding agents, approximately **102–148 f
 | Milestone | Dates (2026) | Hours | Deliverable / exit condition | Dependency | Status |
 |---|---|---:|---|---|---|
 | M1 Frontend mockup | Oct 2–4 | 12–18 | Clickable themed journey and browser/visual evidence | This plan | Complete Oct 2 — docs/evidence/m1/README.md |
-| M2 Tari feasibility | Oct 5–6 | 12–18 | Two-wallet native privacy proof, template call, pinned compatibility ADR | M1 | Preflight implemented; pending testnet funding and live proof — docs/evidence/m2/capabilities.md |
+| M2 Tari feasibility | Oct 5–6 | 12–18 | Two-wallet native privacy proof, template call, pinned compatibility ADR | M1 | Preflight + ten disposable authentication checks pass; faucet freshly empty; owner chose faucet-only funding; live gate open — docs/evidence/m2/capabilities.md |
 | M3 Foundation | Oct 7–10 | 20–28 | Containers, migrations, browser/API trust contracts, crypto/recovery, receipt template tests | M2 | Not started |
 | M4 Working vertical slice | Oct 11–15 | 20–28 | One room/curator: browser encryption → durable ciphertext → independently verified chain receipt → local decrypt → private reward | M3 | Not started |
 | M5 Adversarial QA | Oct 16–20 | 18–26 | Privacy/authorization/retry/recovery tests and fixes; scope freeze | M4 | Not started |
@@ -459,9 +459,9 @@ Roles below are work assignments, not a requirement to create many concurrent ch
 | ID / owner | Task | Depends on | Required evidence |
 |---|---|---|---|
 | UX-01 / frontend | Implement M1 mock, token system, reusable routes and states | Plan | Screenshots + complete mock E2E |
-| BASE-01 / maintainer | Review untracked files and ignore/secret boundaries; establish M1 commit/tag and source evidence linkage | UX-01 | Recorded source identity; accurate milestone status; no secret material in baseline |
-| UX-01a / frontend + PM | Primary guided-demo action, explicit participant/curator separation, clear optional-reward language | UX-01 | Updated screen evidence and focused journey checks; M1 acceptance retained |
-| PM-00 / PM | Three early mock comprehension/usefulness trials, including mobile; fix and retest blocking confusion | UX-01; use UX-01a when available | Trial notes, uncoached completion/timing, privacy/receipt/reward understanding, findings and fixes |
+| BASE-01 / maintainer | Completed October 2: baseline inventory/secret checks and local M1 commit/tag | UX-01 | Source identity and provenance limits in docs/source-baseline.md |
+| UX-01a / frontend + PM | Completed October 2: primary guided demo, participant/curator separation, optional-reward language | UX-01 | Updated screenshots/walkthrough; 7 unit + 22 browser tests pass; M1 acceptance retained |
+| PM-00 / PM | Protocol prepared; three human comprehension/usefulness trials still pending, including mobile | UX-01; use UX-01a when available | docs/research/mock-comprehension-trials.md; zero completed human trials |
 | INT-01 / architect | Execute M2 compatibility and stealth transfer spike | UX-01 | Versions, sanitized requests, tx receipts, receiver scan/spend |
 | ARC-01 / architect | Freeze ADRs, browser crypto/API/payout boundaries, fixture/live schemas, envelope format, trust model, API errors | INT-01 | Reviewable contracts + privacy matrix; ciphertext-only submission schema |
 | OPS-01 / infra | Build dev/test/runtime images and Compose profiles | INT-01 | Clean container boot/restart; no extra host installs |
@@ -661,7 +661,7 @@ The plan can begin immediately without these answers. Resolve each by its needed
 | Prize payout address and eligibility confirmation | Before submission | Unfilled, must be owner supplied |
 | Bluesky or Reddit account and posting authorization | Before external posting | Prepare drafts only |
 
-As of the October 2 review, M1 is implemented and accepted, and M2 has an unfunded preflight plus an original WASM compilation probe. M2 has not passed; M3–M7 remain unstarted. No cloud resources were rented, no template deployed, no token transferred, and no social/forum post sent in the documented work. Source-baseline housekeeping and the focused review follow-ups remain pending; updating this plan does not mark them complete.
+As of the October 2 continuation, M1 remains accepted; BASE-01 and UX-01a are completed with fresh verification. PM-00 has a prepared protocol and zero human trials. M2 has an unfunded preflight, original WASM compilation probe and ten passing disposable authentication checks. The fresh faucet read is empty and the owner confirmed faucet-only funding; docs/evidence/m2/operation-review.md records remaining prerequisites. M2 has not passed; M3–M7 remain unstarted. No cloud resources were rented, no template deployed, no token transferred, and no social/forum post sent. Changes and evidence are retained in local commits only.
 
 ## 15. Source map for implementers
 

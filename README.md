@@ -6,7 +6,7 @@ A haunted post office for Tari's October 2026 **Spooky Secrets** contest. The cl
 
 ## Start here
 
-Read [PROJECT_PLAN.md](PROJECT_PLAN.md). Its first milestone is a clickable frontend mockup. It then specifies the research gates, architecture, implementation tasks, tests, operations, and contest delivery.
+Read [PROJECT_PLAN.md](PROJECT_PLAN.md). M1 is accepted; the next integration milestone is M2 feasibility. The plan specifies the research gates, architecture, implementation tasks, tests, operations, and contest delivery.
 
 Coding agents must also read [AGENTS.md](AGENTS.md).
 
@@ -14,7 +14,9 @@ Coding agents must also read [AGENTS.md](AGENTS.md).
 
 **M1 complete:** React + TypeScript + Vite frontend with a visitor/curator journey, deterministic typed adapter, receipt export, reward consent/outcome states, privacy inspector, recovery rehearsal, self-hosted fonts and Docker workflows. Seven unit tests and 22 Chromium/Firefox browser tests pass; supported widths are 360, 768 and 1440 px. [Acceptance evidence](docs/evidence/m1/README.md), [screen inventory](docs/screen-inventory.md), and [walkthrough](docs/evidence/m1/walkthrough.webm).
 
-**M2 preflight implemented; gate not passed:** checksum-verified wallet 0.43.0 containers start and restart with separately mounted unlock material. Wallets and public indexers agree on Esmeralda network byte 38. The faucet is confirmed empty. The original receipt ABI probe builds to WASM with a crate lockfile. No accounts were funded, template published, or tokens transferred. [Capability report](docs/evidence/m2/capabilities.md) and [pending compatibility ADR](docs/adr/001-network-wallet-versions.md).
+**M2 preflight implemented; gate not passed:** checksum-verified wallet 0.43.0 containers start and restart with separately mounted unlock material. Wallets and public indexers agree on Esmeralda network byte 38. A fresh October 2 read confirms the faucet is empty; the owner chose faucet-only funding. Ten disposable WebAuthn/API-key checks pass, including scope enforcement, expiry and revocation. Persistent operator authentication and live privacy remain unproved. The original receipt ABI probe builds to WASM with a crate lockfile. No accounts were funded, template published, or tokens transferred. [Capability report](docs/evidence/m2/capabilities.md), [operation worksheet](docs/evidence/m2/operation-review.md), and [pending compatibility ADR](docs/adr/001-network-wallet-versions.md).
+
+**Review follow-ups:** BASE-01 is recorded in the local `m1-accepted` tag and [source-baseline note](docs/source-baseline.md). UX-01a promotes the guided demo, ends the participant path at the receipt, explicitly labels the curator transition, and explains optional testnet rewards. Fresh checks pass: seven unit tests and 22 Chromium/Firefox browser tests, including keyboard, reduced motion and accessibility at 360/768/1440 px. [PM-00 trial protocol](docs/research/mock-comprehension-trials.md) is ready; zero human trials have been completed.
 
 M3–M7 are waiting for M2. This repository is not a live testnet beta or a completed contest entry.
 

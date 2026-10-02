@@ -12,6 +12,7 @@ x-runtime: &runtime
     APP_NETWORK: esmeralda
     APP_ORIGIN: http://localhost:8180
     LOCAL_HTTP_PREVIEW: 'true'
+    LOCAL_HOST_SETUP: 'true'
     INTENT_KEY_FILE: /run/hauntbox/intent-key
     BOOTSTRAP_CODE_FILE: /run/hauntbox/bootstrap-code
     DATABASE_PASSWORD_FILE: /run/hauntbox/postgres-password

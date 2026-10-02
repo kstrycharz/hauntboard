@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { vaultGet, vaultPut } from './browser-vault';
 export function HostPinSignIn({ onSignedIn }: { onSignedIn: (csrf: string) => void }) {
   const [creating, setCreating] = useState(false),
     [code, setCode] = useState(''),
@@ -9,6 +10,28 @@ export function HostPinSignIn({ onSignedIn }: { onSignedIn: (csrf: string) => vo
     [pendingCsrf, setPendingCsrf] = useState(''),
     [busy, setBusy] = useState(false),
     [error, setError] = useState('');
+  const [setup, setSetup] = useState<{
+    registered: boolean;
+    method: string | null;
+    localSetupAvailable: boolean;
+  } | null>(null);
+  useEffect(() => {
+    void fetch('/api/auth/setup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}',
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('SETUP_UNAVAILABLE');
+        const status = await response.json();
+        setSetup(status);
+        setCreating(!status.registered && status.localSetupAvailable);
+      })
+      .catch(() => setError('Host setup status could not load. Reload this page to try again.'));
+    void vaultGet<string>('host-login-code')
+      .then((saved) => setCode(saved ?? ''))
+      .catch(() => {});
+  }, []);
   async function submit() {
     if (!/^[0-9]{8,12}$/.test(pin) || (creating && pin !== confirmation)) {
       setError('Use 8–12 digits; the confirmation must match.');
@@ -21,7 +44,9 @@ export function HostPinSignIn({ onSignedIn }: { onSignedIn: (csrf: string) => vo
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(
-          creating ? { pin, bootstrapCode: bootstrap } : { pin, loginCode: code.trim() },
+          creating
+            ? { pin, ...(setup?.localSetupAvailable ? {} : { bootstrapCode: bootstrap }) }
+            : { pin, loginCode: code.trim() },
         ),
       });
       const result = await response.json();
@@ -52,89 +77,135 @@ export function HostPinSignIn({ onSignedIn }: { onSignedIn: (csrf: string) => vo
   }
   return (
     <section className="live-card">
-      <h2>Host PIN sign-in · testnet</h2>
+      <h2>{creating ? 'Create host account' : 'Host PIN sign-in · testnet'}</h2>
       <p>
-        Use this if the host was set up with a PIN. A participant PIN cannot access this desk. New
-        host setup requires the installation’s private setup code.
+        {creating && setup?.localSetupAvailable
+          ? 'Choose a PIN for this installation. No terminal or setup code is needed on localhost.'
+          : setup?.method === 'passkey'
+            ? 'This host uses a passkey. Use the passkey sign-in below.'
+            : 'Use your host PIN and saved login code. A participant PIN cannot access this desk.'}
       </p>
-      <div className="live-form">
-        {creating ? (
-          <label>
-            Private host setup code
-            <input
-              type="password"
-              value={bootstrap}
-              onChange={(e) => setBootstrap(e.target.value)}
-              autoComplete="off"
-            />
-          </label>
-        ) : (
-          <label>
-            Host account sign-in code
-            <input
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              autoComplete="username"
-              spellCheck={false}
-            />
-          </label>
+      <form
+        className="live-form"
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!busy && setup && !newCode) void submit();
+        }}
+      >
+        {!newCode && (
+          <>
+            {creating && !setup?.localSetupAvailable ? (
+              <label>
+                Private host setup code
+                <input
+                  type="password"
+                  value={bootstrap}
+                  onChange={(e) => setBootstrap(e.target.value)}
+                  autoComplete="off"
+                />
+              </label>
+            ) : !creating ? (
+              <label>
+                Saved host login code
+                <input
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  autoComplete="username"
+                  spellCheck={false}
+                />
+              </label>
+            ) : null}
+            <label>
+              Host PIN, 8–12 digits
+              <input
+                type="password"
+                inputMode="numeric"
+                maxLength={12}
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                autoComplete={creating ? 'new-password' : 'current-password'}
+              />
+            </label>
+            {creating && (
+              <label>
+                Confirm host PIN
+                <input
+                  type="password"
+                  inputMode="numeric"
+                  maxLength={12}
+                  value={confirmation}
+                  onChange={(e) => setConfirmation(e.target.value)}
+                  autoComplete="new-password"
+                />
+              </label>
+            )}
+            <button
+              type="submit"
+              className="primary"
+              disabled={busy || !setup || setup.method === 'passkey'}
+            >
+              {creating ? 'Create host account' : 'Sign in as host with PIN'}
+            </button>
+            {!setup?.registered && !setup?.localSetupAvailable && (
+              <button
+                type="button"
+                className="text-button"
+                disabled={busy || !setup || setup.registered}
+                onClick={() => {
+                  setCreating(!creating);
+                  setError('');
+                  setPin('');
+                  setConfirmation('');
+                }}
+              >
+                {creating ? 'Use existing host PIN' : 'First-time host PIN setup'}
+              </button>
+            )}
+          </>
         )}
-        <label>
-          Host PIN, 8–12 digits
-          <input
-            type="password"
-            inputMode="numeric"
-            maxLength={12}
-            value={pin}
-            onChange={(e) => setPin(e.target.value)}
-            autoComplete={creating ? 'new-password' : 'current-password'}
-          />
-        </label>
-        {creating && (
-          <label>
-            Confirm host PIN
-            <input
-              type="password"
-              inputMode="numeric"
-              maxLength={12}
-              value={confirmation}
-              onChange={(e) => setConfirmation(e.target.value)}
-              autoComplete="new-password"
-            />
-          </label>
-        )}
-        <button className="primary" disabled={busy} onClick={() => void submit()}>
-          {creating ? 'Create host with PIN' : 'Sign in as host with PIN'}
-        </button>
-        <button
-          className="text-button"
-          disabled={busy}
-          onClick={() => {
-            setCreating(!creating);
-            setError('');
-            setPin('');
-            setConfirmation('');
-          }}
-        >
-          {creating ? 'Use existing host PIN' : 'First-time host PIN setup'}
-        </button>
         {newCode && (
           <div>
             <label>
-              Save this host account sign-in code
+              Save your host login code
               <input readOnly value={newCode} />
             </label>
             <span>
               Keep this code privately, separately from the PIN. It is not a wallet recovery seed.
             </span>
-            <button className="primary" onClick={() => onSignedIn(pendingCsrf)}>
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => {
+                const url = URL.createObjectURL(
+                  new Blob([JSON.stringify({ kind: 'hauntbox-host-login', loginCode: newCode })], {
+                    type: 'application/json',
+                  }),
+                );
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'hauntbox-host-login.json';
+                link.click();
+                URL.revokeObjectURL(url);
+              }}
+            >
+              Download host login backup
+            </button>
+            <button
+              type="button"
+              className="primary"
+              onClick={() =>
+                void vaultPut('host-login-code', newCode)
+                  .catch(() => {})
+                  .then(() => onSignedIn(pendingCsrf))
+              }
+            >
               I saved my host sign-in code — continue
             </button>
           </div>
         )}
         {busy && <p role="status">Checking host sign-in…</p>}
         {error && <p role="alert">{error}</p>}
-      </div>
+      </form>
     </section>
   );
 }

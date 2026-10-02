@@ -13,6 +13,13 @@ export async function configuration(env = process.env) {
     throw new Error('PUBLIC_APP_REQUIRES_HTTPS');
   if (local && !['localhost', '127.0.0.1'].includes(origin.hostname))
     throw new Error('LOCAL_APP_ORIGIN_MUST_BE_LOOPBACK');
+  const localHostSetup = env.LOCAL_HOST_SETUP === 'true';
+  if (
+    localHostSetup &&
+    (!['localhost', '127.0.0.1'].includes(origin.hostname) ||
+      (!local && env.LOCAL_HTTP_PREVIEW !== 'true'))
+  )
+    throw new Error('LOCAL_HOST_SETUP_REQUIRES_LOOPBACK');
   const intentKey = Buffer.from((await readFile(env.INTENT_KEY_FILE, 'utf8')).trim(), 'base64url');
   if (intentKey.length !== 32) throw new Error('INTENT_KEY_MUST_BE_32_BYTES');
   const bootstrapCode = env.BOOTSTRAP_CODE_FILE
@@ -35,6 +42,7 @@ export async function configuration(env = process.env) {
     network: env.APP_NETWORK,
     intentKey,
     bootstrapCode,
+    localHostSetup,
     databaseUrl,
     submissions: env.SUBMISSIONS_ENABLED === 'true',
     anchoring: env.ANCHORING_ENABLED === 'true',

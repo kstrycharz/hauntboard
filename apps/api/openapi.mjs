@@ -114,8 +114,10 @@ export const openapi = {
     },
     '/api/auth/register/options': {
       post: {
-        requestBody: body(schemas.bootstrapRegistration),
-        responses: result('First operator registration challenge; setup code required'),
+        requestBody: body(schemas.bootstrapRegistration.partial()),
+        responses: result(
+          'First operator registration challenge; setup code required except explicitly enabled loopback setup',
+        ),
       },
     },
     '/api/auth/register/verify': {
@@ -170,7 +172,11 @@ const loginCode = z.string().regex(/^[A-Za-z0-9_-]{43}$/);
 for (const [path, schema] of [
   ['/api/participant/auth/pin/register', z.object({ pin: pinValue }).strict()],
   ['/api/participant/auth/pin/login', z.object({ pin: pinValue, loginCode }).strict()],
-  ['/api/auth/pin/register', z.object({ pin: pinValue, bootstrapCode: loginCode }).strict()],
+  [
+    '/api/auth/pin/register',
+    z.object({ pin: pinValue, bootstrapCode: loginCode.optional() }).strict(),
+  ],
+  ['/api/auth/setup', emptySignIn],
   ['/api/auth/pin/login', z.object({ pin: pinValue, loginCode }).strict()],
   ['/api/participant/auth/register/options', emptySignIn],
   ['/api/participant/auth/login/options', emptySignIn],

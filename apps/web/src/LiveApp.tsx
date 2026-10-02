@@ -133,6 +133,7 @@ export function LiveApp() {
     payoutsEnabled: false,
   });
   const [fundingStatus, setFundingStatus] = useState<FundingStatus | null>(null);
+  const [localHostSetupAvailable, setLocalHostSetupAvailable] = useState(false);
   const [saved, setSaved] = useState<SavedEntry | null>(null),
     [receipt, setReceipt] = useState<Receipt | null>(null);
   const [bootstrap, setBootstrap] = useState(''),
@@ -207,6 +208,13 @@ export function LiveApp() {
       setReleaseStatus(status);
       setFundingStatus(await api<FundingStatus>('/api/funding/status'));
       await session();
+      if (adminPage) {
+        const setup = await api<{ localSetupAvailable: boolean }>('/api/auth/setup', {
+          method: 'POST',
+          body: '{}',
+        });
+        setLocalHostSetupAvailable(setup.localSetupAvailable);
+      }
       setSaved((await vaultGet<SavedEntry>('last-submission')) ?? null);
     });
   }, []);
@@ -236,7 +244,9 @@ export function LiveApp() {
       `/api/auth/${kind}/options`,
       {
         method: 'POST',
-        body: JSON.stringify(kind === 'register' ? { bootstrapCode: bootstrap } : {}),
+        body: JSON.stringify(
+          kind === 'register' && !localHostSetupAvailable ? { bootstrapCode: bootstrap } : {},
+        ),
       },
     );
     const response = await passkeyCeremony(kind, start.options);
@@ -744,7 +754,7 @@ export function LiveApp() {
                     <strong>Sign in as host.</strong>{' '}
                     {authenticated
                       ? 'Signed in.'
-                      : 'Use your host credentials below. For first setup, use the private installation code.'}
+                      : 'Use your host credentials below. First-time localhost setup lets you create the host directly in this page.'}
                   </li>
                   <li>
                     <strong>Connect the receipt contract and wallets.</strong>{' '}
@@ -800,18 +810,26 @@ export function LiveApp() {
                   </button>
                   <details>
                     <summary>First-time operator setup</summary>
-                    <label>
-                      Private setup code
-                      <input
-                        type="password"
-                        value={bootstrap}
-                        onChange={(e) => setBootstrap(e.target.value)}
-                        autoComplete="off"
-                      />
-                    </label>
+                    {!localHostSetupAvailable && (
+                      <label>
+                        Private setup code
+                        <input
+                          type="password"
+                          value={bootstrap}
+                          onChange={(e) => setBootstrap(e.target.value)}
+                          autoComplete="off"
+                        />
+                      </label>
+                    )}
+                    {localHostSetupAvailable && (
+                      <p>
+                        Create the host with your device passkey. No setup code is needed on this
+                        localhost installation.
+                      </p>
+                    )}
                     <button
                       className="secondary"
-                      disabled={busy || !bootstrap}
+                      disabled={busy || (!localHostSetupAvailable && !bootstrap)}
                       onClick={() => void run(() => signIn('register'))}
                     >
                       Register curator passkey

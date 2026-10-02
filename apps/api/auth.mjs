@@ -8,10 +8,10 @@ import {
 import { bootstrapRegistration, authResponse } from '../../packages/schema/index.mjs';
 import { hash, token, same, problem, rateLimit, privateRateKey } from './security.mjs';
 import { installOperatorPinAuth } from './operator-pin-auth.mjs';
+import { authorizeHostSetup, localHostSetup } from './host-setup.mjs';
 
 export async function installAuth(app, db, config) {
   const userId = 'hauntbox-curator';
-  const registrationEnabled = !!config.bootstrapCode;
   const cookie = (value, age) =>
     `hauntbox_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${age}${config.secureCookie ? '; Secure' : ''}`;
   async function limited(req) {
@@ -25,11 +25,18 @@ export async function installAuth(app, db, config) {
     await client.query('UPDATE ceremonies SET consumed=true WHERE id=$1', [id]);
     return row;
   }
+  app.post('/api/auth/setup', async (req) => {
+    const row = (await db.query('SELECT pin_hash FROM curator LIMIT 1')).rows[0];
+    return {
+      registered: !!row,
+      method: row ? (row.pin_hash ? 'pin' : 'passkey') : null,
+      localSetupAvailable: !row && localHostSetup(req, config),
+    };
+  });
   app.post('/api/auth/register/options', async (req) => {
     await limited(req);
-    const input = bootstrapRegistration.parse(req.body);
-    if (!registrationEnabled || !same(hash(input.bootstrapCode), hash(config.bootstrapCode)))
-      throw problem('REGISTRATION_NOT_AVAILABLE', 403);
+    const input = bootstrapRegistration.partial().parse(req.body);
+    authorizeHostSetup(req, config, input.bootstrapCode);
     return db.transaction(async (client) => {
       await client.query('SELECT pg_advisory_xact_lock(47389111)');
       const existing = await client.query('SELECT count(*)::int AS count FROM curator');

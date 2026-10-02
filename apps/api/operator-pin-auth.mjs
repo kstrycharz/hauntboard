@@ -2,6 +2,7 @@ import { randomUUID, randomBytes } from 'node:crypto';
 import { z } from 'zod';
 import { pinHash } from './pin-security.mjs';
 import { hash, token, same, problem, rateLimit, privateRateKey } from './security.mjs';
+import { authorizeHostSetup } from './host-setup.mjs';
 export function installOperatorPinAuth(app, db, config, startSession, limited) {
   const pin = z.string().regex(/^[0-9]{8,12}$/),
     code = z.string().regex(/^[A-Za-z0-9_-]{43}$/);
@@ -12,9 +13,8 @@ export function installOperatorPinAuth(app, db, config, startSession, limited) {
   app.post('/api/auth/pin/register', async (req, reply) => {
     testnetOnly();
     await limited(req);
-    const input = z.object({ pin, bootstrapCode: code }).strict().parse(req.body);
-    if (!config.bootstrapCode || !same(hash(input.bootstrapCode), hash(config.bootstrapCode)))
-      throw problem('REGISTRATION_NOT_AVAILABLE', 403);
+    const input = z.object({ pin, bootstrapCode: code.optional() }).strict().parse(req.body);
+    authorizeHostSetup(req, config, input.bootstrapCode);
     const loginCode = token(),
       salt = randomBytes(16).toString('base64url'),
       digest = await pinHash(input.pin, salt);

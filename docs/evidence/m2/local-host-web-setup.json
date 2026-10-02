@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-02T22:16:44.137Z",
+  "status": "PASSED_LOCAL_HOST_WEB_SETUP",
+  "checks": {
+    "chromium": {
+      "firstSetupWithoutTerminalOrCode": true,
+      "generatedLoginBackup": true,
+      "loginCodeRemembered": true,
+      "signOutAndSignIn": true
+    },
+    "firefox": {
+      "firstSetupWithoutTerminalOrCode": true,
+      "generatedLoginBackup": true,
+      "loginCodeRemembered": true,
+      "signOutAndSignIn": true
+    }
+  },
+  "scope": "Production-built UI with isolated test authentication schema; actual installation host unchanged; no chain operations."
+}

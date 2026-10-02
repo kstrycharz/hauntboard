@@ -37,3 +37,9 @@ Open http://localhost:8180/admin for local admin setup and inbox management. The
 Participants use / for rooms, /submit for stories, /account only for an optional reward wallet, and /demo for the guided fixture journey. A participant can submit without a wallet when a real room is open. The current production preview keeps intake/anchoring/rewards paused; only web, API and PostgreSQL run. Stopped test/wallet stacks retain their volumes.
 
 The PIN popup accepts keyboard digits immediately; clicking numbers keeps typing active. Enter continues or confirms, Backspace edits, and non-digits are ignored. Production browser-only validation no longer requires a running local chain.
+
+## Code-free first-time localhost host setup
+
+The production-only localhost preview now enables LOCAL_HOST_SETUP. At /admin, an unregistered installation automatically offers Create host account. Choose and confirm an 8–12 digit PIN; create the account; download the generated host login backup; confirm that you saved it. The browser remembers the login code after this confirmation, so subsequent PIN login is prefilled on the same browser. Keep the backup for another browser or clearing storage. The PIN is not stored in browser storage; the server stores a salted hash.
+
+This supersedes the earlier terminal bootstrap-code step for this localhost deployment. The server checks configured loopback Origin, exact Host and same-origin request metadata. Public deployment explicitly disables code-free setup and still needs operator authorization by private bootstrap code. One enrolled host cannot be overwritten. No PIN or passkey recovery bypass exists. Passkey setup may also omit the code locally, but device authenticator support is still required.

@@ -4,6 +4,7 @@ services:
     environment:
       APP_ORIGIN: 'https://${APP_DOMAIN:?Set the approved application domain}'
       LOCAL_HTTP_PREVIEW: 'false'
+      LOCAL_HOST_SETUP: 'false'
   web:
     ports: !override ['80:8080', '443:8443']
     environment:

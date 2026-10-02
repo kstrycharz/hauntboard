@@ -731,3 +731,15 @@ Verification: 20 PostgreSQL API/auth/worker tests passed. Actual Chromium and Fi
 Implemented prominent Create wallet and Recover wallet buttons, popup PIN keypad, native browser key/address generation, one-time recovery phrase display, encrypted local storage, PIN unlock and clean-browser recovery to the same address. Legacy application PIN/passkey accounts remain accessible separately. Native Tari WASM 0.43.0 performs key/address operations; two Hauntbox 24-word phrases encode both keys using scure BIP39. These are not a daemon-compatible single cipher-seed phrase. No wallet PIN/seed request or new chain transaction is made. See docs/adr/004-browser-wallet-recovery.md and embedded-wallet evidence.
 
 Remaining: official cipher-seed import adapter; browser balance/stealth-output scan and independent recipient spend; passkey PRF key wrapping with explicit unsupported-device recovery; mainnet custody/security review. Keep mainnet and public mutations disabled.
+
+### Browser wallet review follow-up — open, October 2
+
+Static review of `6dee866` identified three correctness issues. The implemented wallet flow is not accepted for release while these remain open. Prior Chromium/Firefox evidence covers sequential operations; it does not cover cross-tab races or SDK/storage fault handling. No fixes or additional runtime verification were performed as part of this documentation update.
+
+| Task | Priority | Required work | Status |
+| --- | --- | --- | --- |
+| BW-01 | P1 | Make creation/recovery atomic across tabs; prevent competing tabs or stale recovery state from silently replacing another wallet. Prove one winner under concurrent creation and preserve the existing wallet under a stale recovery attempt. | Open; next implementation priority, before further wallet acceptance/funding tests |
+| BW-02 | P2 | Serialize unlock/counter updates and prevent stale unlock writes from undoing recovered wallet data or a new PIN. Add shared-profile, concurrent-tab regression coverage. | Open; coordinate with BW-01 |
+| BW-03 | P2 | Distinguish incorrect PINs from unavailable storage/SDK and corrupted wallet data. Inject failures and prove correct-PIN infrastructure failures do not exhaust the PIN allowance. | Open |
+
+Detailed findings, affected functions and acceptance criteria are in [ADR 004: code review](docs/adr/004-browser-wallet-recovery.md#code-review--october-2-2026). Close these findings with recorded regression results before returning to browser balance/spending or mainnet readiness claims. Existing public mutation gates remain closed.

@@ -2,7 +2,7 @@
 
 ## Objective and order
 
-Implement the Hauntbox plan in PROJECT_PLAN.md. M1 is implemented and accepted; continue from the documented M2 preflight. Complete each milestone's evidence and exit criteria before claiming it is complete. Keep backend feature work gated on M2; baseline/UX follow-ups and human mock trials may proceed independently.
+Implement the Hauntbox plan in PROJECT_PLAN.md and docs/funding-plan.md. M1 is accepted; continue with FUND-01/TEST-01 from the M2 preflight. Automated chain tests use faucet-origin funds. Funding/test infrastructure and deterministic crypto/API/schema preparation may start now; M3–M5 integration may proceed after M2a local capability passes. Public deployment and live capability claims require M2b public proof. Complete each milestone's actual evidence before claiming success; a public faucet outage does not block local testing. Human mock trials remain independent.
 
 Use two review perspectives: the PM owns scope, usefulness, demo clarity, schedule, and acceptance; the architect owns privacy claims, trust boundaries, APIs, correctness, and operations. A single agent may perform both. If the user authorizes parallel agents, give each a bounded work package and a file ownership boundary; do not allow concurrent edits to shared schemas or lockfiles.
 

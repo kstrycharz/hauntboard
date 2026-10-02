@@ -136,7 +136,7 @@ L2 applications/tari_walletd/web_ui/src/components/WalletConnectLink/WalletConne
 D226FE826A00C8DA61BDDEAD83A13377C3CD77DC1EF7B62553525C6D579A0AA3
 ~~~
 
-### M2: feasibility gate, before backend feature work
+### M2: local capability and public-network feasibility gates
 
 **October 5–6; 12–18 hours, maximum two working days.** The architect/integration agent must produce docs/evidence/m2/capabilities.md and docs/adr/001-network-wallet-versions.md with versions, checksums, exact requests, sanitized responses, and transaction IDs from the target network.
 
@@ -148,13 +148,17 @@ D226FE826A00C8DA61BDDEAD83A13377C3CD77DC1EF7B62553525C6D579A0AA3
 6. Compile a minimal original receipt template with the selected matching test harness, publish through the wallet UI, create a component, invoke it, and query inclusion from the indexer. Resolve fee estimation and WASM size limits here.
 7. Exercise dry-run, final receipt, failed transaction, expired credentials, and timeout responses. In the snapshot, StealthTransferResponse only returns transaction_id; fee estimates/results require further lookup. Document actual semantics.
 
-**Current continuation:** the unfunded preflight is implemented, but its recorded empty-faucet observation is not a fresh availability check. Resolve a bounded testnet funding path and prove authenticated wallet access before any funded operation. Keep faucet-only funding as the default; an alternative source requires an explicit scope decision and exact owner-authorized target/budget. Do not fund the authentication-disabled preflight configuration. Finish the publication/call, independent receiver detection/spend, public-observer inspection, and reconciliation evidence before advancing the gate. Startup and WASM compilation alone do not satisfy it.
+**Funding revision — October 2:** follow [the funding and production migration plan](docs/funding-plan.md). Automated chain tests use faucet-origin funds. Use the official harness and a funded local-network faucet for repeatable testing, and a separate protected public-testnet workflow for live proof. The recorded public faucet read was empty; a claim has not been attempted. That observation does not block deterministic engineering or local testing. Implement FUND-01/TEST-01 next; public claim eligibility and funding belong to FUND-02. Keep public testnet funding faucet-only; do not fund the authentication-disabled preflight.
+
+**M2a — local capability:** pinned compatible artifacts, engine tests, authenticated/local-isolated wallets, actual local faucet claim, concealed transfer and independent receiver spend, original receipt publication/call, and recovery evidence. Funding/test infrastructure and deterministic crypto/API/schema work may start with provisional interfaces now. After M2a passes, M3–M5 may proceed locally while public proof remains open.
+
+**M2b — public proof:** repeat the native-privacy, receiver-spend, publication/call and observer checks on verified public Esmeralda with faucet-origin funds. This remains mandatory before public beta deployment and live capability claims. M2 is complete only when M2a and M2b pass. Neither startup/WASM compilation nor a local-only pass satisfies M2b.
 
 **Go:** native privacy and template calls work on public testnet, receipts can be reconciled, and wallet containers restart safely.
 
 **Fallback order:** use a compatible released wallet first; if its transfer RPC is insufficient, implement a narrow Rust ootle-rs adapter in a container using a verified compatible release. Cap this alternate spike at one extra day and cut optional polish. Do not recreate crypto primitives. Do not convert rewards to public transfers without explicitly redesigning the product claim.
 
-**If the gate cannot pass:** stop spending time on secondary features, document the blocker, prepare a reproducible localnet demonstration plus a clearly marked recorded demo, and re-evaluate the contest entry with the owner. Localnet is a contingency, not completion of the public-testnet release gate. No plan can honestly assume that a development-only API already works in production.
+**If the public gate cannot pass:** classify the exact funding/network failure, continue local faucet-funded testing and permitted engineering, prepare a request for official faucet replenishment, and re-evaluate the public release schedule. Sending that request requires explicit messaging authorization. Preserve localnet/recorded evidence labels. A public faucet outage must not turn unrelated tests red or a missing live check green; M2b remains unsatisfied.
 
 ### Chosen system
 
@@ -317,7 +321,7 @@ Store-before-anchor is deliberate: database durability and blockchain finality c
 
 Keep Tari RPC private behind an adapter with an explicit method allowlist. Browsers must never receive an operator wallet bearer token or call an unrestricted wallet proxy. Separate receipt-fee and reward wallets, credentials, and budgets. Keep published app API permissions narrower than wallet permissions.
 
-Required adapter operations: getNetwork, getHealth, getSpendableBalance, createOrCallRoom, queryReceipt, quoteStealthReward, submitApprovedReward, and reconcileTransaction. Implement against generated types from the pinned release. Amounts use checked integer base units serialized as decimal strings; never JavaScript floating-point currency arithmetic. Reject fractional overprecision, overflow, zero/negative rewards, wrong-network addresses, and wrong resources before authorization.
+Required adapter operations: getNetwork, getHealth, getSpendableBalance, createOrCallRoom, queryReceipt, quoteStealthReward, submitApprovedReward, and reconcileTransaction. A separate internal funding job implements faucet inspection/claim/reconciliation under docs/funding-plan.md; faucet Admin credentials never enter the browser or ordinary payout worker. Implement against generated types from the pinned release. Amounts use checked integer base units serialized as decimal strings; never JavaScript floating-point currency arithmetic. Reject fractional overprecision, overflow, zero/negative rewards, wrong-network addresses, and wrong resources before authorization.
 
 The inspected RPC model has separate input_selection and fee_params.input_selection. Investigate their behavior independently. Prefer ConfidentialOnly where that release uses the enum for stealth inputs; fail closed if private spendable inputs are unavailable. A compatibility layer must explicitly ensure: blinded recipient amount > 0, revealed recipient amount = 0, native resource/address correct, private change, attach_sender_address false, and no unintended address-embedded pay reference. Verify fee intent and signatures on the actual serialized transaction. Never silently fall back to RevealedOnly or a public account transfer.
 
@@ -440,11 +444,11 @@ Assumption: one primary builder using coding agents, approximately **102–148 f
 | Milestone | Dates (2026) | Hours | Deliverable / exit condition | Dependency | Status |
 |---|---|---:|---|---|---|
 | M1 Frontend mockup | Oct 2–4 | 12–18 | Clickable themed journey and browser/visual evidence | This plan | Complete Oct 2 — docs/evidence/m1/README.md |
-| M2 Tari feasibility | Oct 5–6 | 12–18 | Two-wallet native privacy proof, template call, pinned compatibility ADR | M1 | Preflight + ten disposable authentication checks pass; faucet freshly empty; owner chose faucet-only funding; live gate open — docs/evidence/m2/capabilities.md |
-| M3 Foundation | Oct 7–10 | 20–28 | Containers, migrations, browser/API trust contracts, crypto/recovery, receipt template tests | M2 | Not started |
+| M2 Tari feasibility | Oct 5–6 | 12–18; re-estimate after local bootstrap | M2a local faucet/engine/two-wallet proof; M2b public privacy/receipt proof | M1 | Preflight + ten disposable auth checks pass; FUND-01/TEST-01 planned; both gates open — docs/evidence/m2/capabilities.md |
+| M3 Foundation | Oct 7–10 | 20–28 | Containers, migrations, browser/API trust contracts, crypto/recovery, receipt template tests | M2a; deterministic preparation may start now | Not started |
 | M4 Working vertical slice | Oct 11–15 | 20–28 | One room/curator: browser encryption → durable ciphertext → independently verified chain receipt → local decrypt → private reward | M3 | Not started |
 | M5 Adversarial QA | Oct 16–20 | 18–26 | Privacy/authorization/retry/recovery tests and fixes; scope freeze | M4 | Not started |
-| M6 Deploy and trial | Oct 21–25 | 10–16 | Domain/TLS, restore drill, 48-hour soak, three user trials | M5 | Not started |
+| M6 Deploy and trial | Oct 21–25 | 10–16 | Domain/TLS, restore drill, 48-hour soak, three user trials | M5 + M2b | Not started |
 | M7 Contest release | Oct 26–29 | 10–14 | Tagged release, source, demo video, submission artifacts, final gate review | M6 | Not started |
 | Submission buffer | Oct 30–31 | Reserved | Owner publishes by internal target; availability/support and edits | M7 | Not started |
 
@@ -463,16 +467,21 @@ Roles below are work assignments, not a requirement to create many concurrent ch
 | UX-01a / frontend + PM | Completed October 2: primary guided demo, participant/curator separation, optional-reward language | UX-01 | Updated screenshots/walkthrough; 7 unit + 22 browser tests pass; M1 acceptance retained |
 | PM-00 / PM | Protocol prepared; three human comprehension/usefulness trials still pending, including mobile | UX-01; use UX-01a when available | docs/research/mock-comprehension-trials.md; zero completed human trials |
 | INT-01 / architect | Execute M2 compatibility and stealth transfer spike | UX-01 | Versions, sanitized requests, tx receipts, receiver scan/spend |
-| ARC-01 / architect | Freeze ADRs, browser crypto/API/payout boundaries, fixture/live schemas, envelope format, trust model, API errors | INT-01 | Reviewable contracts + privacy matrix; ciphertext-only submission schema |
-| OPS-01 / infra | Build dev/test/runtime images and Compose profiles | INT-01 | Clean container boot/restart; no extra host installs |
+| FUND-01 / integration | Planned: internal faucet configuration, bootstrap and durable claim/budget reconciliation | M2 preflight; may start now | Actual zero-balance claim; eligibility, fee, concurrency and unknown-outcome tests |
+| TEST-01 / QA + infra | Planned: pinned faucet-funded harness/local-network tests | M2 preflight; may start now alongside FUND-01 | Reproducible Docker tests; independent wallets, private transfer/spend, original receipt; M2a evidence |
+| FUND-02 / integration | Planned: protected public faucet funding and live verification | FUND-01, TEST-01 | Bounded faucet-origin public run; M2b evidence; infrastructure failures correctly classified |
+| FUND-03 / operations | Planned: beta funding status, low-balance behavior and refill runbook | FUND-01, API-01; before OPS-02 | Intake/payout pause and reserve/recovery checks |
+| PROD-01 / architect | Future mainnet treasury and migration design; outside October implementation | Public beta evidence and separate mainnet scope | Treasury ownership/budgets, faucet disabled, fresh keys/manifests and independent review |
+| ARC-01 / architect | Freeze ADRs, browser crypto/API/payout boundaries, fixture/live schemas, envelope format, trust model, API errors | INT-01/M2a for integration freeze; provisional deterministic work now | Reviewable contracts + privacy matrix; ciphertext-only submission schema |
+| OPS-01 / infra | Build dev/test/runtime images and Compose profiles | INT-01/M2a for integrated runtime; FUND-01/TEST-01 bootstrap now | Clean container boot/restart; no extra host installs |
 | CRY-01 / crypto | JWE sealing/opening, context validation, recovery export/import | ARC-01, OPS-01 | Wrong-key/tamper/context tests, browser restore |
 | CHN-01 / Rust | Implement bounded HauntboxRoom and tests | ARC-01, OPS-01 | Access/duplicate/capacity/close/epoch tests, WASM artifact |
 | API-01 / backend | Auth, challenge limits, encrypted storage, outbox and status API | ARC-01, OPS-01 | API/auth/isolation/migration integration tests |
 | INT-02 / integration | Anchor worker and independent receipt verifier | CHN-01, API-01 | Commit, failure, restart and duplicate request evidence |
-| PAY-01 / integration | Quotes, explicit approval, private transfer and reconciliation | INT-01, API-01 | Two-wallet path + unknown-outcome recovery |
+| PAY-01 / integration | Quotes, explicit approval, private transfer and reconciliation | INT-01/M2a, API-01; M2b required for live claims | Two-wallet path + unknown-outcome recovery |
 | UX-02 / frontend | Integrate browser crypto and live APIs; separate demo; split route/state code as needed; apply early trial findings | CRY-01, INT-02, PAY-01, PM-00 | Complete live journey/outage states; no plaintext submission requests; durable status restored after reload |
 | SEC-01 / QA + architect | Threat-model checks, leak probes, load/fault/recovery tests | UX-02 | Mandatory validation matrix passes |
-| OPS-02 / infra | Deploy immutable images, domain, monitoring, backups, rollback | SEC-01 | External smoke, restore drill, soak report |
+| OPS-02 / infra | Deploy immutable images, domain, monitoring, backups, rollback | SEC-01, FUND-03, M2b | External smoke, restore drill, soak report |
 | PM-01 / PM | Trials, clarity fixes, demo, source/license/provenance, entry drafts | OPS-02 | Release/submission checklist with actual links |
 
 ### Working agreement between the two personas
@@ -487,7 +496,7 @@ Every implementation handoff must contain: changed files, decisions, exact valid
 
 ### Ready-to-use agent prompts
 
-**Next work package:** “Read AGENTS.md and PROJECT_PLAN.md. M1 is accepted; do not rebuild the mock. Continue INT-01/M2 from its recorded unfunded preflight, resolving authenticated wallet access and the bounded funding prerequisite before funded operations. Preserve explicit authorization requirements for funding and publication. BASE-01, UX-01a, and PM-00 may proceed independently of the network gate. Keep backend feature work gated on M2 and record actual evidence, blockers, and the next ready task.”
+**Next work package:** “Read AGENTS.md, PROJECT_PLAN.md and docs/funding-plan.md. M1, BASE-01 and UX-01a are complete. Implement FUND-01 and TEST-01: faucet configuration, safe zero-balance bootstrap, deterministic engine tests and a funded local-network test profile. Prepare protected public verification in FUND-02. Distinguish M2a local capability from M2b public proof; follow the revised engineering dependencies and preserve public release gates. PM-00 human trials remain independent. Record actual evidence and funding failures; never label local results as public-network proof.”
 
 **Architect integration agent:** “Execute INT-01/M2. Treat the supplied Tari source snapshots as read-only references. Establish a released version set and demonstrate a native stealth transfer between independently keyed wallets, recipient scan and spend, encrypted memo recovery, public-field inspection, template publication/call, fees and failure semantics. Write an evidence-based go/no-go ADR. Never substitute mocked or public payments.”
 
@@ -523,6 +532,8 @@ CI on each PR: formatting, lint/types, deterministic crypto/API tests, template 
 
 Run live-network integration on a controlled workflow with capped testnet funds and secrets unavailable to forked PRs. Capture sanitized receipts under docs/evidence/. Full localnet tests may run in a separate heavyweight profile; do not require an L1 build just to run the frontend or normal API tests. Generate an SBOM and image/WASM checksums for the release.
 
+All chain-executing automated tests use faucet-origin funds under docs/funding-plan.md. Use engine faucet helpers for template tests and a funded local faucet for repeatable integration. Public-testnet suites use bounded eligible claims or an existing faucet-funded CI reserve. Reuse balances, respect one-claim eligibility, serialize claims and reconcile uncertain submissions. An exhausted public faucet yields BLOCKED_INFRA and an unsatisfied public release check; deterministic/local suites continue. Never use mainnet funds for automated transaction regression. Include tests that mainnet startup rejects faucet configuration and issues zero faucet requests.
+
 ## 10. Shipping and operations runbook requirements
 
 ### Deployment sequence
@@ -535,6 +546,8 @@ Run live-network integration on a controlled workflow with capped testnet funds 
 6. Prepare the tagged source repository, public deployment manifest, sanitized evidence and demo recording. Publish externally only to targets authorized by the owner; the present task creates the plan, not accounts or public posts.
 
 Deployment manifests contain network identifier/instance, indexer endpoint, wallet/library versions, template/component addresses, WASM hash, image digests, source commit/tag, creation date and evidence links. Never include private wallet configuration or secrets. A production frontend must reject a manifest with the wrong expected network.
+
+Funding configuration and future mainnet migration are specified in docs/funding-plan.md. The beta uses separate faucet-origin operator and CI wallets, low-watermark/target/hot-balance limits and durable spend reservations. Future mainnet uses an owner-controlled treasury provider with reviewed top-ups, new keys/deployments and no faucet capability. Production environment and chain network must be independently validated; the October beta remains testnet. Mainnet activation needs its separate security, custody, budget and deployment gate.
 
 ### Restore and rollback
 
@@ -661,7 +674,7 @@ The plan can begin immediately without these answers. Resolve each by its needed
 | Prize payout address and eligibility confirmation | Before submission | Unfilled, must be owner supplied |
 | Bluesky or Reddit account and posting authorization | Before external posting | Prepare drafts only |
 
-As of the October 2 continuation, M1 remains accepted; BASE-01 and UX-01a are completed with fresh verification. PM-00 has a prepared protocol and zero human trials. M2 has an unfunded preflight, original WASM compilation probe and ten passing disposable authentication checks. The fresh faucet read is empty and the owner confirmed faucet-only funding; docs/evidence/m2/operation-review.md records remaining prerequisites. M2 has not passed; M3–M7 remain unstarted. No cloud resources were rented, no template deployed, no token transferred, and no social/forum post sent. Changes and evidence are retained in local commits only.
+As of the October 2 continuation, M1 remains accepted; BASE-01 and UX-01a are completed with fresh verification. PM-00 has a prepared protocol and zero human trials. M2 has an unfunded preflight, original WASM compilation probe and ten passing disposable authentication checks. The recorded public faucet read is empty; no claim was attempted. The owner requested faucet-funded automated testing and a production funding path: docs/funding-plan.md now defines FUND-01/TEST-01, local M2a and public M2b, and future treasury funding. Neither gate has passed; M3–M7 remain unstarted, with deterministic/local development permitted under the revised dependencies. No cloud resources were rented, no template deployed, no token transferred, and no social/forum post sent. Funding automation is planned, not implemented.
 
 ## 15. Source map for implementers
 

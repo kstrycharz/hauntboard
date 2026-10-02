@@ -18,7 +18,7 @@ Coding agents must also read [AGENTS.md](AGENTS.md).
 
 **Review follow-ups:** BASE-01 is recorded in the local `m1-accepted` tag and [source-baseline note](docs/source-baseline.md). UX-01a promotes the guided demo, ends the participant path at the receipt, explicitly labels the curator transition, and explains optional testnet rewards. Fresh checks pass: seven unit tests and 22 Chromium/Firefox browser tests, including keyboard, reduced motion and accessibility at 360/768/1440 px. [PM-00 trial protocol](docs/research/mock-comprehension-trials.md) is ready; zero human trials have been completed.
 
-M3–M7 are waiting for M2. This repository is not a live testnet beta or a completed contest entry.
+**Funding plan:** [automated tests, public testnet and production migration](docs/funding-plan.md) now specify faucet configuration, claim/recovery logic, isolated CI funding, and future treasury funding. FUND-01/TEST-01 are the next implementation packages. Deterministic work may start now; M3–M5 integration follows M2a local proof, while public deployment still requires M2b public proof. The public empty-faucet observation is not a project-wide development blocker. Funding automation and both new gates are not yet implemented/passed. This repository is not a live testnet beta or a completed contest entry.
 
 ## Run the mock
 

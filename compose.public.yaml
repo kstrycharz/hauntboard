@@ -1,0 +1,12 @@
+# Reviewable deployment overlay; APP_DOMAIN and owner-approved infrastructure are required.
+services:
+  api:
+    environment:
+      APP_ORIGIN: 'https://${APP_DOMAIN:?Set the approved application domain}'
+      LOCAL_HTTP_PREVIEW: 'false'
+  web:
+    ports: !override ['80:8080', '443:8443']
+    environment:
+      APP_DOMAIN: '${APP_DOMAIN:?Set the approved application domain}'
+    volumes:
+      - ./infra/caddy/Caddyfile.public:/etc/caddy/Caddyfile:ro

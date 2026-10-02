@@ -6,7 +6,7 @@ async function screenshot(page: Page, name: string) {
   await page.screenshot({ path: `${evidence}/${name}.png`, fullPage: true });
 }
 async function seal(page: Page, address = true) {
-  await page.goto('/#desk');
+  await page.goto('/demo#desk');
   await page.getByRole('button', { name: 'Use a sample story' }).click();
   if (address) await page.getByRole('button', { name: 'Use sample recipient' }).click();
   await page.getByRole('button', { name: 'Seal submission' }).click();
@@ -42,7 +42,7 @@ test('whole fixture journey, receipt export, privacy, reset, and walkthrough', a
         : undefined,
   });
   const tour = await context.newPage();
-  await tour.goto('/');
+  await tour.goto('/demo');
   await expect(tour.getByText('Mock demo — no funds move', { exact: true })).toBeVisible();
   if (browserName === 'chromium') await screenshot(tour, '01-entrance-1440');
   await tour.getByRole('button', { name: 'Try the guided demo' }).click();
@@ -100,7 +100,7 @@ test('whole fixture journey, receipt export, privacy, reset, and walkthrough', a
 test('bounds, optional recipient, no-account empty states, and safe text rendering', async ({
   page,
 }) => {
-  await page.goto('/#desk');
+  await page.goto('/demo#desk');
   await page.getByRole('button', { name: 'Seal submission' }).click();
   await expect(page.getByRole('alert')).toContainText('Write a story');
   await page.getByLabel('Your story').fill('👻'.repeat(501));
@@ -124,7 +124,7 @@ test('bounds, optional recipient, no-account empty states, and safe text renderi
 test('outages, delayed inclusion, key failure, wallet failure, and ambiguous reward', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto('/demo');
   await condition(page, 'network-down');
   await page.getByRole('button', { name: 'Return to submission desk' }).click();
   await page.getByRole('button', { name: 'Use a sample story' }).click();
@@ -178,7 +178,7 @@ for (const width of [360, 768, 1440])
   test(`layout and AA accessibility at ${width}px`, async ({ page, browserName }) => {
     await page.setViewportSize({ width, height: 1000 });
     for (const route of ['entrance', 'desk', 'receipt', 'inbox', 'reward', 'privacy', 'recovery']) {
-      await page.goto(`/#${route}`);
+      await page.goto(`/demo#${route}`);
       await page.evaluate(() => document.fonts.ready);
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
@@ -224,7 +224,7 @@ for (const width of [360, 768, 1440])
   });
 test('keyboard-only core journey and reduced motion', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/');
+  await page.goto('/demo');
   expect(
     await page
       .locator('.floating-letter')

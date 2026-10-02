@@ -7,8 +7,9 @@ import '@fontsource/dm-sans/latin-500.css';
 import '@fontsource/dm-sans/latin-600.css';
 import './styles.css';
 import { App } from './App';
+import { LiveApp } from './LiveApp';
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    {window.location.pathname.startsWith('/demo') ? <App /> : <LiveApp />}
   </React.StrictMode>,
 );

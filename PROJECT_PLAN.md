@@ -10,7 +10,7 @@ Prepared October 2, 2026 for Kyle. Target: Tari's October **Spooky Secrets** con
 
 ### PM and architect review — October 2, 2026
 
-**Decision:** accept M1 as the interactive frontend milestone. Preserve the haunted-post-office visual identity, guided journey, privacy inspector, and explicit failure states. This is a completed product prototype, not a working privacy MVP or public-testnet release. Browser encryption, live chain receipts, and native private rewards remain unproved; M2 has not passed.
+**Decision:** accept M1 as the interactive frontend milestone. Preserve the haunted-post-office visual identity, guided journey, privacy inspector, and explicit failure states. This is a completed product prototype, not a working privacy MVP or public-testnet release. This paragraph records the M1 review baseline. Subsequent implementation status is recorded below; M2a has now passed locally, while M2b public proof remains open.
 
 The review inspected the frontend/domain code, template compilation probe, milestone reports, and desktop/mobile screenshots. All seven unit tests were rerun in Docker and passed. The M1 evidence reports 22 passing Chromium/Firefox tests; that full suite was not rerun during this review. No external user comprehension trials have been completed.
 
@@ -445,11 +445,11 @@ Assumption: one primary builder using coding agents, approximately **102–148 f
 | Milestone | Dates (2026) | Hours | Deliverable / exit condition | Dependency | Status |
 |---|---|---:|---|---|---|
 | M1 Frontend mockup | Oct 2–4 | 12–18 | Clickable themed journey and browser/visual evidence | This plan | Complete Oct 2 — docs/evidence/m1/README.md |
-| M2 Tari feasibility | Oct 5–6 | Re-estimate after receipt publication | M2a local faucet/engine/two-wallet proof; M2b public privacy/receipt proof | M1 | 42 funding tests, six engine tests, actual local faucet/private transfer/spend and restart pass; local receipt publication/call remains; both gates open — docs/evidence/m2/local-wallet.md |
-| M3 Foundation | Oct 7–10 | 20–28 | Containers, migrations, browser/API trust contracts, crypto/recovery, receipt template tests | M2a; deterministic preparation may start now | Not started |
-| M4 Working vertical slice | Oct 11–15 | 20–28 | One room/curator: browser encryption → durable ciphertext → independently verified chain receipt → local decrypt → private reward | M3 | Not started |
-| M5 Adversarial QA | Oct 16–20 | 18–26 | Privacy/authorization/retry/recovery tests and fixes; scope freeze | M4 | Not started |
-| M6 Deploy and trial | Oct 21–25 | 10–16 | Domain/TLS, restore drill, 48-hour soak, three user trials | M5 + M2b | Not started |
+| M2 Tari feasibility | Oct 5–6 | Re-estimate after receipt publication | M2a local faucet/engine/two-wallet proof; M2b public privacy/receipt proof | M1 | M2a passed: local faucet/private transfer/spend, original publication/call and recovery; M2b public proof open — docs/evidence/m2/local-capability.md |
+| M3 Foundation | Oct 7–10 | 20–28 | Containers, migrations, browser/API trust contracts, crypto/recovery, receipt template tests | M2a | Core implemented and locally verified; public release gates remain |
+| M4 Working vertical slice | Oct 11–15 | 20–28 | One room/curator: browser encryption → durable ciphertext → independently verified chain receipt → local decrypt → private reward | M3 | Real isolated-chain flow passed; docs/evidence/m2/local-app-journey.json |
+| M5 Adversarial QA | Oct 16–20 | 18–26 | Privacy/authorization/retry/recovery tests and fixes; scope freeze | M4 | Core negative/recovery/concurrency tests pass; independent/public review still required |
+| M6 Deploy and trial | Oct 21–25 | 10–16 | Domain/TLS, restore drill, 48-hour soak, three user trials | M5 + M2b | Production local preview running; public TLS prepared; drills/trials/soak open |
 | M7 Contest release | Oct 26–29 | 10–14 | Tagged release, source, demo video, submission artifacts, final gate review | M6 | Not started |
 | Submission buffer | Oct 30–31 | Reserved | Owner publishes by internal target; availability/support and edits | M7 | Not started |
 
@@ -468,8 +468,8 @@ Roles below are work assignments, not a requirement to create many concurrent ch
 | UX-01a / frontend + PM | Completed October 2: primary guided demo, participant/curator separation, optional-reward language | UX-01 | Updated screenshots/walkthrough; 7 unit + 22 browser tests pass; M1 acceptance retained |
 | PM-00 / PM | Protocol prepared; three human comprehension/usefulness trials still pending, including mobile | UX-01; use UX-01a when available | docs/research/mock-comprehension-trials.md; zero completed human trials |
 | INT-01 / architect | Execute M2 compatibility and stealth transfer spike | UX-01 | Versions, sanitized requests, tx receipts, receiver scan/spend |
-| FUND-01 / integration | In progress: policy, SQLite ledger, released-wallet adapter and local funding CLI implemented | M2 preflight | 42 passing funding/RPC/adapter tests; actual two-wallet faucet bootstrap and CLI reuse; docs/evidence/m2/local-wallet.md |
-| TEST-01 / QA + infra | In progress: pinned engine and full local-network profiles plus CI jobs implemented | M2 preflight | Six engine tests; actual wallet private reward/memo recovery, receiver spend, observer inspection and restart without resubmission pass; receipt publication/call remains; M2a open |
+| FUND-01 / integration | In progress: policy, SQLite ledger, released-wallet adapter and local funding CLI implemented | M2 preflight | 50 passing funding/config/RPC/adapter tests; actual two-wallet faucet bootstrap and CLI reuse; docs/evidence/m2/local-wallet.md |
+| TEST-01 / QA + infra | In progress: pinned engine and full local-network profiles plus CI jobs implemented | M2 preflight | Six engine tests; actual wallet private reward/memo recovery, receiver spend, observer inspection and restart without resubmission pass; receipt publication/call and full local app journey pass; M2a accepted |
 | FUND-02 / integration | Planned: protected public faucet funding and live verification | FUND-01, TEST-01 | Bounded faucet-origin public run; M2b evidence; infrastructure failures correctly classified |
 | FUND-03 / operations | Planned: beta funding status, low-balance behavior and refill runbook | FUND-01, API-01; before OPS-02 | Intake/payout pause and reserve/recovery checks |
 | PROD-01 / architect | Future mainnet treasury and migration design; outside October implementation | Public beta evidence and separate mainnet scope | Treasury ownership/budgets, faucet disabled, fresh keys/manifests and independent review |
@@ -497,7 +497,7 @@ Every implementation handoff must contain: changed files, decisions, exact valid
 
 ### Ready-to-use agent prompts
 
-**Next work package:** Read AGENTS.md, PROJECT_PLAN.md, docs/funding-plan.md and docs/evidence/m2/local-wallet.md. Complete original receipt-template publication through the Wallet Web UI and a local create/call with source-to-published-byte linkage, then review M2a. Preserve actual faucet-origin two-wallet funding, private memo/scan/spend, bounded fees, durable operation journals and no-resubmit recovery. Hosted CI still needs its first run. Prepare protected public verification in FUND-02; public spending requires exact reviewed targets and budgets. M3–M5 integration follows M2a; public release requires M2b. PM-00 human trials remain independent.
+**Next work package:** Public M2b operation review with faucet-only accounts and measured fee caps; wallet backup/restore, off-host custody and rollback drills; first hosted CI run; PM-00 trials and release soak. Application core and real local journey are implemented. Preserve unknown-outcome freezes, exact transaction journals and separate participant/operator wallets. Public mutations remain disabled until public proof and release prerequisites pass.
 
 **Architect integration agent:** “Execute INT-01/M2. Treat the supplied Tari source snapshots as read-only references. Establish a released version set and demonstrate a native stealth transfer between independently keyed wallets, recipient scan and spend, encrypted memo recovery, public-field inspection, template publication/call, fees and failure semantics. Write an evidence-based go/no-go ADR. Never substitute mocked or public payments.”
 
@@ -675,7 +675,7 @@ The plan can begin immediately without these answers. Resolve each by its needed
 | Prize payout address and eligibility confirmation | Before submission | Unfilled, must be owner supplied |
 | Bluesky or Reddit account and posting authorization | Before external posting | Prepare drafts only |
 
-As of the October 2 continuation, M1 remains accepted; BASE-01 and UX-01a are complete. PM-00 has a prepared protocol and zero human trials. M2 has an unfunded public preflight and ten disposable authentication checks. FUND-01/TEST-01 now include 42 funding/RPC/adapter tests, six real-engine tests, a pinned isolated validator/indexer, two persistent WebAuthn-authenticated wallets, actual faucet bootstrap and CLI reuse, native concealed reward/memo recovery, independent receiver spend, public-field inspection on the local indexer, and restart recovery without resubmission. Local receipt publication/call remains required; neither M2a nor M2b has passed. M3–M7 remain unstarted, with deterministic preparation permitted. No public funds moved, cloud resources rented, or social/forum posts sent. See docs/evidence/m2/local-wallet.md for commands and proof limits.
+October 2 implementation update: M1 remains accepted and M2a passes locally, including native Wallet UI publication/create/read, concealed transfers and receiver spending. M3–M5 core application is implemented and its real local-chain journey passed: browser JWE, clean-browser key restore, verified receipt, native private reward and recipient scanning. Recovery submitted zero new transactions. Checks pass: 11 web units, 50 funding/config units, 14 PostgreSQL API/worker tests, six spike engine tests, four room engine tests and 24 Chromium/Firefox tests. Production-built Esmeralda app runs at localhost:8180 with public mutation flags false; participant companion runs at 5103, operator wallets at 5101/5102. M2b, human trials, operational recovery drills, public HTTPS release and soak remain open. Hosted CI is prepared but has not run. No public funds moved or external posts were sent. See docs/evidence/m2/local-capability.md, docs/evidence/m2/local-app-journey.json and docs/runbooks/application.md.
 
 ## 15. Source map for implementers
 

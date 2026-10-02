@@ -1,6 +1,6 @@
 # Production Esmeralda configuration
 
-October 2, 2026. Prepared wallet infrastructure, not a completed live application or approved release. Production is the intended Esmeralda beta; mainnet is outside scope. M2a receipt publication/call, M2b public proof, application backend and later release gates remain open.
+October 2, 2026. Production-built application and wallet infrastructure are available locally. M2a passed and the actual application flow is proved on the isolated local chain. M2b public proof and operational release gates remain open; public mutations are paused. Mainnet is outside scope.
 
 Use Tari's maintained `https://ootle-indexer-a.tari.com/` as the primary indexer and `https://ootle-indexer-b.tari.com/` as the secondary. The upstream wallet source lists these Esmeralda defaults; the [official wallet guide](https://ootle.tari.com/guides/setup-a-wallet/) explains the public-indexer connection. We do not run a production validator or indexer. `compose.localnet.yaml` retains both for isolated faucet-funded automated tests.
 
@@ -20,9 +20,9 @@ The initializer preserves existing files and refuses changing existing volume un
 
 Funding stays faucet-only, with automatic claims, submissions, anchoring and payouts disabled. The startup validator rejects enabling those unfinished live paths. The local funding adapter deliberately cannot execute this public configuration. Public funding requires its own deployment witness/provenance adapter, exact accounts, reviewed fee limits, scoped credentials and bounded policy. Startup/probe commands create no public accounts, submit no transactions and request no faucet tokens. Do not fund the old auth-disabled research wallets. Mainnet needs a separate treasury configuration and launch review.
 
-Observed verification is in `docs/evidence/m2/beta-indexers.json`: both Tari endpoints match Esmeralda byte 38; both beta wallets report the expected candidate version and network. Unauthenticated account reads are checked for rejection. This is read-only startup evidence, not a funded public compatibility or human-authentication pass. Four configuration tests cover wrong network/provider, unsafe endpoint URLs, premature mutation enablement and the public origin; the funding suite now has 46 passing tests.
+Observed verification is in `docs/evidence/m2/beta-indexers.json`: both Tari endpoints match Esmeralda byte 38; both beta wallets report the expected candidate version and network. Unauthenticated account reads are checked for rejection. This is read-only startup evidence, not a funded public compatibility or human-authentication pass. Four configuration tests cover wrong network/provider, unsafe endpoint URLs, premature mutation enablement and the public origin; the funding suite now has 50 passing tests.
 
-The app at port 5173 remains the guided mock. API, worker, datastore, live receipt/reward adapters, reverse proxy/TLS, production resource/health/log policy and funded public evidence still need implementation before the complete application can be deployed. The wallet profile prepares these dependencies without fabricating live product functionality.
+The production app is at http://localhost:8180/submit; the full local-chain app is at http://localhost:5173. Both include the optional payout-address field and participant/operator wallet setup. API, worker, PostgreSQL, browser crypto, native receipt/reward adapters and production reverse proxy are implemented. See [application setup](application.md). Public HTTPS and funded public proof remain pending.
 
 Stop while keeping wallet volumes:
 

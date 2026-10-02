@@ -10,10 +10,11 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
     "@fontsource/cormorant-garamond": "5.3.0",
-    "@fontsource/dm-sans": "5.3.0"
+    "@fontsource/dm-sans": "5.3.0",
+    "jose": "6.2.12",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
   },
   "devDependencies": {
     "@types/react": "19.1.16",

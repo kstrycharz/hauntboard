@@ -53,6 +53,28 @@ services:
       - engine_test_target:/target
       - rust_registry:/usr/local/cargo/registry
     command: cargo test --locked --test engine -- --test-threads=1
+  room-engine:
+    profiles: [engine]
+    build:
+      context: .
+      dockerfile: infra/docker/rust-spike.Dockerfile
+    working_dir: /workspace/templates/hauntbox-room
+    volumes:
+      - .:/workspace
+      - engine_test_target:/target
+      - rust_registry:/usr/local/cargo/registry
+    command: cargo test --locked --test room -- --test-threads=1
+  room-build:
+    profiles: [tools]
+    build:
+      context: .
+      dockerfile: infra/docker/rust-spike.Dockerfile
+    working_dir: /workspace/templates/hauntbox-room
+    volumes:
+      - .:/workspace
+      - rust_spike_target:/target
+      - rust_registry:/usr/local/cargo/registry
+    command: sh -c 'cargo build --locked --release --target wasm32-unknown-unknown && cp /target/wasm32-unknown-unknown/release/hauntbox_room.wasm hauntbox-room.wasm'
   web-preview:
     profiles: [preview]
     build:

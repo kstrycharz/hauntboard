@@ -1,0 +1,16 @@
+services:
+  browser-tests:
+    build: { context: ., dockerfile: infra/docker/local-tests.Dockerfile }
+    working_dir: /workspace
+    shm_size: 1gb
+    volumes:
+      - .:/workspace
+      - app_modules:/workspace/node_modules
+      - app_web_modules:/workspace/apps/web/node_modules
+      - app_secrets:/run/hauntbox:ro
+      - hauntbox_local_jobs:/private
+      - local_network_state:/network:ro
+    networks: [application, localtest]
+    command: [node, --experimental-strip-types, scripts/test-live-app.mjs]
+volumes:
+  local_network_state: { external: true, name: hauntbox-localtest_network_state }

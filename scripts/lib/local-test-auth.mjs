@@ -142,6 +142,9 @@ export async function openLocalWallet(browser, role, privateRoot) {
     account,
     address,
     tokenFile,
+    page,
+    cdp,
+    authenticatorId,
     async close() {
       await rpc('auth.revoke_api_key', { id: key.id }, admin);
       await context.close();

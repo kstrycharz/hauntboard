@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-02T20:14:36.891Z",
+  "network": "localnet",
+  "status": "PASSED_REAL_LOCAL_APPLICATION_JOURNEY",
+  "checks": {
+    "realAppPasskeyVerified": true,
+    "chainRoomCreatedAndVerified": true,
+    "chainReceiptConfirmed": true,
+    "reloadRecoversEncryptedSubmission": true,
+    "browserOnlyDecryption": true,
+    "nativePrivateRewardConfirmed": true,
+    "independentRecipientScannedAmountAndMemo": true,
+    "newSubmittedTransactions": 0,
+    "browserEncryptedSubmission": true,
+    "requestContainsOnlyCiphertextAndPublicContext": true,
+    "exactUploadRetryIsIdempotent": true,
+    "cleanBrowserKeyRecovery": true
+  }
+}

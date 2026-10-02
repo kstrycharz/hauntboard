@@ -1,4 +1,4 @@
-use tari_ootle_transaction::args;
+use tari_template_test_tooling::transaction::args;
 use tari_template_lib::prelude::*;
 use tari_template_test_tooling::{TemplateTest, xtr_faucet_component};
 use tari_template_test_tooling::{

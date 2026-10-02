@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-02T19:14:40.102Z",
+  "network": "localnet",
+  "status": "PASSED_LOCAL_RECEIPT_PUBLICATION_CREATE_CALL",
+  "checks": {
+    "publishedThroughRealWalletUi": true,
+    "walletFeeEstimateAndPaidFeeWithinCaps": true,
+    "sourceRebuildMatchesPublishedWasm": true,
+    "originalTemplateFoundInWallet": true,
+    "createAndGetReceiptAccepted": true,
+    "expectedSyntheticDigestReturned": true,
+    "independentlyReadFromIndexer": true
+  },
+  "sourceHash": "0ba43e04c89493b5f85b877c1562b39a2624e19d956d7e93bfff779725878f1b",
+  "wasmHash": "ba6533705ef822fa35cb097567e8bde10c20511170fd7e46887aff1ddad351a9"
+}

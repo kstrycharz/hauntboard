@@ -1184,7 +1184,6 @@ dependencies = [
 name = "hauntbox-receipt-spike"
 version = "0.1.0"
 dependencies = [
- "tari_ootle_transaction",
  "tari_template_lib",
  "tari_template_test_tooling",
 ]

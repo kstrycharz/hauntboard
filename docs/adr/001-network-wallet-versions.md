@@ -1,6 +1,6 @@
-# ADR 001 — candidate network/wallet set; compatibility decision pending
+# ADR 001 — local network/wallet set accepted; public compatibility pending
 
-Date: October 2, 2026. Status: **provisional, M2 has not passed**.
+Date: October 2, 2026. Status: **accepted for isolated local integration (M2a); provisional for public Esmeralda (M2b pending)**.
 
 Use Esmeralda for the intended beta and keep every public fixture separate from live evidence. The candidate released set is wallet **0.43.0**, template library **0.33.0**, test tooling **0.43.0**, Rust **1.97.1**, TS bindings **1.56.0**, and JS wallet client **1.24.0**. These are inspected published artifacts, not a declaration of interoperable network behavior. GitHub marks wallet v0.43.0 as a prerelease; it is an explicit preflight candidate and not approved as a release runtime.
 
@@ -19,7 +19,7 @@ Observed integration details affect the next implementation:
 5. The template macro rejects fixed-array ABI arguments. The original spike uses a `Vec<u8>` bounded to exactly 32 bytes. Freeze the full receipt ABI only after engine and live-call tests.
 6. A fresh October 2 public faucet read confirms **empty**. The owner confirmed faucet-only funding; no alternate funding source or spend budget is authorized. Do not perform an L1 burn or silently fund with mainnet assets.
 
-Decision: retain the M1 mock as the usable deliverable and continue INT-01 with funded, independently keyed and authenticated test wallets. Require a concrete sender/receiver target, fee quote and owner-approved testnet spend cap before any publication or transfer. The proposed evidence sequence is: prepare private inputs → native concealed transfer with memo → receiver detect → receiver spend → public-field inspection → publish/create/call minimal receipt → reconcile success/rejection/timeout → go/no-go review.
+Current decision: accept this released set for isolated local integration. Native faucet funding, concealed transfer/memo detection, independent receiver spend, verified indexer inspection, original Wallet UI publication/create/read and persistent recovery have passed locally. The full application also executes actual encrypted submissions, receipts and private rewards with independent recipient scanning. Public Esmeralda acceptance still requires exact targets, measured fees and reviewed faucet-only operations. The M1 fixture tour remains a separately labelled demonstration.
 
 October 2 funding-plan amendment: docs/funding-plan.md splits M2a local capability from M2b public proof. Start funding/test infrastructure and deterministic preparation now; proceed with local M3–M5 integration after M2a. Keep public beta deployment/live claims gated on M2b. Automated chain tests use faucet-origin funds; public-faucet availability must not block local tests. If the native RPC gate fails after funding, retain the compatible-wallet then bounded Rust adapter fallback. No feasibility gate has passed merely because the plan changed.
 

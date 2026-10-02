@@ -2,90 +2,67 @@
 
 **Seal your story. Prove it arrived. Reward it privately.**
 
-A haunted post office for Tari's October 2026 **Spooky Secrets** contest. The clickable mock is implemented; browser encryption, live Ootle receipts and native stealth rewards remain gated on network feasibility.
+A haunted submission room with browser encryption, original Tari Ootle inclusion receipts, curator passkeys and native private testnet rewards. The full application has passed against an isolated faucet-funded local chain. A production build runs with Esmeralda configuration; public mutations remain paused pending public proof and release gates.
 
-## Start here
+## Open the application
 
-Read [PROJECT_PLAN.md](PROJECT_PLAN.md). M1 is accepted; the next integration milestone is M2 feasibility. The plan specifies the research gates, architecture, implementation tasks, tests, operations, and contest delivery.
-
-Coding agents must also read [AGENTS.md](AGENTS.md).
-
-## Current status
-
-**M1 complete:** React + TypeScript + Vite frontend with a visitor/curator journey, deterministic typed adapter, receipt export, reward consent/outcome states, privacy inspector, recovery rehearsal, self-hosted fonts and Docker workflows. Seven unit tests and 22 Chromium/Firefox browser tests pass; supported widths are 360, 768 and 1440 px. [Acceptance evidence](docs/evidence/m1/README.md), [screen inventory](docs/screen-inventory.md), and [walkthrough](docs/evidence/m1/walkthrough.webm).
-
-**M2 preflight implemented; gate not passed:** checksum-verified wallet 0.43.0 containers start and restart with separately mounted unlock material. Wallets and public indexers agree on Esmeralda network byte 38. A fresh October 2 read confirms the faucet is empty; the owner chose faucet-only funding. Ten disposable WebAuthn/API-key checks pass, including scope enforcement, expiry and revocation. Persistent operator authentication and live privacy remain unproved. The original receipt ABI probe builds to WASM with a crate lockfile. No accounts were funded, template published, or tokens transferred. [Capability report](docs/evidence/m2/capabilities.md), [operation worksheet](docs/evidence/m2/operation-review.md), and [pending compatibility ADR](docs/adr/001-network-wallet-versions.md).
-
-**Review follow-ups:** BASE-01 is recorded in the local `m1-accepted` tag and [source-baseline note](docs/source-baseline.md). UX-01a promotes the guided demo, ends the participant path at the receipt, explicitly labels the curator transition, and explains optional testnet rewards. Fresh checks pass: seven unit tests and 22 Chromium/Firefox browser tests, including keyboard, reduced motion and accessibility at 360/768/1440 px. [PM-00 trial protocol](docs/research/mock-comprehension-trials.md) is ready; zero human trials have been completed.
-
-**Funding plan:** [automated tests, public testnet and production migration](docs/funding-plan.md) specifies faucet configuration, claim/recovery logic, isolated CI funding, and future treasury funding. FUND-01/TEST-01 are in progress; the local bootstrap job works. Deterministic work may continue now; M3–M5 integration follows M2a local proof, while public deployment still requires M2b public proof. The public empty-faucet observation does not block local development. Both gates remain open. This repository is not a live testnet beta or a completed contest entry.
-
-**FUND-01/TEST-01 in progress:** 46 funding/RPC/adapter/beta-config tests and six actual Tari engine tests pass. A pinned, isolated local validator/indexer and two independently keyed, WebAuthn-authenticated wallets now execute actual faucet bootstrap, funding-job reuse, concealed rewards with receiver memo recovery, receiver spending, and restart recovery without resubmission. The local CI workflow is implemented; hosted CI has not yet run. Original receipt publication/call is still required for M2a, and M2b public proof remains open. [Local wallet evidence and commands](docs/evidence/m2/local-wallet.md), [engine evidence](docs/evidence/m2/funding-engine.md).
-
-Run the new layers in Docker:
+The production-built website is [http://localhost:8180/submit](http://localhost:8180/submit), container `hauntbox-production-web-1`. This is the application, with an optional payout-address field and **Get a wallet** setup for both participants and operators.
 
 ```sh
-docker compose --profile tools run --rm node-tools pnpm test:funding
-docker compose --profile engine run --rm engine-tests
+docker compose -f compose.production.yaml up --build -d
 ```
 
-## Run the mock
+Its API and PostgreSQL are private. Receipt anchoring and payouts are disabled in this Esmeralda preview. `/api/funding/status` explains funding readiness without exposing operator balances; authenticated operators can inspect their private funding status. `/api/openapi.json` serves the request-schema API specification. `/health/ready` checks database readiness; it does not certify wallet or chain readiness.
 
-Production Esmeralda wallet configuration now uses Tari's maintained primary/secondary public indexers; no production indexer/validator is included. See the [configuration and operator runbook](docs/runbooks/esmeralda-beta.md). The beta wallets are authenticated and separate from local test wallets; funded public proof and the application backend remain unfinished.
-
-From this directory, with Docker Desktop using Linux containers:
+**Participant wallet:** [http://localhost:5103/](http://localhost:5103/), container `hauntbox-participant-wallet-1`. Run the companion on the participant's own computer:
 
 ```sh
-docker compose --profile mock up --build web-dev
+docker compose -f compose.participant.yaml up --build -d
 ```
 
-Open [Hauntbox locally](http://127.0.0.1:5173). Choose **Try the guided demo** for the prefilled visitor → receipt → curator → reward journey. Use **Recovery & status** to try outages and unknown outcomes. **Reset fixtures** starts over.
+The native Tari wallet creates its own keys. Register a wallet passkey, create an account, then copy **Account details → Address** into Hauntbox. The app never receives wallet spending keys or seeds. A hosted site's companion link refers to the participant's own localhost. Do not create a server-controlled wallet and describe it as participant-owned.
 
-The permanent banner says “Mock demo — no funds move.” This mock does not encrypt. Enter sample stories only; it accepts only the provided fictional recipient. State stays in tab memory and clears on reload/reset. The sample receipt is not live chain evidence.
+**Operator wallets:** receipt UI [localhost:5101](http://localhost:5101/) and reward UI [localhost:5102](http://localhost:5102/). These are separate wallets, not the application website. Follow the [Esmeralda runbook](docs/runbooks/esmeralda-beta.md) and [application setup runbook](docs/runbooks/application.md). Use a regular browser if the embedded browser cannot complete the operating system's passkey prompt.
+
+## Implementation and evidence
+
+- M1 accepted. The fixture tour remains at `/demo`, permanently marked as simulated.
+- M2a local capability passed: native faucet funding, concealed transfer/memo recovery, independent receiver spend, original template publication through the Wallet UI, verified component reads and restart recovery.
+- M3–M5 core application implemented locally: fixed-size JWE, encrypted key export/restore, immutable room configuration, signed contract access, ciphertext-only upload API, durable outbox, passkey/CSRF authorization, bounded exact payout confirmation and native wallet reconciliation.
+- Real application journey passed: actual room and receipt, encrypted submission/reload, local curator decryption, native private reward and independent recipient scanning. Restart/recovery reused existing transactions with zero new submissions.
+- Verification: 11 web unit tests, 50 funding/config/RPC tests, 14 PostgreSQL API/worker tests, six spike engine tests, four room engine tests and 24 Chromium/Firefox browser tests. Hosted CI is configured but has not yet run.
+- M2b public Esmeralda proof remains open. Public wallets are unfunded; no public funds moved. Encrypted application backup/restore passed against the populated local database and production preview. Human trials, wallet recovery/rollback drills, public HTTPS deployment and soak/release gates remain outstanding. This is not a completed public beta or contest entry.
+
+See [the project plan](PROJECT_PLAN.md), [local capability acceptance](docs/evidence/m2/local-capability.md), [full application evidence](docs/evidence/m2/local-app-journey.json), [funding plan](docs/funding-plan.md), [privacy](PRIVACY.md) and [security](SECURITY.md).
+
+## Reproduce the real local application
+
+All commands run toolchains inside Docker. Start the local chain and follow the native funding/private-transfer commands in [local wallet evidence](docs/evidence/m2/local-wallet.md). Then:
+
+```sh
+docker compose --profile tools run --rm room-build
+docker compose -f compose.localnet.yaml run --rm --no-deps integration node scripts/test-local-receipt-publication.mjs
+docker compose -f compose.localnet.yaml run --rm --no-deps -e PUBLISH_HAUNTBOX_ROOM=true integration node scripts/test-local-receipt-publication.mjs
+docker compose -f compose.app.yaml -f compose.app.localnet.yaml -f compose.app.auth.yaml up --build -d wallet-auth api worker web
+docker compose -f compose.app.yaml -f compose.app.localnet.yaml -f compose.app.browser.yaml run --build --rm --no-deps browser-tests
+```
+
+The working local application is [localhost:5173](http://localhost:5173/). CI virtual passkeys are restricted to isolated local wallets. Public/operator wallets require real human credentials. Keep the persisted private job volume to recover the same operations without resubmitting them.
 
 ## Verify in containers
 
 ```sh
-docker compose --profile tools run --rm node-tools pnpm install --frozen-lockfile
-docker compose --profile tools run --rm node-tools pnpm format:check
-docker compose --profile tools run --rm node-tools pnpm check
-docker compose --profile tools run --rm node-tools pnpm test
-docker compose --profile tools run --rm node-tools pnpm build
+docker compose --profile tools run --rm node-tools sh -c 'pnpm install --frozen-lockfile && pnpm format:check && pnpm check && pnpm test && pnpm build && pnpm audit --prod'
+docker compose -f compose.app.yaml run --rm tests
+docker compose --profile engine run --rm engine-tests
+docker compose --profile engine run --rm room-engine
 docker compose --profile test run --rm e2e
-docker compose --profile tools run --rm node-tools pnpm audit --prod
 ```
 
-For a compiled, non-root local preview:
+The standalone frontend also serves `/demo`. Avoid starting its `web-dev` while the full app owns port 5173. Stop containers with the matching Compose files and preserve volumes. Do not use `down -v` to fix a startup problem.
 
-```sh
-docker compose --profile preview up --build web-preview
-```
+## Development and license
 
-Open [the compiled preview](http://127.0.0.1:4173). Vite preview is a local M1 convenience; production serving/TLS are not configured.
+Read [AGENTS.md](AGENTS.md). Keep all package managers, Rust, databases, browser CI and Tari binaries inside Docker. Sibling Tari snapshots are read-only references. Runtime data and private material belong in named volumes or ignored private directories.
 
-Stop while preserving named volumes with `docker compose down`. The development and preview ports bind to loopback. Modules, pnpm cache, Cargo cache/targets and wallet data stay in separate named volumes.
-
-## Read-only Tari preflight
-
-This is an optional isolated research workflow, separate from the app. It exposes no wallet ports and uses authentication-disabled disposable wallets solely for the preflight. Keep it unfunded until the funded/authenticated integration package is approved and configured.
-
-```sh
-docker compose --profile tools run --rm node-tools node scripts/research-tari.mjs
-docker compose --profile tools run --rm node-tools node scripts/init-spike-secrets.mjs
-docker compose -f compose.spike.yaml up -d --build sender receiver
-docker compose -f compose.spike.yaml run --rm probe
-docker compose --profile tools run --rm rust-spike
-docker compose -f compose.spike.yaml down
-```
-
-The secret initializer preserves existing files. Do not replace unlock material for an initialized wallet or delete volumes to fix a startup problem. Full commands, scope changes, observed permissions and remaining gates are in the [M2 report](docs/evidence/m2/capabilities.md).
-
-## Development policy
-
-All development, builds, tests, databases, and Tari services run in containers. Use the existing Docker installation or a remote Docker host. Do not install project toolchains on the Windows host.
-
-The sibling folders `../tari-development` and `../tari-ootle-development` are reference snapshots, outside this repository. Do not copy them into the project or commit them.
-
-## License
-
-Original project code is [MIT](LICENSE). [Third-party notices](THIRD_PARTY_NOTICES.md) retain React and font licenses plus Tari provenance. See [privacy status](PRIVACY.md) and [security scope](SECURITY.md).
+Original code is [MIT](LICENSE). [Third-party notices](THIRD_PARTY_NOTICES.md) retain React/font licenses and Tari provenance. No mainnet funds, participant deposits or public posting are authorized by these local setup commands.

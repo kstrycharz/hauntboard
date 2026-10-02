@@ -1,0 +1,631 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Hauntbox application API",
+    "version": "0.2.0",
+    "description": "Ciphertext-only uploads and chain-verified inclusion receipts. Selected rewards disclose the recipient and amount to the authenticated operator wallet service."
+  },
+  "components": {
+    "securitySchemes": {
+      "curatorSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "hauntbox_session"
+      },
+      "lookupCapability": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Separate 256-bit receipt lookup capability. Never send in a URL."
+      }
+    }
+  },
+  "paths": {
+    "/api/rooms": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Public bounded room metadata"
+          }
+        }
+      }
+    },
+    "/api/rooms/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Public key, immutable context and actual room state"
+          }
+        }
+      }
+    },
+    "/api/rooms/{id}/challenge": {
+      "post": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Short-lived, single-use upload challenge"
+          }
+        }
+      }
+    },
+    "/api/rooms/{id}/envelopes": {
+      "post": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "submissionId": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "envelope": {
+                    "type": "string",
+                    "maxLength": 8192
+                  },
+                  "digest": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "challenge": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{43}$"
+                  },
+                  "lookupCapability": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{43}$"
+                  }
+                },
+                "required": [
+                  "submissionId",
+                  "envelope",
+                  "digest",
+                  "challenge",
+                  "lookupCapability"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Durably stored ciphertext and outbox; anchoring remains pending"
+          }
+        }
+      }
+    },
+    "/api/envelopes/{id}/status": {
+      "get": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "lookupCapability": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Private processing state; excludes ciphertext, address and reward amount"
+          }
+        }
+      }
+    },
+    "/api/receipts/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authoritatively verified inclusion data, or 404 when not anchored"
+          }
+        }
+      }
+    },
+    "/api/curator/rooms": {
+      "post": {
+        "security": [
+          {
+            "curatorSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  },
+                  "publicJwk": {
+                    "type": "object",
+                    "properties": {
+                      "kty": {
+                        "type": "string",
+                        "enum": [
+                          "RSA"
+                        ]
+                      },
+                      "n": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9_-]{512}$"
+                      },
+                      "e": {
+                        "type": "string",
+                        "enum": [
+                          "AQAB"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kty",
+                      "n",
+                      "e"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "keyThumbprint": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{43}$"
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 128
+                  },
+                  "recoveryVerified": {
+                    "type": "boolean",
+                    "enum": [
+                      true
+                    ]
+                  }
+                },
+                "required": [
+                  "title",
+                  "prompt",
+                  "publicJwk",
+                  "keyThumbprint",
+                  "capacity",
+                  "recoveryVerified"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Room creation queued; fresh passkey and CSRF required"
+          }
+        }
+      }
+    },
+    "/api/curator/rooms/{id}/envelopes": {
+      "get": {
+        "security": [
+          {
+            "curatorSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of at most 25 ciphertext envelopes and private reward states"
+          }
+        }
+      }
+    },
+    "/api/curator/rooms/{id}/close": {
+      "post": {
+        "security": [
+          {
+            "curatorSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Intake closed; chain close queued behind pending anchors"
+          }
+        }
+      }
+    },
+    "/api/curator/rewards/quote": {
+      "post": {
+        "security": [
+          {
+            "curatorSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "submissionId": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "recipient": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  },
+                  "amount": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,18}$"
+                  },
+                  "disclosureAccepted": {
+                    "type": "boolean",
+                    "enum": [
+                      true
+                    ]
+                  }
+                },
+                "required": [
+                  "submissionId",
+                  "recipient",
+                  "amount",
+                  "disclosureAccepted"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Expiring quote bound to exact recipient, amount, network and maximum fee"
+          }
+        }
+      }
+    },
+    "/api/curator/rewards/{id}/confirm": {
+      "post": {
+        "security": [
+          {
+            "curatorSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "confirmation": {
+                    "type": "string",
+                    "enum": [
+                      "SEND PRIVATE TESTNET REWARD"
+                    ]
+                  }
+                },
+                "required": [
+                  "confirmation"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "One durable reward intent queued; fresh passkey and CSRF required"
+          }
+        }
+      }
+    },
+    "/api/curator/rewards/{id}": {
+      "get": {
+        "security": [
+          {
+            "curatorSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Durable actual reward state; unknown outcomes never retry signing"
+          }
+        }
+      }
+    },
+    "/api/auth/register/options": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "bootstrapCode": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{43}$"
+                  }
+                },
+                "required": [
+                  "bootstrapCode"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "First operator registration challenge; setup code required"
+          }
+        }
+      }
+    },
+    "/api/auth/register/verify": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ceremonyId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "response": {
+                    "type": "object",
+                    "additionalProperties": {}
+                  }
+                },
+                "required": [
+                  "ceremonyId",
+                  "response"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verified passkey, HTTP-only session and CSRF token"
+          }
+        }
+      }
+    },
+    "/api/auth/login/options": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Expiring authentication challenge"
+          }
+        }
+      }
+    },
+    "/api/auth/login/verify": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ceremonyId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "response": {
+                    "type": "object",
+                    "additionalProperties": {}
+                  }
+                },
+                "required": [
+                  "ceremonyId",
+                  "response"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Fresh passkey-verified session"
+          }
+        }
+      }
+    },
+    "/api/auth/session": {
+      "get": {
+        "security": [
+          {
+            "curatorSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authenticated session and rotated CSRF token"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "security": [
+          {
+            "curatorSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Durable session revoked"
+          }
+        }
+      }
+    },
+    "/api/status": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Actual network and separate intake, anchor and payout switches"
+          }
+        }
+      }
+    },
+    "/api/funding/status": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Public readiness flags only; excludes operator balances and account identities"
+          }
+        }
+      }
+    },
+    "/api/curator/funding/status": {
+      "get": {
+        "security": [
+          {
+            "curatorSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Private operator fee reserves, concealed reward balance and current faucet availability"
+          }
+        }
+      }
+    },
+    "/health/live": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Minimal process liveness"
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Database readiness, without credentials or internal hosts"
+          }
+        }
+      }
+    }
+  }
+}

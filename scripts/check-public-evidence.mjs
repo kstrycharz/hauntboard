@@ -41,9 +41,10 @@ async function scan(path) {
     if (materials.some((secret) => bytes.includes(Buffer.from(secret)))) failures.push(target);
   }
 }
-await scan('apps/web');
+await scan('apps');
 await scan('docs');
-for (const path of ['scripts', 'tests', 'infra', 'spikes']) await scan(path);
+for (const path of ['scripts', 'tests', 'infra', 'spikes', 'packages', 'templates'])
+  await scan(path);
 const record = {
   checkedAt: new Date().toISOString(),
   inspectedFiles,
@@ -52,7 +53,7 @@ const record = {
   leaks: failures,
   status: failures.length ? 'FAILED' : 'PASSED',
   scope:
-    'Exact local preflight/beta unlock values and any mounted local CI passkey/token values in web assets, docs, scripts, tests, infra and spikes. This is not a general secret scanner or a full live data-leak test.',
+    'Exact local preflight/beta unlock values and any mounted local CI passkey/token values in apps, docs, scripts, tests, infra, spikes, packages and templates. This is not a general secret scanner or a full live data-leak test.',
 };
 await writeFile('docs/evidence/m1/secret-scan.json', JSON.stringify(record, null, 2) + '\n');
 console.log(JSON.stringify(record, null, 2));

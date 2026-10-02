@@ -1,0 +1,88 @@
+name: hauntbox-production
+x-runtime: &runtime
+  image: hauntbox-api:0.2.0
+  build: { context: ., dockerfile: infra/docker/app.Dockerfile, target: api }
+  restart: unless-stopped
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  tmpfs: ['/tmp:size=32m,mode=1777']
+  volumes: [production_secrets:/run/hauntbox:ro]
+  environment: &runtime-env
+    APP_NETWORK: esmeralda
+    APP_ORIGIN: http://localhost:8180
+    LOCAL_HTTP_PREVIEW: 'true'
+    INTENT_KEY_FILE: /run/hauntbox/intent-key
+    BOOTSTRAP_CODE_FILE: /run/hauntbox/bootstrap-code
+    DATABASE_PASSWORD_FILE: /run/hauntbox/postgres-password
+    DATABASE_HOST: database
+    SUBMISSIONS_ENABLED: 'false'
+    ANCHORING_ENABLED: 'false'
+    PAYOUTS_ENABLED: 'false'
+  networks: [application]
+services:
+  init:
+    image: hauntbox-app-init:0.2.0
+    build: { context: ., dockerfile: infra/docker/node.Dockerfile, target: tools }
+    volumes:
+      [
+        '.:/workspace:ro',
+        production_secrets:/run/hauntbox,
+        caddy_data:/caddy-data,
+        caddy_config:/caddy-config,
+      ]
+    command: [node, scripts/init-production-secrets.mjs]
+    network_mode: none
+  database:
+    image: postgres:17-bookworm@sha256:639ab7ceb90e13123085b741fb31ef493fba25463002f6da665352e7b534b652
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hauntbox
+      POSTGRES_USER: hauntbox
+      POSTGRES_PASSWORD_FILE: /run/hauntbox/postgres-password
+    volumes: [production_database:/var/lib/postgresql/data, production_secrets:/run/hauntbox:ro]
+    networks: [application]
+    depends_on:
+      init: { condition: service_completed_successfully }
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U hauntbox -d hauntbox']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  api:
+    <<: *runtime
+    depends_on:
+      database: { condition: service_healthy }
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "fetch('http://localhost:3000/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  web:
+    image: hauntbox-web:0.2.0
+    build: { context: ., dockerfile: infra/docker/app.Dockerfile, target: web }
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: ['/tmp:size=16m,mode=1777']
+    ports: ['127.0.0.1:8180:8080']
+    networks: [application, ingress]
+    volumes: [caddy_data:/data, caddy_config:/config]
+    depends_on:
+      api: { condition: service_healthy }
+networks:
+  ingress:
+  application:
+    internal: true
+volumes:
+  production_secrets:
+  production_database:
+  caddy_data:
+  caddy_config:

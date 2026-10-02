@@ -1,0 +1,40 @@
+# Prepared connection only. Mutations remain disabled until the public capability gate passes.
+services:
+  api:
+    environment:
+      WALLET_SETTINGS_FILE: /operator/wallet-settings.json
+    volumes:
+      - ./secrets/operator:/operator:ro
+    networks: [application, beta]
+  worker:
+    profiles: [live-worker]
+    image: hauntbox-api:0.2.0
+    command: [node, --experimental-strip-types, apps/worker/main.mjs]
+    user: node
+    read_only: true
+    restart: unless-stopped
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: ['/tmp:size=32m,mode=1777']
+    volumes:
+      - production_secrets:/run/hauntbox:ro
+      - ./secrets/operator:/operator:ro
+    environment:
+      APP_NETWORK: esmeralda
+      APP_ORIGIN: '${PUBLIC_APP_ORIGIN:?Set the reviewed HTTPS origin}'
+      INTENT_KEY_FILE: /run/hauntbox/intent-key
+      DATABASE_PASSWORD_FILE: /run/hauntbox/postgres-password
+      DATABASE_HOST: database
+      WALLET_SETTINGS_FILE: /operator/wallet-settings.json
+      SUBMISSIONS_ENABLED: 'false'
+      ANCHORING_ENABLED: 'false'
+      PAYOUTS_ENABLED: 'false'
+      MAX_OPERATION_FEE_UNITS: '${MAX_OPERATION_FEE_UNITS:-1000000}'
+      DAILY_FEE_UNITS: '${DAILY_FEE_UNITS:-10000000}'
+      MAX_REWARD_UNITS: '${MAX_REWARD_UNITS:-100000000}'
+      DAILY_REWARD_UNITS: '${DAILY_REWARD_UNITS:-500000000}'
+    networks: [application, beta]
+    depends_on:
+      database: { condition: service_healthy }
+networks:
+  beta: { external: true, name: hauntbox-beta_wallet-egress }

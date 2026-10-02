@@ -1509,3 +1509,119 @@ pre {
     scroll-behavior: auto !important;
   }
 }
+
+.live-main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 40px 24px 72px;
+}
+.live-main h1 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1.1;
+}
+.live-card {
+  padding: 32px;
+  border: 1px solid #443749;
+  border-radius: 18px;
+  background: #19131f;
+  margin: 28px 0;
+}
+.live-form {
+  display: grid;
+  gap: 18px;
+  max-width: 720px;
+}
+.live-main label {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+  color: #f3e9d9;
+}
+.live-main input,
+.live-main textarea,
+.live-main select {
+  width: 100%;
+  font: inherit;
+  padding: 12px;
+  border: 1px solid #79677e;
+  border-radius: 8px;
+  background: #110e17;
+  color: #f3e9d9;
+}
+.live-main .live-check {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.live-check input {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.live-error {
+  padding: 16px;
+  border: 1px solid #e3a3a3;
+  background: #38202c;
+  border-radius: 8px;
+}
+.live-notice {
+  padding: 16px;
+  border: 1px solid #86c9b5;
+  background: #192d29;
+  border-radius: 8px;
+}
+.live-code {
+  overflow-wrap: anywhere;
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+.live-story {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 24px;
+  background: #26202b;
+  border-radius: 8px;
+}
+.live-entries {
+  list-style: none;
+  padding: 0;
+}
+.live-entries li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  border-bottom: 1px solid #443749;
+  padding: 16px 0;
+}
+.live-footer {
+  text-align: center;
+  padding: 24px;
+  color: #c0afc7;
+}
+.live-main table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.live-main th,
+.live-main td {
+  text-align: left;
+  vertical-align: top;
+  padding: 16px;
+  border-bottom: 1px solid #443749;
+}
+@media (max-width: 600px) {
+  .live-card {
+    padding: 20px;
+  }
+  .live-main {
+    padding: 24px 16px;
+  }
+  .live-entries li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .site-header nav {
+    flex-wrap: wrap;
+  }
+}

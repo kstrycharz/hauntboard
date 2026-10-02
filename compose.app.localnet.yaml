@@ -1,0 +1,35 @@
+# Local chain connection only; production uses separately provisioned, scoped wallet credentials.
+services:
+  api:
+    environment:
+      WALLET_SETTINGS_FILE: /private/app-wallet-settings.json
+      PAYOUTS_ENABLED: 'true'
+      MAX_REWARD_UNITS: '10000000'
+    volumes: ['hauntbox_local_jobs:/private:ro']
+    networks: [application, localtest]
+  worker:
+    build: { context: ., dockerfile: infra/docker/node.Dockerfile, target: tools }
+    working_dir: /workspace
+    command: [node, --experimental-strip-types, apps/worker/main.mjs]
+    volumes:
+      - .:/workspace
+      - app_modules:/workspace/node_modules
+      - app_secrets:/run/hauntbox:ro
+      - hauntbox_local_jobs:/private:ro
+    environment:
+      DATABASE_URL: postgres://hauntbox:local-development-only@database:5432/hauntbox
+      APP_ORIGIN: http://localhost:5173
+      APP_NETWORK: localnet
+      INTENT_KEY_FILE: /run/hauntbox/intent-key
+      WALLET_SETTINGS_FILE: /private/app-wallet-settings.json
+      SUBMISSIONS_ENABLED: 'true'
+      ANCHORING_ENABLED: 'true'
+      PAYOUTS_ENABLED: 'true'
+      MAX_REWARD_UNITS: '10000000'
+    networks: [application, localtest]
+    depends_on:
+      database: { condition: service_healthy }
+networks:
+  localtest: { external: true, name: hauntbox-localtest_localtest }
+volumes:
+  hauntbox_local_jobs: { external: true, name: hauntbox-localtest_job_state }

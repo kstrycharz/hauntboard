@@ -30,6 +30,7 @@ docs/evidence/m1/walkthrough/
 /tari-development/
 /tari-ootle-development/
 /references/
+/templates/hauntbox-room/hauntbox-room.wasm
 
 # Local editor and OS files
 .idea/

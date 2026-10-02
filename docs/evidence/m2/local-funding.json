@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-02T18:11:11.943Z",
+  "network": "localnet",
+  "status": "PASSED_LOCAL_WALLET_FAUCET",
+  "checks": {
+    "senderAuthenticatedOwnedAccount": true,
+    "receiverAuthenticatedOwnedAccount": true,
+    "independentOwnerKeys": true,
+    "senderFundingState": "funded",
+    "senderReusesClaim": true,
+    "senderOneShotJobReusesFunding": true,
+    "receiverFundingState": "funded",
+    "receiverReusesClaim": true,
+    "receiverOneShotJobReusesFunding": true
+  }
+}

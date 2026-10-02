@@ -11,6 +11,21 @@ for (const role of ['sender', 'receiver']) {
   }
 }
 const failures = [];
+let localCiValuesChecked = 0;
+try {
+  for (const name of await readdir('/private')) {
+    let value;
+    if (name.endsWith('-passkey.json'))
+      value = JSON.parse(await readFile(`/private/${name}`, 'utf8')).privateKey;
+    else if (name.endsWith('-token')) value = (await readFile(`/private/${name}`, 'utf8')).trim();
+    if (value) {
+      materials.push(value);
+      localCiValuesChecked++;
+    }
+  }
+} catch (error) {
+  if (error.code !== 'ENOENT') throw error;
+}
 let inspectedFiles = 0;
 async function scan(path) {
   for (const entry of await readdir(path, { withFileTypes: true })) {
@@ -28,14 +43,16 @@ async function scan(path) {
 }
 await scan('apps/web');
 await scan('docs');
+for (const path of ['scripts', 'tests', 'infra', 'spikes']) await scan(path);
 const record = {
   checkedAt: new Date().toISOString(),
   inspectedFiles,
-  localUnlockValuesChecked: materials.length,
+  localUnlockValuesChecked: materials.length - localCiValuesChecked,
+  localCiValuesChecked,
   leaks: failures,
   status: failures.length ? 'FAILED' : 'PASSED',
   scope:
-    'Exact local preflight unlock values in source, built web assets, and public evidence. This is not a general secret scanner or a full live data-leak test.',
+    'Exact local preflight unlock values and any mounted local CI passkey/token values in web assets, docs, scripts, tests, infra and spikes. This is not a general secret scanner or a full live data-leak test.',
 };
 await writeFile('docs/evidence/m1/secret-scan.json', JSON.stringify(record, null, 2) + '\n');
 console.log(JSON.stringify(record, null, 2));

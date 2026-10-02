@@ -2,6 +2,8 @@
 
 October 2, 2026. **Funding core and in-process engine layer implemented; both work packages remain in progress. M2a/M2b are not passed.**
 
+This records the earlier core/engine implementation. Subsequent [local wallet evidence](local-wallet.md) adds the released-wallet adapter/job and actual isolated faucet/private transfer/spend/restart proof, with 42 total funding/RPC/adapter tests. Receipt network publication/call and M2a review remain open; M2b public proof remains open.
+
 ## Delivered
 
 - `scripts/lib/funding.mjs`: checked integer policy/env configuration, mainnet faucet rejection, SQLite funding ledger with immediate transactions, per-account claims shared across purposes, per-run/daily fee reservations, fixed-claim credit caps, confirmed-balance verification and explicit reconciliation. An unknown claim never auto-resubmits. Unresolved reservations still count after day rollover. Credentials/identity/resource/provenance failures are failures, not faucet outages.

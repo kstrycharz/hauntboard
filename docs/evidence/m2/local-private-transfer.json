@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-10-02T18:12:08.060Z",
+  "network": "localnet",
+  "status": "PASSED_LOCAL_WALLET_PRIVATE_TRANSFER",
+  "checks": {
+    "submittedTransactions": 0,
+    "independentAuthenticatedWallets": true,
+    "convertConfirmed": true,
+    "concealedInputScanned": true,
+    "rewardConfirmed": true,
+    "rewardTransactionBodyParsed": true,
+    "rewardStatementShape": [
+      {
+        "inputs": 1,
+        "outputs": 2,
+        "zeroRevealedInput": true,
+        "noRevealedOutput": false
+      }
+    ],
+    "zeroRevealedRewardAndConcealedChange": true,
+    "revealedOutputRestrictedToFeePayment": true,
+    "publicIndexerOmitsPlainMemoAndReceiverIdentity": true,
+    "publicSenderOwnerKeyVisible": false,
+    "receiverScansAmountAndMemo": true,
+    "receiverSpendConfirmed": true,
+    "independentReceiverSpend": true
+  }
+}

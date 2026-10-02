@@ -8,6 +8,8 @@ The wallet guide advertised 0.43.0 when checked. Both candidate wallet container
 
 The wallet binary is pinned by SHA-256 `61ff7763cadf6236b58ee625c656e7aec55104ef910310a7281b746853c02749`, with a pinned Ubuntu 24.04 base. The source release hashes and npm package integrity values are retained in `docs/evidence/m2/release-research.json`. Frontend/browser/Rust base images are independently pinned by digest in `infra/docker/`. The research wallet's apt package resolution is not an immutable release package set; production approval requires the final runtime digest and vulnerability review.
 
+Subsequent controlled local-wallet proof: [local-wallet.md](../evidence/m2/local-wallet.md) records successful actual faucet bootstrap, private transfer with memo recovery, independent receiver spending and restart recovery with persistent virtual passkeys. These resolve the corresponding local runtime questions. Human passkey/recovery, original template network publication/call, and public-network proof remain open; the candidate is still provisional.
+
 Observed integration details affect the next implementation:
 
 1. With the secret TOML config provided, runtime defaults selected a localhost indexer. Always set the verified indexer explicitly. `--network esme` alone did not establish actual network connectivity in this configuration.

@@ -1,6 +1,6 @@
 # Funding plan: automated tests, public testnet, and production
 
-Date: October 2, 2026. Status: FUND-01 core and TEST-01 engine layer implemented; runtime funding automation/full local-network integration remain in progress. [Implementation evidence](evidence/m2/funding-engine.md) records 32 funding tests and six faucet-funded engine tests. Owner direction: automated transaction tests use faucet funds; preserve a production path. This expands the earlier public-testnet-only development gate into separate local and public evidence gates. Mainnet spending and publication remain outside this work.
+Date: October 2, 2026. Status: FUND-01 policy, ledger, released-wallet adapter and local bootstrap job implemented; TEST-01 engine and full local-wallet profiles execute successfully. There are 42 funding/RPC/adapter tests and six faucet-funded engine tests. Actual isolated wallets demonstrate faucet bootstrap, private reward/memo recovery, receiver spend and restart recovery. Original receipt publication/call and the final M2a review remain open, as does M2b public proof. See [local wallet evidence](evidence/m2/local-wallet.md) and [engine evidence](evidence/m2/funding-engine.md). Owner direction: automated transaction tests use faucet funds; preserve a production path. Mainnet spending and publication remain outside this work.
 
 ## 1. What the faucet actually does
 

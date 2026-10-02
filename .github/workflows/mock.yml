@@ -3,6 +3,30 @@ on: [push, pull_request]
 permissions:
   contents: read
 jobs:
+  local_network:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Build isolated local wallet tests
+        run: docker compose -f compose.localnet.yaml build integration
+      - name: Start validator, indexer and authenticated wallets
+        run: docker compose -f compose.localnet.yaml up --build -d validator indexer sender receiver
+      - name: Verify local network and native resource
+        run: docker compose -f compose.localnet.yaml run --rm --no-deps probe
+      - name: Bootstrap faucet funding and verify one-shot funding jobs
+        run: docker compose -f compose.localnet.yaml run --rm --no-deps integration
+      - name: Concealed transfer, memo scanning and independent receiver spend
+        run: docker compose -f compose.localnet.yaml run --rm --no-deps integration node scripts/test-local-private-transfer.mjs
+      - name: Restart persistent chain and wallets
+        run: docker compose -f compose.localnet.yaml restart validator indexer sender receiver
+      - name: Verify readiness and recover the same private transactions
+        run: |
+          docker compose -f compose.localnet.yaml run --rm --no-deps probe
+          docker compose -f compose.localnet.yaml run --rm --no-deps integration node scripts/test-local-private-transfer.mjs
+      - name: Stop local test containers
+        if: always()
+        run: docker compose -f compose.localnet.yaml down
   engine:
     runs-on: ubuntu-24.04
     steps:

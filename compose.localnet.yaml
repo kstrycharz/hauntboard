@@ -1,0 +1,171 @@
+# Local test network only. No published ports or public peer/indexer access.
+name: hauntbox-localtest
+x-runtime: &runtime
+  image: hauntbox-localnet:0.43.0
+  build:
+    context: .
+    dockerfile: infra/docker/localnet.Dockerfile
+  networks: [localtest]
+  logging:
+    driver: none
+services:
+  identity-init:
+    <<: *runtime
+    command:
+      [
+        /opt/ootle/tari_validator_node,
+        --network,
+        localnet,
+        -b,
+        /network/validator,
+        generate-identity,
+      ]
+    volumes: [network_state:/network]
+  config-init:
+    build:
+      context: .
+      dockerfile: infra/docker/node.Dockerfile
+      target: tools
+    command: [node, scripts/init-localnet.mjs]
+    volumes:
+      [
+        '.:/workspace',
+        network_state:/network,
+        sender_unlock:/unlock-sender,
+        receiver_unlock:/unlock-receiver,
+        sender_data:/data-sender,
+        receiver_data:/data-receiver,
+      ]
+    depends_on:
+      identity-init:
+        condition: service_completed_successfully
+    network_mode: none
+  validator:
+    <<: *runtime
+    networks:
+      localtest:
+        ipv4_address: 172.30.87.2
+    command:
+      [
+        /opt/ootle/tari_validator_node,
+        --network,
+        localnet,
+        -b,
+        /network/validator,
+        --epoch-oracle-config,
+        /network/oracle.json,
+        -p,
+        epoch_oracle.oracle=Configured,
+        --listener-port,
+        '18100',
+        --json-rpc-listener-address,
+        '0.0.0.0:18101',
+        --disable-mdns,
+        --skip-sync,
+        start,
+      ]
+    volumes: [network_state:/network]
+    depends_on:
+      config-init:
+        condition: service_completed_successfully
+  indexer:
+    <<: *runtime
+    command:
+      [
+        /opt/ootle/tari_indexer,
+        --network,
+        localnet,
+        -b,
+        /network/indexer,
+        --config,
+        /network/indexer.toml,
+        --epoch-oracle-config,
+        /network/oracle.json,
+        -p,
+        epoch_oracle.oracle=Configured,
+        --api-listen-address,
+        '0.0.0.0:18300',
+        --listener-port,
+        '18301',
+        --disable-mdns,
+      ]
+    volumes: [network_state:/network]
+    depends_on: [validator]
+  sender:
+    <<: *runtime
+    command:
+      [
+        /opt/ootle/tari_ootle_walletd,
+        --network,
+        localnet,
+        --base-path,
+        /wallet,
+        --config,
+        /run/hauntbox/wallet.toml,
+        --indexer-api-url,
+        'http://indexer:18300/',
+        --listen-on,
+        '0.0.0.0:5100',
+        --auth,
+        webauthn,
+      ]
+    volumes: [sender_data:/wallet, 'sender_unlock:/run/hauntbox:ro']
+    depends_on: [indexer]
+  receiver:
+    <<: *runtime
+    command:
+      [
+        /opt/ootle/tari_ootle_walletd,
+        --network,
+        localnet,
+        --base-path,
+        /wallet,
+        --config,
+        /run/hauntbox/wallet.toml,
+        --indexer-api-url,
+        'http://indexer:18300/',
+        --listen-on,
+        '0.0.0.0:5100',
+        --auth,
+        webauthn,
+      ]
+    volumes: [receiver_data:/wallet, 'receiver_unlock:/run/hauntbox:ro']
+    depends_on: [indexer]
+  probe:
+    build:
+      context: .
+      dockerfile: infra/docker/node.Dockerfile
+      target: tools
+    volumes: ['.:/workspace', 'network_state:/network:ro']
+    networks: [localtest]
+    command: [node, scripts/probe-localnet.mjs]
+  integration:
+    build:
+      context: .
+      dockerfile: infra/docker/local-tests.Dockerfile
+    working_dir: /workspace
+    shm_size: 1gb
+    volumes:
+      [
+        '.:/workspace',
+        root_modules:/workspace/node_modules,
+        'network_state:/network:ro',
+        job_state:/private,
+      ]
+    networks: [localtest]
+    command: [node, scripts/test-localnet.mjs]
+networks:
+  localtest:
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.30.87.0/24
+          ip_range: 172.30.87.128/25
+volumes:
+  network_state:
+  sender_data:
+  receiver_data:
+  sender_unlock:
+  receiver_unlock:
+  job_state:
+  root_modules:

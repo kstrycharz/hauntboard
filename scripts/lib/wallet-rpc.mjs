@@ -61,7 +61,12 @@ export class FundingRpc {
     if (
       mutations.has(method) &&
       (!this.policy.enabled ||
-        params.account !== this.policy.account ||
+        !(
+          params.account === this.policy.account ||
+          (params.account &&
+            Object.keys(params.account).length === 1 &&
+            params.account.ComponentAddress === this.policy.account)
+        ) ||
         params.max_fee !== this.policy.maxFee)
     )
       throw new WalletRpcError('UNAPPROVED_FUNDING_REQUEST');

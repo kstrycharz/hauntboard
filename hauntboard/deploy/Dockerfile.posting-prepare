@@ -1,0 +1,2 @@
+FROM hauntboard-esmeralda-beta:0.6.9-balance
+COPY --chown=node:node hauntboard/web/browser-wallet.mjs hauntboard/web/app.mjs hauntboard/web/index.html /app/hauntboard/web/

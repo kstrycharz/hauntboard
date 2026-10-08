@@ -440,6 +440,7 @@ export async function unlock(password) {
   });
 }
 export function lock() {
+  preparationQuote = null;
   signingOwner?.fill(0);
   signingView?.fill(0);
   signingOwner = null;
@@ -472,6 +473,7 @@ function assertNoPendingWalletOperations() {
     if (
       localStorage.getItem("hauntboard-pending") ||
       localStorage.getItem(fundingKey()) ||
+      localStorage.getItem(`${fundingKey()}:prepare`) ||
       localStorage.getItem(`${fundingKey()}:stealth`)
     )
       throw new Error(
@@ -1169,6 +1171,91 @@ export function faucetStatus() {
     claimed: Boolean(material?.faucetClaimed),
     pending: Boolean(localStorage.getItem(`${fundingKey()}:stealth`)),
   };
+}
+const preparationKey = () => `${fundingKey()}:prepare`;
+let preparationQuote;
+export function postingPreparationStatus() {
+  return { pending: Boolean(localStorage.getItem(preparationKey())) };
+}
+export async function reviewPostingPreparation() {
+  return coordinated(async () => {
+    requireSigner();
+    await refreshPrivateMaterial();
+    await requireNetwork();
+    if (!privateMode()) throw new Error("Private posting is not enabled.");
+    if (needsPhraseConfirmation()) throw new Error("Confirm your recovery phrase first.");
+    if (localStorage.getItem(preparationKey())) return { pending: true };
+    await discoverExistingAccount();
+    const amount = 10000000n, available = BigInt(await balance());
+    if (available < amount + 1000000n) throw new Error("Keep at least 11 test TARI in your account to prepare 10 for posting.");
+    if ((material.coins ?? []).length > 28) throw new Error("Wallet output limit reached. Use existing posting funds first.");
+    const native = new sdk.WasmStealthCrypto(config.networkByte);
+    const generated = await native.generateOutputsStatement(Array.from({length:4}, () => sdk.createOutput({
+      destination: material.address, amount: amount / 4n, resourceAddress: NATIVE,
+      memo: {Message: "hauntboard:posting-funds:v1"},
+    })), null);
+    const inputs = await native.buildInputsStatement([], amount);
+    const statement = new sdk.StealthTransferStatement(inputs, generated.statement,
+      await sdk.signBalanceProof(native, sdk.Mask.zero(), generated.outputMask, inputs, generated.statement));
+    const account = material.account, address = material.address;
+    const build = async fee => {
+      const b = new sdk.TransactionBuilder(config.networkByte, (await provider.getCurrentEpoch()) + 5).withNonce(nonce());
+      b.withFeeInstructionsBuilder(f => f.callMethod({componentAddress:account,methodName:"pay_fee"},[sdk.amountLiteral(fee)]));
+      b.callMethod({componentAddress:account,methodName:"withdraw"},[sdk.resourceAddressLiteral(NATIVE),sdk.amountLiteral(amount)])
+        .saveVar("posting-funds").addInstruction(sdk.stealthTransferInstruction({resourceAddress:NATIVE,revealedInputBucket:"posting-funds",statement}, () => ({id:0,offset:null})));
+      b.withInputs(await ownedInputs());
+      return sdk.resolveTransaction(provider,b.buildUnsignedTransaction());
+    };
+    const dryRun = async unsigned => api("/api/indexer", {method:"POST",path:"transactions/dry-run",body:{transaction:sdk.sealTransaction(await sdk.signTransaction([signer],{...unsigned,dry_run:true}))}});
+    const dry = await dryRun(await build(1000000n));
+    if (!dry.result?.finalize?.result?.Accept) throw new Error("Tari rejected posting-funds preparation. No funds were moved.");
+    const required = BigInt(dry.result.finalize.total_fees_required ?? 0), fee = required + (required + 4n)/5n + 1000n;
+    if(required<=0n || fee>1000000n) throw new Error("Preparation fee exceeds the 1 test TARI limit.");
+    const unsigned = await build(fee), final = await dryRun(unsigned);
+    if(!final.result?.finalize?.result?.Accept) throw new Error("Tari rejected the final preparation check. No funds were moved.");
+    preparationQuote = {address, account, unsigned, amount:amount.toString(), fee:fee.toString(), expires:Date.now()+60000};
+    return {amount:amount.toString(), fee:fee.toString(), outputs:4};
+  });
+}
+export async function confirmPostingPreparation() {
+  return coordinated(async () => {
+    requireSigner();
+    await refreshPrivateMaterial();
+    await requireNetwork();
+    const key = preparationKey();
+    let pending = JSON.parse(localStorage.getItem(key) ?? "null");
+    if(!pending){
+      const q = preparationQuote;
+      if(!q || q.address!==material.address || q.account!==material.account || q.expires<Date.now()) throw new Error("Review posting preparation again before confirming.");
+      if((material.coins ?? []).length>28) throw new Error("Wallet output limit reached.");
+      pending={address:material.address, envelope:sdk.sealTransaction(await sdk.signTransaction([signer],q.unsigned)), operation:hex(crypto.getRandomValues(new Uint8Array(32)))};
+      localStorage.setItem(key,JSON.stringify(pending));
+      preparationQuote=null;
+    }
+    if(pending.address!==material.address) throw new Error("Reconcile the previous wallet preparation first.");
+    if(!pending.id){
+      const status=await api(`/api/operation?id=${pending.operation}`);
+      if(status.transactionId) pending.id=status.transactionId;
+      else pending.id=(await api("/api/browser-submit",{transaction:pending.envelope,operation:pending.operation})).transaction_id;
+      localStorage.setItem(key,JSON.stringify(pending));
+    }
+    const receipt=await sdk.watchTransaction(provider,pending.id,{timeoutMs:90000});
+    const finalized=receipt.result?.Finalized, accepted=finalized?.execution_result?.finalize?.result?.Accept;
+    if(finalized?.final_decision!=="Commit" || !accepted) {
+      if(finalized?.final_decision==="Abort") {localStorage.removeItem(key);throw new Error("Tari rejected preparation. Sync your balance before reviewing again.");}
+      throw new Error("Preparation is pending. Check its status; the original signed request is saved.");
+    }
+    const native=new sdk.WasmStealthCrypto(config.networkByte);
+    for(const [id] of accepted.up_substates){
+      if(!id.startsWith(`utxo_${NATIVE.slice(9)}_`) || material.coins.some(c=>c.id===id))continue;
+      const row=await provider.getSubstate(id);
+      if(row.verified!==true) throw new Error("Posting output verification is pending. Check preparation status again.");
+      if(await sdk.decryptOwnedUtxo(native,await signer.getViewSecret(),row,id)) material.coins.push({id,state:"ready"});
+    }
+    await persistMaterial();
+    localStorage.removeItem(key);
+    return {prepared:true,id:pending.id};
+  });
 }
 export async function requestTestFunds() {
   return coordinated(async () => {

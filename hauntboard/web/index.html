@@ -607,6 +607,12 @@
           <h3>Wallet balance</h3>
           <p id="wallet-ready-value" class="balance-value"></p>
           <p id="wallet-readiness" class="small"></p>
+          <div id="wallet-prepare-panel" hidden>
+            <p class="small">Prepare 10 test TARI as four native private outputs for posting. The rest stays in your account. Preparation exposes your account and the outputs' shared funding origin on-chain.</p>
+            <p id="wallet-prepare-review" class="small" aria-live="polite"></p>
+            <button id="wallet-prepare" class="primary full">Prepare funds for posting</button>
+            <button id="wallet-prepare-confirm" class="primary full" hidden>Confirm preparation</button>
+          </div>
           <details>
             <summary>Balance details</summary>
             <dl id="wallet-balance-details" class="review-details"></dl>

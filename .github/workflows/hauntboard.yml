@@ -18,6 +18,7 @@ jobs:
         run: docker run --rm -v "$PWD:/workspace" -w /workspace node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c node --test hauntboard/tests/delivery.test.mjs hauntboard/tests/operations-backup.test.mjs hauntboard/tests/output-ledger.test.mjs
       - name: Build application without source mount or toolchain
         run: |
+          docker volume create hauntbox_rust_registry
           docker compose -f compose.yaml --profile tools run --rm node-tools sh -c 'pnpm --dir hauntboard/browser-sdk install --ignore-workspace --frozen-lockfile && pnpm --dir hauntboard/browser-sdk build'
           docker compose -f compose.localnet.yaml -f compose.hauntboard.yaml build board-build
           docker compose -f compose.localnet.yaml -f compose.hauntboard.yaml run --rm --no-deps -w /workspace/hauntboard/wallet-recovery board-build sh /workspace/hauntboard/wallet-recovery/build.sh

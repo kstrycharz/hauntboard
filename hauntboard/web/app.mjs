@@ -1485,7 +1485,7 @@ function showWalletBalance(balance, version = ++walletBalanceVersion) {
   const totalValue = balance?.total !== undefined ? units(balance.total) : value;
   const preparationPending = browserWallet.postingPreparationStatus().pending;
   $("wallet-prepare-panel").hidden = !visible || !config.posterPrivacy || (!preparationPending && BigInt(balance?.revealed ?? 0) < 11000000n);
-  $("wallet-prepare").textContent = preparationPending ? "Check preparation status" : "Prepare funds for posting";
+  $("wallet-prepare").textContent = preparationPending ? "Check conversion status" : "Convert to posting funds";
   $("wallet-balance-value").textContent = visible ? totalValue : "";
   $("wallet-ready-value").textContent = totalValue;
   for (const id of ["compose-wallet-balance", "reply-wallet-balance"]) {
@@ -1516,7 +1516,7 @@ function showWalletBalance(balance, version = ++walletBalanceVersion) {
         : BigInt(available) > 0n
           ? "Funds are available. Review a post to check its exact fee."
           : BigInt(balance?.revealed ?? 0) > 0n
-            ? "Your funds are in a standard Tari account. Choose Prepare funds for posting to use a small amount for private posting fees."
+            ? "Your funds are in a standard Tari account. Choose Convert to posting funds to make 10 test TARI available for posting."
             : "No funds are available for posting. Check incoming funds or claim test funds when offered.";
 }
 function setWalletStep(step) {
@@ -1802,7 +1802,7 @@ function walletAction(id, action, message) {
       const faucet = browserWallet.faucetStatus();
       $("wallet-faucet").disabled = faucet.claimed && !faucet.pending;
       if (browserWallet.postingPreparationStatus().pending) {
-        $("wallet-prepare").textContent = "Check preparation status";
+        $("wallet-prepare").textContent = "Check conversion status";
         $("wallet-prepare-confirm").hidden = true;
       }
     }
@@ -1869,16 +1869,16 @@ walletAction("wallet-prepare", async () => {
   }
   const quote = await browserWallet.reviewPostingPreparation();
   if (quote.pending) return quote;
-  $("wallet-prepare-review").textContent = `Prepare ${units(quote.amount)} in ${quote.outputs} outputs. Maximum transaction fee: ${units(quote.fee)}. This uses your existing funds; it does not claim the faucet.`;
+  $("wallet-prepare-review").textContent = `Convert ${units(quote.amount)} from your account into ${quote.outputs} posting outputs. Maximum transaction fee: ${units(quote.fee)}, paid from your account in addition to the amount moved. The rest stays in your account. This uses your existing native test TARI; it does not claim the faucet.`;
   $("wallet-prepare-confirm").hidden = false;
   return quote;
-}, "Checking the preparation fee on Tari…");
+}, "Checking the conversion fee on Tari…");
 walletAction("wallet-prepare-confirm", async () => {
   const result = await browserWallet.confirmPostingPreparation();
   $("wallet-prepare-confirm").hidden = true;
   $("wallet-prepare-review").textContent = "Posting funds confirmed on Tari.";
   return result;
-}, "Preparing your posting funds on Tari…");
+}, "Converting to posting funds on Tari…");
 walletAction(
   "wallet-fund",
   async (password) => {

@@ -11,3 +11,7 @@ On 2026-10-08, Chromium and Firefox both recovered the user-supplied native seed
 Wallet create/recover/replacement/deletion regression checks passed in Chromium and Firefox. A successful broadcast/finalization of a preparation transfer is not claimed by these read-only checks; the wallet owner confirms that action in the UI.
 
 Release image: `sha256:0ef38d7ab600d5606823d1fc95887bb23252fedff0d9cccbc2bf31c2558afcb8`. Base image verified as the deployed 0.6.9-balance image. Local source and release script are preserved in this repository.
+
+## 0.6.11 conversion explanation
+
+The wallet names the action Convert to posting funds and confirmation Confirm conversion. The inline explanation covers native asset identity, account/available/total balance behavior, the 500-TARI example, account-paid fees, one output per post and visible funding links. About includes `/about#posting-funds`. Underlying transaction code is unchanged from 0.6.10. Node syntax checks passed for both changed modules. Image: `sha256:b89527c551cf9ee8520628348589b8660c3aff26f900639b3a3d4fc0a0e4ed5c`.

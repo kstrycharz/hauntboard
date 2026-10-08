@@ -608,10 +608,18 @@
           <p id="wallet-ready-value" class="balance-value"></p>
           <p id="wallet-readiness" class="small"></p>
           <div id="wallet-prepare-panel" hidden>
-            <p class="small">Prepare 10 test TARI as four native private outputs for posting. The rest stays in your account. Preparation exposes your account and the outputs' shared funding origin on-chain.</p>
+            <h3>Convert to posting funds</h3>
+            <p class="small">Move 10 test TARI from your account into funds this app can use for posting. It stays native test TARI in your wallet. Your total balance changes only by the network fee.</p>
+            <details>
+              <summary>How this conversion works</summary>
+              <p class="small">Tari creates four private outputs of 2.5 test TARI each, controlled by your wallet's one-time keys. Hauntboard uses one output per post so the posting transaction can omit your persistent wallet key and named account. Unspent change from a post is held separately.</p>
+              <p class="small">For example, a 500 test TARI account becomes 10 available for posting and approximately 490 left in the account, minus the conversion fee. The 10 is not a charge; posting fees are charged later when you publish.</p>
+              <p class="small">Conversion exposes the funding account, amount and shared output origin on-chain. Later posts can still be linked through that history. This does not guarantee anonymity. Review the fee before confirming.</p>
+              <a href="/about#posting-funds">Read about account and posting balances</a>
+            </details>
             <p id="wallet-prepare-review" class="small" aria-live="polite"></p>
-            <button id="wallet-prepare" class="primary full">Prepare funds for posting</button>
-            <button id="wallet-prepare-confirm" class="primary full" hidden>Confirm preparation</button>
+            <button id="wallet-prepare" class="primary full">Convert to posting funds</button>
+            <button id="wallet-prepare-confirm" class="primary full" hidden>Confirm conversion</button>
           </div>
           <details>
             <summary>Balance details</summary>

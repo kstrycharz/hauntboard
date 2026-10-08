@@ -1,0 +1,2 @@
+FROM hauntboard-esmeralda-beta:0.6.10-prepare
+COPY --chown=node:node hauntboard/web/app.mjs hauntboard/web/index.html hauntboard/web/about.mjs /app/hauntboard/web/

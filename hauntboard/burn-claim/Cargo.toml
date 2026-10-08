@@ -1,0 +1,29 @@
+[package]
+name = "hauntboard_burn_claim"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+anyhow = "1"
+serde_json = "1"
+hex = "0.4"
+base64 = "0.22"
+borsh = "1"
+bounded-vec = "0.9"
+ootle_byte_type = { version = "0.16", features = ["crypto"] }
+ootle-network = "0.2"
+tari_crypto = "0.24"
+tari_utilities = "0.10"
+tari_bor = "0.16"
+tari_engine_types = "=0.45.0"
+tari_ootle_common_types = "=0.45.0"
+tari_ootle_transaction = "=0.45.0"
+tari_ootle_wallet_crypto = "=0.46.0"
+tari_template_lib_types = "=0.34.0"
+tari_common_types = "=6.1.0"
+tari_sidechain = "=6.1.0"
+tari_transaction_components = "=6.1.0"
+
+[profile.dev]
+debug = 0

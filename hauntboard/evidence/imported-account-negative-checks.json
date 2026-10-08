@@ -1,0 +1,17 @@
+{
+  "status": "ACCOUNT_DISCOVERY_NEGATIVE_CHECKS_PASSED",
+  "origin": "http://localhost:8298",
+  "reports": [
+    {
+      "engine": "chromium",
+      "unverifiedRejected": true,
+      "wrongOwnerRejected": true
+    },
+    {
+      "engine": "firefox",
+      "unverifiedRejected": true,
+      "wrongOwnerRejected": true
+    }
+  ],
+  "chainWrites": 0
+}

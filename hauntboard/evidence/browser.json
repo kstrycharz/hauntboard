@@ -1,0 +1,37 @@
+{
+  "network": "localnet",
+  "checkedAt": "2026-10-06T22:24:41.066Z",
+  "checks": {
+    "twoIndependentClients": true,
+    "fullPublicContentStoredOnChain": true,
+    "independentSignerReply": true,
+    "encryptedFullEnvelopeOnChain": true,
+    "freshBrowserCannotReadSecret": true,
+    "inviteDecryptionAndEncryptedReply": true,
+    "inviteKeyRemovedFromUrl": true,
+    "encryptedBrowserKeySurvivesReload": true,
+    "wrongKey": true,
+    "tamper": true,
+    "binding": true,
+    "badPassword": true,
+    "backupRoundTrip": true,
+    "paddedBytes": 3490,
+    "realNativeStealthTipReceived": true,
+    "privateTransferMetadataInspected": true,
+    "postHtmlRenderedAsText": true,
+    "mobileNoHorizontalOverflow": true,
+    "unsignedCrossOriginMutationRejected": true,
+    "browserRuntimeErrorsAbsent": true
+  },
+  "transactions": [
+    {
+      "purpose": "private-tip",
+      "id": "e8ca3b5f64cfc26c27dbbfd5c102205db8ff00c50451da402679ed3641ea2a5d",
+      "fee": 25229
+    }
+  ],
+  "board": "component_73a0693afb23f4a132f460f032f400e7a73a5b7711a50920f352051973f8fa39",
+  "publicThread": "component_7310cb5cf667b7d6b16ebf62a325ce9c002f7086cdeb6811a0864c603894c9b3",
+  "secretThread": "component_739ef657684041e5b4d2787c0079364f13f00d391fdbc6c0a43d6793fbef9d86",
+  "status": "PASSED"
+}

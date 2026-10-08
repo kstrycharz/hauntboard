@@ -1,0 +1,23 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import assert from 'node:assert/strict';
+const path='hauntboard/evidence/build.json';
+const build=JSON.parse(await readFile(path,'utf8'));
+build.schema=3;build.capacity={threadsPerBoard:128,pagesPerThread:128,postsPerPage:16,postsPerThread:2048,envelopeBytes:4096};
+build.engineTests=JSON.parse(await readFile('hauntboard/evidence/engine.json','utf8'));
+build.sourceHashes['hauntboard/tests/paging.mjs']='';
+for(const source of ['hauntboard/tests/outage.mjs','hauntboard/template/test-engine.sh','hauntboard/schema3.md'])build.sourceHashes[source]='';
+for(const source of ['hauntboard/scripts/bootstrap.mjs','hauntboard/scripts/verify-release.mjs'])build.sourceHashes[source]='';
+for(const source of ['hauntboard/scripts/start.ps1','hauntboard/scripts/stop.ps1','hauntboard/scripts/prepare-browser-reset.mjs','hauntboard/scripts/package-release.mjs','hauntboard/tests/fresh-start.mjs','hauntboard/RELEASE.md'])build.sourceHashes[source]='';
+for(const source of ['hauntboard/web/about.html','hauntboard/web/about.mjs','hauntboard/web/about.css','hauntboard/web/mobile.css','hauntboard/web/browser-wallet.mjs','hauntboard/browser-sdk/src.mjs','hauntboard/browser-sdk/package.json','hauntboard/browser-sdk/pnpm-lock.yaml','hauntboard/browser-sdk/vite.config.mjs','.github/workflows/hauntboard.yml','hauntboard/tests/browser-wallet.mjs','hauntboard/tests/about.mjs'])build.sourceHashes[source]='';
+for(const source of Object.keys(build.sourceHashes))build.sourceHashes[source]=createHash('sha256').update(await readFile(source)).digest('hex');
+const bundle=await readFile('hauntboard/web/vendor/wallet-sdk.mjs');
+build.browserSdk={sdk:'0.7.0',wasm:'0.43.0',bundleBytes:bundle.length,bundleSha256:createHash('sha256').update(bundle).digest('hex')};
+const wasm=await readFile('hauntboard/template/hauntboard.wasm');
+const bootstrap=JSON.parse(await readFile('hauntboard/evidence/bootstrap.json','utf8'));
+assert.equal(createHash('sha256').update(wasm).digest('hex'),bootstrap.wasmHash);
+build.board=bootstrap.board;build.template=bootstrap.template;
+try{build.toolchainImages=(await readFile('hauntboard/evidence/toolchain-images.jsonl','utf8')).trim().split('\n').map(line=>JSON.parse(line));}catch(error){if(error.code!=='ENOENT')throw error;}
+build.submittedWasmHash=bootstrap.wasmHash;build.wasmBytes=wasm.length;build.checkedAt=new Date().toISOString();
+await writeFile(path,JSON.stringify(build,null,2)+'\n');
+console.log(JSON.stringify({status:'BUILD_IDENTITY_VERIFIED',schema:build.schema,sourceFiles:Object.keys(build.sourceHashes).length,wasmBytes:build.wasmBytes,template:build.template}));

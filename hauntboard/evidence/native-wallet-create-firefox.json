@@ -1,0 +1,13 @@
+{
+  "status": "NATIVE_WALLET_CREATION_PASSED",
+  "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+  "engine": "firefox",
+  "checkedAt": "2026-10-08T01:24:10.523Z",
+  "checks": {
+    "standardCipherSeed": true,
+    "phraseConfirmationRequired": true,
+    "sameAddressAfterRecovery": true,
+    "noCustomPhraseChoice": true,
+    "phraseNotSent": true
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "status": "ESMERALDA_BURN_CLAIM_CONFIRMED",
+  "checkedAt": "2026-10-07T19:54:33.479Z",
+  "network": "esmeralda",
+  "account": "component_cf94eaf5d5c6d5a35a4f648bb12e1bc7096a344150f3310557a49232bb7ea7c0",
+  "transactionId": "8701fb0b7670ea016783155643899875820aa5616787564cd5f76ed0857e7f45",
+  "maxFee": "8416",
+  "actualFee": "7416"
+}

@@ -1,0 +1,9 @@
+{
+  "status": "FAUCET_BURN_SUBMITTED",
+  "network": "esmeralda",
+  "amountMicroXtm": "7000000000",
+  "transactionId": "8784056668103657248",
+  "commitment": "9GPYK///3V+kwJNyYhEGu7Q9L3e6cSiFdfYp3+a06nA=",
+  "ownerPublicKey": "ae03dfb32a1ca5748b55d92349eb3e950b8622a2271f4ec0cb39e2ea8b756447",
+  "checkedAt": "2026-10-07T22:24:02.201Z"
+}

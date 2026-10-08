@@ -4,6 +4,10 @@ Original Hauntbox source, synthetic stories, CSS/SVG illustrations and receipt p
 
 | Dependency / asset | Use | License / retained notice |
 |---|---|---|
+| Ootle SDK 0.7.0 and Tari WASM 0.43.0 | Hauntboard browser key generation, transaction construction, signing and BOR envelopes | BSD-3-Clause; `docs/licenses/ootle-sdk-BSD-3-Clause.txt` and Tari notice below |
+| @scure/bip39 2.0.1 | Hauntboard English 24-word mnemonic generation/checksum/entropy | MIT; upstream package license retained with browser dependencies |
+| tari_ootle_wallet_crypto 0.45.0 / tari_utilities 0.10.0 | Native owner/view derivation in the recovery adapter | BSD-3-Clause; Tari notice below, dependencies fixed by wallet-recovery/Cargo.lock |
+| cbor-x 1.6.6 | Hauntboard contract argument encoding | MIT; `docs/licenses/cbor-x-MIT.txt` |
 | React / React DOM / scheduler | Browser rendering | MIT; `docs/licenses/react.txt`, `react-dom.txt`, `scheduler.txt` |
 | Cormorant Garamond | Self-hosted headings | SIL OFL 1.1; `docs/licenses/fontsource-cormorant-garamond.txt` |
 | DM Sans | Self-hosted controls | SIL OFL 1.1; `docs/licenses/fontsource-dm-sans.txt` |
@@ -25,3 +29,7 @@ Redistribution and use in source and binary forms, with or without modification,
 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# Native burn proof conversion
+
+`hauntboard/burn-claim/src/l1_proof.rs` is derived from Tari's BSD-3-Clause licensed [v0.45.0 burn claim helper](https://github.com/tari-project/tari-ootle/blob/v0.45.0/applications/tari_ootle_app_utilities/src/burn_claim_proof.rs). Copyright 2026 The Tari Project. The import refers to the published template types crate; cryptography is performed by the native Tari libraries.
+

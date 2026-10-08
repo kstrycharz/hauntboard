@@ -1,0 +1,9 @@
+{
+  "status": "PUBLIC_FAUCET_IMMEDIATE_RECYCLE_CONFIRMED",
+  "transactionId": "aedc1ef00aad7392d68ea43e3c95a351759cdf915408351e6d927733609fdd4b",
+  "depositMicrotari": "501000000",
+  "verifiedBalanceMicrotari": "1000961260",
+  "requiredFeeMicrotari": "11253",
+  "checkedAt": "2026-10-07T22:57:42.255Z",
+  "scope": "499 unused validation test TARI returned plus 2 operator test TARI; validation retains 1 test TARI and its recovery. No participant keys used and no public posts."
+}

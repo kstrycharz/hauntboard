@@ -1,5 +1,17 @@
 # Hauntbox
 
+**Imported account balance release 0.6.9:** Native seed recovery and balance sync discover an existing on-chain account after verifying ownership. The wallet header shows total holdings, with private posting outputs shown separately. A real SOOON-funded imported wallet was independently verified at 500 test TARI on both Tari nodes and displayed correctly after deployment. See [the balance repair evidence](hauntboard/evidence/imported-account-balance.md).
+
+**Wallet recovery release 0.6.8:** Create or recover from the first wallet screen. Forgotten PINs can be handled by deleting the saved browser wallet without its PIN and recovering with the native Tari seed. Recover wallet directly saves the recovered wallet in place of the existing wallet, with no replacement checkbox or separate browser profile. Source and checks are saved locally; see [wallet recovery changes](hauntboard/evidence/wallet-replace.md).
+
+**Forums release 0.6.6:** The Ubuntu HTTPS beta now uses a fresh Tari Esmeralda board component. General is the default, with Tari and Pol alongside it; the Crypt category is retired. Existing wallet identity is preserved and the previous board remains available. Source, public configuration and deployment receipts are saved under `hauntboard/`. See [the release record](hauntboard/evidence/forums-refresh.md).
+
+**Current GUI release:** The edited [GUI plan](GUI.md) is implemented and deployed at [the Hauntboard HTTPS beta](https://payroll-levels-sensitivity-bit.trycloudflare.com). Local frontend source is in `hauntboard/web/`. The [wallet PIN/reset release](hauntboard/evidence/wallet-pin-reset.md) adds six-digit keypad/numpad access and confirmed browser-wallet replacement, alongside the coordinated forum/category changes. See [GUI implementation and verification](hauntboard/evidence/gui-implementation.md) for release identity, browser evidence and remaining human usability trials.
+
+**Current Hauntboard planning:** The [delivery plan](hauntboard/DELIVERY_PLAN.md) now reflects public schema 4, native stealth fee posting and seed-phrase recovery. The [October 7 contract review](hauntboard/docs/smart-contract-review.md) adds eight prioritized fixes and validation gates. Recorded Esmeralda deployment and public wallet recovery are acknowledged; participant posting privacy verification and full release acceptance remain open.
+
+**Hauntboard pivot:** The new message-board PoC lives in [hauntboard/](hauntboard/README.md). Open [Ghost A](http://localhost:8280/) or [Ghost B](http://localhost:8281/) for real localnet posts, encrypted threads, replies and native private test tips. See [the pivot roadmap](PIVOT_PROJECT_PLAN.md) for the public-release plan. The implementation described below is the previous Hauntbox application.
+
 **Seal your story. Prove it arrived. Reward it privately.**
 
 A haunted submission room with browser encryption, original Tari Ootle inclusion receipts, participant/host PIN or passkey sign-in and native private testnet rewards. The full application has passed against an isolated faucet-funded local chain. A production build runs with Esmeralda configuration; public mutations remain paused pending public proof and release gates.

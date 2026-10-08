@@ -31,6 +31,16 @@ docs/evidence/m1/walkthrough/
 /tari-ootle-development/
 /references/
 /templates/hauntbox-room/hauntbox-room.wasm
+/hauntboard/template/hauntboard.wasm
+/hauntboard/template-public/hauntboard_public.wasm
+/hauntboard/web/vendor/
+/hauntboard/web/wallet-recovery.wasm
+/hauntboard/artifacts/
+/hauntboard/evidence/failure*.png
+/hauntboard/deploy/network.json
+/hauntboard/evidence/imported-wallet-diagnostic*.json
+/hauntboard/evidence/*.png
+/hauntboard/web/transaction-identity.wasm
 
 # Local editor and OS files
 .idea/

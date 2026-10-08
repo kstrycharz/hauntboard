@@ -1,0 +1,15 @@
+{
+  "status": "PASSED",
+  "checkedAt": "2026-10-06T20:32:29.609Z",
+  "sha256": "8f18a39552e4b1793046f35ce22c0f41c9a422a279e632963a6a5b6beab1ca81",
+  "filesVerified": 108,
+  "checks": {
+    "archiveChecksum": true,
+    "allManifestHashes": true,
+    "bundledContractAndBrowserSdk": true,
+    "startAndStopScripts": true,
+    "licensesIncluded": true,
+    "noPrivateVolumesOrCredentials": true
+  },
+  "packageRoot": ".cache/release-verify-1791318748724/hauntboard-0.2.0-local"
+}

@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-10-07T02:53:49.432Z",
+  "network": "localnet",
+  "browser": "chromium",
+  "checks": {
+    "privateOutputDiscoveryAndLocalOwnership": true,
+    "confirmedTransactionOmitsPersistentOwnerKey": true,
+    "realPublicPostAndNoStoredAuthor": true,
+    "changeQuarantinedAndNeverAutoSelected": true,
+    "staleWalletRealmPreservesSpentAndQuarantinedState": true,
+    "freshReaderNeedsNoWalletOrKey": true,
+    "encryptedCoinStateSurvivesReload": true,
+    "olderBackupDoesNotReactivateKnownSpentCoin": true,
+    "lostResponseReconcilesExactTransactionAndCoin": true,
+    "publicPrivacyDiagramAndMobile": true
+  },
+  "limitations": [
+    "Native contract tests use engine 0.45.0; this network uses 0.43.0. Public Esmeralda posting remains unverified.",
+    "IP/timing, funding origin and output graph remain observable."
+  ],
+  "transactionId": "3e2606ca2a498168492816ac775680eefe032dbaba3aececb9d657833a794d4d",
+  "status": "LOCAL_PUBLIC_PRIVACY_WALLET_PASSED"
+}

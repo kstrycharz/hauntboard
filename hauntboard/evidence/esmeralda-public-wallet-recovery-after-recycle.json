@@ -1,0 +1,16 @@
+{
+  "status": "PUBLIC_ESMERALDA_SEED_RECOVERY_CONFIRMED",
+  "checkedAt": "2026-10-07T23:08:03.845Z",
+  "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+  "originalClaimTransaction": "7ea07ec4e361e445395a9a017c34c6c77e02a753a8f320343e11fbb7bf45ba3c",
+  "verifiedReadyMicrotari": "1000000",
+  "checks": {
+    "freshBrowserPhraseRecovery": true,
+    "sameWalletAddress": true,
+    "newDevicePassword": true,
+    "verifiedOwnedBalance": true,
+    "oneTimeFaucetRemainsDisabled": true,
+    "phraseAndPasswordStayLocal": true
+  },
+  "scope": "Read-only recovery of the retained public validation wallet. No new claims, transfers or public messages."
+}

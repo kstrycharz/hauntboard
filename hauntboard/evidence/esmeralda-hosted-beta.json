@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-07T14:53:58.567Z",
+  "status": "PASSED",
+  "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+  "board": "component_ff8fd992a498d7c9b32e96fb8cb557029d2f96dbb033ae61932b45cbf9187a4b",
+  "image": "sha256:83b4a7705bafcd7f5dc562ca6719d675e6f1cdd45e6282bd71133976e3c52443",
+  "checks": [
+    "live Esmeralda witness and readable deployed board",
+    "mobile frontend wallet create/recover controls enabled",
+    "existing tunnel URL preserved",
+    "read-only preview banner removed",
+    "faucet feature enabled",
+    "backend wallet routes absent",
+    "CSRF rejects unauthorized transaction requests",
+    "public privacy verification flag remains false"
+  ],
+  "scope": "Read-only HTTP and browser UI checks. No wallet created, funds transferred, or public test content published."
+}

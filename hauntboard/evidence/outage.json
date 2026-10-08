@@ -1,0 +1,13 @@
+{
+  "network": "localnet",
+  "checkedAt": "2026-10-06T20:30:25.520Z",
+  "checks": {
+    "primaryWebsiteIndexerAndWalletOffline": true,
+    "coldPublicHistoryRecovered": true,
+    "coldEncryptedHistoryRecoveredAndDecrypted": true,
+    "newIndependentEncryptedReplyConfirmed": true,
+    "recoveredReplySurvivesReload": true,
+    "pagedSealedHistoryAndIndependentReplyWhilePrimaryOffline": true
+  },
+  "status": "PASSED"
+}

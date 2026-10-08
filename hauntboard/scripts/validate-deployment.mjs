@@ -1,0 +1,12 @@
+import {readFile} from 'node:fs/promises';
+import {networkProfile} from '../web/network-profile.mjs';
+import {serverProfile} from '../lib/server-profile.mjs';
+for(const key of ['APP_IMAGE','EDGE_IMAGE'])if(!/^[A-Za-z0-9./:_-]+@sha256:[a-f0-9]{64}$/.test(process.env[key]??''))throw new Error(`${key} must be an immutable registry digest.`);
+if(process.env.ORIGIN!==`https://${process.env.DOMAIN}`)throw new Error('Domain and canonical origin differ.');
+serverProfile({...process.env,HAUNTBOARD_PROFILE:'public'});
+const manifest=JSON.parse(await readFile(process.env.CONFIG_FILE??'hauntboard/deploy/network.json','utf8'));
+const profile=networkProfile(manifest);
+if(!/^\d+\.\d+\.\d+$/.test(manifest.providerRuntimeVersion??''))throw new Error('Pin the measured provider runtime version.');
+if(manifest.schema!==4||manifest.posterPrivacy!=='stealth-fee-v1'||manifest.posterPrivacyVerified!==true)throw new Error('Public poster privacy evidence/contract gate has not passed.');
+if(profile.network!=='esmeralda'||manifest.compatibilityVerified!==true||manifest.sdkVersion!=='0.7.0'||manifest.wasmVersion!=='0.43.0'||!/^component_[a-f0-9]{64}$/.test(manifest.board??'')||!/^[a-f0-9]{64}$/.test(manifest.template??''))throw new Error('Public compatibility/publication manifest gate has not passed.');
+console.log(JSON.stringify({status:'DEPLOYMENT_CONFIG_VALID',network:profile.network,resetIdentity:profile.resetIdentity,scope:'Configuration checks only. Public acceptance evidence is separately required.'}));

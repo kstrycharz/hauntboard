@@ -1,0 +1,47 @@
+{
+  "status": "FORUMS_RELEASE_VERIFIED",
+  "checkedAt": "2026-10-08T03:48:49.615Z",
+  "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+  "board": "component_594f90d8cb8c2d0f70d941ba1c513769727feceeabd9d2137b5b6a130a6aa28e",
+  "legacyBoards": [
+    "component_ff8fd992a498d7c9b32e96fb8cb557029d2f96dbb033ae61932b45cbf9187a4b"
+  ],
+  "resetIdentity": "esmeralda-release-2026-10-07",
+  "ready": true,
+  "faucetEnabled": true,
+  "assets": [
+    {
+      "file": "index.html",
+      "sha256": "da4b6187e3ded6e0af3b56714cb759ee8f2a4b64935ae06cfe58caafd89259ff"
+    },
+    {
+      "file": "app.mjs",
+      "sha256": "0c00ce309989128a19da4b99c51a7364f8a430ca54873ec47e8bfc913d2697c5"
+    },
+    {
+      "file": "forums.html",
+      "sha256": "efeb7df24b1b723de2cf2d16a469ecec734ae38f2e6558c871fd75f62820f5a9"
+    },
+    {
+      "file": "about.html",
+      "sha256": "0f38adc18a4d70dd309d4aeb19f92a974b6278338f51941c9bb5d88fd4565a39"
+    },
+    {
+      "file": "browser-wallet.mjs",
+      "sha256": "9966d1def48dc666fd64dcb73af87ff67447c8766cf57f142e34006c74267132"
+    },
+    {
+      "file": "output-ledger.mjs",
+      "sha256": "eaf1133f4d44c0c92c8c69f5a106a4211c819b2a136f1bea1c4c674cf08ce0af"
+    },
+    {
+      "file": "wallet-recovery.wasm",
+      "sha256": "355b477039dfe19d007398383ae816b2eccaa330b1bb912ea0049c611858277e"
+    },
+    {
+      "file": "transaction-identity.wasm",
+      "sha256": "21de1772618576ca2cf980e8dc4c416350e1f88a299874f449adbe9b995d2bef"
+    }
+  ],
+  "chainWrites": 0
+}

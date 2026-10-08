@@ -1,0 +1,64 @@
+name: Hauntboard contract artifact
+on:
+  push:
+    paths:
+      - 'hauntboard/template/**'
+      - 'hauntboard/template-public/**'
+      - 'hauntboard/POSTER_PRIVACY.md'
+      - 'hauntboard/schema3.md'
+      - 'hauntboard/scripts/*contract.mjs'
+      - 'infra/docker/rust-spike.Dockerfile'
+      - 'compose.hauntboard.yaml'
+      - 'compose.localnet.yaml'
+      - '.github/workflows/hauntboard-contract.yml'
+  pull_request:
+    paths:
+      - 'hauntboard/template/**'
+      - 'hauntboard/template-public/**'
+      - 'hauntboard/POSTER_PRIVACY.md'
+      - 'hauntboard/schema3.md'
+      - 'hauntboard/scripts/*contract.mjs'
+      - 'infra/docker/rust-spike.Dockerfile'
+      - 'compose.hauntboard.yaml'
+      - 'compose.localnet.yaml'
+      - '.github/workflows/hauntboard-contract.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: hauntboard-contract-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      COMPOSE_FILE: compose.localnet.yaml:compose.hauntboard.yaml
+      COMPOSE_PROJECT_NAME: hauntboard-contract-ci
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Initialize container build caches
+        run: |
+          docker volume create hauntbox_engine_test_target
+          docker volume create hauntbox_rust_registry
+      - name: Build digest-pinned Rust tools
+        run: docker compose build board-engine board-build
+      - name: Test contract in the real local engine
+        run: docker compose run --rm --no-deps board-engine sh /workspace/hauntboard/template-public/test-engine.sh
+      - name: Compile shipping WASM with locked dependencies
+        run: docker compose run --rm --no-deps -w /workspace/hauntboard/template-public board-build sh -c 'cargo build --locked --release --target wasm32-unknown-unknown && cp /target/wasm32-unknown-unknown/release/hauntboard_public.wasm /workspace/hauntboard/template-public/hauntboard_public.wasm'
+      - name: Package and verify contract and source checksums
+        run: |
+          docker run --rm -e GITHUB_SHA -v "$PWD:/workspace" -w /workspace node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c sh -c 'node hauntboard/scripts/package-public-contract.mjs && node hauntboard/scripts/verify-public-contract.mjs'
+      - name: Upload verified deployment candidate
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: hauntboard-public-contract-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            hauntboard/template-public/hauntboard_public.wasm
+            hauntboard/artifacts/hauntboard-public-contract-0.2.0-schema4.tar.gz
+            hauntboard/artifacts/public-contract-manifest.json
+            hauntboard/artifacts/PUBLIC_CONTRACT_SHA256SUMS.txt
+            hauntboard/evidence/public-contract-engine.json

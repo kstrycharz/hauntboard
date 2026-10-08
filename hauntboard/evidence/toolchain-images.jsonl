@@ -1,0 +1,4 @@
+{"id":"sha256:708c37cba64791d54dc2af74d4c1202289f17d3e392333a2b92f9bb77ebbe97e","tags":["hauntbox-localnet:0.43.0"],"digests":["hauntbox-localnet@sha256:708c37cba64791d54dc2af74d4c1202289f17d3e392333a2b92f9bb77ebbe97e"]}
+{"id":"sha256:b73bcc395f8a0feb69612721a2f4e2a6cf241ab9b6e0c7eaf2b2e1919287789a","tags":["hauntbox-room-engine:latest"],"digests":["hauntbox-room-engine@sha256:b73bcc395f8a0feb69612721a2f4e2a6cf241ab9b6e0c7eaf2b2e1919287789a"]}
+{"id":"sha256:1d60448d7703c75bcc415491feff728772a576a35bec1cadb9f1512fd1d1b930","tags":["hauntbox-room-build:latest"],"digests":["hauntbox-room-build@sha256:1d60448d7703c75bcc415491feff728772a576a35bec1cadb9f1512fd1d1b930"]}
+{"id":"sha256:54842e8aa7d4e4274aad972398b0faff53b33d875e1d0be8dd508df604c753da","tags":["hauntbox-localtest-v2-integration:latest"],"digests":["hauntbox-localtest-v2-integration@sha256:54842e8aa7d4e4274aad972398b0faff53b33d875e1d0be8dd508df604c753da"]}

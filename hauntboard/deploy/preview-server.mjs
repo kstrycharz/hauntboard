@@ -1,0 +1,20 @@
+import {createServer} from 'node:http';
+import {readFile} from 'node:fs/promises';
+const files=new Map([['/','index.html'],['/index.html','index.html'],['/about','about.html'],['/about.mjs','about.mjs'],['/about.css','about.css'],['/app.mjs','app.mjs'],['/crypto.mjs','crypto.mjs'],['/style.css','style.css'],['/mobile.css','mobile.css'],['/browser-wallet.mjs','browser-wallet.mjs'],['/network-profile.mjs','network-profile.mjs'],['/stealth-fee.mjs','stealth-fee.mjs'],['/wallet-recovery.mjs','wallet-recovery.mjs'],['/wallet-recovery.wasm','wallet-recovery.wasm'],['/vendor/wallet-sdk.mjs','vendor/wallet-sdk.mjs']]);
+const message='The public-board smart contract is deployed on Tari Esmeralda. This site remains a read-only preview while public posting verification is pending; wallet, faucet and posting actions are unavailable.';
+const previewScript=`for(const id of ['browser-wallet-button','wallet-button','keys-button','new-thread','confirm-publish']){const el=document.getElementById(id);if(el)el.disabled=true;}for(const form of document.querySelectorAll('form'))for(const el of form.elements)el.disabled=true;const label=document.getElementById('about-deployment-tag');if(label)label.textContent='READ-ONLY SERVER PREVIEW';const copy=document.getElementById('about-deployment-copy');if(copy)copy.textContent=${JSON.stringify(message)};`;
+const banner='<aside class="deployment-preview" role="status">'+message+'</aside>';
+const css='.deployment-preview{background:#45281c;color:#fff1c2;padding:14px 20px;font:16px/1.5 sans-serif;position:relative;z-index:100;text-align:center}';
+const json=(res,status,body)=>{res.writeHead(status,{'Content-Type':'application/json'});res.end(JSON.stringify(body));};
+createServer(async(req,res)=>{res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; connect-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");try{
+ if(req.method!=='GET'){json(res,405,{error:message});return;}
+ const path=new URL(req.url,'http://preview').pathname;
+ if(path==='/health/live'){json(res,200,{status:'live',mode:'read-only-preview'});return;}
+ if(path==='/health/ready'){json(res,503,{error:message});return;}
+ if(path==='/api/config'){let deployed={};try{deployed=JSON.parse(await readFile('/run/hauntboard/network.json','utf8'));}catch{}json(res,200,{network:'esmeralda',networkByte:38,resetIdentity:deployed.resetIdentity??'unactivated-preview',profile:'public',posterPrivacy:'stealth-fee-v1',schema:4,preview:true,faucetEnabled:false,board:deployed.board??null,template:deployed.template??null,compatibilityVerified:deployed.compatibilityVerified===true,posterPrivacyVerified:deployed.posterPrivacyVerified===true,providerRuntimeVersion:'0.45.0',provider:'Tari Esmeralda · contract deployed; posting verification pending',instance:deployed.instance??'unactivated-preview',limits:{posts:2048,pageSize:16,pages:128,threads:128,envelopeBytes:4096}});return;}
+ if(path.startsWith('/api/')){json(res,503,{error:message});return;}
+ if(path==='/preview.mjs'){res.writeHead(200,{'Content-Type':'text/javascript'});res.end(previewScript);return;}
+ if(path==='/preview.css'){res.writeHead(200,{'Content-Type':'text/css'});res.end(css);return;}
+ const name=files.get(path);if(!name){json(res,404,{error:'Not found'});return;}const type=name.endsWith('.html')?'text/html':name.endsWith('.css')?'text/css':name.endsWith('.wasm')?'application/wasm':'text/javascript';let content=await readFile('/app/hauntboard/web/'+name);if(type==='text/html')content=content.toString().replace('</head>','<link rel="stylesheet" href="/preview.css"><script type="module" src="/preview.mjs"></script></head>').replace('<body>','<body>'+banner);res.writeHead(200,{'Content-Type':type});res.end(content);
+ }catch{json(res,500,{error:'Preview asset unavailable'});}
+}).listen(8281,'0.0.0.0',()=>console.log('Read-only preview listening'));

@@ -1,0 +1,13 @@
+{
+  "status": "BURN_CLAIM_SIMULATION_CHECKED",
+  "checkedAt": "2026-10-07T18:59:34.275Z",
+  "network": "esmeralda",
+  "burnEpoch": 11974,
+  "currentEpoch": 11973,
+  "earliestRetryEpoch": 11975,
+  "simulationAccepted": true,
+  "simulationEpoch": 11973,
+  "requiredFeesMicrotari": 7879,
+  "rejection": null,
+  "transactionSubmitted": false
+}

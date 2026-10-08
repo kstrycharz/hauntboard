@@ -1,0 +1,13 @@
+# Imported native account balance repair — release 0.6.9
+
+The supplied native Tari recovery phrase derives an existing Esmeralda account. Both Tari-hosted indexers independently verified the account's owner key and 500,000,000 microtari (500 test TARI) in its native revealed-balance vault. Before this repair, Hauntboard reported total zero because recovery recorded a candidate account address but never discovered that account on chain. Its private output scan correctly found no owned private UTXOs.
+
+Account discovery now derives the canonical native account address even for previously saved wallets missing candidateAccount. It reads the real provider, treats only HTTP 404 as an absent account, requires verified state and an exact ByPublicKey owner match, and persists the discovered account under the existing wallet coordination lock. Recovery sync and balance refresh both discover it. Provider outages, unverified state and wrong ownership are not treated as empty balances.
+
+The primary wallet balance and wallet dialog now display total holdings. Compose/reply balances show total and private outputs available for posting separately. Revealed account holdings are not falsely described as ready private fee outputs. In this wallet's case the total is 500 test TARI and available private outputs are zero; conversion/spending is outside this read-only investigation.
+
+The actual funded wallet passed the staged Chromium recovery UI check and the live Firefox recovery UI check: displayed balance was 500 test TARI in both, with both public nodes agreeing. Generic native recovery/deletion tests passed in Chromium and Firefox, including nonexistent accounts, invalid seeds, pending operations and different-wallet recovery. Negative integrity checks rejected unverified and wrong-owner accounts without attaching them. Served source hashes and readiness passed after deployment.
+
+Deployed to Ubuntu at 192.168.1.200, keeping the original Cloudflare tunnel and the contract configuration. Immutable image: sha256:4f185a93c3c60fd6661b57b844c00daf8e668ca0329268c7b2689ac12439da81. Guarded release script: hauntboard/scripts/release-balance-import.sh. Source is saved locally in hauntboard/web. No transactions, faucet claims, transfers or conversions were submitted. The phrase was passed through stdin and used only in an ephemeral browser context; it is absent from source and evidence reports.
+
+Evidence: imported-wallet-diagnostic-before.json, imported-wallet-diagnostic-chromium.json, imported-wallet-diagnostic-firefox.json, imported-account-negative-checks.json and imported-account-release.json.

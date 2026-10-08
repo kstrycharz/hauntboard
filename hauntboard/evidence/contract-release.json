@@ -1,0 +1,81 @@
+{
+  "artifactVersion": "0.1.0",
+  "schema": 3,
+  "templateName": "Hauntboard",
+  "builtAt": "2026-10-07T02:25:49.578Z",
+  "wasm": {
+    "file": "hauntboard.wasm",
+    "bytes": 144884,
+    "sha256": "33f2cfae29e86f9dcf57956f246e2a260491060e9266701c5718e3cc89c0e87f",
+    "validWebAssembly": true,
+    "customSections": [
+      "tari_tdef"
+    ]
+  },
+  "build": {
+    "templateLib": "0.33.0",
+    "testedEngine": "0.43.0"
+  },
+  "target": {
+    "network": "esmeralda",
+    "networkByte": 38,
+    "observedProviderRuntime": "0.45.0",
+    "publicCompatibilityVerified": false,
+    "publishedTemplate": null,
+    "boardComponent": null,
+    "publicationTransaction": null
+  },
+  "constructor": {
+    "function": "new",
+    "arguments": [
+      {
+        "name": "title",
+        "type": "String",
+        "maxUtf8Bytes": 80
+      }
+    ]
+  },
+  "capacity": {
+    "threadsPerBoard": 128,
+    "postsPerThread": 2048,
+    "pagesPerThread": 128,
+    "postsPerPage": 16,
+    "envelopeBytes": 4096
+  },
+  "storage": {
+    "board": "Registry of thread addresses and public metadata",
+    "thread": "Thread context, page addresses and count",
+    "page": "Full public bytes or sealed ciphertext; author, nonce, parent and epoch",
+    "excluded": [
+      "Wallet secrets",
+      "Thread decryption keys",
+      "Private tips and amounts",
+      "Browser preferences"
+    ]
+  },
+  "engineEvidence": {
+    "status": "PASSED",
+    "schema": 3,
+    "checkedAt": "2026-10-07T02:24:31Z",
+    "passed": 5,
+    "failed": 0,
+    "maximumPosts": 2048,
+    "maximumPages": 128,
+    "postsPerPage": 16,
+    "maximumEnvelopeBytes": 4096,
+    "fullCapacityMaximumSizePayloads": true
+  },
+  "sourceHashes": {
+    "hauntboard/template/Cargo.toml": "c3bb7ac193c7db26971d5472b0a2f22dade3bf5539274bd1a85118186731f0c4",
+    "hauntboard/template/Cargo.lock": "5fc6ddd00e81eb6f090b85dbdf96c80cbd813fd28b48dcf077a1086ae83d2328",
+    "hauntboard/template/src/lib.rs": "9ac3a434a6942d9b109b95d7633c6d5330ea1d6a474f1f1d8413d375bbdac227",
+    "hauntboard/template/tests/board.rs": "8906808d6dce6812439daf50cdd80b9be495d6b9df4791c6ea59b6a2114ed185",
+    "hauntboard/template/test-engine.sh": "f6208eeddb26143950cbcef161d71b6a2df585fcc3272894cb57044c9d74704b",
+    "hauntboard/schema3.md": "3f60064ddc1b6cbeeaaee93e67c2fafaa49f59beba72fa9194c050be7ecf9ce8",
+    "hauntboard/template/RELEASE_CONTRACT.md": "593e3740fc7bcf8748d2d0b0e0dbb776ef4f1f881107ed4448e3f4e883105243"
+  },
+  "releaseBlockers": [
+    "Public runtime compatibility remains unverified.",
+    "Schema-3 records signer identity and does not satisfy the owner requirement for public content with private posters."
+  ]
+}

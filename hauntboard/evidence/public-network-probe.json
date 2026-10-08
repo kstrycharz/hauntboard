@@ -1,0 +1,279 @@
+{
+  "checkedAt": "2026-10-07T02:56:29.566Z",
+  "status": "READ_ONLY_LIVE_TESTNET_CHECKS_PASS",
+  "validatorRosterAgreement": true,
+  "checks": [
+    {
+      "origin": "https://ootle-indexer-a.tari.com",
+      "network": {
+        "status": 200,
+        "cors": "*",
+        "body": {
+          "network": "esmeralda",
+          "network_byte": 38,
+          "epoch": 11946
+        }
+      },
+      "identity": {
+        "status": 200,
+        "cors": "*",
+        "body": {
+          "peer_id": "12D3L7AV9KrJvYnYgkZvmMurFwMdKui6bukTFwkyfBA5iMXyiWkv",
+          "public_key": "ba34200718ca4c6a0c30f687578bcbeb2cfe9d67971c84cc2dd89f94437d0d2f",
+          "public_addresses": [
+            "/ip4/127.0.0.1/tcp/50123",
+            "/ip4/217.182.93.35/tcp/50123",
+            "/ip4/172.17.0.1/tcp/50123",
+            "/ip4/127.0.0.1/udp/50123/quic-v1",
+            "/ip4/217.182.93.35/udp/50123/quic-v1",
+            "/ip4/172.17.0.1/udp/50123/quic-v1"
+          ]
+        }
+      },
+      "info": {
+        "status": 200,
+        "cors": "*",
+        "body": {
+          "version": "0.45.0",
+          "network": "esmeralda",
+          "network_byte": 38,
+          "sidechain_id": null,
+          "current_epoch": 11946,
+          "transaction_retention_epochs": 50,
+          "transaction_receipt_retention_epochs": null,
+          "event_retention_epochs": null,
+          "index_gossiped_transactions": true,
+          "verify_substate_proofs": true,
+          "substate_cache_max_serve_lag_secs": 300,
+          "indexes_all_events": true
+        }
+      },
+      "validators": {
+        "status": 200,
+        "cors": "*",
+        "body": {
+          "epoch": 11946,
+          "validators": [
+            {
+              "public_key": "c480fe3a76f03dcdce8d7c85ac7d0001ec97b667260172709b23818c8707e503",
+              "peer_id": "12D3L7AVA24NNNezX4nPWmGksWP3mwfyMxn346MvLxZtf8FhVNjk",
+              "shard_group": {
+                "start": 1,
+                "end_inclusive": 256
+              },
+              "start_epoch": 11670,
+              "end_epoch": null,
+              "fee_claim_public_key": "3c6eebdcb2939ebad646a9d464874005aa979f1e575b72cd2a690289f10e5e50",
+              "vote_power": 1
+            },
+            {
+              "public_key": "d6da35adba3642e7d1343985d5e4f123f5230a74c5480bf2857aabe50bcd6362",
+              "peer_id": "12D3L7AVBFgcR3xBHcJ242uj4uTEeuXPM1m1BGuapDB339u9ZJzM",
+              "shard_group": {
+                "start": 1,
+                "end_inclusive": 256
+              },
+              "start_epoch": 11670,
+              "end_epoch": null,
+              "fee_claim_public_key": "3c6eebdcb2939ebad646a9d464874005aa979f1e575b72cd2a690289f10e5e50",
+              "vote_power": 1
+            },
+            {
+              "public_key": "568adadd2744c7bb3ae4c58e26e83a49a5b5af3380edfcd6b5d7af315580552f",
+              "peer_id": "12D3L7AV2cpF8HebDDceCAfExdzCrUhaajAJCisss1EmT2VJPQWa",
+              "shard_group": {
+                "start": 1,
+                "end_inclusive": 256
+              },
+              "start_epoch": 11670,
+              "end_epoch": null,
+              "fee_claim_public_key": "3c6eebdcb2939ebad646a9d464874005aa979f1e575b72cd2a690289f10e5e50",
+              "vote_power": 1
+            },
+            {
+              "public_key": "10780fe1b4d31f8350e4b881dccd8f8210ce056050ac6dd8cca88ca16710b044",
+              "peer_id": "12D3L7AUwuH5t8xS61cqbACurQEccTQVu4WoH6hRCRWbxV9oXvMy",
+              "shard_group": {
+                "start": 1,
+                "end_inclusive": 256
+              },
+              "start_epoch": 11670,
+              "end_epoch": null,
+              "fee_claim_public_key": "3c6eebdcb2939ebad646a9d464874005aa979f1e575b72cd2a690289f10e5e50",
+              "vote_power": 1
+            }
+          ]
+        }
+      },
+      "epoch-manager/stats": {
+        "status": 200,
+        "cors": "*",
+        "body": {
+          "current_epoch": 11946,
+          "consensus_epoch": 11945,
+          "current_block_height": 955687,
+          "current_block_hash": "351dbdc968e8e3faa9b3be74dd2be037f8933daecd939c5f2a64c08c56979f1c"
+        }
+      },
+      "networkMatches": true,
+      "liveWitness": {
+        "network": "esmeralda",
+        "networkByte": 38,
+        "runtimeVersion": "0.45.0",
+        "epoch": 11946,
+        "blockHeight": 955687,
+        "blockHash": "351dbdc968e8e3faa9b3be74dd2be037f8933daecd939c5f2a64c08c56979f1c",
+        "validatorCount": 4,
+        "validatorPublicKeys": [
+          "10780fe1b4d31f8350e4b881dccd8f8210ce056050ac6dd8cca88ca16710b044",
+          "568adadd2744c7bb3ae4c58e26e83a49a5b5af3380edfcd6b5d7af315580552f",
+          "c480fe3a76f03dcdce8d7c85ac7d0001ec97b667260172709b23818c8707e503",
+          "d6da35adba3642e7d1343985d5e4f123f5230a74c5480bf2857aabe50bcd6362"
+        ],
+        "proofVerificationEnabled": true,
+        "sidechainId": null
+      },
+      "liveTestnetChecksPass": true
+    },
+    {
+      "origin": "https://ootle-indexer-b.tari.com",
+      "network": {
+        "status": 200,
+        "cors": "*",
+        "body": {
+          "network": "esmeralda",
+          "network_byte": 38,
+          "epoch": 11946
+        }
+      },
+      "identity": {
+        "status": 200,
+        "cors": "*",
+        "body": {
+          "peer_id": "12D3L7AV6vXxbEEYFM1EGaoykZn6pjtX14Ht9sA6SXLXkUrNehGu",
+          "public_key": "9683a4c257555b8d6300d97459be974b84341adff4566f7b26324e59303fd732",
+          "public_addresses": [
+            "/ip4/127.0.0.1/udp/50123/quic-v1",
+            "/ip4/54.38.0.31/udp/50123/quic-v1",
+            "/ip4/172.17.0.1/udp/50123/quic-v1",
+            "/ip4/127.0.0.1/tcp/50123",
+            "/ip4/54.38.0.31/tcp/50123",
+            "/ip4/172.17.0.1/tcp/50123"
+          ]
+        }
+      },
+      "info": {
+        "status": 200,
+        "cors": "*",
+        "body": {
+          "version": "0.45.0",
+          "network": "esmeralda",
+          "network_byte": 38,
+          "sidechain_id": null,
+          "current_epoch": 11946,
+          "transaction_retention_epochs": 50,
+          "transaction_receipt_retention_epochs": null,
+          "event_retention_epochs": null,
+          "index_gossiped_transactions": true,
+          "verify_substate_proofs": true,
+          "substate_cache_max_serve_lag_secs": 300,
+          "indexes_all_events": true
+        }
+      },
+      "validators": {
+        "status": 200,
+        "cors": "*",
+        "body": {
+          "epoch": 11946,
+          "validators": [
+            {
+              "public_key": "c480fe3a76f03dcdce8d7c85ac7d0001ec97b667260172709b23818c8707e503",
+              "peer_id": "12D3L7AVA24NNNezX4nPWmGksWP3mwfyMxn346MvLxZtf8FhVNjk",
+              "shard_group": {
+                "start": 1,
+                "end_inclusive": 256
+              },
+              "start_epoch": 11670,
+              "end_epoch": null,
+              "fee_claim_public_key": "3c6eebdcb2939ebad646a9d464874005aa979f1e575b72cd2a690289f10e5e50",
+              "vote_power": 1
+            },
+            {
+              "public_key": "d6da35adba3642e7d1343985d5e4f123f5230a74c5480bf2857aabe50bcd6362",
+              "peer_id": "12D3L7AVBFgcR3xBHcJ242uj4uTEeuXPM1m1BGuapDB339u9ZJzM",
+              "shard_group": {
+                "start": 1,
+                "end_inclusive": 256
+              },
+              "start_epoch": 11670,
+              "end_epoch": null,
+              "fee_claim_public_key": "3c6eebdcb2939ebad646a9d464874005aa979f1e575b72cd2a690289f10e5e50",
+              "vote_power": 1
+            },
+            {
+              "public_key": "568adadd2744c7bb3ae4c58e26e83a49a5b5af3380edfcd6b5d7af315580552f",
+              "peer_id": "12D3L7AV2cpF8HebDDceCAfExdzCrUhaajAJCisss1EmT2VJPQWa",
+              "shard_group": {
+                "start": 1,
+                "end_inclusive": 256
+              },
+              "start_epoch": 11670,
+              "end_epoch": null,
+              "fee_claim_public_key": "3c6eebdcb2939ebad646a9d464874005aa979f1e575b72cd2a690289f10e5e50",
+              "vote_power": 1
+            },
+            {
+              "public_key": "10780fe1b4d31f8350e4b881dccd8f8210ce056050ac6dd8cca88ca16710b044",
+              "peer_id": "12D3L7AUwuH5t8xS61cqbACurQEccTQVu4WoH6hRCRWbxV9oXvMy",
+              "shard_group": {
+                "start": 1,
+                "end_inclusive": 256
+              },
+              "start_epoch": 11670,
+              "end_epoch": null,
+              "fee_claim_public_key": "3c6eebdcb2939ebad646a9d464874005aa979f1e575b72cd2a690289f10e5e50",
+              "vote_power": 1
+            }
+          ]
+        }
+      },
+      "epoch-manager/stats": {
+        "status": 200,
+        "cors": "*",
+        "body": {
+          "current_epoch": 11946,
+          "consensus_epoch": 11945,
+          "current_block_height": 955688,
+          "current_block_hash": "351dbdc968e8e3faa9b3be74dd2be037f8933daecd939c5f2a64c08c56979f1c"
+        }
+      },
+      "networkMatches": true,
+      "liveWitness": {
+        "network": "esmeralda",
+        "networkByte": 38,
+        "runtimeVersion": "0.45.0",
+        "epoch": 11946,
+        "blockHeight": 955688,
+        "blockHash": "351dbdc968e8e3faa9b3be74dd2be037f8933daecd939c5f2a64c08c56979f1c",
+        "validatorCount": 4,
+        "validatorPublicKeys": [
+          "10780fe1b4d31f8350e4b881dccd8f8210ce056050ac6dd8cca88ca16710b044",
+          "568adadd2744c7bb3ae4c58e26e83a49a5b5af3380edfcd6b5d7af315580552f",
+          "c480fe3a76f03dcdce8d7c85ac7d0001ec97b667260172709b23818c8707e503",
+          "d6da35adba3642e7d1343985d5e4f123f5230a74c5480bf2857aabe50bcd6362"
+        ],
+        "proofVerificationEnabled": true,
+        "sidechainId": null
+      },
+      "liveTestnetChecksPass": true
+    }
+  ],
+  "pinnedBuild": {
+    "sdk": "0.7.0",
+    "wasm": "0.43.0"
+  },
+  "limitations": [
+    "These are HTTPS indexer and provider-reported validator checks, not direct validator P2P connections or independent consensus verification.",
+    "Runtime compatibility with this client, reset identity, funding, CORS browser journey and private scan/spend are not proven by this read-only probe."
+  ]
+}

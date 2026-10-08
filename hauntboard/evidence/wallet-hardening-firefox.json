@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-07T02:55:39.642Z",
+  "browser": "firefox",
+  "network": "localnet",
+  "checks": {
+    "wrongPasswordPreservesActiveWallet": true,
+    "corruptBackupPreservesWallet": true,
+    "wrongNetworkPreservesWallet": true,
+    "wrongResetPreservesWallet": true,
+    "storageFailurePreservesActiveWallet": true,
+    "sameIdentityRestore": true,
+    "networkStorageIsSeparated": true,
+    "publicNetworkKeysAndBackupMetadata": true,
+    "localWalletPreservedAfterNetworkSwitch": true,
+    "differentIdentityCannotReplaceSavedWallet": true,
+    "crossTabCreateClaimsOneIdentity": true,
+    "preFundingBackupRecoversKeys": true
+  },
+  "status": "PASSED"
+}

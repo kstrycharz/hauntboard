@@ -1,0 +1,15 @@
+{
+  "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+  "engine": "chromium",
+  "checks": {
+    "headerAfterWalletCreation": true,
+    "formBalance": true,
+    "desktopAndMobileNoOverflow": true,
+    "opensWalletDetails": true,
+    "hiddenAfterLockAndReload": true,
+    "updatedAfterUnlock": true,
+    "networkFailureDoesNotShowStaleBalance": true
+  },
+  "checkedAt": "2026-10-08T01:24:48.699Z",
+  "status": "WALLET_BALANCE_UI_PASSED"
+}

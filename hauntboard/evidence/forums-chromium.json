@@ -1,0 +1,20 @@
+{
+  "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+  "engine": "chromium",
+  "status": "FORUMS_UI_PASSED",
+  "checkedAt": "2026-10-08T03:31:22.307Z",
+  "checks": {
+    "generalDefault": true,
+    "cryptRemoved": true,
+    "retiredCategoryFallback": true,
+    "threeCategories": true,
+    "categoryDeepLink": true,
+    "navigation": true,
+    "composeDefault": true,
+    "draftRecovery": true,
+    "categoryPayloadRoundTrip": true,
+    "capacityPage": true,
+    "mobileAndDesktop": true
+  },
+  "chainWrites": 0
+}

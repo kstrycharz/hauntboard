@@ -1,0 +1,14 @@
+{
+  "status": "LOCAL_PUBLIC_CONTRACT_READY",
+  "network": "localnet",
+  "schema": 4,
+  "board": "component_b08dd3dec014ac5732f1ccc630de53378dfda4f67435c68dd1ce9cd2ed4918ea",
+  "template": "b6f18698bf495522e19625fd4a2423ca488c0ec22d6e02879ef6289297979fc4",
+  "wasmSha256": "75d3ab7a2e9265e1565ddd293aa651ae7a4e7687ccc1f148d371acc0c66d9582",
+  "bytes": 141153,
+  "transactionIds": [
+    "71e2b407b80c47f72233e2b656d10da145e8027eb31f30f0bac33324afd51f31",
+    "05183242d71617df77557dbf8ef5971f9d8289af3155b19a474469c56cce21b4"
+  ],
+  "publicDeployment": false
+}

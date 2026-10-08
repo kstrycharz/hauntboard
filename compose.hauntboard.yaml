@@ -1,0 +1,162 @@
+name: hauntboard-poc
+services:
+  config-init:
+    command: [node, hauntboard/scripts/init-network.mjs]
+  indexer-independent:
+    image: hauntbox-localnet:0.43.0
+    networks: [localtest]
+    logging: { driver: none }
+    volumes: [network_state:/network]
+    depends_on: [validator]
+    command:
+      [
+        /opt/ootle/tari_indexer,
+        --network,
+        localnet,
+        -b,
+        /network/independent-indexer,
+        --config,
+        /network/indexer.toml,
+        --epoch-oracle-config,
+        /network/oracle.json,
+        -p,
+        epoch_oracle.oracle=Configured,
+        --api-listen-address,
+        '0.0.0.0:18300',
+        --listener-port,
+        '18301',
+        --disable-mdns,
+      ]
+  validator:
+    networks:
+      localtest:
+        ipv4_address: 172.30.89.2
+  receiver:
+    command:
+      [
+        /opt/ootle/tari_ootle_walletd,
+        --network,
+        localnet,
+        --base-path,
+        /wallet,
+        --config,
+        /run/hauntbox/wallet.toml,
+        --indexer-api-url,
+        'http://indexer-independent:18300/',
+        --listen-on,
+        '0.0.0.0:5100',
+        --auth,
+        webauthn,
+      ]
+  board-engine:
+    image: hauntbox-room-engine:latest
+    build: { context: ., dockerfile: infra/docker/rust-spike.Dockerfile }
+    working_dir: /workspace/hauntboard/template
+    volumes: ['.:/workspace', engine_test_target:/target, rust_registry:/usr/local/cargo/registry]
+    environment: { CARGO_TARGET_DIR: /target }
+    command: [sh, /workspace/hauntboard/template/test-engine.sh]
+  board-build:
+    image: hauntbox-room-build:latest
+    build: { context: ., dockerfile: infra/docker/rust-spike.Dockerfile }
+    working_dir: /workspace/hauntboard/template
+    volumes: ['.:/workspace', rust_spike_target:/target, rust_registry:/usr/local/cargo/registry]
+    environment: { CARGO_TARGET_DIR: /target }
+    command:
+      [
+        sh,
+        -c,
+        'cargo build --release --target wasm32-unknown-unknown && cp /target/wasm32-unknown-unknown/release/hauntboard.wasm /workspace/hauntboard/template/hauntboard.wasm',
+      ]
+  integration:
+    image: hauntbox-localtest-v2-integration:latest
+  board-bootstrap:
+    image: hauntbox-localtest-v2-integration:latest
+    build: { context: ., dockerfile: infra/docker/local-tests.Dockerfile }
+    working_dir: /workspace
+    volumes:
+      [
+        '.:/workspace',
+        root_modules:/workspace/node_modules,
+        job_state:/private,
+        network_state:/network:ro,
+        sender_companion:/sender-companion,
+        receiver_companion:/receiver-companion,
+      ]
+    networks: [localtest]
+    shm_size: 1gb
+    command: [node, hauntboard/scripts/bootstrap.mjs]
+  board-web:
+    image: node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c
+    working_dir: /workspace
+    volumes: ['.:/workspace:ro', sender_companion:/companion]
+    networks: [localtest, client]
+    ports: ['127.0.0.1:8280:8280']
+    environment:
+      {
+        PORT: '8280',
+        ROLE: sender,
+        INDEXER_URL: 'http://indexer:18300',
+        CONFIG_FILE: /companion/config.json,
+        ORIGIN: 'http://localhost:8280',
+      }
+    command: [node, hauntboard/server.mjs]
+    restart: unless-stopped
+  board-local:
+    image: node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c
+    working_dir: /workspace
+    volumes: ['.:/workspace:ro', receiver_companion:/companion]
+    networks: [localtest, client]
+    ports: ['127.0.0.1:8281:8281']
+    environment:
+      {
+        PORT: '8281',
+        ROLE: receiver,
+        INDEXER_URL: 'http://indexer-independent:18300',
+        CONFIG_FILE: /companion/config.json,
+        ORIGIN: 'http://localhost:8281',
+      }
+    command: [node, hauntboard/server.mjs]
+    restart: unless-stopped
+  board-tests:
+    image: hauntbox-localtest-v2-integration:latest
+    build: { context: ., dockerfile: infra/docker/local-tests.Dockerfile }
+    working_dir: /workspace
+    volumes:
+      [
+        '.:/workspace',
+        root_modules:/workspace/node_modules,
+        job_state:/private,
+        sender_companion:/sender-companion,
+        receiver_companion:/receiver-companion,
+        privacy_companion:/privacy-companion,
+      ]
+    networks: [localtest]
+    shm_size: 1gb
+    command: [node, hauntboard/tests/browser.mjs]
+  board-privacy:
+    image: hauntboard-delivery:0.5.0
+    build: { context: ., dockerfile: infra/docker/hauntboard.Dockerfile }
+    working_dir: /app
+    volumes: [privacy_companion:/companion]
+    networks: [localtest, client]
+    ports: ['0.0.0.0:8283:8280']
+    environment: { PORT: '8280', LOCAL_BROWSER_PORT: '8283', HAUNTBOARD_FAUCET_ENABLED: '${HAUNTBOARD_FAUCET_ENABLED:-true}', LOCAL_LAN_HOSTS: '${HAUNTBOARD_LAN_HOSTS:-192.168.1.250,192.168.2.187}', ROLE: sender, INDEXER_URL: 'http://indexer:18300', CONFIG_FILE: /companion/config.json }
+    command: [node, hauntboard/server.mjs]
+networks:
+  client: {}
+  localtest:
+    ipam:
+      config: !override
+        - subnet: 172.30.89.0/24
+          ip_range: 172.30.89.128/25
+volumes:
+  engine_test_target:
+    name: hauntbox_engine_test_target
+    external: true
+  rust_spike_target:
+  rust_registry:
+    name: hauntbox_rust_registry
+    external: true
+  sender_companion:
+  receiver_companion:
+  privacy_companion:

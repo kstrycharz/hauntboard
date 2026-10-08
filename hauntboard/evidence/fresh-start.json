@@ -1,0 +1,41 @@
+{
+  "checkedAt": "2026-10-06T20:02:07.650Z",
+  "network": "localnet",
+  "checks": {
+    "chromium:8280": {
+      "emptyBoard": true,
+      "staleBoardUrlRemoved": true,
+      "localAndSessionStorageCleared": true,
+      "oldIndexedDbWalletCleared": true,
+      "newWalletCreationVisible": true,
+      "reloadReady": true
+    },
+    "chromium:8281": {
+      "emptyBoard": true,
+      "staleBoardUrlRemoved": true,
+      "localAndSessionStorageCleared": true,
+      "oldIndexedDbWalletCleared": true,
+      "newWalletCreationVisible": true,
+      "reloadReady": true
+    },
+    "firefox:8280": {
+      "emptyBoard": true,
+      "staleBoardUrlRemoved": true,
+      "localAndSessionStorageCleared": true,
+      "oldIndexedDbWalletCleared": true,
+      "newWalletCreationVisible": true,
+      "reloadReady": true
+    },
+    "firefox:8281": {
+      "emptyBoard": true,
+      "staleBoardUrlRemoved": true,
+      "localAndSessionStorageCleared": true,
+      "oldIndexedDbWalletCleared": true,
+      "newWalletCreationVisible": true,
+      "reloadReady": true
+    }
+  },
+  "board": "component_996303c875b8e4034810e7a6275abb499d8796d198232e4c180502c81eb0cadc",
+  "template": "279f519a9a52f38576db16f8337dc8e56a274a9cbc9f796c584553148d266925",
+  "status": "PASSED"
+}

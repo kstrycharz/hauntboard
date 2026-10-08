@@ -1,0 +1,16 @@
+import {readFile,mkdir,readdir,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {join} from 'node:path';
+import {execFileSync} from 'node:child_process';
+import assert from 'node:assert/strict';
+const artifact='hauntboard/artifacts/hauntboard-0.2.0-local.tar.gz';
+const bytes=await readFile(artifact),sha256=createHash('sha256').update(bytes).digest('hex');
+assert.equal(sha256,(await readFile('hauntboard/artifacts/SHA256SUMS.txt','utf8')).split(/\s/)[0]);
+const verificationRoot=`.cache/release-verify-${Date.now()}`;await mkdir(verificationRoot,{recursive:true});execFileSync('tar',['-xzf',artifact,'-C',verificationRoot]);
+const packageRoot=join(verificationRoot,'hauntboard-0.2.0-local');
+const manifest=JSON.parse(await readFile(join(packageRoot,'release-manifest.json'),'utf8'));
+for(const [file,hash] of Object.entries(manifest.sourceAndAssetHashes))assert.equal(createHash('sha256').update(await readFile(join(packageRoot,file))).digest('hex'),hash,file);
+for(const file of Object.keys(manifest.sourceAndAssetHashes))assert(!file.split('/').some(part=>['node_modules','.git','target','wallet-data','secrets'].includes(part))&&!/\.env|\.sqlite|\.pem|\.recovery\.json|invitation/i.test(file),file);
+for(const file of ['hauntboard/template/hauntboard.wasm','hauntboard/web/vendor/wallet-sdk.mjs','hauntboard/scripts/start.ps1','hauntboard/scripts/stop.ps1','compose.localnet.yaml','compose.hauntboard.yaml','LICENSE','docs/licenses/ootle-sdk-BSD-3-Clause.txt','docs/licenses/cbor-x-MIT.txt'])assert(manifest.sourceAndAssetHashes[file],file);
+const report={status:'PASSED',checkedAt:new Date().toISOString(),sha256,filesVerified:Object.keys(manifest.sourceAndAssetHashes).length,checks:{archiveChecksum:true,allManifestHashes:true,bundledContractAndBrowserSdk:true,startAndStopScripts:true,licensesIncluded:true,noPrivateVolumesOrCredentials:true},packageRoot};
+await writeFile('hauntboard/evidence/release-package.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));

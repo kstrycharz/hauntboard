@@ -1,0 +1,24 @@
+{
+  "status": "ESMERALDA_CONTRACT_DEPLOYED",
+  "network": "esmeralda",
+  "board": "component_ff8fd992a498d7c9b32e96fb8cb557029d2f96dbb033ae61932b45cbf9187a4b",
+  "template": "f6773b90f8919097266a73e6c68e343724e2a4bdaf248f01e11b463bbc4e0b2d",
+  "wasmSha256": "75d3ab7a2e9265e1565ddd293aa651ae7a4e7687ccc1f148d371acc0c66d9582",
+  "transactions": {
+    "burnClaim": {
+      "id": "c9273612ae49bc78b3740cba79f8b9c2033ac86273b3f99cd24eeef892b96369",
+      "maxFee": "8879",
+      "actualFee": "7879"
+    },
+    "publish": {
+      "id": "a285bf80b4e257187156979068ef6d8b2aaba2e6ecbe5c7f99c43317574ab67f",
+      "maxFee": "1211063",
+      "actualFee": "1000886"
+    },
+    "board": {
+      "id": "4cea075beef93e8a5cd7203f030006c88a236d53e02c809f158378d24045811e",
+      "maxFee": "12233",
+      "actualFee": "1861"
+    }
+  }
+}

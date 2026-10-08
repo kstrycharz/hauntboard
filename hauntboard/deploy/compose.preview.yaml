@@ -1,0 +1,16 @@
+services:
+  preview:
+    image: ${APP_IMAGE:?Set the verified imported image ID}
+    pull_policy: never
+    command: [node, /deploy/preview-server.mjs]
+    volumes: ['./preview-server.mjs:/deploy/preview-server.mjs:ro', './network.json:/run/hauntboard/network.json:ro']
+    networks: [front]
+    read_only: true
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    mem_limit: 256m
+    cpus: 0.5
+    restart: unless-stopped
+    logging: {driver: json-file, options: {max-size: 10m, max-file: '3'}}
+  tunnel:
+    command: [tunnel, --no-autoupdate, --protocol, http2, --url, 'http://preview:8281']

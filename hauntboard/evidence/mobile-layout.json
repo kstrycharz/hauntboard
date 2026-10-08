@@ -1,0 +1,139 @@
+{
+  "checkedAt": "2026-10-07T04:49:13.059Z",
+  "scope": "Responsive browser simulation against the real local schema-4 board; physical-phone testing remains manual.",
+  "browsers": {
+    "chromium": {
+      "checks": [
+        {
+          "width": 320,
+          "height": 568,
+          "board": true,
+          "thread": true,
+          "compose": true,
+          "wallet": true,
+          "about": true,
+          "touchTargets": true
+        },
+        {
+          "width": 360,
+          "height": 640,
+          "board": true,
+          "thread": true,
+          "compose": true,
+          "wallet": true,
+          "about": true,
+          "touchTargets": true
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "board": true,
+          "thread": true,
+          "compose": true,
+          "wallet": true,
+          "about": true,
+          "touchTargets": true
+        },
+        {
+          "width": 430,
+          "height": 932,
+          "board": true,
+          "thread": true,
+          "compose": true,
+          "wallet": true,
+          "about": true,
+          "touchTargets": true
+        },
+        {
+          "width": 768,
+          "height": 1024,
+          "board": true,
+          "thread": true,
+          "compose": true,
+          "wallet": true,
+          "about": true,
+          "touchTargets": true
+        },
+        {
+          "width": 844,
+          "height": 390,
+          "board": true,
+          "thread": true,
+          "compose": true,
+          "wallet": true,
+          "about": true,
+          "touchTargets": true
+        }
+      ],
+      "desktopPreserved": true,
+      "runtimeErrors": []
+    },
+    "firefox": {
+      "checks": [
+        {
+          "width": 320,
+          "height": 568,
+          "board": true,
+          "thread": true,
+          "compose": true,
+          "wallet": true,
+          "about": true,
+          "touchTargets": true
+        },
+        {
+          "width": 360,
+          "height": 640,
+          "board": true,
+          "thread": true,
+          "compose": true,
+          "wallet": true,
+          "about": true,
+          "touchTargets": true
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "board": true,
+          "thread": true,
+          "compose": true,
+          "wallet": true,
+          "about": true,
+          "touchTargets": true
+        },
+        {
+          "width": 430,
+          "height": 932,
+          "board": true,
+          "thread": true,
+          "compose": true,
+          "wallet": true,
+          "about": true,
+          "touchTargets": true
+        },
+        {
+          "width": 768,
+          "height": 1024,
+          "board": true,
+          "thread": true,
+          "compose": true,
+          "wallet": true,
+          "about": true,
+          "touchTargets": true
+        },
+        {
+          "width": 844,
+          "height": 390,
+          "board": true,
+          "thread": true,
+          "compose": true,
+          "wallet": true,
+          "about": true,
+          "touchTargets": true
+        }
+      ],
+      "desktopPreserved": true,
+      "runtimeErrors": []
+    }
+  },
+  "status": "MOBILE_LAYOUT_PASSED"
+}

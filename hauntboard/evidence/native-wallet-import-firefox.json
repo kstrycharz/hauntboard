@@ -1,0 +1,17 @@
+{
+  "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+  "engine": "firefox",
+  "checkedAt": "2026-10-08T01:24:28.090Z",
+  "checks": {
+    "officialCipherSeedKeysMatch": true,
+    "encryptedSeedPassphrase": true,
+    "accountZeroAndSeven": true,
+    "mobileUiImport": true,
+    "addressMismatchPreservesWallet": true,
+    "wrongSeedPassphraseRejected": true,
+    "secretsNeverSent": true,
+    "existingHauntboardRecoveryPreserved": true,
+    "accountAddressMatchesPublishedNetworkAccount": true
+  },
+  "status": "NATIVE_L2_WALLET_IMPORT_PASSED"
+}

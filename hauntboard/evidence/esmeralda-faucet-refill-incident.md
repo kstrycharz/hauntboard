@@ -1,0 +1,19 @@
+# Shared public faucet refill — October 7, 2026
+
+The owner reported the empty-faucet message on the hosted app. Both Tari-hosted providers returned a verified builtin faucet balance of 499,961,260 microtari. The previous post-validation balance was 1,499,961,260 microtari: another builtin grant had drawn 1,000 TARI from the shared pool. There was insufficient liquidity for `take(account)`, which requires a fixed 1,000-TARI grant before the app keeps 500 and returns its remainder.
+
+The failed frontend preflight submits no transaction. Users should preserve their wallet and recovery phrase. The message now explains that the shared faucet requires a refill rather than saying it is literally empty or implying recovery will resolve funding.
+
+The 0.5.6 app image `sha256:6dd9573d1dd1465176ae79047e069e346b01a0e96a1623b0146ca37df2be51ff` is deployed at the existing public URL. Readiness returned HTTP 200 and the served wallet module contains the corrected message. Wallet storage, contract addresses, operation volumes and the existing tunnel are preserved. The one-time 500-token policy and seed recovery are unchanged.
+
+Exactly 7,000 test XTM from the remaining community-faucet-origin balance was converted with native wallet transaction `8784056668103657248`. It mined at height 958463, epoch 11980, with a 740-micro-XTM fee. The inclusion proof is retained privately. The native Ootle claim must wait until epoch 11981 is executing. A finite 90-minute refill worker preserves the exact claim/deposit envelopes and stops on uncertain outcomes. A separate fixed refill profile keeps the original 2,000-token conversion, journals and evidence intact; no old conversion was repeated. The native adapter was rebuilt with locked dependencies and script syntax checks passed.
+
+The larger native burn and proof are confirmed, but its Ootle claim and public faucet deposit are pending. Only the actual receipts may promote those stages to confirmed. See `esmeralda-faucet-7000-burn.json`, `esmeralda-faucet-7000-burn-proof.json`, and `esmeralda-faucet-7000-burn-claim.json` for current progress. The worker's deposit script also records independent provider receipt and vault checks when it finishes.
+
+## Immediate claim availability restored
+
+At 22:57:42 UTC, transaction `aedc1ef00aad7392d68ea43e3c95a351759cdf915408351e6d927733609fdd4b` returned 499 unused validation test TARI and contributed 2 operator test TARI to the shared public faucet. Both Tari-hosted providers verified its Commit receipt and a faucet balance of **1,000,961,260 microtari**, sufficient for one normal frontend claim without waiting for the larger conversion. The required fee was 11,253 microtari, paid from the operator account. No participant wallet was accessed. The exact envelope and dispatch state were persisted privately before submission, preventing an uncertain outcome from being retried blindly.
+
+The native SDK authorized four owned validation inputs and produced one retained 1-TARI output plus a 499-TARI revealed bucket consumed by the builtin faucet deposit. Old transaction receipts may be pruned, so the retained encrypted validation wallet identified inputs; each input still required current verified chain state, native ownership decryption and Tari's signing/proof implementation. The fee estimate passed before the actual committed submission. The validation wallet retains its phrase, keys and 1 test TARI. Fresh-browser seed recovery subsequently passed for that retained balance and its disabled already-claimed faucet. Historical 500-token claim and recovery evidence is preserved separately.
+
+See `esmeralda-faucet-immediate-recycle.json` and `esmeralda-public-wallet-recovery-after-recycle.json`. The human user can refresh the existing hosted app, unlock the same wallet and request the one-time 500-token claim. The shared pool can still be used by other clients; the larger refill remains necessary for additional claims.

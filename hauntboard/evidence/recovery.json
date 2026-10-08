@@ -1,0 +1,11 @@
+{
+  "network": "localnet",
+  "checkedAt": "2026-10-06T20:30:32.853Z",
+  "checks": {
+    "lostSubmitResponseRecoveredThroughDurableOperation": true,
+    "reloadCreatesNoDuplicatePost": true,
+    "firefoxSecretInvitationAndKeyReload": true,
+    "firefoxNativeWalletScan": true
+  },
+  "status": "PASSED"
+}

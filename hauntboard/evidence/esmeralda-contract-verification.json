@@ -1,0 +1,24 @@
+{
+  "status": "PUBLIC_BOARD_VERIFIED_ON_BOTH_TARI_NODES",
+  "checkedAt": "2026-10-07T14:38:59.158Z",
+  "board": "component_ff8fd992a498d7c9b32e96fb8cb557029d2f96dbb033ae61932b45cbf9187a4b",
+  "template": "f6773b90f8919097266a73e6c68e343724e2a4bdaf248f01e11b463bbc4e0b2d",
+  "checks": [
+    {
+      "origin": "https://ootle-indexer-a.tari.com",
+      "verified": true,
+      "version": 0,
+      "template": "f6773b90f8919097266a73e6c68e343724e2a4bdaf248f01e11b463bbc4e0b2d",
+      "schema": 4,
+      "ownerRule": "None"
+    },
+    {
+      "origin": "https://ootle-indexer-b.tari.com",
+      "verified": true,
+      "version": 0,
+      "template": "f6773b90f8919097266a73e6c68e343724e2a4bdaf248f01e11b463bbc4e0b2d",
+      "schema": 4,
+      "ownerRule": "None"
+    }
+  ]
+}

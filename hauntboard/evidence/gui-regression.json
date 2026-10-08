@@ -1,0 +1,36 @@
+{
+  "scope": "Simulated providers/wallet/submissions; actual frontend assets; no public writes or funds",
+  "checks": [],
+  "browsers": {
+    "chromium": {
+      "checks": [
+        "No unsupported features before configuration",
+        "Configuration failure closes posting",
+        "Wallet onboarding returns draft; word check; exact review; editing requotes",
+        "Lost acknowledgement survives reload; accepted/indexing distinct; no duplicate sends",
+        "Rejected submission retains draft",
+        "Progressive feed and retained stale rows",
+        "History/filter restoration, parent focus, reply cancel, local hide undo, Unicode limit, sealed dismissal",
+        "Advanced recovery collapsed; incomplete sync differentiated",
+        "Responsive widths and mobile menu keyboard"
+      ],
+      "status": "PASSED"
+    },
+    "firefox": {
+      "checks": [
+        "No unsupported features before configuration",
+        "Configuration failure closes posting",
+        "Wallet onboarding returns draft; word check; exact review; editing requotes",
+        "Lost acknowledgement survives reload; accepted/indexing distinct; no duplicate sends",
+        "Rejected submission retains draft",
+        "Progressive feed and retained stale rows",
+        "History/filter restoration, parent focus, reply cancel, local hide undo, Unicode limit, sealed dismissal",
+        "Advanced recovery collapsed; incomplete sync differentiated",
+        "Responsive widths and mobile menu keyboard"
+      ],
+      "status": "PASSED"
+    }
+  },
+  "status": "GUI_FIXTURE_REGRESSIONS_PASSED",
+  "checkedAt": "2026-10-08T02:05:21.577Z"
+}

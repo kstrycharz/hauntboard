@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-07T19:14:17.205Z",
+  "status": "PASSED",
+  "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+  "image": "sha256:bd8b9e136ae54b958643fee33303278497032d52e875ab6b9edf5d0a20afe36d",
+  "checks": [
+    "frontend creates a real Esmeralda wallet and 24-word recovery phrase locally",
+    "numeric balance shown with 500-test-TARI claim option",
+    "actual Tari faucet state is verified before claiming",
+    "zero balance produces actionable funding guidance",
+    "no empty-faucet transaction dispatched"
+  ],
+  "scope": "Temporary isolated browser wallet, destroyed after this check. No public wallet registration, funding, or message publication; no recovery words recorded."
+}

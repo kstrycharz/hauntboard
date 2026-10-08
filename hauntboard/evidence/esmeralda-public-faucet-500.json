@@ -1,0 +1,20 @@
+{
+  "status": "PUBLIC_ESMERALDA_500_TEST_TARI_CLAIM_CONFIRMED",
+  "checkedAt": "2026-10-07T19:54:57.900Z",
+  "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+  "transactionId": "7ea07ec4e361e445395a9a017c34c6c77e02a753a8f320343e11fbb7bf45ba3c",
+  "recipient": "otl_esm_1hptxe7d57jmcz233zlv92dzqdtsca82s5mz6rsaugegzuqwrpdpyag8yp7z8vyr6fvgm4d8lamkng04hxyjxua9j9t8mm6k5c5x0j4clqqtmv",
+  "readyMicrotari": "500000000",
+  "walletBalanceMicrotari": "500007290",
+  "checks": [
+    {
+      "node": "https://ootle-indexer-a.tari.com",
+      "decision": "Commit"
+    },
+    {
+      "node": "https://ootle-indexer-b.tari.com",
+      "decision": "Commit"
+    }
+  ],
+  "scope": "Actual public faucet claim and verified numeric frontend balance. Funded wallet recovery saved only in protected operator volume. No public messages posted."
+}

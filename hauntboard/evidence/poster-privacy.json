@@ -1,0 +1,20 @@
+{
+  "network": "localnet",
+  "checkedAt": "2026-10-07T02:36:28.997Z",
+  "status": "LOCAL_STEALTH_FEE_POST_PASSED",
+  "checks": {
+    "noNamedAccountInput": true,
+    "noWalletOwnerInUnsignedBody": true,
+    "noRevealedFunding": true,
+    "nativeFeeBucket": true,
+    "noWalletOwnerInFinalTransaction": true,
+    "actualFeeProgram": true,
+    "confirmedPublicPost": true
+  },
+  "limitations": [
+    "Local engine 0.43.0; not public Esmeralda proof.",
+    "IP, timing and spent-output graph remain visible.",
+    "Synthetic test funding origin is known; this test does not prove an anonymity set."
+  ],
+  "transactionId": "3c1a54581c80f446e32102e037740052f2c3122aadf5ff1e233d0489e13f4c05"
+}

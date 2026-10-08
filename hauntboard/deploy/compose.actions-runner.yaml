@@ -1,0 +1,17 @@
+name: hauntboard-actions
+services:
+  runner:
+    image: sha256:df194da3ff34b2563a7a7ba663c8187de72a7cdd46b38c3d65c76ff19fe94792
+    pull_policy: never
+    restart: unless-stopped
+    working_dir: /home/ubuntu/hauntboard/actions-runner
+    volumes:
+      - /home/ubuntu/hauntboard/actions-runner:/home/ubuntu/hauntboard/actions-runner
+      - /home/ubuntu/hauntboard/actions-work:/home/ubuntu/hauntboard/actions-work
+      - /home/ubuntu/hauntboard/releases/0.5.0:/home/ubuntu/hauntboard/releases/0.5.0
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker:ro
+      - /usr/libexec/docker/cli-plugins:/usr/libexec/docker/cli-plugins:ro
+    mem_limit: 1g
+    cpus: 1
+    logging: {driver: json-file, options: {max-size: 10m, max-file: '3'}}

@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: released Tari decoder computes stable signed identity and rejects malformed BOR
+ok 1 - released Tari decoder computes stable signed identity and rejects malformed BOR
+  ---
+  duration_ms: 31.252159
+  type: 'test'
+  ...
+# Subtest: native identity agrees with an already confirmed Esmeralda board creation
+ok 2 - native identity agrees with an already confirmed Esmeralda board creation
+  ---
+  duration_ms: 221.577392
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 335.738568

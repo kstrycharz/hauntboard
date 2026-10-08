@@ -1,0 +1,17 @@
+# Wallet recovery simplification
+
+Release 0.6.8 supersedes the replacement checkbox described below. Recover wallet now passes replacement authorization directly: valid seed plus new PIN plus Recover wallet is the full flow. A short notice explains that recovery replaces the saved wallet, but no checkbox is required. Invalid seeds preserve the old wallet; pending transaction protection remains. Both-browser staging checks passed. Current image: sha256:109afa4607d13a123cc163ffe139786fef162003d8993294473f10a31dca5801. Release script: hauntboard/scripts/release-simple-recovery.sh.
+
+Release 0.6.8 is deployed and passed the same direct recovery checks on the public HTTPS site in Chromium and Firefox. Served source hashes match locally saved code and readiness passed. Current reports are wallet-replace.json and wallet-replace-release.json.
+
+The first wallet screen offers Create wallet and Recover with seed phrase. A saved, locked wallet exposes Forgot PIN? Delete saved wallet directly. Deletion requires acknowledgment of seed recovery but no PIN, and returns to Create or Recover rather than forcing new-wallet generation.
+
+Native Tari seed recovery can replace a different saved wallet in the same browser after the user checks Replace saved wallet. Without that acknowledgment the original wallet remains unchanged. Replacement validates the seed and optional expected address before writing the encrypted record, does not merge the previous wallet's account or outputs into a different identity, and notifies other tabs to lock. Existing pending-transaction protection remains in force.
+
+Source is saved in hauntboard/web/browser-wallet.mjs, app.mjs and index.html. Regression tests are in hauntboard/tests/wallet-replace.mjs and wallet-pin.mjs; the replacement test is added to the GitHub workflow. Chromium and Firefox passed replacement, new-PIN unlock, deletion without PIN, recovery after deletion, rejection preservation and pending replacement protection against a staging app connected to real Tari Esmeralda providers. These tests generated unfunded native test wallets in isolated browser profiles and performed no chain writes.
+
+Release image: sha256:69b6e686d7f7eb64c87e1b14daffec85376ed1e08d9fb8ff8b3aea1033cef5b1, tag 0.6.7-recovery. The guarded server deployment script is hauntboard/scripts/release-wallet-recovery.sh. The contract, network manifest and Cloudflare tunnel are unchanged.
+
+The existing wallet PIN/reset suite also passed in Chromium and Firefox, including legacy password migration, PIN changes preserving identity, deletion cancellation, other-network records, cross-tab locking, seed restoration after deletion, no secrets in requests and zero axe accessibility violations. The legacy password field test now verifies that its value and validation have settled before clicking Unlock; initial runs hit a UI timing failure there. Evidence: wallet-pin-reset-0.6.7.json.
+
+Deployed on the authorized Ubuntu server 192.168.1.200. The same recovery and deletion flow passed on the live HTTPS site in Chromium and Firefox, and eight served assets matched the saved source exactly. Health readiness passed, the fresh board configuration and testnet faucet setting were preserved, and the tunnel's original start time remained 2026-10-07T12:38:13.077832004Z. Live evidence: wallet-replace.json and wallet-replace-release.json. Temporary staging container removed. No public posts or faucet claims were made during validation.

@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-07T04:45:17.884Z",
+  "status": "FAUCET_DISABLED_PASSED",
+  "checks": {
+    "enabled": false,
+    "blocked": true,
+    "status": 404,
+    "wallet": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "browser": "firefox",
+  "network": "localnet",
+  "checkedAt": "2026-10-07T18:57:34.032Z",
+  "checks": {
+    "faucetCreatesFourNativeOwnedOutputs": true,
+    "lostAcknowledgementRetriesExactEnvelopeOnce": true,
+    "faucetRetains500TestTari": true,
+    "numericBalanceVerifiedFromOwnedOutputs": true,
+    "duplicateClaimBlocked": true,
+    "faucetFundsSignRealStealthPost": true,
+    "phraseRecoversFaucetFundsAndClaimMarker": true
+  },
+  "status": "LOCAL_FAUCET_WALLET_PASSED"
+}

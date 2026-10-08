@@ -1,0 +1,48 @@
+[
+  {
+    "engine": "chromium",
+    "origin": "http://localhost:8297",
+    "checkedAt": "2026-10-08T03:43:42.389Z",
+    "status": "WALLET_PIN_RESET_PASSED",
+    "checks": {
+      "sixDigitsRequired": true,
+      "confirmationRequired": true,
+      "keypadEditing": true,
+      "hardwareNumpadAndEnter": true,
+      "wrongPinRejected": true,
+      "pinChangeKeepsWallet": true,
+      "legacyPasswordMigration": true,
+      "pendingDeletionBlocked": true,
+      "cancelKeepsWallet": true,
+      "otherNetworkPreserved": true,
+      "otherTabsLock": true,
+      "newWalletHasNewAddress": true,
+      "deletedWalletRecoverableWithPhrase": true,
+      "secretsNotSent": true,
+      "axeViolations": 0
+    }
+  },
+  {
+    "engine": "firefox",
+    "origin": "http://localhost:8297",
+    "checkedAt": "2026-10-08T03:43:56.643Z",
+    "status": "WALLET_PIN_RESET_PASSED",
+    "checks": {
+      "sixDigitsRequired": true,
+      "confirmationRequired": true,
+      "keypadEditing": true,
+      "hardwareNumpadAndEnter": true,
+      "wrongPinRejected": true,
+      "pinChangeKeepsWallet": true,
+      "legacyPasswordMigration": true,
+      "pendingDeletionBlocked": true,
+      "cancelKeepsWallet": true,
+      "otherNetworkPreserved": true,
+      "otherTabsLock": true,
+      "newWalletHasNewAddress": true,
+      "deletedWalletRecoverableWithPhrase": true,
+      "secretsNotSent": true,
+      "axeViolations": 0
+    }
+  }
+]

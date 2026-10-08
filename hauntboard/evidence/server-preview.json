@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-10-07T12:39:39.928Z",
+  "url": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+  "status": "READ_ONLY_HTTPS_PREVIEW_PASSED",
+  "checks": [
+    {
+      "width": 390,
+      "home": true,
+      "about": true,
+      "readonlyActions": true,
+      "noOverflow": true,
+      "noRuntimeErrors": true
+    },
+    {
+      "width": 1280,
+      "home": true,
+      "about": true,
+      "readonlyActions": true,
+      "noOverflow": true,
+      "noRuntimeErrors": true
+    }
+  ],
+  "limits": [
+    "No public contract or board has been activated. No wallet/faucet/posting endpoint is exposed.",
+    "Quick Tunnel URL is temporary."
+  ]
+}

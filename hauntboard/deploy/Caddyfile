@@ -1,0 +1,11 @@
+{$DOMAIN} {
+  request_body {
+    max_size 24KB
+  }
+  reverse_proxy app:8280 {
+    header_up Host {$DOMAIN}
+    header_up -X-Forwarded-Host
+    header_up -X-Forwarded-For
+    header_up -X-Forwarded-Proto
+  }
+}

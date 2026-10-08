@@ -1,0 +1,18 @@
+{
+  "network": "localnet",
+  "walletVersion": "0.43.0",
+  "checks": {
+    "independentLocalWallets": true,
+    "originalWasmPublished": true,
+    "boardCreated": true,
+    "privateTipReservesFunded": true,
+    "realIndexerBoardRead": true
+  },
+  "transactions": [],
+  "status": "PASSED",
+  "checkedAt": "2026-10-06T20:31:56.666Z",
+  "template": "1e71fc5c2843b8713f888b33750b67e019fda230929fd3a426f0b3611c76369a",
+  "board": "component_73a0693afb23f4a132f460f032f400e7a73a5b7711a50920f352051973f8fa39",
+  "wasmHash": "33f2cfae29e86f9dcf57956f246e2a260491060e9266701c5718e3cc89c0e87f",
+  "wasmBytes": 144884
+}

@@ -1,0 +1,34 @@
+{
+  "status": "PUBLIC_OUTPUT_SCAN_PASSED",
+  "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+  "checkedAt": "2026-10-08T03:31:43.429Z",
+  "providers": [
+    {
+      "provider": "ootle-indexer-a.tari.com",
+      "rows": 300,
+      "decreasingCommitments": 147,
+      "resumeChecked": true
+    },
+    {
+      "provider": "ootle-indexer-b.tari.com",
+      "rows": 300,
+      "decreasingCommitments": 146,
+      "resumeChecked": true
+    }
+  ],
+  "browsers": [
+    {
+      "engine": "chromium",
+      "found": 0,
+      "complete": true,
+      "capacityReached": false
+    },
+    {
+      "engine": "firefox",
+      "found": 0,
+      "complete": true,
+      "capacityReached": false
+    }
+  ],
+  "chainWrites": 0
+}

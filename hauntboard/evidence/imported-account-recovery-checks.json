@@ -1,0 +1,34 @@
+{
+  "status": "WALLET_REPLACEMENT_PASSED",
+  "origin": "http://localhost:8298",
+  "checkedAt": "2026-10-08T03:55:18.553Z",
+  "reports": [
+    {
+      "engine": "chromium",
+      "firstLoginChoices": true,
+      "recoverReplacesSavedWallet": true,
+      "noReplacementCheckbox": true,
+      "invalidSeedPreservesSavedWallet": true,
+      "pendingReplacementBlocked": true,
+      "recoverDifferentSeed": true,
+      "newPinWorks": true,
+      "deleteWithoutPin": true,
+      "returnsToCreateOrRecover": true,
+      "recoveryAfterDelete": true
+    },
+    {
+      "engine": "firefox",
+      "firstLoginChoices": true,
+      "recoverReplacesSavedWallet": true,
+      "noReplacementCheckbox": true,
+      "invalidSeedPreservesSavedWallet": true,
+      "pendingReplacementBlocked": true,
+      "recoverDifferentSeed": true,
+      "newPinWorks": true,
+      "deleteWithoutPin": true,
+      "returnsToCreateOrRecover": true,
+      "recoveryAfterDelete": true
+    }
+  ],
+  "chainWrites": 0
+}

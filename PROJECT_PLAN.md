@@ -1,10 +1,130 @@
 # Hauntbox — project and delivery plan
 
+**October 5 pivot roadmap:** [PIVOT_PROJECT_PLAN.md](PIVOT_PROJECT_PLAN.md) defines the proposed Hauntboard direction. The plan below preserves the previous Hauntbox scope and evidence; it is not evidence that the board pivot is implemented.
+
 **Seal your story. Prove it arrived. Reward it privately.**
 
 Prepared October 2, 2026 for Kyle. Target: Tari's October **Spooky Secrets** contest. Working product name: **Hauntbox**. This is an implementation specification for coding agents, reviewed through architect and PM perspectives. It optimizes for a compelling, verifiable entry; a Council vote cannot be guaranteed.
 
 **Product:** a haunted submission room. Visitors submit an encrypted ghost story or secret answer, receive an Ootle inclusion receipt, and can receive a native stealth testnet reward from the curator. A privacy inspector explains exactly what each party can see. The initial public release is a production-engineered **Esmeralda testnet beta**, with sponsor-controlled reward funds and one operator/curator. Mainnet funds are outside the October release.
+
+## 0. Revised scope — make the deployed app usable from a fresh start
+
+**Owner-directed reset of priorities, October 2, 2026. This section governs the next implementation work.** It supersedes conflicting priorities, deferrals, and completion language in the original roadmap and dated follow-up notes below. Those notes preserve evidence of individual components; they do not establish that the product is ready to use. This revision changes the plan only. It does not claim the remaining work is implemented or authorize an unbounded public-network transaction.
+
+**Required outcome:** a Tari dApp whose authoritative room state, accepted receipts, user keys and encrypted-content availability do not depend on a single Hauntbox customer database. Kyle, as the initial host and reward operator, can use a localhost admin page to connect and fund the operator wallets, configure or deploy the receipt contract, prepare a room, and open it through a guided web flow. A participant can find My wallet on the landing page, create or import a supported wallet, submit a story, and independently verify its receipt and any optional reward. The app must tell each person what they can do now and provide the action needed for the next step. Section 0.7 defines the required architecture change; completing the old centralized onboarding flow alone does not satisfy this scope.
+
+### 0.1 What this chat established
+
+| Owner experience / request | Requirement and current truth |
+|---|---|
+| “This web app is too confusing”; repeated uncertainty about how people actually use it | Finish and test the whole host and participant journey. Stop treating isolated screen changes as completion. |
+| PIN keypad would not take keyboard input | Keyboard, keypad clicks, mixed entry, Backspace, Enter and focus are required everywhere a PIN is used. Browser-wallet coverage exists and must be retained. |
+| Wanted a localhost admin interface for contract setup | Host registration alone is insufficient. Wallet connection, funding and receipt-contract provisioning are mandatory admin scope; these are still incomplete. |
+| Asked what a host sign-in code was and wanted setup through the app | Create the host through the web app. Explain the generated login backup when it is issued. No terminal bootstrap-secret retrieval in normal first-run setup. |
+| Repeated generic errors on `/admin` | Report the failed step and a useful recovery action. Diagnose the actual failing operation before claiming a fix; “reload and sign in again” is not a universal remedy. |
+| `localhost` versus `127.0.0.1` broke setup | Use one configured admin origin before authentication, preserve strong origin checks, and prove the actual browser request path. Existing participant wallet storage must not be silently abandoned by an origin change. |
+| “Why do I need to upload stuff?”; Verify and restore key failed | Explain and simplify room-key backup. Selecting a backup is a local restore operation, not contract upload or funding. Distinguish it from the host login backup and wallet recovery phrases. |
+| Generate browser encryption key stays grey after sign-in and reset | **Open regression:** local key generation was incorrectly gated by anchoring/funding. Enable it for a signed-in host independently of network readiness; retain gates on chain submission only. The promised correction has not shipped. |
+| “Where is faucet to fund?” | **Open integration:** production operator wallets and faucet funding are disconnected. Add an actionable Funding step. A documentation link or a status label alone is not completion. |
+| My wallet should be in the middle of the landing page, create or import | Placement and Hauntbox phrase recovery exist. Native Tari seed import, browser balance scanning and spending remain incomplete; do not imply universal import compatibility. |
+| Only the production deployment should run; future admin accessed through SSH | One production deployment, using Tari's maintained network services. No parallel dev/demo chain stack left running. Future private admin listener binds to loopback and is reached through an SSH tunnel. |
+| Asked to wipe configuration and start over | Host account/session reset was performed; no rooms, submissions or jobs existed then. Wallets were preserved. A reset does not provision missing infrastructure. Test a fresh start and an existing installation separately. |
+| “Are you just not testing this?” | Match tests to the exact reported button, form, browser, origin and deployed version. Report test substitutions and untested dependencies explicitly. |
+| “Will our customer base [be in] a single DB?”; “the whole point is to be decentralized” | A central customer/account registry and a sole operator database for story availability are not the intended product. Redesign the data and authority boundaries before completing setup around the old architecture. |
+
+**Current status:** component-level code and local-chain evidence exist, but the production first-run journey is incomplete. Public M2b proof remains open. The three running production services have not been connected to the operator wallet/worker infrastructure needed for live rooms and rewards. Do not call the app ready because the containers are healthy or the host can sign in.
+
+### 0.2 One host setup journey
+
+The admin home shows a short, persistent setup checklist with one recommended next action. Each step is Ready, Needs action, In progress, or Failed with its specific reason. Signing in does not imply network readiness. Reset and browser reload must not restart completed provisioning or duplicate transactions.
+
+1. **Host account.** First visit offers Create host account. Existing installations offer the enrolled sign-in method; secondary methods are not competing primary actions. Save the host login backup once, explain its purpose, and support explicit sign-out and return. Invalidate stale sessions after a reset.
+2. **Operator wallets and network.** Create or connect the supported receipt-fee and reward wallets from the admin workflow. Show Esmeralda, verified connection status and the exact destination accounts. Keep service credentials in server-side secret storage. Use established Tari wallet tooling and scoped authentication; do not build a second cryptographic wallet implementation.
+3. **Funding.** Provide a visible Get testnet funds action for the selected operator account, or an explicitly connected official wallet flow where direct integration is not supported. Show which wallet pays receipt fees and which pays rewards, current balances, reserve requirements, and a balance refresh action. Explain that participant reward addresses do not fund the operator's receipt wallet. Check faucet availability, eligibility, existing funds and transaction outcome before another claim. Empty faucet, unavailable wallet, wrong network, pending claim and insufficient fee reserve must have distinct next steps. Official wallet documentation currently places Claim Testnet Funds in the wallet UI; the default localhost:5100 URL is not a running service in this deployment and must not be presented as one. Verify the actual configured URL and current network availability at implementation time.
+4. **Receipt contract.** Offer use of an existing compatible published template or publication of the app's built template through a supported Tari flow. Inspect the configured network and template identity. Show the action, destination and estimated/max fee before a public transaction. Save and verify the resulting template address automatically where supported; avoid requiring arbitrary contract files from the owner. The template deployment and creation of a room component are separate operations with separate statuses.
+5. **Room preparation.** Enter title, prompt and capacity; generate the browser encryption key; save the encrypted room-key backup and separate code; verify local recovery. These local steps work while the faucet or network is unavailable. Explain each artifact at its point of use. Keep working keys across normal reloads securely, provide a clear resume path for an unfinished draft, and never silently replace keys. Do not require a restore-file selection on every normal sign-in when the working key is already available.
+6. **Activate and share.** Enable Create room on chain only when the real prerequisites pass. Name each missing prerequisite beside the action and link directly to its setup step. Wait for confirmed chain state, then show the participant URL and accurate submission/reward availability. A textual “paused” notice without a way to resolve it is an incomplete feature.
+
+The host account, participant wallet, operator fee wallet, operator reward wallet, and per-room encryption key have different purposes. The UI must explain these distinctions when needed, without exposing internal deployment terminology as routine user tasks. Kyle is initially both host and operator; the product must not send him to an unspecified other “operator” to finish setup.
+
+### 0.3 Participant flow and privacy explanation
+
+- Keep My wallet prominent in the center of the landing page, with Create wallet and Import / recover wallet. Preserve existing-wallet unlock and prevent accidental replacement. Explain supported recovery formats before accepting a phrase; native Tari seed interoperability is required before claiming general Tari wallet import.
+- A visitor can submit without a wallet. An optional wallet address allows the host to choose a reward. Do not require faucet funding or charge entry fees merely to submit.
+- Show the wallet's actual capabilities. A generated address is not evidence of balance detection, receiving or spending. Deliver supported balance/receipt detection and an independently verified recipient-spend path before presenting the wallet as fully usable.
+- Explain Tari L2 in the privacy page and near receipts: room contracts and encrypted-envelope digest/epoch records are on chain; encrypted story envelopes are held by the app; host-selected private rewards are separate transfers funded by the operator. Stories are not stored as readable on-chain content, and receipts do not guarantee rewards.
+- Keep the guided demo available in one click with its simulation label. It supports explanation while infrastructure is unavailable; it cannot satisfy live acceptance.
+
+### 0.4 Deployment and reset requirements
+
+“Only production” means one coherent production stack, including the wallet and worker services it actually needs. It does not mean the final app must remain limited to three containers. Do not restart abandoned development, local validator/indexer or preview stacks to make the deployed app appear functional. One-off isolated test containers may run and must exit after their work.
+
+For a VPS, serve the participant app publicly over HTTPS and expose admin on a dedicated loopback-bound listener. Protect admin APIs and provisioning operations as well as `/admin`; hiding a link or checking the Host header alone is not network isolation. Verify direct remote access fails and an SSH tunnel works. Define the admin origin, cookies, CSRF and passkey behavior for that listener before deployment. The current whole-site loopback binding is a local preview, not proof of the eventual split.
+
+Provide an explicit, scoped restart-setup operation: show whether it resets host credentials, configuration, or room drafts and which data remains. Do not delete wallet seeds, funded accounts, participant wallets, recoverable story keys or pending transaction records as a side effect. Block or reconcile destructive resets when live rooms/jobs exist. Preserve a private recovery path for configuration where appropriate. Reset acceptance includes fresh first-run state and rejection of prior sessions; it must not claim that reset fixes missing wallet/contract integration.
+
+### 0.5 Execution order and acceptance backlog
+
+Work in this order. Existing artifacts may be reused, but each acceptance condition must be demonstrated before its row is complete. These are integrated work packages, not instructions to create separate agents or chats.
+
+| ID / priority | Work | Status at scope revision | Completion evidence |
+|---|---|---|---|
+| DAPP-ARCH-01 / P0 | Freeze decentralized state, content availability, participant identity and admission design in an ADR | Architect review requested; existing architecture does not meet the requirement | Measured storage/access feasibility; explicit trust map; proposed contract/API migration; no-single-DB and operator-outage acceptance design |
+| DAPP-DATA-01 / P0 | Chain-bound room manifests and encrypted-content references, independent retrieval/verifier, disposable public index | Not implemented | Operator DB/API offline: recover accepted ciphertext from an independent holder, verify bytes/receipt from Tari, decrypt with the host key, rebuild public room view |
+| DAPP-ACCESS-01 / P0 | User-owned keys, no mandatory central participant account, direct/alternate submission path | Partial client keys; current contract admits only operator signer | Separate client submits an authorized entry without original Hauntbox API; spoof/replay/spam limits tested; sponsorship remains optional and bounded |
+| RESET-01 / P0 | Correct local key-generation gating; clarify local backup versus chain activation | Open regression; restriction still present | Signed-in host generates, downloads and restores a room key with anchoring off and funding unavailable; chain creation remains blocked with a useful explanation |
+| SETUP-01 / P0 | Persistent first-run checklist, canonical admin origin, enrolled sign-in method and safe resume | Partial; account flow exists, complete setup does not | Fresh and existing-host flows pass on deployed assets and real APIs; no terminal secret retrieval or unexplained disabled actions |
+| SETUP-02 / P0 | Connect supported operator wallets and required production worker services | Not integrated into production admin | Real authenticated wallet connection, correct network/accounts, restart recovery, limited secret exposure and accurate readiness |
+| FUND-UI-01 / P0 | Visible funding step and supported faucet claim/top-up flow | Missing; production funding inactive | Claim or verified reuse of funds for the reviewed account; real balance confirmation; empty/unavailable faucet and ambiguous transaction paths tested |
+| CONTRACT-UI-01 / P0 | Guided receipt-template configuration/publication and room activation | Missing from first-run workflow | Compatible template verified, confirmed room component created, saved configuration survives restart, no duplicate deployment on retry |
+| ROOM-UX-01 / P0 | Plain room draft, backup, restore and activation flow | Partial; recovery tested in isolation, draft/resume and real activation incomplete | Correct downloaded backup restores; wrong code/file and storage failures are actionable; reload preserves/resumes preparation; configured real room activates |
+| JOURNEY-01 / P0 | One complete owner-to-participant production journey | Not passed | Fresh host → wallet connection → funding → template → room → encrypted submission → confirmed receipt → host decrypt → optional private reward → independent recipient verification |
+| WALLET-UX-01 / P1 | Central wallet create/import/unlock, compatible import and real recipient usability | Landing controls and Hauntbox recovery exist; native import/scan/spend incomplete | Keyboard/mobile flow, supported-format import, no key overwrite, actual receipt detection and independently verified spend; disclosures match delivered capabilities |
+| VPS-ADMIN-01 / P1 | Public participant site plus loopback-only admin and SSH access | Planned; local whole-site binding exists | Public admin UI/API inaccessible, tunnel access succeeds, intended origins/passkeys work, only one production deployment runs |
+| RESET-UX-01 / P1 | Safe self-service setup reset and first-run restart | Manual host reset done; guided reset absent | Scope preview, session invalidation, preservation of wallet/key material, live-job protection and fresh start verified |
+
+DAPP-ARCH-01 is the first dependency for integration work; RESET-01 can be corrected independently. DAPP-DATA-01 and DAPP-ACCESS-01 must shape SETUP-01/02 and CONTRACT-UI-01, rather than being added after the centralized flow is finished. SETUP-02 → FUND-UI-01 → CONTRACT-UI-01 then unblock the real vertical slice. ROOM-UX-01 local recovery work can proceed without faucet access. Keep existing wallet controls working throughout; do not divert to new themes, broad UI rewrites or optional features before JOURNEY-01 passes. Re-estimate after the architecture/storage spike, wallet authentication, funding availability and template compatibility; the original hours/dates below are not renewed delivery promises.
+
+### 0.6 Test and completion rules that stop the cycle
+
+- Reproduce the reported action before fixing it where possible. Record what was observed, the failing step/code, and what remains unconfirmed. A different browser state or a missing visible error is not proof the issue is fixed.
+- Test the exact control and the complete journey around it. For Verify and restore key, include the actual downloaded file, matching code, wrong code, whitespace, reload and durable key storage. For first-run setup, include the actual origin, authentication, funding and contract dependencies.
+- Unit tests, mocked readiness, isolated API schemas and localnet runs are useful layers. State their limits. They cannot prove the configured Esmeralda production deployment works. JOURNEY-01 requires real APIs and confirmed transactions on the intended network, with a separate clearly identified staging host when tests would mutate the owner's data.
+- For local preparation, explicitly test network down, faucet empty and anchoring paused. These must not disable browser-only key generation or recovery. Chain and payment operations must still enforce their actual prerequisites.
+- For funding and contract operations, test double-click, timeout, reload and restart. Reconcile unknown outcomes before retrying; never assume an error means no transaction was sent.
+- Preserve same-session user work while debugging. Do not repeatedly reset the host, navigate away from unsaved backups, or rebuild services mid-action without explaining the effect. Batch changes into a tested deployment instead of asking the owner to rediscover each regression.
+- Verify the deployed image/version and exercise the production UI after deployment. Keep screenshots and sanitized results tied to that build; never record PINs, recovery phrases, codes or private story content as public evidence.
+- A package is complete only when its stated user outcome passes. A code change, green unit suite, accessible page, helpful error message or disabled button alone does not complete funding, deployment or onboarding.
+
+**Next integrated exit:** Kyle can complete the host setup and open one real room from the web workflow, with no unexplained upload, external “operator” handoff, or terminal-only secret retrieval. If the public faucet/network prevents completion, show the exact verified blocker and the connected recovery action, keep local preparation usable, and leave JOURNEY-01 open. Retain the existing exact-target/budget authorization boundary for public transactions and external deployment; implementing the reviewed controls does not require repeatedly asking permission for routine reversible work.
+
+### 0.7 Decentralized dApp redesign — lead architect review
+
+**Owner requirement:** decentralization is core to the hackathon product, not a later marketing label. The current implementation is a centralized encrypted inbox with Tari receipts/payments: Postgres is the only app-held ciphertext store and room index; optional participant credentials are server records; the receipt API reads its database; and the contract's `seal` method permits only the operator signer. Encryption and a blockchain digest do not remove these dependencies. No plaintext customer directory exists by design, but this still leaves the operator as an availability and admission bottleneck.
+
+**Architecture direction:** Tari is authoritative for room policy/ownership and accepted submissions; users hold their keys; accepted encrypted envelopes must be retrievable independently of the original app database; the server is an optional index, bounded fee sponsor, and private operator control plane. Do not move plaintext stories, recovery secrets, participant login credentials or a customer directory onto public chain state.
+
+| Responsibility | Revised authority/location | What remains to build |
+|---|---|---|
+| Participant identity and assets | User-owned supported Tari wallet keys; local PIN unlock protects local key material | Remove mandatory server-account assumptions. Optional guest submission can use sponsorship without creating a customer row; document walletless limitations. |
+| Room ownership and policy | Tari component with immutable or explicitly versioned commitments to a public room manifest, encryption public key, limits and curator authority | Publish/discover a verifiable room manifest and validate its key fingerprint against chain state, independent of the Hauntbox API. |
+| Submission record | Tari commitment to submission ID, encrypted-envelope digest, availability reference and inclusion epoch | Evolve the original template; verify through an independent indexer/client rather than trusting the API's DB-derived receipt. |
+| Encrypted story bytes | Replicated encrypted content outside the sole operator database; submitter retains an export | Select and prove the availability design described below. A digest alone cannot reconstruct ciphertext. |
+| Room decryption | Host-held private room key and separately saved encrypted backup | Keep browser-only recovery; never send the decryption key to the public store or operator backend. |
+| Public browsing/search | Rebuildable local/server cache of verifiable manifests and chain records | Cache may use Postgres; deleting that cache must not destroy authoritative room records or accepted stories. |
+| Host login, sponsor budgets and transaction work | Private local operator state, including durable outbox/reconciliation | This operational database is allowed. It is not a customer registry or the sole source of authoritative dApp records; pending jobs must not be discarded casually. |
+| Reward choice and funds | Curator decides; the selected sender wallet signs a native private transfer | Initial Kyle-controlled reward funds remain a declared trust boundary. No escrow, automatic payout or decentralized judging is implied. Recipients verify independently. |
+
+**Encrypted availability decision:** prefer a content-addressed encrypted object design for the bounded text envelopes, with references bound to Tari receipts, independent retention providers/peers, and a downloadable submission bundle. Prove exact-byte hashing and retrieval through an alternate path while the original app/API/database and its own storage endpoint are offline. Two services under one administrator are not evidence of independent control. IPFS or a CID alone does not ensure retention: document who retains each object, for how long, how retrieval is monitored, and the recovery/export path. Select the actual provider/protocol only after compatibility, metadata, availability and operating-cost checks. An alternate bounded on-chain ciphertext design may be assessed in the same spike against measured Tari transaction/state/fee limits; do not assume arbitrary private blob storage or adopt it without a retention/privacy review. If neither candidate passes, leave the dApp availability gate open rather than silently reverting to sole-Postgres storage.
+
+**Admission and censorship boundary:** remove the assumption that the original server is the only signer allowed to admit a valid submission. Design and test a supported user-signed contract submission path, with explicit access rules, replay protection, capacity/spam limits and verified network fees. Optional sponsorship may preserve the easy walletless experience, but the original sponsor's outage or refusal must not block a funded authorized participant using another supported client. Do not assume Tari supports arbitrary gasless relaying; prove the exact wallet/transaction flow. Room owners may deliberately close their room and choose rewards. Those curator controls are explicit product policy, not a claim of censorship resistance.
+
+**Initial owner versus platform ownership:** Kyle operates the first room and its private admin interface. The open contract/client must allow another operator to deploy or operate their own room without Kyle's customer database or a hardcoded platform signing key. A multi-tenant hosted signup service remains deferred; independent operation is a portability requirement.
+
+**Privacy tradeoff:** publishing encrypted envelopes or references changes the earlier private-database threat model. Ciphertext and metadata can be retained indefinitely, and a future room-key compromise can expose historical content. Do not promise deletion, anonymity, forward secrecy or private arbitrary contract state. Record the disclosure and retention model before migrating any real submissions. Tari's native transfer privacy is distinct from application-content encryption; see the official [Ootle overview](https://ootle.tari.com/concepts/overview/) and [privacy-in-applications guidance](https://ootle.tari.com/concepts/privacy-in-applications/).
+
+**Required hackathon proof:** from a separately served frontend/client, recover a known room and accepted envelope, obtain chain state through an alternate verified indexer, verify the manifest/key/digest/receipt, and decrypt with the host recovery material while the original Hauntbox API and Postgres are offline. Also demonstrate the independent submission path and recipient verification. Existing confirmed records must survive the outage; availability of new sponsored operations may degrade honestly. This is a mandatory addition to JOURNEY-01 and the release gates, not an optional demonstration.
 
 ## 1. Frontend proof of concept — accepted M1 baseline
 
@@ -14,7 +134,7 @@ Prepared October 2, 2026 for Kyle. Target: Tari's October **Spooky Secrets** con
 
 The review inspected the frontend/domain code, template compilation probe, milestone reports, and desktop/mobile screenshots. All seven unit tests were rerun in Docker and passed. The M1 evidence reports 22 passing Chromium/Firefox tests; that full suite was not rerun during this review. No external user comprehension trials have been completed.
 
-**Execution priority:** close M2 feasibility → deliver one real end-to-end submission/reward flow → prove recovery and transaction correctness → polish from user evidence. Hold additional feature expansion. Completed screens are not a proxy for completion of the highest-risk integration work. The dated roadmap below remains a planning target, not evidence of feasibility.
+**Execution priority:** follow the revised scope and ordered backlog in section 0. Close the architecture decision, fix local preparation, integrate owner setup/funding/contracts, then prove the real end-to-end submission/reward flow and recovery. Completed screens are not a proxy for completion of the highest-risk integration work. The dated roadmap below is historical planning context, not evidence of feasibility.
 
 **Baseline housekeeping — completed October 2:** reviewed untracked files and secret/ignore boundaries, saved local commit `bdfb77201d83c4db4b90732a479eb76209b4241e` and tag `m1-accepted`, and recorded provenance limitations in `docs/source-baseline.md`. This preserves the received evidence; it does not retroactively prove every earlier artifact was generated from that commit. External publication remains subject to the existing release authorization boundary.
 
@@ -75,11 +195,11 @@ These are product judgments, not an official judging rubric. Our internal priori
 
 ### Scope contract
 
-**Must ship:** one operator/curator; multiple bounded rooms created by that operator; browser encryption; immutable room encryption-key fingerprint; encrypted envelope storage; an original Ootle receipt template; downloadable inclusion receipts; real native stealth rewards; an independent receiver-wallet demonstration; explicit custody/privacy statements; guided fixture demo; source, license, tests, deployment and recovery instructions.
+**Must ship:** the decentralized dApp architecture and complete owner/participant journeys specified in section 0; initial Kyle-operated room(s); user-held keys; browser encryption; immutable room encryption-key fingerprint; encrypted envelope availability independent of one operator database; Tari-verifiable state and receipts; real native stealth rewards; independent recipient verification; prominent supported wallet creation/import; localhost admin setup including funding/contracts; explicit custody/privacy statements; guided fixture demo; source, license, tests, deployment and recovery instructions.
 
 **Nice after all release gates pass:** a second room theme, participant self-service receipt verification UI, extra languages, a recipient wallet setup guide, or a short read-only payment disclosure export. Cap additions at one small feature.
 
-**Defer:** multi-tenant host signup, participant deposits, escrow, guaranteed prize pools, custom currencies, NFTs, public voting, private on-chain computation, timed decryption, ZK proofs written by this team, mobile apps, bridges, production L1 nodes, a bespoke browser wallet, and attachments. Text-only envelopes keep the security and storage surface small.
+**Defer:** multi-tenant hosted signup, participant deposits, escrow, guaranteed prize pools, custom currencies, NFTs, public voting, private on-chain computation, timed decryption, ZK proofs written by this team, mobile apps, bridges, production L1 nodes, and attachments. Supported browser wallet creation/import is now explicit scope, using maintained Tari libraries rather than custom cryptography. Text-only envelopes keep the security and storage surface small.
 
 **Reward policy:** the curator may choose whether and whom to reward. A receipt is not a promise of payment. Never display an unfunded “guaranteed bounty.” Do not sell entries or charge entrants.
 
@@ -440,6 +560,8 @@ If Docker is unavailable later, use a remote Docker host. Do not solve that by i
 
 ## 8. Delivery roadmap and capacity
 
+**Replanned:** section 0 is the active work order and acceptance contract. The dated milestone table records previous estimates and bounded implementation evidence; it must not be used to mark the new decentralized architecture or complete production onboarding as done. Re-estimate after the architecture review and integration spikes rather than layering additional promises onto the old schedule.
+
 Assumption: one primary builder using coding agents, approximately **102–148 focused engineering hours** across October 2–29, plus roughly 8–12 owner hours for visual review, wallet demonstrations, trials, and release decisions. These are planning ranges, not elapsed agent-runtime promises. If available capacity is below this range, reduce optional features immediately and keep the mandatory privacy demo intact.
 
 | Milestone | Dates (2026) | Hours | Deliverable / exit condition | Dependency | Status |
@@ -453,7 +575,7 @@ Assumption: one primary builder using coding agents, approximately **102–148 f
 | M7 Contest release | Oct 26–29 | 10–14 | Tagged release, source, demo video, submission artifacts, final gate review | M6 | Not started |
 | Submission buffer | Oct 30–31 | Reserved | Owner publishes by internal target; availability/support and edits | M7 | Not started |
 
-Critical path: **mock experience → wallet/privacy compatibility → encryption + contract/API agreement → full live flow → recovery/security evidence → public deployment → submission**. Do not put real-wallet work off until the end of the month.
+Critical path: **decentralized data/authority decision → correct local preparation → supported wallet connection and funding → contract and availability integration → full live journey → outage/recovery/security evidence → public deployment → submission**. Do not put real-wallet or independent data availability work off until the end of the month.
 
 Execute early mock comprehension trials and baseline housekeeping during M2 where independent of its funding/network gate. Fit these bounded follow-ups within the existing UX/PM allowance by deferring optional polish; do not silently increase the capacity estimate. Build and validate one room with one curator first. The scoped operator-created bounded-room capability remains a release requirement, but additional room themes and feature expansion wait until the single-room flow and recovery evidence pass. Re-estimate remaining work after M2 from demonstrated compatibility.
 
@@ -742,7 +864,7 @@ Static review of `6dee866` identified three correctness issues. All three are no
 | BW-02 | P2 | Serialize unlock/counter updates and prevent stale unlock writes from undoing recovered wallet data or a new PIN. Add shared-profile, concurrent-tab regression coverage. | Complete: same lock covers unlock and PIN recovery; five concurrent failures persist; new PIN survives competing old unlock |
 | BW-03 | P2 | Distinguish incorrect PINs from unavailable storage/SDK and corrupted wallet data. Inject failures and prove correct-PIN infrastructure failures do not exhaust the PIN allowance. | Complete: separate safe errors; SDK/IndexedDB fault injection and ciphertext corruption pass without consuming PIN failures |
 
-Detailed findings and correction evidence are in [ADR 004: code review](docs/adr/004-browser-wallet-recovery.md#code-review--october-2-2026). CI now runs the concurrency/fault regression. Web Locks are required; unsupported browsers fail closed. Next ready engineering package: specify and prove browser stealth-output detection and independently verified recipient spending using established Tari SDK APIs. Public M2b, PM-00 human trials and operations/release gates remain open; public mutations and mainnet remain disabled.
+Detailed findings and correction evidence are in [ADR 004: code review](docs/adr/004-browser-wallet-recovery.md#code-review--october-2-2026). CI now runs the concurrency/fault regression. Web Locks are required; unsupported browsers fail closed. Browser detection/spending remains necessary but is ordered by the revised section 0 backlog rather than automatically taking priority over first-run setup. Public M2b, PM-00 human trials and operations/release gates remain open; public mutations and mainnet remain disabled.
 
 ### Production-only UX follow-up — October 2
 

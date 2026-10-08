@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#111714" />
+    <title>Hauntboard — General</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/mobile.css" />
+    <script type="module" src="/app.mjs"></script>
+  </head>
+  <body data-ready="false">
+    <a class="skip-link" href="#main">Skip to conversations</a>
+    <div class="shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <a class="brand" href="/" aria-label="Hauntboard home"
+          ><span class="brand-mark" aria-hidden="true">H◇</span
+          ><span>hauntboard<small>conversations that linger</small></span></a
+        >
+        <button
+          id="menu-button"
+          class="subtle mobile-menu"
+          aria-expanded="false"
+          aria-controls="navigation"
+        >
+          Menu
+        </button>
+        <nav id="navigation" aria-label="Board and wallet">
+          <button class="board-nav selected" id="home-board" data-category="general" aria-pressed="true" disabled>
+            <span>/general/ · General</span
+            ><small>Anything on your mind</small></button
+          ><button class="board-nav" data-category="tari" aria-pressed="false"><span>/tari/ · Tari</span><small>Tari &amp; Ootle</small></button>
+          <button class="board-nav" data-category="pol" aria-pressed="false"><span>/pol/ · Politics</span><small>Current affairs &amp; debate</small></button>
+          <a class="side-button" href="/forums">How forums work</a>
+          <button class="side-button" id="browser-wallet-button" disabled>
+            Wallet</button
+          ><a class="side-button" href="/about">About Hauntboard</a>
+          <details id="advanced-navigation">
+            <summary>Advanced</summary>
+            <button class="side-button" id="network-button" disabled>
+              Open another board</button
+            ><button class="side-button" id="wallet-button" hidden>
+              My demo wallet</button
+            ><button class="side-button" id="keys-button" hidden>
+              Sealed-thread key backup</button
+            ><a
+              id="other-client"
+              class="side-button"
+              href="http://localhost:8281/"
+              hidden
+              >Open the second client</a
+            >
+          </details>
+        </nav>
+        <div class="side-bottom">
+          <span id="provider-label">Connecting to the provider…</span
+          ><small id="runtime-label">Checking network</small>
+        </div>
+      </aside>
+      <main id="main" tabindex="-1">
+        <header class="topbar">
+          <div>
+            <span id="network-label" class="tag">Checking network…</span
+            ><span id="beta-label" class="tag" hidden></span>
+          </div>
+          <div class="wallet-topbar">
+            <button
+              id="wallet-balance-button"
+              class="wallet-balance"
+              hidden
+              aria-label="Open wallet details"
+            >
+              <span class="wallet-balance-label">Available for posting</span
+              ><strong id="wallet-balance-value"></strong></button
+            ><span id="identity" class="identity" role="status"
+              >Checking wallet…</span
+            >
+          </div>
+        </header>
+        <section class="hero" aria-labelledby="board-title">
+          <div class="eyebrow">CONVERSATIONS THAT LINGER</div>
+          <h1 id="board-title" tabindex="-1">/general/ · General</h1>
+          <p id="board-description">
+            Everyday conversations, questions and whatever is on your mind.
+          </p>
+        </section>
+        <div class="notice">
+          <span id="notice-label">CONNECTING</span>
+          <p id="notice-copy">
+            Checking this board’s network and available features.
+          </p>
+        </div>
+        <section
+          id="operation-panel"
+          class="operation-panel"
+          hidden
+          aria-labelledby="operation-title"
+        >
+          <div>
+            <h2 id="operation-title">Publishing status</h2>
+            <p id="operation-message" role="status" aria-live="polite"></p>
+          </div>
+          <button id="check-operation" class="subtle" hidden>
+            Check existing submission
+          </button>
+        </section>
+        <div
+          class="flash"
+          id="flash"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <section id="board-view" aria-label="Threads">
+          <div class="feed-toolbar">
+            <div class="tabs" aria-label="Filter threads">
+              <button class="active" data-filter="all" aria-pressed="true">
+                All threads <span id="thread-count">0</span></button
+              ><button data-filter="public" aria-pressed="false" hidden>
+                Public</button
+              ><button data-filter="secret" aria-pressed="false" hidden>
+                Sealed
+              </button>
+            </div>
+            <div class="toolbar-actions">
+              <button id="refresh" class="subtle" disabled>
+                Refresh threads</button
+              ><button id="new-thread" class="primary" disabled>
+                Start a thread
+              </button>
+            </div>
+          </div>
+          <p id="board-capacity" class="caution" hidden></p>
+          <div id="thread-list" class="thread-list" aria-busy="true">
+            <div class="empty">Connecting to the Crypt…</div>
+          </div>
+          <div class="feed-footer">
+            <span id="sync-time">Waiting for chain state</span
+            ><button id="show-hidden" class="text-button">
+              Show hidden threads
+            </button>
+          </div>
+        </section>
+        <section id="thread-view" hidden aria-label="Conversation">
+          <div class="thread-toolbar">
+            <button id="back" class="subtle">← All threads</button>
+            <div>
+              <button id="refresh-thread" class="subtle">
+                Refresh conversation</button
+              ><button id="invite-button" class="subtle" hidden>
+                Copy secret invitation
+              </button>
+              <details class="thread-advanced">
+                <summary>Advanced</summary>
+                <button id="inspect-button" class="text-button">
+                  Inspect chain bytes
+                </button>
+              </details>
+            </div>
+          </div>
+          <div id="thread-heading"></div>
+          <div class="reply-order">
+            <label for="reply-order">Reply order</label
+            ><select id="reply-order">
+              <option value="oldest">Oldest first</option>
+              <option value="newest">Newest first</option>
+            </select>
+          </div>
+          <div id="posts"></div>
+          <div id="thread-capacity" class="caution" hidden>
+            <p>
+              This thread is full. Continue the conversation in a new thread.
+            </p>
+            <button id="continue-thread" class="primary">
+              Start a continuation
+            </button>
+          </div>
+          <form id="reply-form" class="reply-box">
+            <p id="reply-wallet-balance" class="form-wallet-balance" hidden></p>
+            <div id="reply-target" hidden>
+              <blockquote id="reply-excerpt"></blockquote>
+              <button id="cancel-reply" class="text-button" type="button">
+                Cancel reply to this post
+              </button>
+            </div>
+            <label for="reply-body">Leave a reply</label
+            ><textarea
+              id="reply-body"
+              required
+              maxlength="2400"
+              rows="4"
+              aria-describedby="reply-space reply-error"
+              placeholder="Something to add to the story…"
+            ></textarea>
+            <p id="reply-space" class="small"></p>
+            <p id="reply-error" class="field-error" hidden></p>
+            <div class="compose-footer">
+              <span id="reply-context">Replying to the thread</span
+              ><button type="submit" class="primary">Review reply</button>
+            </div>
+          </form>
+        </section>
+        <footer class="page-footer">
+          <span>Built on Tari Ootle.</span
+          ><button id="privacy-button" class="text-button" disabled>
+            What is private here?
+          </button>
+        </footer>
+      </main>
+    </div>
+    <dialog id="compose-dialog" aria-labelledby="compose-title">
+      <form id="compose-form">
+        <div class="dialog-top">
+          <span class="eyebrow">WRITE → REVIEW → PUBLISH</span
+          ><button
+            type="button"
+            data-close="compose-dialog"
+            class="close"
+            aria-label="Close compose"
+          >
+            ×
+          </button>
+        </div>
+        <h2 id="compose-title">Start a thread</h2>
+        <p id="compose-wallet-balance" class="form-wallet-balance" hidden></p>
+        <p id="compose-copy" class="muted">Write a public conversation.</p>
+        <div class="mode-picker" hidden>
+          <label
+            ><input type="radio" name="mode" value="0" checked /><span
+              >Public thread<small>Anyone can read the full text.</small></span
+            ></label
+          ><label
+            ><input type="radio" name="mode" value="1" /><span
+              >Sealed thread<small
+                >Only an invitation key opens it.</small
+              ></span
+            ></label
+          >
+        </div>
+        <label for="thread-category">Category</label>
+        <select id="thread-category" name="category"><option value="general">/general/ · General</option><option value="tari">/tari/ · Tari</option><option value="pol">/pol/ · Politics</option></select>
+        <label for="thread-title">Thread title</label
+        ><input
+          id="thread-title"
+          required
+          maxlength="80"
+          placeholder="What happened after midnight?"
+          aria-describedby="compose-error"
+        /><label for="post-name" hidden
+          >Display name <span class="optional">optional</span></label
+        ><input
+          id="post-name"
+          maxlength="40"
+          placeholder="Ghost"
+          hidden
+        /><label for="thread-body">Your opening post</label
+        ><textarea
+          id="thread-body"
+          required
+          maxlength="2400"
+          rows="6"
+          placeholder="Tell us what you saw…"
+          aria-describedby="compose-space compose-error"
+        ></textarea>
+        <p id="compose-space" class="small"></p>
+        <p id="compose-error" class="field-error" hidden></p>
+        <label class="check" hidden
+          ><input id="include-address" type="checkbox" /> Include my receive
+          address for private tips
+          <span class="optional"
+            >Encrypted in sealed threads; public in public threads.</span
+          ></label
+        >
+        <p id="draft-status" class="small"></p>
+        <div id="discard-secret" class="caution" hidden>
+          <p>This sealed draft is not saved. Keep writing or discard it?</p>
+          <button id="keep-draft" type="button" class="subtle">
+            Keep writing</button
+          ><button id="discard-draft" type="button" class="subtle">
+            Discard draft
+          </button>
+        </div>
+        <div class="compose-footer">
+          <span id="compose-hint">Public text is visible on chain.</span
+          ><button type="submit" class="primary">Review post</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="review-dialog" aria-labelledby="review-title">
+      <div class="dialog-top">
+        <span class="eyebrow">REVIEW → PUBLISH</span
+        ><button
+          data-close="review-dialog"
+          class="close"
+          aria-label="Close review"
+        >
+          ×
+        </button>
+      </div>
+      <h2 id="review-title">Review your post</h2>
+      <p id="review-copy"></p>
+      <article id="review-preview" class="post">
+        <h3 id="review-content-title"></h3>
+        <p id="review-content-body" class="post-body"></p>
+      </article>
+      <dl class="review-details">
+        <dt>Network</dt>
+        <dd id="review-network"></dd>
+        <dt>Signing wallet</dt>
+        <dd id="review-wallet"></dd>
+        <dt id="review-fee-label">Maximum network fee</dt>
+        <dd id="review-fee"></dd>
+        <dt>Content</dt>
+        <dd id="review-mode"></dd>
+      </dl>
+      <p id="review-signing" class="muted small"></p>
+      <div class="dialog-actions">
+        <button id="review-edit" class="subtle">Back to edit</button
+        ><button id="confirm-publish" class="primary">
+          Publish public post
+        </button>
+      </div>
+    </dialog>
+    <dialog id="wallet-dialog" aria-labelledby="wallet-title">
+      <div class="dialog-top">
+        <span class="eyebrow">YOUR LOCAL COMPANION</span
+        ><button
+          data-close="wallet-dialog"
+          class="close"
+          aria-label="Close demo wallet"
+        >
+          ×
+        </button>
+      </div>
+      <h2 id="wallet-title">My demo wallet</h2>
+      <p class="muted">
+        This isolated demonstration uses a pre-funded local wallet. Test
+        currency has no monetary value.
+      </p>
+      <div id="wallet-details"></div>
+      <label for="receive-address">Your localnet receive address</label
+      ><textarea id="receive-address" rows="3" readonly></textarea
+      ><button id="copy-address" class="subtle full">
+        Copy receive address
+      </button>
+      <div id="received-tips"></div>
+      <p class="small muted">
+        Wallet keys stay in a private Docker volume. The other client has an
+        independent wallet.
+      </p>
+    </dialog>
+    <dialog id="keys-dialog" aria-labelledby="keys-title">
+      <div class="dialog-top">
+        <span class="eyebrow">KEEP YOUR DOOR KEYS</span
+        ><button
+          data-close="keys-dialog"
+          class="close"
+          aria-label="Close key backup"
+        >
+          ×
+        </button>
+      </div>
+      <h2 id="keys-title">Sealed-thread key backup</h2>
+      <p class="muted">
+        Invitation keys are encrypted in this browser's storage. Back them up to
+        open threads on another device. Anyone with a key can read its entire
+        thread. Your wallet recovery phrase does not restore these keys.
+      </p>
+      <p id="keys-count"></p>
+      <label for="backup-password"
+        >Backup password · at least 12 characters</label
+      ><input
+        id="backup-password"
+        type="password"
+        autocomplete="new-password"
+      /><button id="export-keys" class="primary full">
+        Download encrypted backup</button
+      ><label for="restore-file">Restore an encrypted Hauntboard backup</label
+      ><input
+        id="restore-file"
+        type="file"
+        accept="application/json,.json"
+      /><button id="restore-keys" class="subtle full">
+        Restore with password
+      </button>
+      <p class="small muted">
+        The backup password is used locally and never sent to the companion.
+      </p>
+    </dialog>
+    <dialog id="tip-dialog" aria-labelledby="tip-title">
+      <div class="dialog-top">
+        <span class="eyebrow">LEAVE A LITTLE LIGHT</span
+        ><button data-close="tip-dialog" class="close" aria-label="Close tip">
+          ×
+        </button>
+      </div>
+      <h2 id="tip-title">A candle for this story</h2>
+      <p class="muted">
+        Send a separate native Tari stealth transfer. No tip amount or payment
+        link is added to the thread.
+      </p>
+      <form id="tip-form">
+        <label for="tip-amount">Tip in test TARI · maximum 10</label
+        ><input
+          id="tip-amount"
+          type="number"
+          min="0.000001"
+          max="10"
+          step="0.000001"
+          value="1"
+          required
+        /><button class="primary full" type="submit">Review private tip</button>
+      </form>
+    </dialog>
+    <dialog id="info-dialog" aria-labelledby="info-title">
+      <div class="dialog-top">
+        <span class="eyebrow" id="info-eyebrow">ABOUT THIS EXPERIMENT</span
+        ><button
+          data-close="info-dialog"
+          class="close"
+          aria-label="Close information"
+        >
+          ×
+        </button>
+      </div>
+      <h2 id="info-title"></h2>
+      <div id="info-content"></div>
+    </dialog>
+    <dialog id="browser-wallet-dialog" aria-labelledby="browser-wallet-title">
+      <div class="dialog-top">
+        <span class="eyebrow" id="wallet-step">YOUR WALLET</span
+        ><button
+          data-close="browser-wallet-dialog"
+          class="close"
+          aria-label="Close wallet"
+        >
+          ×
+        </button>
+      </div>
+      <h2 id="browser-wallet-title">Your wallet</h2>
+      <p id="wallet-introduction" class="muted">
+        Your six-digit PIN unlocks this browser. Your 24-word Tari L2 recovery
+        phrase restores your wallet on another device.
+      </p>
+      <p id="browser-wallet-status" role="status"></p>
+      <div id="wallet-secure-context" class="caution" hidden>
+        Wallets need HTTPS or localhost. You can read the board here; open a
+        secure connection to create or recover a wallet.
+      </div>
+      <div id="wallet-controls">
+        <div id="wallet-entry">
+          <button id="wallet-create-choice" class="primary full">
+            Create wallet</button
+          ><button id="wallet-recover-choice" class="subtle full">
+            Recover with seed phrase
+          </button>
+          <button id="wallet-forgot-pin" class="subtle full" hidden>Forgot PIN? Delete saved wallet</button>
+        </div>
+        <div id="wallet-password-panel" hidden>
+          <label for="wallet-password" id="wallet-password-label"
+            >Device PIN · six digits</label
+          ><input
+            id="wallet-password"
+            type="password"
+            autocomplete="new-password"
+            minlength="6"
+            maxlength="6"
+            pattern="[0-9]{6}"
+            inputmode="numeric"
+            aria-describedby="wallet-password-help"
+          />
+          <p id="wallet-password-help" class="small">
+            Use the keypad, keyboard or number pad. Your PIN unlocks this
+            device; keep your recovery phrase separately.
+          </p>
+          <div id="wallet-pin-confirm-panel" hidden>
+            <label for="wallet-pin-confirm">Confirm your six-digit PIN</label>
+            <input
+              id="wallet-pin-confirm"
+              type="password"
+              inputmode="numeric"
+              minlength="6"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              autocomplete="new-password"
+            />
+          </div>
+          <div
+            id="wallet-keypad"
+            class="pin-keypad"
+            role="group"
+            aria-label="PIN keypad"
+          >
+            <button type="button" data-pin-key="1">1</button
+            ><button type="button" data-pin-key="2">2</button
+            ><button type="button" data-pin-key="3">3</button>
+            <button type="button" data-pin-key="4">4</button
+            ><button type="button" data-pin-key="5">5</button
+            ><button type="button" data-pin-key="6">6</button>
+            <button type="button" data-pin-key="7">7</button
+            ><button type="button" data-pin-key="8">8</button
+            ><button type="button" data-pin-key="9">9</button>
+            <button type="button" data-pin-key="clear">Clear</button
+            ><button type="button" data-pin-key="0">0</button
+            ><button
+              type="button"
+              data-pin-key="backspace"
+              aria-label="Delete last PIN digit"
+            >
+              ⌫
+            </button>
+          </div>
+          <button id="wallet-save-pin" class="primary full" hidden>
+            Save PIN
+          </button>
+          <button id="wallet-create" class="primary full" hidden>
+            Create wallet</button
+          ><button id="wallet-unlock" class="primary full" hidden>
+            Unlock wallet
+          </button>
+        </div>
+        <div id="wallet-recover-panel" hidden>
+          <label for="wallet-recovery-input"
+            >24-word Tari L2 recovery phrase</label
+          ><textarea
+            id="wallet-recovery-input"
+            rows="5"
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
+            placeholder="Enter your Tari L2 seed words in order"
+          ></textarea
+          ><input
+            id="wallet-recovery-format"
+            type="hidden"
+            value="native"
+          /><label for="wallet-expected-address"
+            >Original Tari L2 receive address · recommended</label
+          ><input
+            id="wallet-expected-address"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <p class="small">
+            We can verify that the recovered wallet matches this address before
+            saving it.
+          </p>
+          <details id="wallet-recovery-advanced">
+            <summary>Advanced recovery</summary>
+            <label for="wallet-seed-passphrase"
+              >Original seed passphrase · optional</label
+            ><input
+              id="wallet-seed-passphrase"
+              type="password"
+              autocomplete="off"
+            />
+            <p class="small muted">
+              Leave blank unless your original phrase had a passphrase. This
+              differs from your new device PIN.
+            </p>
+            <label for="wallet-account-index">Account index</label
+            ><input
+              id="wallet-account-index"
+              type="number"
+              min="0"
+              max="4294967295"
+              step="1"
+              value="0"
+            />
+            <p class="small">
+              Account 0 is the first account. Choose the original index to
+              recover another account on this site's network.
+            </p>
+          </details>
+          <p id="wallet-replace-saved-panel" class="small" hidden>Recovering saves this wallet in place of the wallet currently saved on this device.</p>
+          <button id="wallet-restore" class="primary full">
+            Recover wallet
+          </button>
+        </div>
+        <div id="wallet-seed-panel" hidden>
+          <h3>Save your recovery phrase</h3>
+          <p>
+            Write these 24 words down in order. Anyone with them can control
+            this wallet. Keep them private.
+          </p>
+          <ol
+            id="wallet-seed-words"
+            class="seed-words"
+            aria-label="Recovery words"
+          ></ol>
+          <label for="wallet-seed-check" id="wallet-seed-check-label"
+            >Confirm a saved word</label
+          ><input
+            id="wallet-seed-check"
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
+          /><label class="check"
+            ><input id="wallet-seed-saved" type="checkbox" /> I have saved my
+            recovery phrase somewhere private.</label
+          ><button id="wallet-confirm-seed" class="primary full" disabled>
+            Continue to funding
+          </button>
+        </div>
+        <section id="wallet-ready-panel" hidden aria-label="Wallet funds">
+          <h3>Wallet balance</h3>
+          <p id="wallet-ready-value" class="balance-value"></p>
+          <p id="wallet-readiness" class="small"></p>
+          <details>
+            <summary>Balance details</summary>
+            <dl id="wallet-balance-details" class="review-details"></dl>
+            <p id="wallet-output-status" class="small"></p>
+            <p class="small">
+              Reserved funds belong to pending operations. Change is held
+              separately to avoid linking another post; it is not available for
+              posting.
+            </p>
+          </details>
+          <div id="wallet-faucet-panel" hidden>
+            <button id="wallet-faucet" class="primary full">
+              Claim 500 test TARI
+            </button>
+            <p class="small muted">
+              Receive native stealth outputs. Claim fees come from faucet funds.
+              Funding exposes your account and wallet public key; outputs share
+              a visible origin.
+            </p>
+          </div>
+          <button id="wallet-fund" class="primary full" hidden>
+            Claim local test funds
+          </button>
+          <div id="incoming-funds" hidden>
+            <button id="wallet-sync-funds" class="subtle full">
+              Check for incoming funds
+            </button>
+            <details>
+              <summary>Receive address and advanced tools</summary>
+              <label for="private-receive-address"
+                >Your private receive address</label
+              ><textarea
+                id="private-receive-address"
+                rows="3"
+                readonly
+              ></textarea
+              ><label for="incoming-transaction">Incoming transaction ID</label
+              ><input
+                id="incoming-transaction"
+                maxlength="64"
+                autocomplete="off"
+              /><button id="wallet-find-funds" class="subtle full">
+                Find incoming funds
+              </button>
+            </details>
+          </div>
+          <button id="wallet-return" class="primary full" hidden>
+            Return to your post</button
+          ><button id="wallet-show-seed" class="subtle full" hidden>
+            Show recovery phrase</button
+          ><button id="wallet-lock" class="subtle full" hidden>
+            Lock wallet
+          </button>
+        </section>
+        <details id="wallet-settings" hidden>
+          <summary>Wallet settings</summary>
+          <button id="wallet-change-pin" class="subtle full" hidden>
+            Change PIN
+          </button>
+          <button id="wallet-delete-choice" class="subtle full">
+            Delete wallet from this browser
+          </button>
+        </details>
+        <section
+          id="wallet-delete-panel"
+          hidden
+          aria-label="Delete wallet confirmation"
+        >
+          <p>
+            This removes the saved wallet and keys for this network from this
+            browser. It does not remove on-chain funds or posts. Your recovery
+            phrase is the only way to restore access.
+          </p>
+          <label class="check"
+            ><input id="wallet-delete-ack" type="checkbox" /> I understand that
+            I need my recovery phrase to restore this wallet.</label
+          >
+          <button id="wallet-delete-confirm" class="danger full" disabled>
+            Delete wallet
+          </button>
+          <button id="wallet-delete-cancel" class="subtle full">
+            Keep wallet
+          </button>
+        </section>
+        <button id="wallet-back" class="text-button full" hidden>
+          Back to wallet
+        </button>
+      </div>
+      <p id="wallet-disclosure" class="small muted">
+        Your words, PIN and keys stay in this browser. Test currency has no
+        monetary value.
+      </p>
+      <p id="wallet-message" class="flash" hidden role="status"></p>
+    </dialog>
+  </body>
+</html>

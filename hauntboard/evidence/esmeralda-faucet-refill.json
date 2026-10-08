@@ -1,0 +1,9 @@
+{
+  "status": "PUBLIC_ESMERALDA_FAUCET_FUNDED",
+  "transactionId": "b771bc7a4cb16b81abeec7acf964cea15e8a7ce110fdf6b19dc4a8966cf771ed",
+  "depositMicrotari": "2000000000",
+  "requiredFeeMicrotari": "1685",
+  "vault": "vault_0102030000000000000000000000000000000000000000000000000000000001",
+  "verifiedBalanceMicrotari": "2000000000",
+  "checkedAt": "2026-10-07T19:54:36.109Z"
+}

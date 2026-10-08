@@ -1,0 +1,30 @@
+{
+  "clients": [
+    {
+      "url": "http://localhost:8280/",
+      "pageSize": 16,
+      "verified": true,
+      "legacyBoards": [
+        "component_996303c875b8e4034810e7a6275abb499d8796d198232e4c180502c81eb0cadc"
+      ],
+      "postsPerThread": 2048,
+      "threads": 14,
+      "board": "component_73a0693afb23f4a132f460f032f400e7a73a5b7711a50920f352051973f8fa39",
+      "schema": 3
+    },
+    {
+      "url": "http://localhost:8281/",
+      "pageSize": 16,
+      "verified": true,
+      "legacyBoards": [
+        "component_996303c875b8e4034810e7a6275abb499d8796d198232e4c180502c81eb0cadc"
+      ],
+      "postsPerThread": 2048,
+      "threads": 14,
+      "board": "component_73a0693afb23f4a132f460f032f400e7a73a5b7711a50920f352051973f8fa39",
+      "schema": 3
+    }
+  ],
+  "checkedAt": "2026-10-06T20:31:46.7044361Z",
+  "status": "PASSED"
+}

@@ -1,0 +1,20 @@
+{
+  "status": "TESTNET_WALLET_FUNDED_BURN_CLAIM_PENDING",
+  "checkedAt": "2026-10-07T13:40:52.068Z",
+  "network": "esmeralda",
+  "faucet": "https://testnet-faucet.supportxtm.com/",
+  "faucetMessage": "Success! Sent 10,000 XTM (tx id 1456638032378300229).",
+  "receivingAddress": "f28TiRQKrbQbX6HCpjtvdc9HC7c6zgrZ2CBkxw5hsnfQvpC6KynfvmhpUMKc4DDC8e4qs6omXHAGuyrawbmZB6JywGM",
+  "availableMicroXtm": "9989999260",
+  "walletOnline": true,
+  "initialValidation": true,
+  "burn": {
+    "amountMicroXtm": "10000000",
+    "walletTransactionId": "11510942916915577984",
+    "claimOwnerPublicKey": "ae03dfb32a1ca5748b55d92349eb3e950b8622a2271f4ec0cb39e2ea8b756447"
+  },
+  "minotariRelease": "6.1.0",
+  "walletImage": "sha256:8f123efbafa52f339c261ea5e1809c66c702450ec703fa937c69787f1a9da960",
+  "l2ClaimStatus": "NotYetValid",
+  "contractPublished": false
+}

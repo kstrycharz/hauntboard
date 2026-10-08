@@ -1,0 +1,9 @@
+{
+  "status": "FRONTEND_FUNDING_AVAILABLE",
+  "network": "esmeralda",
+  "availableMicrotari": "8988374",
+  "transferMicrotari": "1000000",
+  "outputCount": 4,
+  "maximumFeeMicrotari": "1000000",
+  "checkedAt": "2026-10-07T18:29:47.325Z"
+}

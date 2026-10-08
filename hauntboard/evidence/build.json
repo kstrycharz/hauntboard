@@ -1,0 +1,114 @@
+{
+  "schema": 3,
+  "template": "1e71fc5c2843b8713f888b33750b67e019fda230929fd3a426f0b3611c76369a",
+  "wasmBytes": 144884,
+  "walletRuntime": "0.43.0",
+  "checkedAt": "2026-10-06T20:32:25.561Z",
+  "testHarness": "0.43.0",
+  "sourceHashes": {
+    "hauntboard/lib/state.mjs": "20c277812ad76d7b5453f6d383fc186858020e9c25582d2abdd95adac227a378",
+    "hauntboard/web/index.html": "e997c4f07d276782151f22ef102d4c5bf3bb9c3f5832f20509c86e08e18e9f99",
+    "hauntboard/server.mjs": "d19f612e2e910c8bc99a58608831cf7c401e6592dac8709d02cf8d9c7d431226",
+    "hauntboard/web/style.css": "235a0dee49b91bab1595d4470eed7c04a6c68f24fbcf2f90121ebacf8df4ac72",
+    "hauntboard/template/src/lib.rs": "9ac3a434a6942d9b109b95d7633c6d5330ea1d6a474f1f1d8413d375bbdac227",
+    "hauntboard/template/Cargo.toml": "c3bb7ac193c7db26971d5472b0a2f22dade3bf5539274bd1a85118186731f0c4",
+    "hauntboard/template/tests/board.rs": "8906808d6dce6812439daf50cdd80b9be495d6b9df4791c6ea59b6a2114ed185",
+    "hauntboard/web/app.mjs": "4d98788fd20eec3c1a6b4ac55cfa76b0591b6566cc54064a4bb94749963df38c",
+    "hauntboard/lib/chain.mjs": "3950e985844e6f510375984346942658802ec9622aa875d232f0542e5e14739c",
+    "hauntboard/web/crypto.mjs": "8796919354a9f2ff0369e3b6f1fc5f7ba10828cd2e088000a45284a7e3dcd2c1",
+    "compose.hauntboard.yaml": "5358846dc8f08d1e9cfdba6d7874e81af18cebfa19d69e4218402186d9f8e173",
+    "hauntboard/template/Cargo.lock": "5fc6ddd00e81eb6f090b85dbdf96c80cbd813fd28b48dcf077a1086ae83d2328",
+    "hauntboard/web/about.html": "0d35e27e6e3690152d34aea8926aee36929466391521f58f2a7c346ea18f3f83",
+    "hauntboard/web/about.mjs": "18f7b364878feddfd53e5302b3addec9a986de630359ed1ebf0647963030f163",
+    "hauntboard/web/about.css": "7219aa4a75137e18b169cbbb8dcfd2bc3260a5aae2c88a0eba688c20b2dc365b",
+    "hauntboard/web/mobile.css": "486a3a1700ad57b9ea13690e2ff2a621e168184d4a0eb5402979a626920506ba",
+    "hauntboard/web/browser-wallet.mjs": "e256f53ae40d7ce91d5787d2ab7d675050a8a20d06f207361bb77b6ca529a367",
+    "hauntboard/browser-sdk/src.mjs": "84aba6bb8db3a63f0dcc46150c850b1fb327dd21f6a61f6890a893ff4918391d",
+    "hauntboard/browser-sdk/package.json": "05f4eda23acf2fc4ad9dd59697254ff7242af6ba8e12a1f81bdf99611e1a6a1c",
+    "hauntboard/browser-sdk/pnpm-lock.yaml": "adaae4ffad45f7b7a0c89659924732e6a3f3c5f54c94b2cbe66c0b1f095c95ae",
+    "hauntboard/browser-sdk/vite.config.mjs": "c495fa7df939d57d48c5199480a367ca0d42db7ce45225ebb4e0810bbe8ef578",
+    ".github/workflows/hauntboard.yml": "d656cad2ecc9013f9eddaa9427587b41187fe11dab933f27cc7f9682d0314b5f",
+    "hauntboard/tests/browser-wallet.mjs": "3e8b5ca735d68f325657337493d87b97da88a0aaec442e2d1da01d357c81b619",
+    "hauntboard/tests/about.mjs": "8b18e2d9bb82ba9bba9cbef0618ade05e8e146fbbcd63bc797bd2cde8a6ff3b2",
+    "hauntboard/scripts/start.ps1": "286a822d54bca002daf6bab9fe0885879a65426b1d331821caa05b657815a9f2",
+    "hauntboard/scripts/stop.ps1": "a5c630d29ac8f249391512db9eb284c181c19e5d454eb24181a0b296154783d6",
+    "hauntboard/scripts/prepare-browser-reset.mjs": "397daafe52ed99102497722c2f496c3dc52bf26d6bfe15d4bba81486a992cefe",
+    "hauntboard/scripts/package-release.mjs": "a3c8c323241605cf975d13b80e69d8e72a6a78ca17a26eb62c8fdbec4765db5d",
+    "hauntboard/tests/fresh-start.mjs": "39c4e85a908e8fe7d906f8b64f71dd1e95099bc621cbfab79a5f246198e67a30",
+    "hauntboard/RELEASE.md": "7d27dbe93f8e8fb678bf19f349e6238fee9e004f6869b05a70f0fed7c527f458",
+    "hauntboard/scripts/bootstrap.mjs": "8471bc1fa114f571ef33de306c631b473914f83e175a81bac55357548e6f6a2e",
+    "hauntboard/scripts/verify-release.mjs": "d8950a3ec4e13fd2b83558f0e5ea138e97fbe28ed9b9f9f758c73314a96df97e",
+    "hauntboard/tests/paging.mjs": "b07df494594b14f4a6efb8e0e4182a8129efd156b8ec32bd901a6d04d8c45d93",
+    "hauntboard/tests/outage.mjs": "632ef040463a78ae019361337f393dea3381f333ef9c22181eaa6cfade4beaf8",
+    "hauntboard/template/test-engine.sh": "91ad64a4512aad6083e9b29a2edab0ee851bb4704b1c79275388e13b90d266a1",
+    "hauntboard/schema3.md": "3f60064ddc1b6cbeeaaee93e67c2fafaa49f59beba72fa9194c050be7ecf9ce8"
+  },
+  "network": "localnet",
+  "submittedWasmHash": "33f2cfae29e86f9dcf57956f246e2a260491060e9266701c5718e3cc89c0e87f",
+  "engineTests": {
+    "fullCapacityMaximumSizePayloads": true,
+    "status": "PASSED",
+    "checkedAt": "2026-10-06T20:26:42.5610565Z",
+    "maximumPages": 128,
+    "maximumPosts": 2048,
+    "postsPerPage": 16,
+    "passed": 5,
+    "maximumEnvelopeBytes": 4096,
+    "durationSeconds": 149.94,
+    "schema": 3,
+    "failed": 0
+  },
+  "contractLibrary": "0.33.0",
+  "board": "component_73a0693afb23f4a132f460f032f400e7a73a5b7711a50920f352051973f8fa39",
+  "toolchainImages": [
+    {
+      "id": "sha256:708c37cba64791d54dc2af74d4c1202289f17d3e392333a2b92f9bb77ebbe97e",
+      "tags": [
+        "hauntbox-localnet:0.43.0"
+      ],
+      "digests": [
+        "hauntbox-localnet@sha256:708c37cba64791d54dc2af74d4c1202289f17d3e392333a2b92f9bb77ebbe97e"
+      ]
+    },
+    {
+      "id": "sha256:b73bcc395f8a0feb69612721a2f4e2a6cf241ab9b6e0c7eaf2b2e1919287789a",
+      "tags": [
+        "hauntbox-room-engine:latest"
+      ],
+      "digests": [
+        "hauntbox-room-engine@sha256:b73bcc395f8a0feb69612721a2f4e2a6cf241ab9b6e0c7eaf2b2e1919287789a"
+      ]
+    },
+    {
+      "id": "sha256:1d60448d7703c75bcc415491feff728772a576a35bec1cadb9f1512fd1d1b930",
+      "tags": [
+        "hauntbox-room-build:latest"
+      ],
+      "digests": [
+        "hauntbox-room-build@sha256:1d60448d7703c75bcc415491feff728772a576a35bec1cadb9f1512fd1d1b930"
+      ]
+    },
+    {
+      "id": "sha256:54842e8aa7d4e4274aad972398b0faff53b33d875e1d0be8dd508df604c753da",
+      "tags": [
+        "hauntbox-localtest-v2-integration:latest"
+      ],
+      "digests": [
+        "hauntbox-localtest-v2-integration@sha256:54842e8aa7d4e4274aad972398b0faff53b33d875e1d0be8dd508df604c753da"
+      ]
+    }
+  ],
+  "browserSdk": {
+    "sdk": "0.7.0",
+    "wasm": "0.43.0",
+    "bundleBytes": 1797381,
+    "bundleSha256": "5d4808f6f9db51a3f5791810b84405ee52fa6dee5fcc034df93b1ba0b8515361"
+  },
+  "capacity": {
+    "threadsPerBoard": 128,
+    "pagesPerThread": 128,
+    "postsPerPage": 16,
+    "postsPerThread": 2048,
+    "envelopeBytes": 4096
+  }
+}

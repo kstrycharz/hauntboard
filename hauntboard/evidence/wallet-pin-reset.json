@@ -1,0 +1,48 @@
+[
+  {
+    "engine": "chromium",
+    "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+    "checkedAt": "2026-10-08T02:09:54.145Z",
+    "status": "WALLET_PIN_RESET_PASSED",
+    "checks": {
+      "sixDigitsRequired": true,
+      "confirmationRequired": true,
+      "keypadEditing": true,
+      "hardwareNumpadAndEnter": true,
+      "wrongPinRejected": true,
+      "pinChangeKeepsWallet": true,
+      "legacyPasswordMigration": true,
+      "pendingDeletionBlocked": true,
+      "cancelKeepsWallet": true,
+      "otherNetworkPreserved": true,
+      "otherTabsLock": true,
+      "newWalletHasNewAddress": true,
+      "deletedWalletRecoverableWithPhrase": true,
+      "secretsNotSent": true,
+      "axeViolations": 0
+    }
+  },
+  {
+    "engine": "firefox",
+    "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+    "checkedAt": "2026-10-08T02:10:09.581Z",
+    "status": "WALLET_PIN_RESET_PASSED",
+    "checks": {
+      "sixDigitsRequired": true,
+      "confirmationRequired": true,
+      "keypadEditing": true,
+      "hardwareNumpadAndEnter": true,
+      "wrongPinRejected": true,
+      "pinChangeKeepsWallet": true,
+      "legacyPasswordMigration": true,
+      "pendingDeletionBlocked": true,
+      "cancelKeepsWallet": true,
+      "otherNetworkPreserved": true,
+      "otherTabsLock": true,
+      "newWalletHasNewAddress": true,
+      "deletedWalletRecoverableWithPhrase": true,
+      "secretsNotSent": true,
+      "axeViolations": 0
+    }
+  }
+]

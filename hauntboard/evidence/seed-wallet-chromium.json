@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-07T04:35:22.700Z",
+  "browser": "chromium",
+  "network": "localnet",
+  "format": "hauntboard-bip39-tari-v1",
+  "checks": {
+    "createConfirmWithoutDownload": true,
+    "nativeScanDiscoversIncomingFunds": true,
+    "phraseResetsForgottenDevicePassword": true,
+    "phraseAloneRestoresSameIdentityWithNewPassword": true,
+    "encryptedChangeMemoPreservesQuarantine": true,
+    "invalidPhraseAndDifferentIdentityPreserveWallet": true,
+    "recoveredWalletSignsRealPost": true,
+    "seedAndPasswordsNeverSentToRelay": true
+  },
+  "limits": [
+    "Hauntboard BIP39 phrase; not a native Tari cipher seed.",
+    "Output scanning is bounded and depends on the indexer; incomplete scans can continue. Public Esmeralda recovery remains unverified."
+  ],
+  "status": "SEED_RECOVERY_PASSED"
+}

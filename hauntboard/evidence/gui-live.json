@@ -1,0 +1,100 @@
+[
+  {
+    "engine": "chromium",
+    "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+    "checkedAt": "2026-10-08T02:10:26.380Z",
+    "widths": [
+      320,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "axeViolations": 0,
+    "pageErrors": 0,
+    "assets": [
+      {
+        "name": "index.html",
+        "sha256": "d390715eef8aacb82b681375b4c83952903f7131d810bd78a1c44a38e5c9c025"
+      },
+      {
+        "name": "app.mjs",
+        "sha256": "72311667dd57af9666147896cf677dfdd2fda697e36ea3f551d9e89437e97280"
+      },
+      {
+        "name": "style.css",
+        "sha256": "06dc049b012a594f062004949fd41bbc94bf246553624870d998cce567a745ba"
+      },
+      {
+        "name": "mobile.css",
+        "sha256": "43ec9b7e6d891a389a862fcbf6bff32eea402714f1ce01b478e1d45b5a3353c6"
+      },
+      {
+        "name": "crypto.mjs",
+        "sha256": "744acc3fedfd049d747ebc230b7882ea2be262cb99d0c7e326c1968ac2518e96"
+      },
+      {
+        "name": "browser-wallet.mjs",
+        "sha256": "7d2c49961bd419d7660ef93b47d9f122f2c0c65402b05dd9567a747d60e14191"
+      },
+      {
+        "name": "transaction-identity.wasm",
+        "sha256": "21de1772618576ca2cf980e8dc4c416350e1f88a299874f449adbe9b995d2bef"
+      },
+      {
+        "name": "wallet-recovery.wasm",
+        "sha256": "355b477039dfe19d007398383ae816b2eccaa330b1bb912ea0049c611858277e"
+      }
+    ],
+    "status": "LIVE_GUI_PASSED"
+  },
+  {
+    "engine": "firefox",
+    "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
+    "checkedAt": "2026-10-08T02:10:30.876Z",
+    "widths": [
+      320,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "axeViolations": 0,
+    "pageErrors": 0,
+    "assets": [
+      {
+        "name": "index.html",
+        "sha256": "d390715eef8aacb82b681375b4c83952903f7131d810bd78a1c44a38e5c9c025"
+      },
+      {
+        "name": "app.mjs",
+        "sha256": "72311667dd57af9666147896cf677dfdd2fda697e36ea3f551d9e89437e97280"
+      },
+      {
+        "name": "style.css",
+        "sha256": "06dc049b012a594f062004949fd41bbc94bf246553624870d998cce567a745ba"
+      },
+      {
+        "name": "mobile.css",
+        "sha256": "43ec9b7e6d891a389a862fcbf6bff32eea402714f1ce01b478e1d45b5a3353c6"
+      },
+      {
+        "name": "crypto.mjs",
+        "sha256": "744acc3fedfd049d747ebc230b7882ea2be262cb99d0c7e326c1968ac2518e96"
+      },
+      {
+        "name": "browser-wallet.mjs",
+        "sha256": "7d2c49961bd419d7660ef93b47d9f122f2c0c65402b05dd9567a747d60e14191"
+      },
+      {
+        "name": "transaction-identity.wasm",
+        "sha256": "21de1772618576ca2cf980e8dc4c416350e1f88a299874f449adbe9b995d2bef"
+      },
+      {
+        "name": "wallet-recovery.wasm",
+        "sha256": "355b477039dfe19d007398383ae816b2eccaa330b1bb912ea0049c611858277e"
+      }
+    ],
+    "status": "LIVE_GUI_PASSED"
+  }
+]

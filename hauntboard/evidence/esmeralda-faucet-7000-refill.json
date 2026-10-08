@@ -1,0 +1,23 @@
+{
+  "status": "PUBLIC_ESMERALDA_FAUCET_FUNDED",
+  "transactionId": "561495a4438576e37041aba60b085b6ca8f20c43ac9008e9f10e31fe165caee1",
+  "depositMicrotari": "7000000000",
+  "requiredFeeMicrotari": "1702",
+  "vault": "vault_0102030000000000000000000000000000000000000000000000000000000001",
+  "verifiedBalanceMicrotari": "7500922520",
+  "checkedAt": "2026-10-07T23:29:29.177Z",
+  "checks": [
+    {
+      "node": "https://ootle-indexer-a.tari.com",
+      "decision": "Commit",
+      "verified": true,
+      "balanceMicrotari": "7500922520"
+    },
+    {
+      "node": "https://ootle-indexer-b.tari.com",
+      "decision": "Commit",
+      "verified": true,
+      "balanceMicrotari": "7500922520"
+    }
+  ]
+}

@@ -65,14 +65,26 @@ export async function callConfirmed(config, body, variables, imported) {
   const sent = await submitCall(config,prepared);
   return requireAccepted(await waitTransaction(config,sent.transaction_id));
 }
-export async function getSubstate(indexer, address, template) {
+export async function getSubstate(indexer, address, template, fallbackProviders = []) {
   if(!COMPONENT.test(address)) throw new Error('INVALID_COMPONENT');
-  const response = await fetch(`${indexer}/substates/${address}`, {signal:AbortSignal.timeout(20000),redirect:'error'});
-  if(!response.ok) throw new Error(`Indexer unavailable (${response.status})`);
-  const row = await response.json();
-  const c = row.substate?.Component;
-  if(row.verified !== true || !c || !(Array.isArray(template)?template:[template]).includes(c.header.template_address.replace(/^template_/,''))) throw new Error('UNVERIFIED_BOARD_COMPONENT');
-  return row;
+  const expected = Array.isArray(template)?template:[template];
+  for(const provider of [...new Set([indexer,...fallbackProviders])]) {
+    let row;
+    try {
+      const response = await fetch(`${provider}/substates/${address}`, {signal:AbortSignal.timeout(fallbackProviders.length?12000:20000),redirect:'error'});
+      if(!response.ok) continue;
+      row = await response.json();
+    } catch { continue; }
+    // A second provider may supply a verified row during indexing/proof delays.
+    // Never accept an unverified row, or widen the configured template allowlist.
+    if(row?.verified!==true) continue;
+    const c=row.substate?.Component, actual=c?.header?.template_address;
+    if(typeof actual!=='string') continue;
+    if(!expected.includes(actual.replace(/^template_/,'')))
+      throw Object.assign(new Error('This address uses a different contract. Open the current forum from Home.'),{status:409});
+    return row;
+  }
+  throw Object.assign(new Error('Tari could not provide verified board state. Retry syncing shortly; no transaction was sent by this read.'),{status:503});
 }
 export function tipRequest(config, destination, amount, maxFee, dryRun, selection='ConfidentialOnly',memo='A candle from Hauntboard') {
   return {owner_account:{ComponentAddress:config.account},resource_address:NATIVE,input_selection:selection,

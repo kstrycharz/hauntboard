@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {join} from 'node:path';
 import {rpc,verifyWallet,quoteCall,submitCall,getSubstate,bytesVar,textVar,quoteTip,atomicJson,COMPONENT,NATIVE} from './lib/chain.mjs';
 import {decodeState} from './lib/state.mjs';
-import {serverProfile} from './lib/server-profile.mjs';
+import {serverProfile,TARI_TESTNET_PROVIDERS} from './lib/server-profile.mjs';
 import {networkProfile} from './web/network-profile.mjs';
 import {Relay} from './lib/relay.mjs';
 import {readTestnetWitness} from './lib/testnet-provider.mjs';
@@ -24,6 +24,7 @@ if(!['sender','receiver'].includes(role))throw new Error('INVALID_LOCAL_ROLE');
 const port=runtime.port;
 const configPath=process.env.CONFIG_FILE??'/companion/config.json';
 const indexer=runtime.indexer;
+const boardReadFallbacks=publicMode?TARI_TESTNET_PROVIDERS.filter(p=>p!==indexer&&(process.env.APPROVED_PROVIDER_ORIGINS??'').split(',').includes(p)):[];
 const siteRoot=fileURLToPath(new URL('./web/',import.meta.url));
 const csrf=randomBytes(32).toString('hex');
 const quotes=new Map();
@@ -59,7 +60,7 @@ async function ready(){const c=await config();if(publicMode){
   try{await witnessPromise;}catch{witnessPromise=null;throw error('Public testnet identity, runtime, proof verification or validator checks failed.',503);}
 }else{const r=await fetch(`${indexer}/network`,{redirect:'error',signal:AbortSignal.timeout(5000)});const n=await r.json();if(!r.ok||n.network!==c.network||n.network_byte!==c.networkByte)throw error('Provider network mismatch.',503);}await readState(c,c.board);return c;}
 const templates=c=>[c.template,...(c.legacyTemplates??[])];
-async function readState(c,address){const state=decodeState(await getSubstate(indexer,address,templates(c)),address);if(publicMode&&state.schema!==4)throw error('This public profile requires the no-author schema-4 contract.',503);return state;}
+async function readState(c,address){const state=decodeState(await getSubstate(indexer,address,templates(c),boardReadFallbacks),address);if(publicMode&&state.schema!==4)throw error('This public profile requires the no-author schema-4 contract.',503);return state;}
 async function readThread(c,address,before){
   const thread=await readState(c,address);
   if(thread.isBoard||thread.pageOwner)throw error('This address is not a thread.');
@@ -220,7 +221,7 @@ const server=createServer(async(req,res)=>{
     }
     if(req.method==='GET'&&['/api/board','/api/thread','/api/raw'].includes(url.pathname)){
       const address=url.searchParams.get('address')??c.board;
-      if(url.pathname==='/api/raw'){json(res,await getSubstate(indexer,address,templates(c)));return;}
+      if(url.pathname==='/api/raw'){json(res,await getSubstate(indexer,address,templates(c),boardReadFallbacks));return;}
       if(url.pathname==='/api/thread'){json(res,await readThread(c,address,url.searchParams.get('before')));return;}
       const state=await readState(c,address);
       if(url.pathname==='/api/board'&&!state.isBoard)throw error('This address is not a board.');

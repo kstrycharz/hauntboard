@@ -16,6 +16,6 @@ rust_run sh -c 'cd hauntboard/template-public && cargo build --locked --release 
 docker run --rm -v "$PWD:/workspace" -v hauntboard_actions_sdk_modules:/workspace/hauntboard/browser-sdk/node_modules -v hauntboard_actions_pnpm_store:/pnpm/store -w /workspace hauntboard-actions-node:22.21.1 sh -c 'pnpm --dir hauntboard/browser-sdk install --ignore-workspace --frozen-lockfile && pnpm --dir hauntboard/browser-sdk build'
 rust_run sh hauntboard/wallet-recovery/build.sh
 rust_run sh hauntboard/transaction-identity/build.sh
-docker run --rm -e GITHUB_SHA -v "$PWD:/workspace" -w /workspace "$node_image" sh -c 'node hauntboard/scripts/package-public-contract.mjs && node hauntboard/scripts/verify-public-contract.mjs && node --test hauntboard/tests/delivery.test.mjs hauntboard/tests/operations-backup.test.mjs hauntboard/tests/output-ledger.test.mjs'
+docker run --rm -e GITHUB_SHA -v "$PWD:/workspace" -w /workspace "$node_image" sh -c 'node hauntboard/scripts/package-public-contract.mjs && node hauntboard/scripts/verify-public-contract.mjs && node --test hauntboard/tests/component-provider.mjs hauntboard/tests/delivery.test.mjs hauntboard/tests/operations-backup.test.mjs hauntboard/tests/output-ledger.test.mjs'
 docker build -f infra/docker/hauntboard.Dockerfile -t "hauntboard-actions-app:$GITHUB_RUN_ID" .
 docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /companion:uid=1000,gid=1000 -v "$PWD/hauntboard/tests:/tests:ro" "hauntboard-actions-app:$GITHUB_RUN_ID" node /tests/public-server.mjs

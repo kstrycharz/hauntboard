@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 const origin = process.env.NEWGUI_ORIGIN;
 assert(origin?.startsWith('https://'));
 const report = { origin, checkedAt: new Date().toISOString(), assets: {}, browsers: {} };
-for (const name of ['index.html', 'app.mjs', 'pin-entry.mjs', 'browser-wallet.mjs', 'style.css', 'mobile.css', 'about.html', 'about.css', 'about.mjs', 'forums.html']) {
+for (const name of ['index.html', 'app.mjs', 'api-client.mjs', 'pin-entry.mjs', 'browser-wallet.mjs', 'style.css', 'mobile.css', 'about.html', 'about.css', 'about.mjs', 'forums.html']) {
   const path = name === "about.html" ? "about" : name === "forums.html" ? "forums" : name;
   const response = await fetch(`${origin}/${path}`);
   assert.equal(response.status, 200);

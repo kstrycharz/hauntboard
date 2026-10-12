@@ -1,6 +1,6 @@
 # Third-party notices and provenance
 
-Original Hauntbox source, synthetic stories, CSS/SVG illustrations and receipt probe are MIT licensed under `LICENSE`. Implementation began October 2, 2026 after the planning documents. Coding and verification used OpenAI Codex. No sibling Tari source snapshot was copied or modified.
+Original Hauntboard source is MIT licensed under `LICENSE`. Coding and verification used OpenAI Codex. No sibling Tari source snapshot was copied or modified. Historical Hauntbox license records are retained where relevant; the current application uses the dependencies below.
 
 | Dependency / asset | Use | License / retained notice |
 |---|---|---|
@@ -8,15 +8,11 @@ Original Hauntbox source, synthetic stories, CSS/SVG illustrations and receipt p
 | @scure/bip39 2.0.1 | Hauntboard English 24-word mnemonic generation/checksum/entropy | MIT; upstream package license retained with browser dependencies |
 | tari_ootle_wallet_crypto 0.45.0 / tari_utilities 0.10.0 | Native owner/view derivation in the recovery adapter | BSD-3-Clause; Tari notice below, dependencies fixed by wallet-recovery/Cargo.lock |
 | cbor-x 1.6.6 | Hauntboard contract argument encoding | MIT; `docs/licenses/cbor-x-MIT.txt` |
-| React / React DOM / scheduler | Browser rendering | MIT; `docs/licenses/react.txt`, `react-dom.txt`, `scheduler.txt` |
-| Cormorant Garamond | Self-hosted headings | SIL OFL 1.1; `docs/licenses/fontsource-cormorant-garamond.txt` |
-| DM Sans | Self-hosted controls | SIL OFL 1.1; `docs/licenses/fontsource-dm-sans.txt` |
-| Vite / TypeScript / Vitest / Prettier | Container build and checks | Exact versions and transitive licenses in `docs/evidence/m1/dependency-licenses.json` |
+| Vite | SDK bundle build | MIT; version pinned in `hauntboard/browser-sdk/package.json` |
 | Playwright / axe | Container browser and accessibility verification | Apache-2.0 / MPL-2.0; license inventory retained |
-| Tari wallet binary | Optional M2 candidate preflight | Upstream binary, unmodified, fetched from tagged release with verified SHA-256; upstream license below |
-| Tari template library | Original M2 WASM compilation probe | Upstream crates.io dependency pinned in the spike lockfile; upstream BSD-3-Clause |
+| Tari template library | Public schema-4 contract | BSD-3-Clause; pinned in `hauntboard/template-public/Cargo.lock` |
 
-Reproduce browser dependency notices with `docker compose --profile tools run --rm node-tools node scripts/collect-notices.mjs`. The upstream wallet image is research only; its runtime package resolution is not an approved production dependency set. Keep the upstream license with any redistributed binary image. Network compatibility and release permissions remain separate from code provenance.
+Browser dependency versions are pinned in `hauntboard/browser-sdk/package.json` and its lockfile; Rust dependencies are pinned in their Cargo lockfiles. Use `hauntboard/scripts/build-release.sh` for the current container build. Retained notices are in `docs/licenses/`. Network compatibility and release permissions remain separate from code provenance.
 
 The Tari Project uses the following BSD-3-Clause notice (also retained in `docs/licenses/tari-BSD-3-Clause.txt`):
 

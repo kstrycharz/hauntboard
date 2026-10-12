@@ -1,8 +1,0 @@
-# Overlay reviewed GUI assets on the exact currently deployed application image.
-# build-gui.sh verifies the local base tag against its recorded immutable image ID.
-ARG BASE_IMAGE=hauntboard-esmeralda-beta:0.5.9
-FROM ${BASE_IMAGE}
-COPY --chown=node:node hauntboard/web /app/hauntboard/web
-COPY --chown=node:node hauntboard/server.mjs /app/hauntboard/server.mjs
-RUN node -e "const fs=require('node:fs'); for(const name of ['wallet-recovery','transaction-identity']) { const bytes=fs.readFileSync('/app/hauntboard/web/'+name+'.wasm'); if(!WebAssembly.validate(bytes)) throw Error('Invalid WASM: '+name); } const module=new WebAssembly.Module(fs.readFileSync('/app/hauntboard/web/transaction-identity.wasm')); const exports=new Set(WebAssembly.Module.exports(module).map(x=>x.name)); for(const name of ['memory','transaction_buffer','identity_buffer','transaction_identity','transaction_max_epoch']) if(!exports.has(name)) throw Error('Missing WASM export: '+name);"
-USER node

@@ -1,3 +1,0 @@
-FROM hauntboard-esmeralda-beta:0.6.11-conversion
-COPY --chown=node:node hauntboard/server.mjs /app/hauntboard/server.mjs
-COPY --chown=node:node hauntboard/lib/chain.mjs /app/hauntboard/lib/chain.mjs

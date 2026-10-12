@@ -14,7 +14,7 @@ The VPS GitHub Actions runner belongs only to the private `kstrycharz/hauntboard
 
 ## Server files and recovery
 
-Runtime configuration lives in `/opt/hauntboard`: `.env`, `network.json`, `compose.yaml`, `Caddyfile` and `CURRENT_RELEASE`. Root-owned deployment tooling is `/usr/local/sbin/hauntboard-deploy`. The runner is installed as a system service under the `hauntdeploy` account. Its configuration credential stays on the server and never enters the source repository.
+Runtime configuration lives in `/opt/hauntboard`: `.env`, `network.json`, `compose.yaml`, `Caddyfile` and `CURRENT_RELEASE`. Root-owned deployment tooling is `/usr/local/sbin/hauntboard-deploy`, with `verify-image.py` installed at `/usr/local/lib/hauntboard/verify-image.py`. That helper verifies the Docker-save config hash across classic and containerd image stores; the app is pinned to the VPS store's immutable image ID. Changes to these administrative scripts require a reviewed SSH installation; app updates are automatic. The runner is installed as a system service under the `hauntdeploy` account. Its configuration credential stays on the server and never enters the source repository.
 
 Inspect: `cd /opt/hauntboard && docker compose ps`. Readiness is `/health/ready`; liveness alone is insufficient. To restore a retained image, set `APP_IMAGE` in `.env` to the previously recorded image ID and run `docker compose up -d --wait`. Do not delete the operations volume. Browser wallet recovery is separate: keys live in each user's browser.
 

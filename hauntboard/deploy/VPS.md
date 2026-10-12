@@ -8,7 +8,7 @@ The application has no public internal port or Docker socket, runs as the Node n
 
 ## Automatic releases
 
-The public source repository builds/tests on GitHub-hosted runners when `main` changes. The successful release includes an image archive, its image ID, source commit, SHA256 checksums and the existing contract/manifest. No contract is published and no board is reset.
+The public source repository builds/tests on GitHub-hosted runners when runtime files on `main` change. The successful release includes an image archive, its image ID, source commit, SHA256 checksums and the existing contract/manifest. No contract is published and no board is reset.
 
 The VPS GitHub Actions runner belongs only to the private `kstrycharz/hauntboard-deploy` repository. It never runs public pull requests. Its private workflow checks the latest successful source release every 10 minutes (GitHub scheduling can be delayed), or immediately through **Run workflow**. It calls a fixed server deployment script, downloads the release, verifies checksums and image identity, checks candidate readiness and updates the app. Failed readiness after switching restores the previous image. Only one deployment may run at a time. Runner access to Docker is administrative access; keep the deployment repository private and access restricted.
 

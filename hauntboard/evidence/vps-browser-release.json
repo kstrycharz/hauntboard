@@ -1,0 +1,36 @@
+{
+  "origin": "https://hauntboard.taritracker.com",
+  "checkedAt": "2026-10-12T20:38:50.135Z",
+  "assets": {
+    "index.html": "fe5b6360a220abfcc8b5f3797e653eb5af66ce500809a4219ba42aa31a98690e",
+    "app.mjs": "f75d2a4c4da060553e1a13c4079aace780ecfe370598d62d07a1dfcf17d90039",
+    "api-client.mjs": "a7bcd15558c88ff5104e9de75d4741da96ad8d59846510f509cdd8f014cba151",
+    "pin-entry.mjs": "69975632d578d933995594a0c68c35721564fcdc02e98f01bcbf6d4bf5b98eeb",
+    "browser-wallet.mjs": "392547c425ade7a322173675b63f02e056e9c56851dc2d7b4cb4fa6c30e6832d",
+    "style.css": "81faf0bdd77fe72970cedc4256c0d4e4716eab2d01bb9ce560933081c6687176",
+    "mobile.css": "850bc5f294685f2ba42e5c4e4a6dcdc025c5a2766e486fdbd8fb3e250a7d713f",
+    "about.html": "e5b862fc7b4454a95406384fcae7e8c1225b91199c1a1e78dbef13508355c7ab",
+    "about.css": "ee062bac7bd3693073622b4e6dbd865332503e686672f40fce206a709b63515d",
+    "about.mjs": "27a95277480580a7a245afcf01bed20e016da303ad9b7549331ccecb3d6e320f",
+    "forums.html": "16d007a5551570e41dbce3941467ca938c457c7d9615fa41e6394df8dc4c41a9"
+  },
+  "browsers": {
+    "chromium": {
+      "status": "PASSED",
+      "focusedPinEntry": true,
+      "automaticConfirmation": true,
+      "cancellationClearsPin": true,
+      "responsive": true,
+      "chainWrites": 0
+    },
+    "firefox": {
+      "status": "PASSED",
+      "focusedPinEntry": true,
+      "automaticConfirmation": true,
+      "cancellationClearsPin": true,
+      "responsive": true,
+      "chainWrites": 0
+    }
+  },
+  "status": "LIVE_NEWGUI_VERIFIED"
+}

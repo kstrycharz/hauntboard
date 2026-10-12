@@ -39,7 +39,7 @@ const thread = () => ({
   postCount: 3,
   capacity: 2048,
   nextBefore: null,
-  pages: [],
+  pages: [`component_${"f".repeat(64)}`],
   posts: [
     {
       index: 0,
@@ -97,6 +97,8 @@ const server = createServer(async (req, res) => {
       ![
         "index.html",
         "app.mjs",
+        "api-client.mjs",
+        "post-proof.mjs",
         "pin-entry.mjs",
         "crypto.mjs",
         "style.css",

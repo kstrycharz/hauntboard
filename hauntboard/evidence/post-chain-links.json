@@ -1,0 +1,20 @@
+{
+  "origin": "https://hauntboard.taritracker.com",
+  "checkedAt": "2026-10-12T20:53:37.931Z",
+  "browsers": {
+    "chromium": {
+      "status": "PASSED",
+      "posts": 2,
+      "directPayloadMatches": true,
+      "responsive": true
+    },
+    "firefox": {
+      "status": "PASSED",
+      "posts": 2,
+      "directPayloadMatches": true,
+      "responsive": true
+    }
+  },
+  "chainWrites": 0,
+  "status": "POST_CHAIN_LINKS_VERIFIED"
+}

@@ -22,3 +22,4 @@
 
 .forum-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.forum-links a{padding:16px;border:1px solid var(--line,#344139);border-radius:8px}.contract-stack div{overflow-wrap:anywhere}
 .about-page [hidden]{display:none!important}
+.donation-address{padding:18px;border:1px solid var(--line);border-radius:5px;overflow-wrap:anywhere;user-select:all}.donation-address code{color:var(--text)}

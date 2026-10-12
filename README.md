@@ -41,6 +41,14 @@ Allow at least 8 GB RAM and compiler-cache storage for this full build. It runs 
 
 See [VPS deployment](hauntboard/deploy/VPS.md) for Cloudflare HTTP origin, the private deployment runner, checks and rollback. Contract publication is separate and requires an explicit account/fee budget.
 
+## Support Hauntboard
+
+If you would like to support Hauntboard development, donations are welcome at this wallet address:
+
+```text
+1213nhRFy9S3tevPWJyThkZpEuDruaa4L4LNLEgzAuc4PG6dL862KzsijZgyg68qrcKS2U3hCqzjkiJHdasrTDj3pwf
+```
+
 ## Repository scope
 
 This release contains Hauntboard client/server, contract, wallet adapters, tests and deployment tooling. The earlier Hauntbox application is removed from the current Git tree but remains in Git history. Older localnet scripts/evidence are development references; start with the current setup above.

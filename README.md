@@ -21,6 +21,10 @@ Stop with `docker compose -f compose.client.yaml down`. Do not add `-v`: that de
 
 This is an independently hosted **client**, not an independent network node. The current release only accepts two Tari-hosted Esmeralda indexers. You still trust the downloaded client, providers and testnet; resets can erase testnet state. Your own indexer requires additional integration and verification. We do not claim complete anonymity or full decentralization.
 
+## Check posts on chain
+
+Each forum row has **View thread on chain**, and each post has **View on chain**. These links open the relevant component directly at the configured Tari indexer. Expand **Post details** to see the page address and entry containing that post. Public post payloads are stored as byte arrays in the component state. This is an indexer-reported chain-state check, not proof of authorship or independent consensus verification.
+
 ## Contract and reproducible builds
 
 The shipping schema-4 Rust contract is in [hauntboard/template-public](hauntboard/template-public). Source, Cargo lockfile, five engine tests and compiled `hauntboard_public.wasm` are included. [release/SHA256SUMS](release/SHA256SUMS) records bundled artifact hashes. [network.public.json](hauntboard/deploy/network.public.json) identifies the existing board/template; routine deployment preserves both.

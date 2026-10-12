@@ -39,6 +39,7 @@ knownFiles.set('/vendor/wallet-recovery-glue.mjs','vendor/wallet-recovery-glue.m
 knownFiles.set('/browser-wallet.mjs','browser-wallet.mjs');
 knownFiles.set('/pin-entry.mjs','pin-entry.mjs');
 knownFiles.set('/api-client.mjs','api-client.mjs');
+knownFiles.set('/post-proof.mjs','post-proof.mjs');
 knownFiles.set('/mobile.css','mobile.css');
 knownFiles.set('/network-profile.mjs','network-profile.mjs');
 knownFiles.set('/stealth-fee.mjs','stealth-fee.mjs');
@@ -197,7 +198,7 @@ const server=createServer(async(req,res)=>{
       if(req.headers['x-hauntboard-csrf']!==csrf)throw Object.assign(error('This client session expired. Refresh the session before continuing.',403),{clientCode:'SESSION_EXPIRED'});
     }
     if(req.method==='GET'&&url.pathname==='/api/config'){
-      json(res,{network:c.network,networkByte:c.networkByte,resetIdentity:c.resetIdentity,profile:runtime.profile,testnetBeta:publicMode&&beta,compatibilityVerified:c.compatibilityVerified===true,posterPrivacyVerified:c.posterPrivacyVerified===true,providerRuntimeVersion:c.providerRuntimeVersion,posterPrivacy:c.posterPrivacy,faucetEnabled,schema:c.schema,version:'0.43.0',board:c.board,template:c.template,legacyBoards:c.legacyBoards??[],instance:c.instance,role,label:publicMode?'Browser wallet':role==='sender'?'Ghost A':'Ghost B',account:publicMode?undefined:c.account,receiveAddress:publicMode?undefined:c.address,provider:publicMode?'Tari Esmeralda provider · '+new URL(indexer).host:role==='sender'?'Primary local indexer':'Independent local indexer',csrf,limits:{posts:2048,pageSize:16,pages:128,threads:128,envelopeBytes:4096},walletExpiresAt:publicMode?undefined:c.expiresAt});return;
+      json(res,{network:c.network,networkByte:c.networkByte,resetIdentity:c.resetIdentity,profile:runtime.profile,testnetBeta:publicMode&&beta,compatibilityVerified:c.compatibilityVerified===true,posterPrivacyVerified:c.posterPrivacyVerified===true,providerRuntimeVersion:c.providerRuntimeVersion,posterPrivacy:c.posterPrivacy,faucetEnabled,schema:c.schema,version:'0.43.0',board:c.board,template:c.template,legacyBoards:c.legacyBoards??[],instance:c.instance,role,label:publicMode?'Browser wallet':role==='sender'?'Ghost A':'Ghost B',account:publicMode?undefined:c.account,receiveAddress:publicMode?undefined:c.address,provider:publicMode?'Tari Esmeralda provider · '+new URL(indexer).host:role==='sender'?'Primary local indexer':'Independent local indexer',providerUrl:publicMode?indexer:undefined,csrf,limits:{posts:2048,pageSize:16,pages:128,threads:128,envelopeBytes:4096},walletExpiresAt:publicMode?undefined:c.expiresAt});return;
     }
     if(req.method==='POST'&&url.pathname==='/api/indexer'){
       // Fixed local provider and a small REST allowlist. No wallet daemon credential crosses this boundary.

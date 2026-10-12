@@ -14,6 +14,7 @@ import {
 import * as browserWallet from "./browser-wallet.mjs";
 import { PinEntry } from "./pin-entry.mjs";
 import { createApiClient } from "./api-client.mjs";
+import { chainStateLink, postProof } from "./post-proof.mjs";
 const $ = (id) => document.getElementById(id);
 let config,
   board,
@@ -504,6 +505,12 @@ function renderRows() {
     );
     const meta = node("div", "thread-meta");
     meta.append(node("span", "badge", categories[categoryOf(content)].title));
+    const threadChainLink = node("a", "", "View thread on chain");
+    threadChainLink.href = chainStateLink(config, ref.address);
+    threadChainLink.target = "_blank";
+    threadChainLink.rel = "noopener noreferrer";
+    threadChainLink.setAttribute("aria-label", `View ${content?.title ?? ref.title} on chain (opens a new tab)`);
+    meta.append(threadChainLink);
     meta.append(
       node(
         "span",
@@ -697,6 +704,15 @@ async function renderThread(thread) {
       ),
     );
     footer.append(details);
+    const proof = postProof(config, thread, post);
+    details.append(node("p", "small chain-locator", `Stored in ${proof.address}. Post ${proof.postNumber}: page ${proof.pageNumber}, entry ${proof.slot + 1} (raw array index ${proof.slot}). The indexer reports verified chain state; this does not prove who wrote the post.`));
+    const proofLink = node("a", "text-button post-chain-link", "View on chain");
+    proofLink.href = proof.href;
+    proofLink.target = "_blank";
+    proofLink.rel = "noopener noreferrer";
+    proofLink.title = `Post ${proof.postNumber} · page ${proof.pageNumber}, entry ${proof.slot + 1}`;
+    proofLink.setAttribute("aria-label", `View post ${proof.postNumber} on chain (opens a new tab)`);
+    footer.append(proofLink);
     if (content?.recipient && config.profile === "local")
       footer.append(
         button("◇ Leave a private tip", "text-button", () => {

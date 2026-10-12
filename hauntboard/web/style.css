@@ -812,3 +812,6 @@ pre {
   border-color: var(--red, #e59a94);
   color: var(--red, #e59a94);
 }
+
+.chain-locator { overflow-wrap: anywhere; }
+.post-chain-link { text-decoration: underline; text-underline-offset: 3px; }

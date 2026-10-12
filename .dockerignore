@@ -18,3 +18,12 @@ references
 playwright-report
 test-results
 docs/evidence
+.cache
+hauntboard/artifacts
+hauntboard/evidence
+apps
+packages
+config
+templates
+spikes
+tests

@@ -1,0 +1,19 @@
+{
+  "network": "esmeralda",
+  "networkByte": 38,
+  "resetIdentity": "esmeralda-release-2026-10-07",
+  "instance": "hauntboard-esmeralda-forums-2026-10-07",
+  "sdkVersion": "0.7.0",
+  "wasmVersion": "0.43.0",
+  "providerRuntimeVersion": "0.45.0",
+  "compatibilityVerified": false,
+  "schema": 4,
+  "posterPrivacy": "stealth-fee-v1",
+  "posterPrivacyVerified": false,
+  "board": "component_594f90d8cb8c2d0f70d941ba1c513769727feceeabd9d2137b5b6a130a6aa28e",
+  "template": "f6773b90f8919097266a73e6c68e343724e2a4bdaf248f01e11b463bbc4e0b2d",
+  "legacyBoards": [
+    "component_ff8fd992a498d7c9b32e96fb8cb557029d2f96dbb033ae61932b45cbf9187a4b"
+  ],
+  "legacyTemplates": []
+}

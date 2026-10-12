@@ -1,0 +1,40 @@
+name: Build and publish Hauntboard release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: hauntboard-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Verify artifacts and test server and wallet foundations
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c sh -c 'node hauntboard/scripts/verify-release.mjs && node --test hauntboard/tests/component-provider.mjs hauntboard/tests/delivery.test.mjs hauntboard/tests/operations-backup.test.mjs hauntboard/tests/output-ledger.test.mjs hauntboard/tests/pin-entry.test.mjs'
+      - name: Build immutable application image and verify runtime
+        run: |
+          docker build -f infra/docker/hauntboard.Dockerfile -t "hauntboard:release-$GITHUB_SHA" .
+          docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /companion:uid=1000,gid=1000 -v "$PWD/hauntboard/tests:/tests:ro" "hauntboard:release-$GITHUB_SHA" node /tests/public-server.mjs
+          mkdir -p release-output
+          docker save "hauntboard:release-$GITHUB_SHA" | gzip > release-output/hauntboard-image.tar.gz
+          cp hauntboard/template-public/hauntboard_public.wasm release-output/
+          cp hauntboard/deploy/network.public.json release-output/
+          docker image inspect "hauntboard:release-$GITHUB_SHA" --format '{{.Id}}' > release-output/IMAGE_ID
+          printf '%s\n' "$GITHUB_SHA" > release-output/SOURCE_COMMIT
+          cd release-output
+          sha256sum hauntboard-image.tar.gz hauntboard_public.wasm network.public.json IMAGE_ID SOURCE_COMMIT > SHA256SUMS
+      - name: Publish downloadable release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="release-$GITHUB_SHA"
+          gh release view "$tag" >/dev/null 2>&1 || gh release create "$tag" --target "$GITHUB_SHA" --title "Hauntboard ${GITHUB_SHA:0:12}" --notes "Tested website release. Existing Esmeralda board and contract are preserved. See README for local Docker setup and testnet limitations."
+          gh release upload "$tag" release-output/* --clobber

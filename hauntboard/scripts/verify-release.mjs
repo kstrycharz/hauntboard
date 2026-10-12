@@ -1,16 +1,18 @@
-import {readFile,mkdir,readdir,writeFile} from 'node:fs/promises';
+import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
-import {join} from 'node:path';
-import {execFileSync} from 'node:child_process';
 import assert from 'node:assert/strict';
-const artifact='hauntboard/artifacts/hauntboard-0.2.0-local.tar.gz';
-const bytes=await readFile(artifact),sha256=createHash('sha256').update(bytes).digest('hex');
-assert.equal(sha256,(await readFile('hauntboard/artifacts/SHA256SUMS.txt','utf8')).split(/\s/)[0]);
-const verificationRoot=`.cache/release-verify-${Date.now()}`;await mkdir(verificationRoot,{recursive:true});execFileSync('tar',['-xzf',artifact,'-C',verificationRoot]);
-const packageRoot=join(verificationRoot,'hauntboard-0.2.0-local');
-const manifest=JSON.parse(await readFile(join(packageRoot,'release-manifest.json'),'utf8'));
-for(const [file,hash] of Object.entries(manifest.sourceAndAssetHashes))assert.equal(createHash('sha256').update(await readFile(join(packageRoot,file))).digest('hex'),hash,file);
-for(const file of Object.keys(manifest.sourceAndAssetHashes))assert(!file.split('/').some(part=>['node_modules','.git','target','wallet-data','secrets'].includes(part))&&!/\.env|\.sqlite|\.pem|\.recovery\.json|invitation/i.test(file),file);
-for(const file of ['hauntboard/template/hauntboard.wasm','hauntboard/web/vendor/wallet-sdk.mjs','hauntboard/scripts/start.ps1','hauntboard/scripts/stop.ps1','compose.localnet.yaml','compose.hauntboard.yaml','LICENSE','docs/licenses/ootle-sdk-BSD-3-Clause.txt','docs/licenses/cbor-x-MIT.txt'])assert(manifest.sourceAndAssetHashes[file],file);
-const report={status:'PASSED',checkedAt:new Date().toISOString(),sha256,filesVerified:Object.keys(manifest.sourceAndAssetHashes).length,checks:{archiveChecksum:true,allManifestHashes:true,bundledContractAndBrowserSdk:true,startAndStopScripts:true,licensesIncluded:true,noPrivateVolumesOrCredentials:true},packageRoot};
-await writeFile('hauntboard/evidence/release-package.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
+const sums=await readFile('release/SHA256SUMS','utf8');
+for(const line of sums.trim().split('\n')) {
+  const match=/^([a-f0-9]{64})  ([A-Za-z0-9/._-]+)$/.exec(line);
+  assert(match,'Invalid checksum entry');
+  assert(!match[2].split('/').includes('..'),'Invalid checksum path');
+  assert.equal(createHash('sha256').update(await readFile(match[2])).digest('hex'),match[1],match[2]);
+}
+const network=JSON.parse(await readFile('hauntboard/deploy/network.public.json','utf8'));
+assert.equal(network.network,'esmeralda');
+assert.equal(network.schema,4);
+assert.match(network.board,/^component_[a-f0-9]{64}$/);
+assert.match(network.template,/^[a-f0-9]{64}$/);
+assert(WebAssembly.validate(await readFile('hauntboard/template-public/hauntboard_public.wasm')));
+for(const file of ['hauntboard/web/wallet-recovery.wasm','hauntboard/web/transaction-identity.wasm']) assert(WebAssembly.validate(await readFile(file)),file);
+console.log('Release artifact checksums, WASM and published board identity verified.');

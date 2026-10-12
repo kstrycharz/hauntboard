@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tari L2 Implementation"
+  short_description: "Build and document Tari Ootle app integrations"
+  default_prompt: "Use $tari-l2-implementation to implement or document this app's Tari Ootle integration."

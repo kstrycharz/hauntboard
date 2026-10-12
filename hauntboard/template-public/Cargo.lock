@@ -1183,7 +1183,7 @@ dependencies = [
 
 [[package]]
 name = "hauntboard_public"
-version = "0.2.1"
+version = "0.2.0"
 dependencies = [
  "tari_template_lib",
  "tari_template_test_tooling",

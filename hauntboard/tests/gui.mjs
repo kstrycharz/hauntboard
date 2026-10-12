@@ -70,8 +70,11 @@ export function needsPhraseConfirmation(){return Boolean(wallet)&&!confirmed;}
 export async function create(){sessionStorage.setItem('gui-fixture-wallet','saved');wallet={address:'fixture-address',account:null};confirmed=false;return {...wallet,phrase:${JSON.stringify(phrase)}};}
 export async function unlock(){wallet={address:'fixture-address',account:null};return wallet;}
 export async function recover(){sessionStorage.setItem('gui-fixture-wallet','saved');wallet={address:'fixture-address',account:null};scanComplete=false;return {...wallet,scan:{complete:false}};}
+export async function inspectRecovery(){return {address:'fixture-address'};}
+export function postingPreparationStatus(){return {pending:false};}
 export async function confirmPhrase(){confirmed=true;}
 export async function recoveryPhrase(){return ${JSON.stringify(phrase)};}
+export async function verifyCredential(){}
 export function lock(){wallet=null;}
 export function faucetStatus(){return {claimed:false,pending:false};}
 export function fundScanStatus(){return {complete:scanComplete};}
@@ -94,6 +97,7 @@ const server = createServer(async (req, res) => {
       ![
         "index.html",
         "app.mjs",
+        "pin-entry.mjs",
         "crypto.mjs",
         "style.css",
         "mobile.css",
@@ -265,7 +269,6 @@ async function ready(page) {
 async function unlock(page) {
   await page.locator("#browser-wallet-button").click();
   await enterWalletCredential(page, "604281");
-  await page.locator("#wallet-unlock").click();
   await expect(page.locator("#wallet-ready-panel")).toBeVisible();
   await page.locator('[data-close="browser-wallet-dialog"]').click();
 }
@@ -308,7 +311,6 @@ try {
       await expect(f.page.locator("#wallet-entry")).toBeVisible();
       await f.page.locator("#wallet-create-choice").click();
       await enterWalletCredential(f.page, "604281");
-      await f.page.locator("#wallet-create").click();
       await expect(f.page.locator("#wallet-seed-words li")).toHaveCount(24);
       await f.page.locator("#wallet-seed-saved").check();
       await f.page.locator("#wallet-seed-check").fill("wrong");
@@ -319,7 +321,6 @@ try {
         index = Number(label.match(/word (\d+)/)[1]);
       await f.page.locator("#wallet-seed-check").fill(`fixtureword${index}`);
       await f.page.locator("#wallet-confirm-seed").click();
-      await f.page.locator("#wallet-return").click();
       await expect(f.page.locator("#thread-body")).toHaveValue(
         "Exact reviewed body 🕯",
       );
@@ -346,7 +347,7 @@ try {
       await ready(f.page);
       await unlock(f.page);
       await expect(f.page.locator("#wallet-balance-value")).toHaveText(
-        "1 test TARI",
+        "3 test TARI",
       );
       await f.page.locator(".thread-link").click();
       await expect(f.page.locator("#conversation-title")).toBeFocused();
@@ -513,6 +514,7 @@ try {
           ),
           `Overflow at ${width}`,
         );
+        await expect(f.page.locator(".thread-row").first()).toBeVisible();
         const first = await f.page.locator(".thread-row").first().boundingBox();
         assert(first.y < 900, `Feed below fold at ${width}`);
         await f.page.locator("#new-thread").click();

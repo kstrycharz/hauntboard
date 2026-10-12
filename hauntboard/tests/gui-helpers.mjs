@@ -1,8 +1,25 @@
 // Read a requested recovery word only inside the browser test. Never log it.
+import { expect } from "@playwright/test";
 export async function enterWalletCredential(page, value = "604281") {
-  await page.locator("#wallet-password").fill(value);
-  if (await page.locator("#wallet-pin-confirm").isVisible())
-    await page.locator("#wallet-pin-confirm").fill(value);
+  const input = page.locator("#wallet-password");
+  if (!/^\d{6}$/.test(value)) {
+    await input.fill(value);
+    return;
+  }
+  if (await page.locator("#wallet-recover-panel").isVisible()) {
+    await page.locator("#wallet-recovery-next").click();
+    await page.locator('#browser-wallet-dialog[data-step="recover-pin"]').waitFor();
+  }
+  const setup = ["create", "change-pin", "recover-pin"].includes(await page.locator("#browser-wallet-dialog").getAttribute("data-step"));
+  // The app owns focus. This helper deliberately never selects a PIN field.
+  await expect(input).toBeVisible();
+  await expect(input).toBeFocused();
+  await page.keyboard.type(value);
+  if (setup) {
+    await page.locator("#wallet-password-label").filter({ hasText: "Confirm your PIN" }).waitFor();
+    await expect(input).toBeFocused();
+    await page.keyboard.type(value);
+  }
 }
 export async function confirmRecoveryWord(page) {
   const label = await page.locator("#wallet-seed-check-label").textContent();

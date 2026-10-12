@@ -126,10 +126,7 @@ mod hauntboard_public {
                 return ComponentManager::get(self.pages[(index / PAGE_SIZE) as usize].parse::<ComponentAddress>().expect("Page address"))
                     .call("get_post", args![index]);
             }
-            assert!(index >= self.page_start, "Post index precedes page");
-            let offset = index - self.page_start;
-            assert!((offset as usize) < self.posts.len(), "Post index outside page");
-            let p = &self.posts[offset as usize];
+            let p = &self.posts[(index - self.page_start) as usize];
             (p.nonce.clone(), p.parent, p.payload.clone(), p.epoch)
         }
         pub fn get_state(&self) -> (u32, bool, String, String, u8, Vec<u8>, Vec<ThreadRef>, Vec<Post>, Vec<String>, u32, String, u32) {

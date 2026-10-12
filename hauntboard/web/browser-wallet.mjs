@@ -360,7 +360,7 @@ export async function confirmPhrase() {
 }
 export async function recoveryPhrase(password) {
   return coordinated(async () => {
-    const value = await decrypt(await stored(), password);
+    const value = await unlockStored(password);
     if (!value.phrase)
       throw new Error(
         "This older wallet predates seed recovery. Its keys are preserved; it cannot be converted without changing its identity.",
@@ -422,22 +422,41 @@ export async function recover(phrase, password, options = {}) {
     return { ...active(), scan };
   });
 }
+// Validate recovery locally without replacing, activating, or persisting a wallet.
+export async function inspectRecovery(phrase, options = {}) {
+  const keys = await keysFromPhrase(phrase, { format: "native", ...options });
+  try {
+    const pub = sdk.ootlePublicKeyFromSecretKey(keys.owner, keys.view);
+    try {
+      const address = sdk.generateOotleAddress(pub.owner_key, pub.view_key, config.networkByte);
+      if (options.expectedAddress?.trim() && options.expectedAddress.trim() !== address)
+        throw new Error("The recovered address does not match. Check the phrase, passphrase, account index and network. Your saved wallet was not changed.");
+      return { address, accountIndex: keys.accountIndex };
+    } finally { pub.free(); }
+  } finally { keys.owner.fill(0); keys.view.fill(0); }
+}
 export async function unlock(password) {
   return coordinated(async () => {
-    try {
-      const recovered = await decrypt(await stored(), password);
-      validateMaterial(recovered);
-      await validateAccount(recovered);
-      activate(recovered);
-      await enablePersistence(password);
-      await reconcilePrivatePending();
-      return active();
-    } catch {
-      throw new Error(
-        "Could not unlock this wallet. Check its password, network and account ownership.",
-      );
-    }
+    const recovered = await unlockStored(password);
+    validateMaterial(recovered);
+    await validateAccount(recovered);
+    activate(recovered);
+    await enablePersistence(password);
+    await reconcilePrivatePending();
+    return active();
   });
+}
+async function unlockStored(password) {
+  const record = await stored();
+  try { return await decrypt(record, password); }
+  catch (error) {
+    if (error.name === "OperationError")
+      throw new Error(record?.unlockMethod === "pin" ? "Incorrect PIN. Try again." : "Incorrect password. Try again.");
+    throw error;
+  }
+}
+export async function verifyCredential(password) {
+  return coordinated(async () => { await unlockStored(password); });
 }
 export function lock() {
   preparationQuote = null;

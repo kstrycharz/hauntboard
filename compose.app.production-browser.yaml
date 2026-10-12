@@ -1,5 +1,0 @@
-services:
-  browser-tests:
-    networks: [application, localtest, production_test]
-networks:
-  production_test: { external: true, name: hauntbox-production_application }

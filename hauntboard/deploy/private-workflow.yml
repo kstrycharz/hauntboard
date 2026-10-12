@@ -1,0 +1,18 @@
+name: Deploy latest tested Hauntboard release
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '7,17,27,37,47,57 * * * *'
+permissions:
+  contents: read
+concurrency:
+  group: hauntboard-vps
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.repository == 'kstrycharz/hauntboard-deploy' && github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, Linux, X64, hauntboard-vps]
+    timeout-minutes: 15
+    steps:
+      - name: Install latest tested release and preserve contract and data
+        run: sudo /usr/local/sbin/hauntboard-deploy

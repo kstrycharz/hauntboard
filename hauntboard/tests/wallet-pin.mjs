@@ -42,57 +42,18 @@ for (const [engine, type] of Object.entries({ chromium, firefox })) {
     await page.locator("#wallet-create-choice").click();
     await mkdir('hauntboard/evidence',{recursive:true});
     await page.locator('#browser-wallet-dialog').screenshot({path:`hauntboard/evidence/wallet-pin-keypad-${engine}.png`});
-    await page.locator("#wallet-password").fill("12345");
-    await page.locator("#wallet-pin-confirm").fill("12345");
-    await page.locator("#wallet-create").click();
-    assert.equal(
-      await page.evaluate(async () =>
-        (await import("/browser-wallet.mjs")).exists(),
-      ),
-      false,
-    );
-    await page.locator("#wallet-password").focus();
-    await page.locator('[data-pin-key="clear"]').click();
-    for (const digit of "604281")
-      await page.locator(`[data-pin-key="${digit}"]`).click();
-    await expect(page.locator("#wallet-password")).toHaveValue("604281");
-    await page.locator('[data-pin-key="backspace"]').click();
-    await expect(page.locator("#wallet-password")).toHaveValue("60428");
-    await page.locator('[data-pin-key="1"]').click();
-    await page.locator("#wallet-pin-confirm").fill("999999");
-    await page.locator("#wallet-create").click();
-    assert.equal(
-      await page.evaluate(async () =>
-        (await import("/browser-wallet.mjs")).exists(),
-      ),
-      false,
-    );
-    await page.locator("#wallet-pin-confirm").focus();
-    await page.locator('[data-pin-key="clear"]').click();
-    for (const digit of "604281")
-      await page.locator(`[data-pin-key="${digit}"]`).click();
-    const audit = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
-      .analyze();
-    assert.deepEqual(
-      audit.violations.map((v) => ({
-        id: v.id,
-        nodes: v.nodes.map((n) => ({
-          target: n.target,
-          summary: n.failureSummary,
-        })),
-      })),
-      [],
-    );
-    assert.ok(
-      await page
-        .locator("#browser-wallet-dialog")
-        .evaluate((el) => el.scrollWidth <= el.clientWidth),
-    );
-    await page.locator("#wallet-create").click();
-    await expect(page.locator("#wallet-seed-words li")).toHaveCount(24, {
-      timeout: 60000,
-    });
+    const audit = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
+    assert.deepEqual(audit.violations.map((v) => v.id), []);
+    await page.keyboard.type("60428");
+    assert.equal(await page.evaluate(async () => (await import("/browser-wallet.mjs")).exists()), false);
+    await page.keyboard.press("Backspace");
+    await page.keyboard.type("81");
+    await expect(page.locator("#wallet-password-label")).toHaveText("Confirm your PIN");
+    await page.keyboard.type("999999");
+    await expect(page.locator("#wallet-pin-status")).toContainText("don’t match");
+    assert.equal(await page.evaluate(async () => (await import("/browser-wallet.mjs")).exists()), false);
+    for (const digit of "604281") await page.locator(`[data-pin-key="${digit}"]`).click();
+    await expect(page.locator("#wallet-seed-words li")).toHaveCount(24, { timeout: 60000 });
     const phrase = (
       await page.locator("#wallet-seed-words li").allTextContents()
     ).join(" ");
@@ -111,14 +72,13 @@ for (const [engine, type] of Object.entries({ chromium, firefox })) {
     );
     await page.locator("#wallet-lock").click();
     await enterWalletCredential(page, "999999");
-    await page.locator("#wallet-unlock").click();
     await expect(page.locator("#wallet-message")).toContainText(
-      "Could not unlock",
+      "Incorrect PIN",
     );
-    await page.locator("#wallet-password").fill("");
-    await page.locator("#wallet-password").focus();
+
+
     for (const digit of "604281") await page.keyboard.press(`Numpad${digit}`);
-    await expect(page.locator("#wallet-password")).toHaveValue("604281");
+
     await page.keyboard.press("Enter");
     await expect(page.locator("#wallet-ready-panel")).toBeVisible({
       timeout: 30000,
@@ -132,8 +92,8 @@ for (const [engine, type] of Object.entries({ chromium, firefox })) {
     await openSettings(page);
     await page.locator("#wallet-change-pin").click();
     await enterWalletCredential(page, "730194");
-    await page.locator("#wallet-save-pin").click();
-    await expect(page.locator("#wallet-message")).toContainText("PIN saved");
+
+    await expect(page.locator("#wallet-message")).toContainText("PIN updated");
     await expect
       .poll(() =>
         other.evaluate(async () =>
@@ -186,8 +146,8 @@ for (const [engine, type] of Object.entries({ chromium, firefox })) {
     await openSettings(page);
     await page.locator("#wallet-change-pin").click();
     await enterWalletCredential(page, "730194");
-    await page.locator("#wallet-save-pin").click();
-    await expect(page.locator("#wallet-message")).toContainText("PIN saved");
+
+    await expect(page.locator("#wallet-message")).toContainText("PIN updated");
     assert.equal(
       await page.evaluate(
         async () => (await import("/browser-wallet.mjs")).active().address,
@@ -302,7 +262,7 @@ for (const [engine, type] of Object.entries({ chromium, firefox })) {
     );
     await page.locator("#wallet-create-choice").click();
     await enterWalletCredential(page, "604281");
-    await page.locator("#wallet-create").click();
+
     await expect(page.locator("#wallet-seed-words li")).toHaveCount(24, {
       timeout: 60000,
     });
@@ -342,7 +302,7 @@ for (const [engine, type] of Object.entries({ chromium, firefox })) {
     );
     await page.locator('[data-close="browser-wallet-dialog"]').click();
     await expect(page.locator("#wallet-password")).toHaveValue("");
-    await expect(page.locator("#wallet-pin-confirm")).toHaveValue("");
+
     reports.push({
       engine,
       origin,

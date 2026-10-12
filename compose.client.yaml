@@ -1,0 +1,34 @@
+name: hauntboard-client
+services:
+  client:
+    build:
+      context: .
+      dockerfile: infra/docker/hauntboard.Dockerfile
+    ports: ['127.0.0.1:8282:8280']
+    environment:
+      HAUNTBOARD_PROFILE: client
+      HAUNTBOARD_TESTNET_BETA: 'true'
+      HAUNTBOARD_FAUCET_ENABLED: 'false'
+      ORIGIN: http://localhost:8282
+      PORT: '8280'
+      INDEXER_URL: https://ootle-indexer-a.tari.com
+      APPROVED_PROVIDER_ORIGINS: https://ootle-indexer-a.tari.com,https://ootle-indexer-b.tari.com
+      CONFIG_FILE: /run/hauntboard/network.json
+    volumes:
+      - ./hauntboard/deploy/network.public.json:/run/hauntboard/network.json:ro
+      - operations:/companion
+    read_only: true
+    tmpfs: ['/tmp:size=16m,noexec,nosuid']
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, node, -e, "require('http').get('http://127.0.0.1:8280/health/ready',{headers:{Host:'localhost:8282'}},r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: {driver: json-file, options: {max-size: 10m, max-file: '3'}}
+volumes:
+  operations:

@@ -17,11 +17,11 @@ try{
  const config=await page.evaluate(async()=>await(await fetch('/api/config')).json());assert.equal(config.network,'esmeralda');assert.equal(config.profile,'public');assert.equal(config.faucetEnabled,true);
  await page.locator('#browser-wallet-button').click();
  if(!backup){
-  backup={password:'604281'};await page.locator('#wallet-create-choice').click();await enterWalletCredential(page, backup.password);await page.locator('#wallet-create').click();await expect(page.locator('#wallet-seed-words li')).toHaveCount(24);
+  backup={password:'604281'};await page.locator('#wallet-create-choice').click();await enterWalletCredential(page, backup.password);await expect(page.locator('#wallet-seed-words li')).toHaveCount(24);
   backup.phrase=(await page.locator('#wallet-seed-words li').allTextContents()).join(' ');backup.address=await page.evaluate(async()=>(await import('/browser-wallet.mjs')).active().address);assert.match(backup.address,/^otl_esm_1/);
   await confirmRecoveryWord(page);await page.locator('#wallet-seed-saved').check();await page.locator('#wallet-confirm-seed').click();await expect(page.locator('#wallet-seed-panel')).toBeHidden();
   backup.storage=await context.storageState({indexedDB:true});await save(backup);
- }else{await enterWalletCredential(page, backup.password);await page.locator('#wallet-unlock').click();await expect(page.locator('#wallet-lock')).toBeVisible();}
+ }else{await enterWalletCredential(page, backup.password);await expect(page.locator('#wallet-lock')).toBeVisible();}
  await context.route(`${origin}/api/faucet-submit`,async route=>{
   // Save the exact pending signed request before allowing the public dispatch.
   backup.storage=await context.storageState({indexedDB:true});backup.pending=JSON.parse(route.request().postData());await save(backup);await route.continue();

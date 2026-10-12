@@ -18,6 +18,12 @@
   --space-8: 32px;
   --space-12: 48px;
   --radius: 6px;
+  --control-size: 44px;
+  --pin-size: 64px;
+  --focus-color: var(--green);
+  --font-reading: 16px;
+  --font-support: 14px;
+  --font-metadata: 12px;
 }
 * {
   box-sizing: border-box;
@@ -29,7 +35,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font: 16px/1.65 var(--sans);
+  font: var(--font-reading)/1.65 var(--sans);
 }
 a {
   color: var(--green);
@@ -47,7 +53,7 @@ summary {
 }
 button {
   color: inherit;
-  min-height: 44px;
+  min-height: var(--control-size);
   border: 0;
   touch-action: manipulation;
 }
@@ -65,7 +71,7 @@ summary,
   outline-offset: 4px;
 }
 :focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--focus-color);
 }
 input,
 textarea,
@@ -126,14 +132,14 @@ p {
 }
 .small,
 .optional {
-  font-size: 14px;
+  font-size: var(--font-support);
 }
 .muted,
 .small {
   color: var(--muted);
 }
 .eyebrow {
-  font-size: 12px;
+  font-size: var(--font-metadata);
   color: var(--green);
   letter-spacing: 1.4px;
 }
@@ -204,10 +210,16 @@ nav {
   color: var(--text);
 }
 .board-nav {
-  background: #243223;
+  background: transparent;
   border: 1px solid var(--line);
+  color: var(--text);
+}
+.board-nav.selected {
+  background: #243223;
+  border-color: var(--green);
   color: var(--green);
 }
+.board-nav:hover:not(.selected) { background: var(--panel); }
 .board-nav span {
   font: 22px var(--serif);
 }
@@ -257,7 +269,7 @@ main {
 .tag,
 .badge,
 .identity {
-  font-size: 12px;
+  font-size: var(--font-metadata);
   color: var(--green);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -285,8 +297,10 @@ main {
   font-size: 14px;
 }
 .hero {
-  padding: 24px 0 8px;
+  padding: 16px 0 4px;
 }
+.hero .eyebrow { display: none; }
+.hero h1 { font-size: clamp(26px, 3vw, 34px); margin-bottom: 4px; }
 .hero p {
   margin: 8px 0 16px;
   font-size: 16px;
@@ -557,7 +571,7 @@ body[data-view="thread"] .hero {
   overflow-wrap: anywhere;
   font-size: 16px;
   line-height: 1.65;
-  max-width: 75ch;
+  max-width: 72ch;
   margin: 0;
 }
 .post-footer {
@@ -751,25 +765,45 @@ pre {
 .pin-keypad {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  max-width: 300px;
-  margin: 16px auto;
+  gap: 12px;
+  width: min(100%, 288px);
+  margin: 12px auto;
 }
 .pin-keypad button {
-  min-height: 52px;
-  font-size: 20px;
-  background: var(--bg);
+  min-height: var(--pin-size);
+  aspect-ratio: 1;
+  font-size: 24px;
+  border-radius: var(--radius);
+  background: var(--panel);
   color: var(--text);
   border: 1px solid var(--line);
 }
+.pin-keypad button:active { background: var(--green); color: var(--bg); }
+.pin-keypad button:hover:not(:disabled) { border-color: var(--green); }
+.pin-display { position: relative; }
+.numeric-pin { height: 52px; max-width: 288px; margin: 12px auto; }
+.numeric-pin input {
+  position: absolute; inset: 0; height: 100%; width: 100%;
+  background: transparent; border: 0; color: transparent; caret-color: transparent;
+  -webkit-text-fill-color: transparent; font-size: 16px;
+}
+.pin-dots { display: flex; justify-content: center; align-items: center; gap: 18px; height: 100%; pointer-events: none; }
+.pin-dots span { width: 18px; height: 18px; border: 2px solid var(--muted); border-radius: 2px; background: transparent; }
+.pin-dots span.filled { background: var(--green); border-color: var(--green); }
+.pin-status { text-align: center; min-height: 3.3em; margin: 4px 0; font-size: 14px; }
+.pin-status.error { color: var(--error); }
+#browser-wallet-dialog[data-step="create"],
+#browser-wallet-dialog[data-step="unlock"],
+#browser-wallet-dialog[data-step="recover-pin"],
+#browser-wallet-dialog[data-step="change-pin"],
+#browser-wallet-dialog[data-step="show-phrase"] { max-width: 460px; }
+#wallet-password-panel > label, #wallet-password-help { text-align: center; }
+#wallet-password-help { max-width: 34ch; margin-inline: auto; }
+.wallet-balance .small { margin: 0; color: var(--muted); font-size: 14px; }
+.balance-grid strong { display: block; font-size: clamp(20px, 3vw, 28px); overflow-wrap: anywhere; }
+.action-link { display: inline-flex; align-items: center; min-height: var(--control-size); text-decoration: none; }
 .pin-keypad button[data-pin-key="clear"] {
   font-size: 14px;
-}
-#wallet-password[inputmode="numeric"],
-#wallet-pin-confirm {
-  text-align: center;
-  letter-spacing: 0.4em;
-  font-size: 24px;
 }
 #wallet-settings {
   margin-top: 16px;

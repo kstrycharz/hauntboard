@@ -16,7 +16,7 @@ try{
  await expect(page.locator('#provider-label')).toContainText('Esmeralda');
  await page.locator('#browser-wallet-button').click();
  await page.locator('#wallet-create-choice').click();await enterWalletCredential(page, '604281');
- await page.locator('#wallet-create').click();
+
  await expect(page.locator('#wallet-seed-words li')).toHaveCount(24);
  await confirmRecoveryWord(page);await page.locator('#wallet-seed-saved').check();await page.locator('#wallet-confirm-seed').click();
  await expect(page.locator('#wallet-seed-panel')).toBeHidden();

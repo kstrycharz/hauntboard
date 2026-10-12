@@ -1,4 +1,3 @@
-import {enterWalletCredential} from './gui-helpers.mjs';
 import {chromium,firefox,expect} from '@playwright/test';
 import assert from 'node:assert/strict';
 import {writeFile} from 'node:fs/promises';
@@ -15,7 +14,7 @@ for(const [name,engine] of [['chromium',chromium],['firefox',firefox]]){
    for(const id of ['new-thread','browser-wallet-button','refresh','privacy-button']){const box=await page.locator(`#${id}`).boundingBox();assert(box?.height>=44,`${id} touch height at ${width}`);}
    const title=page.locator('.thread-link').first();if(await title.count()){await title.click();await expect(page.locator('#reply-body')).toBeVisible();await fits('thread');assert.equal(await page.locator('#reply-body').evaluate(e=>getComputedStyle(e).fontSize),'16px');await page.locator('.post-footer button').first().click();await expect(page.locator('#reply-body')).toBeFocused();await page.locator('#back').click();}
    await page.locator('#new-thread').click();await page.locator('#thread-title').fill('A'.repeat(80));await page.locator('#thread-body').fill('A long public message '.repeat(90));await fits('compose');assert.equal(await page.locator('#thread-title').evaluate(e=>getComputedStyle(e).fontSize),'16px');await page.locator('[data-close="compose-dialog"]').click();
-   await page.locator('#browser-wallet-button').click();await page.locator('#wallet-recover-choice').click();await enterWalletCredential(page, '604281');await page.locator('#wallet-restore').scrollIntoViewIfNeeded();await fits('wallet');await page.locator('[data-close="browser-wallet-dialog"]').click();
+   await page.locator('#browser-wallet-button').click();await page.locator('#wallet-create-choice').click();await page.locator('#wallet-keypad').scrollIntoViewIfNeeded();await fits('wallet');await page.locator('[data-close="browser-wallet-dialog"]').click();
    if(width===390)await page.screenshot({path:`hauntboard/evidence/mobile-board-${name}.png`,fullPage:true});
    await page.goto('http://localhost:8283/about#architecture');await expect(page.locator('.contract-stack')).toContainText('schema 4');await fits('about');if(width<=700){assert(await page.locator('.storage-scroll').evaluate(e=>e.scrollWidth<=e.clientWidth+1),'Storage table must fit without sideways scrolling.');assert.equal(await page.locator('.storage-scroll tbody tr').first().evaluate(e=>getComputedStyle(e).display),'block');}
    if(width===390)await page.locator('.architecture').screenshot({path:`hauntboard/evidence/mobile-architecture-${name}.png`});checks.push({width,height,board:true,thread:true,compose:true,wallet:true,about:true,touchTargets:true});

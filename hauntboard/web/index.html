@@ -32,9 +32,8 @@
           ><button class="board-nav" data-category="tari" aria-pressed="false"><span>/tari/ · Tari</span><small>Tari &amp; Ootle</small></button>
           <button class="board-nav" data-category="pol" aria-pressed="false"><span>/pol/ · Politics</span><small>Current affairs &amp; debate</small></button>
           <a class="side-button" href="/forums">How forums work</a>
-          <button class="side-button" id="browser-wallet-button" disabled>
-            Wallet</button
-          ><a class="side-button" href="/about">About Hauntboard</a>
+          <a class="side-button" href="/about">About Hauntboard</a>
+          <a class="side-button" href="https://github.com/kstrycharz/hauntboard#run-your-own-copy" target="_blank" rel="noopener noreferrer">Download &amp; run locally</a>
           <details id="advanced-navigation">
             <summary>Advanced</summary>
             <button class="side-button" id="network-button" disabled>
@@ -64,14 +63,15 @@
             ><span id="beta-label" class="tag" hidden></span>
           </div>
           <div class="wallet-topbar">
+            <button class="subtle" id="browser-wallet-button" disabled>Wallet</button>
             <button
               id="wallet-balance-button"
               class="wallet-balance"
               hidden
               aria-label="Open wallet details"
             >
-              <span class="wallet-balance-label">Available for posting</span
-              ><strong id="wallet-balance-value"></strong></button
+              <span class="wallet-balance-label">Total wallet balance</span
+              ><strong id="wallet-balance-value"></strong><span id="wallet-posting-value" class="small"></span></button
             ><span id="identity" class="identity" role="status"
               >Checking wallet…</span
             >
@@ -103,6 +103,7 @@
           <button id="check-operation" class="subtle" hidden>
             Check existing submission
           </button>
+          <a id="view-operation" class="subtle action-link" hidden>View post</a>
         </section>
         <div
           class="flash"
@@ -132,7 +133,7 @@
           </div>
           <p id="board-capacity" class="caution" hidden></p>
           <div id="thread-list" class="thread-list" aria-busy="true">
-            <div class="empty">Connecting to the Crypt…</div>
+            <div class="empty">Loading threads…</div>
           </div>
           <div class="feed-footer">
             <span id="sync-time">Waiting for chain state</span
@@ -454,12 +455,12 @@
           ><button id="wallet-recover-choice" class="subtle full">
             Recover with seed phrase
           </button>
-          <button id="wallet-forgot-pin" class="subtle full" hidden>Forgot PIN? Delete saved wallet</button>
+          <button id="wallet-forgot-pin" class="text-button full" hidden>Forgot PIN?</button>
         </div>
         <div id="wallet-password-panel" hidden>
           <label for="wallet-password" id="wallet-password-label"
             >Device PIN · six digits</label
-          ><input
+          ><div class="pin-display" id="wallet-pin-display"><div id="wallet-pin-dots" class="pin-dots" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div><input
             id="wallet-password"
             type="password"
             autocomplete="new-password"
@@ -467,24 +468,13 @@
             maxlength="6"
             pattern="[0-9]{6}"
             inputmode="numeric"
-            aria-describedby="wallet-password-help"
-          />
+            aria-describedby="wallet-password-help wallet-pin-status"
+          /></div>
           <p id="wallet-password-help" class="small">
             Use the keypad, keyboard or number pad. Your PIN unlocks this
             device; keep your recovery phrase separately.
           </p>
-          <div id="wallet-pin-confirm-panel" hidden>
-            <label for="wallet-pin-confirm">Confirm your six-digit PIN</label>
-            <input
-              id="wallet-pin-confirm"
-              type="password"
-              inputmode="numeric"
-              minlength="6"
-              maxlength="6"
-              pattern="[0-9]{6}"
-              autocomplete="new-password"
-            />
-          </div>
+          <p id="wallet-pin-status" class="pin-status" role="status" aria-live="polite" aria-atomic="true"></p>
           <div
             id="wallet-keypad"
             class="pin-keypad"
@@ -510,6 +500,7 @@
               ⌫
             </button>
           </div>
+          <button id="wallet-pin-back" class="text-button full" hidden>Choose a different PIN</button>
           <button id="wallet-save-pin" class="primary full" hidden>
             Save PIN
           </button>
@@ -574,10 +565,25 @@
             </p>
           </details>
           <p id="wallet-replace-saved-panel" class="small" hidden>Recovering saves this wallet in place of the wallet currently saved on this device.</p>
-          <button id="wallet-restore" class="primary full">
-            Recover wallet
+          <button id="wallet-recovery-next" class="primary full">
+            Check recovery phrase
           </button>
         </div>
+        <section id="wallet-recovery-review" hidden aria-labelledby="wallet-recovery-review-title">
+          <h3 id="wallet-recovery-review-title">Review wallet recovery</h3>
+          <p>Your recovery phrase is valid. Save this wallet with your new PIN on this browser.</p>
+          <dl class="review-details"><dt>Network</dt><dd id="wallet-recovery-network"></dd><dt>Recovered receive address</dt><dd id="wallet-recovery-address" class="key-entry"></dd></dl>
+          <p id="wallet-recovery-consequence" class="caution"></p>
+          <button id="wallet-restore" class="primary full">Recover wallet</button>
+          <button id="wallet-recovery-edit" class="subtle full">Back to recovery details</button>
+        </section>
+        <section id="wallet-forgot-panel" hidden aria-labelledby="wallet-forgot-title">
+          <h3 id="wallet-forgot-title">Restore access to your wallet</h3>
+          <p>Your PIN protects the saved wallet on this browser. Recover with your 24-word Tari L2 phrase to set a new PIN. Your phrase restores your wallet; it does not reveal your old PIN.</p>
+          <button id="wallet-forgot-recover" class="primary full">Recover with seed phrase</button>
+          <p class="small">Deleting the saved copy does not recover access or remove funds from Tari. Keep your recovery phrase before deleting.</p>
+          <button id="wallet-forgot-delete" class="danger full">Delete saved wallet</button>
+        </section>
         <div id="wallet-seed-panel" hidden>
           <h3>Save your recovery phrase</h3>
           <p>
@@ -600,12 +606,11 @@
             ><input id="wallet-seed-saved" type="checkbox" /> I have saved my
             recovery phrase somewhere private.</label
           ><button id="wallet-confirm-seed" class="primary full" disabled>
-            Continue to funding
+            Finish wallet setup
           </button>
         </div>
         <section id="wallet-ready-panel" hidden aria-label="Wallet funds">
-          <h3>Wallet balance</h3>
-          <p id="wallet-ready-value" class="balance-value"></p>
+          <div class="balance-grid"><div><span>Total wallet balance</span><strong id="wallet-ready-value"></strong></div><div><span>Available for posting</span><strong id="wallet-ready-posting"></strong></div></div>
           <p id="wallet-readiness" class="small"></p>
           <div id="wallet-prepare-panel" hidden>
             <h3>Convert to posting funds</h3>

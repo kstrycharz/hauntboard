@@ -37,6 +37,7 @@ const knownFiles=new Map([['/','index.html'],['/index.html','index.html'],['/for
 knownFiles.set('/vendor/wallet-sdk.mjs','vendor/wallet-sdk.mjs');
 knownFiles.set('/vendor/wallet-recovery-glue.mjs','vendor/wallet-recovery-glue.mjs');
 knownFiles.set('/browser-wallet.mjs','browser-wallet.mjs');
+knownFiles.set('/pin-entry.mjs','pin-entry.mjs');
 knownFiles.set('/mobile.css','mobile.css');
 knownFiles.set('/network-profile.mjs','network-profile.mjs');
 knownFiles.set('/stealth-fee.mjs','stealth-fee.mjs');

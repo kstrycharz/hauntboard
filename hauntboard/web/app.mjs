@@ -13,6 +13,7 @@ import {
 } from "./crypto.mjs";
 import * as browserWallet from "./browser-wallet.mjs";
 import { PinEntry } from "./pin-entry.mjs";
+import { createApiClient } from "./api-client.mjs";
 const $ = (id) => document.getElementById(id);
 let config,
   board,
@@ -151,19 +152,7 @@ function clearFlash() {
   $("flash").hidden = true;
   document.querySelectorAll(".dialog-message").forEach((n) => n.remove());
 }
-async function api(path, body) {
-  const r = await fetch(path, {
-    method: body ? "POST" : "GET",
-    headers: body
-      ? { "Content-Type": "application/json", "X-Hauntboard-CSRF": config.csrf }
-      : {},
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  const data = await r.json();
-  if (!r.ok)
-    throw Object.assign(new Error(data.error ?? "The local companion is unavailable."), {status:r.status});
-  return data;
-}
+const api = createApiClient({getConfig: () => config});
 function dialog(id) {
   clearFlash();
   if ($(id).open) return;

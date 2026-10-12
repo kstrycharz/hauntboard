@@ -18,7 +18,7 @@ jobs:
           persist-credentials: false
       - name: Verify artifacts and test server and wallet foundations
         run: |
-          docker run --rm -v "$PWD:/workspace" -w /workspace node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c sh -c 'node hauntboard/scripts/verify-release.mjs && node --test hauntboard/tests/component-provider.mjs hauntboard/tests/delivery.test.mjs hauntboard/tests/operations-backup.test.mjs hauntboard/tests/output-ledger.test.mjs hauntboard/tests/pin-entry.test.mjs'
+          docker run --rm -v "$PWD:/workspace" -w /workspace node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c sh -c 'node hauntboard/scripts/verify-release.mjs && node --test hauntboard/tests/component-provider.mjs hauntboard/tests/delivery.test.mjs hauntboard/tests/operations-backup.test.mjs hauntboard/tests/output-ledger.test.mjs hauntboard/tests/pin-entry.test.mjs hauntboard/tests/api-client.test.mjs'
       - name: Build immutable application image and verify runtime
         run: |
           docker build -f infra/docker/hauntboard.Dockerfile -t "hauntboard:release-$GITHUB_SHA" .

@@ -38,6 +38,7 @@ knownFiles.set('/vendor/wallet-sdk.mjs','vendor/wallet-sdk.mjs');
 knownFiles.set('/vendor/wallet-recovery-glue.mjs','vendor/wallet-recovery-glue.mjs');
 knownFiles.set('/browser-wallet.mjs','browser-wallet.mjs');
 knownFiles.set('/pin-entry.mjs','pin-entry.mjs');
+knownFiles.set('/api-client.mjs','api-client.mjs');
 knownFiles.set('/mobile.css','mobile.css');
 knownFiles.set('/network-profile.mjs','network-profile.mjs');
 knownFiles.set('/stealth-fee.mjs','stealth-fee.mjs');
@@ -192,7 +193,8 @@ const server=createServer(async(req,res)=>{
     const c=await config();
     if(publicMode)await ready();
     if(req.method==='POST'){
-      if(!allowedHosts.has(new URL(req.headers.origin??'http://invalid').host)||req.headers.origin!==(runtime.origin??`http://${req.headers.host}`)||req.headers['x-hauntboard-csrf']!==csrf||!(req.headers['content-type']??'').startsWith('application/json'))throw error('Request origin or session rejected. Reload this client.',403);
+      if(!allowedHosts.has(new URL(req.headers.origin??'http://invalid').host)||req.headers.origin!==(runtime.origin??`http://${req.headers.host}`)||!(req.headers['content-type']??'').startsWith('application/json'))throw error('Request origin rejected. Open this client at its configured address.',403);
+      if(req.headers['x-hauntboard-csrf']!==csrf)throw Object.assign(error('This client session expired. Refresh the session before continuing.',403),{clientCode:'SESSION_EXPIRED'});
     }
     if(req.method==='GET'&&url.pathname==='/api/config'){
       json(res,{network:c.network,networkByte:c.networkByte,resetIdentity:c.resetIdentity,profile:runtime.profile,testnetBeta:publicMode&&beta,compatibilityVerified:c.compatibilityVerified===true,posterPrivacyVerified:c.posterPrivacyVerified===true,providerRuntimeVersion:c.providerRuntimeVersion,posterPrivacy:c.posterPrivacy,faucetEnabled,schema:c.schema,version:'0.43.0',board:c.board,template:c.template,legacyBoards:c.legacyBoards??[],instance:c.instance,role,label:publicMode?'Browser wallet':role==='sender'?'Ghost A':'Ghost B',account:publicMode?undefined:c.account,receiveAddress:publicMode?undefined:c.address,provider:publicMode?'Tari Esmeralda provider · '+new URL(indexer).host:role==='sender'?'Primary local indexer':'Independent local indexer',csrf,limits:{posts:2048,pageSize:16,pages:128,threads:128,envelopeBytes:4096},walletExpiresAt:publicMode?undefined:c.expiresAt});return;
@@ -254,7 +256,7 @@ const server=createServer(async(req,res)=>{
   }catch(e){
     if(!publicMode&&e.rpcCode!==undefined)await atomicJson('/companion/last-rpc-error.json',{code:e.rpcCode,message:e.message,diagnostic:e.diagnostic}).catch(()=>{});
     const friendly=e.rpcCode===401?'Local wallet authentication expired. Run the local bootstrap again.':e.diagnostic?.includes('Post page changed')?'New replies opened another page. Sync from chain, then review your reply again. Your draft is preserved.':e.rpcCode!==undefined?`Wallet simulation rejected this operation (${e.rpcCode}). Your draft is preserved.`:e.message;
-    json(res,{error:friendly,transactionId:e.transactionId},e.status??503);
+    json(res,{error:friendly,code:e.clientCode,transactionId:e.transactionId},e.status??503);
   }
 });
 server.requestTimeout=35000;server.headersTimeout=10000;server.keepAliveTimeout=5000;server.maxRequestsPerSocket=100;

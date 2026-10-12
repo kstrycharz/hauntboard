@@ -1,0 +1,21 @@
+{
+  "origin": "https://hauntboard.taritracker.com",
+  "checkedAt": "2026-10-12T20:59:32.412Z",
+  "checks": {
+    "liveConfiguration": true,
+    "newWalletAndRecoveryConfirmation": true,
+    "faucetAttempt": true,
+    "reloadPinUnlockPreservesIdentity": true,
+    "freshBrowserRecoveryPreservesIdentity": true,
+    "posting": "Not attempted: fresh wallet could not obtain posting funds"
+  },
+  "submittedClaims": 0,
+  "submittedPosts": 0,
+  "faucetStatus": "CLIENT_PREFLIGHT_BLOCKED",
+  "diagnostic": {
+    "scope": "Frontend balance guard bypassed only in isolated test browser; real network dry-run; every claim submission blocked",
+    "accepted": false,
+    "blockedSubmissions": 0
+  },
+  "status": "WALLET_FLOW_PASSED_FUNDING_BLOCKED"
+}

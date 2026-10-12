@@ -34,10 +34,14 @@ done
 test "$(cat "$stage/SOURCE_COMMIT")" = "${tag#release-}"
 # Routine website releases must never replace this board or manifest.
 cmp network.json "$stage/network.public.json"
-image=$(cat "$stage/IMAGE_ID")
-printf '%s' "$image" | grep -Eq '^sha256:[a-f0-9]{64}$'
+build_image=$(cat "$stage/IMAGE_ID")
+printf '%s' "$build_image" | grep -Eq '^sha256:[a-f0-9]{64}$'
 gzip -dc "$stage/hauntboard-image.tar.gz" | docker load
-test "$(docker image inspect "hauntboard:$tag" --format '{{.Id}}')" = "$image"
+# Docker's classic and containerd stores expose different IDs. Verify the
+# loaded config through Docker-save, then pin the local store's immutable ID.
+docker image save "hauntboard:$tag" | python3 /usr/local/lib/hauntboard/verify-image.py "$build_image"
+image=$(docker image inspect "hauntboard:$tag" --format '{{.Id}}')
+printf '%s' "$image" | grep -Eq '^sha256:[a-f0-9]{64}$'
 docker rm -f "$candidate" >/dev/null 2>&1 || true
 docker run -d --name "$candidate" --read-only --tmpfs /companion:uid=1000,gid=1000 --tmpfs /tmp --cap-drop ALL --security-opt no-new-privileges --memory 512m \
   -e HAUNTBOARD_PROFILE=public -e HAUNTBOARD_TESTNET_BETA=true -e HAUNTBOARD_FAUCET_ENABLED=false -e PORT=8280 -e ORIGIN=https://hauntboard.taritracker.com \

@@ -5,7 +5,7 @@
   "instance": "hauntboard-esmeralda-forums-2026-10-07",
   "sdkVersion": "0.7.0",
   "wasmVersion": "0.43.0",
-  "providerRuntimeVersion": "0.45.0",
+  "providerRuntimeVersion": "0.46.0",
   "compatibilityVerified": false,
   "schema": 4,
   "posterPrivacy": "stealth-fee-v1",

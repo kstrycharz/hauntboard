@@ -6,7 +6,8 @@ cd /opt/hauntboard
 tag=$(curl --retry 3 --max-time 30 -fsSL https://api.github.com/repos/kstrycharz/hauntboard/releases/latest | python3 -c 'import json,sys,re; tag=json.load(sys.stdin)["tag_name"]; assert re.fullmatch("release-[0-9a-f]{40}",tag); print(tag)')
 if [ -f CURRENT_RELEASE ] && [ "$(cat CURRENT_RELEASE)" = "$tag" ]; then
   docker compose ps --format json
-  echo "Already running $tag"
+  curl --max-time 30 -fsS -H 'Host: hauntboard.taritracker.com' http://127.0.0.1/health/ready
+  echo "Already running $tag; readiness verified"
   exit 0
 fi
 mkdir -p downloads

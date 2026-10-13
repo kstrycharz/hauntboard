@@ -8,9 +8,9 @@ import {networkProfile,networkKey} from '../web/network-profile.mjs';
 import {Relay} from '../lib/relay.mjs';
 import {validateTestnetWitness} from '../lib/testnet-provider.mjs';
 test('live Esmeralda witness rejects localnet, changed runtime, disabled proofs and empty validators',()=>{
- const fixture={network:{status:200,body:{network:'esmeralda',network_byte:38}},info:{status:200,body:{network:'esmeralda',network_byte:38,version:'0.45.0',verify_substate_proofs:true}},validators:{status:200,body:{epoch:11938,validators:[{public_key:'a'.repeat(64),peer_id:'synthetic-validator'}]}},'epoch-manager/stats':{status:200,body:{current_epoch:11938,current_block_height:955048,current_block_hash:'b'.repeat(64)}}};
- assert.equal(validateTestnetWitness(fixture,'0.45.0').validatorCount,1);
- for(const mutate of [f=>f.network.body.network='localnet',f=>f.info.body.network_byte=16,f=>f.info.body.version='0.43.0',f=>f.info.body.verify_substate_proofs=false,f=>f.validators.body.validators=[],f=>f.validators.body.epoch=0,f=>f['epoch-manager/stats'].body.current_block_height=0,f=>f.info.status=503]){const f=structuredClone(fixture);mutate(f);assert.throws(()=>validateTestnetWitness(f,'0.45.0'));}
+ const fixture={network:{status:200,body:{network:'esmeralda',network_byte:38}},info:{status:200,body:{network:'esmeralda',network_byte:38,version:'0.46.0',verify_substate_proofs:true}},validators:{status:200,body:{epoch:11938,validators:[{public_key:'a'.repeat(64),peer_id:'synthetic-validator'}]}},'epoch-manager/stats':{status:200,body:{current_epoch:11938,current_block_height:955048,current_block_hash:'b'.repeat(64)}}};
+ assert.equal(validateTestnetWitness(fixture,'0.46.0').validatorCount,1);
+ for(const mutate of [f=>f.network.body.network='localnet',f=>f.info.body.network_byte=16,f=>f.info.body.version='0.43.0',f=>f.info.body.verify_substate_proofs=false,f=>f.validators.body.validators=[],f=>f.validators.body.epoch=0,f=>f['epoch-manager/stats'].body.current_block_height=0,f=>f.info.status=503]){const f=structuredClone(fixture);mutate(f);assert.throws(()=>validateTestnetWitness(f,'0.46.0'));}
 });
 test('public and client profiles require explicitly approved Tari-hosted Esmeralda providers',()=>{
  const env={HAUNTBOARD_PROFILE:'public',ORIGIN:'https://board.example',INDEXER_URL:TARI_TESTNET_PROVIDERS[0],APPROVED_PROVIDER_ORIGINS:TARI_TESTNET_PROVIDERS.join(',')};

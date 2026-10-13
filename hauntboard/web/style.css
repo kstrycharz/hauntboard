@@ -1,15 +1,18 @@
 :root {
   color-scheme: dark;
-  --bg: #111714;
-  --panel: #18201a;
-  --line: #6b7c63;
-  --text: #e7e5d4;
-  --muted: #a2ad9b;
-  --green: #c8df93;
-  --accent: #dcc889;
-  --error: #f1c3b4;
-  --serif: Georgia, "Times New Roman", serif;
-  --sans: Arial, Helvetica, sans-serif;
+  --purple: #813BF5;
+  --lime: #C9EB00;
+  --cloud: #ECEEFF;
+  --bg: #040723;
+  --panel: #101333;
+  --line: #555978;
+  --text: #ECEEFF;
+  --muted: #B7BCD6;
+  --green: #C9EB00;
+  --accent: #C9EB00;
+  --error: #FFB4BE;
+  --serif: "Druk", Impact, "Arial Narrow", sans-serif;
+  --sans: "Poppins", "Segoe UI", Arial, sans-serif;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -170,7 +173,7 @@ p {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #131b16;
+  background: #080B28;
   overflow-y: auto;
 }
 .brand {
@@ -215,7 +218,7 @@ nav {
   color: var(--text);
 }
 .board-nav.selected {
-  background: #243223;
+  background: #262044;
   border-color: var(--green);
   color: var(--green);
 }
@@ -314,9 +317,9 @@ body[data-view="thread"] .hero {
   align-items: start;
   gap: 16px;
   padding: 12px 16px;
-  border: 1px solid #776c45;
+  border: 1px solid #727D36;
   border-radius: var(--radius);
-  background: #28281d;
+  background: #191F27;
   margin: 12px 0 20px;
 }
 .notice > span {
@@ -338,11 +341,11 @@ body[data-view="thread"] .hero {
 }
 .primary {
   background: var(--green);
-  color: #182013;
+  color: #040723;
   font-weight: 600;
 }
 .primary:hover {
-  background: #d6e9ae;
+  background: #D9F55A;
 }
 .subtle,
 .secondary {
@@ -352,7 +355,7 @@ body[data-view="thread"] .hero {
 }
 .subtle:hover,
 .secondary:hover {
-  background: #263023;
+  background: #252044;
 }
 .text-button {
   background: transparent;
@@ -495,14 +498,14 @@ body[data-view="thread"] .hero {
   color: var(--error);
 }
 .flash.error {
-  border-color: #ac7767;
-  background: #36251e;
+  border-color: #BD697C;
+  background: #33162C;
 }
 .caution,
 .operation-panel[data-state="unknown"],
 .operation-panel[data-state="indexing"] {
   color: var(--accent);
-  border-color: #776c45;
+  border-color: #727D36;
 }
 .operation-panel {
   display: flex;
@@ -519,7 +522,7 @@ body[data-view="thread"] .hero {
   margin: 4px 0;
 }
 .operation-panel[data-state="rejected"] {
-  border-color: #ac7767;
+  border-color: #BD697C;
   color: var(--error);
 }
 .thread-toolbar {
@@ -587,7 +590,7 @@ body[data-view="thread"] .hero {
   color: var(--muted);
 }
 .post.locked {
-  border-color: #776c45;
+  border-color: #727D36;
 }
 .locked-copy {
   color: var(--accent);
@@ -614,7 +617,7 @@ blockquote {
   overflow-wrap: anywhere;
 }
 dialog {
-  background: #1a221b;
+  background: #101333;
   color: var(--text);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -626,7 +629,7 @@ dialog {
   box-shadow: 0 15px 80px #0008;
 }
 dialog::backdrop {
-  background: #050a07cc;
+  background: #040723dd;
 }
 .dialog-top {
   display: flex;
@@ -662,7 +665,7 @@ dialog::backdrop {
 }
 .mode-picker label:has(input:checked) {
   border-color: var(--green);
-  background: #2c3823;
+  background: #302451;
 }
 .mode-picker small {
   display: block;
@@ -815,3 +818,15 @@ pre {
 
 .chain-locator { overflow-wrap: anywhere; }
 .post-chain-link { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Tari brand kit: ink, cloud, purple and lime. Font files are not supplied. */
+.brand { font-family: var(--sans); font-size: 22px; font-weight: 700; letter-spacing: -.8px; }
+.brand-mark { display: grid; place-items: center; width: 38px; height: 44px; flex: 0 0 38px; background: var(--purple); color: var(--cloud); border-radius: 10px; font: 26px var(--serif); }
+h1, h2, h3 { letter-spacing: .3px; }
+.hero h1 { font-size: clamp(32px, 4vw, 44px); }
+.sidebar { border-top: 3px solid var(--purple); }
+.topbar { border-bottom-color: var(--purple); }
+.board-nav.selected { box-shadow: inset 3px 0 var(--lime); }
+::selection { background: var(--purple); color: var(--cloud); }
+.tari-credit { display: inline-flex; align-items: center; gap: 10px; margin-top: 16px; font: 12px var(--sans); color: var(--muted); }
+.tari-credit img { width: 54px; height: 24px; object-fit: contain; }

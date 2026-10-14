@@ -1,4 +1,28 @@
-http://hauntboard.taritracker.com {
+{
+  servers {
+    trusted_proxies static 173.245.48.0/20 103.21.244.0/22 103.22.200.0/22 103.31.4.0/22 141.101.64.0/18 108.162.192.0/18 190.93.240.0/20 188.114.96.0/20 197.234.240.0/22 198.41.128.0/17 162.158.0.0/15 104.16.0.0/13 104.24.0.0/14 172.64.0.0/13 131.0.72.0/22 2400:cb00::/32 2606:4700::/32 2803:f800::/32 2405:b500::/32 2405:8100::/32 2a06:98c0::/29 2c0f:f248::/32
+    trusted_proxies_strict
+    client_ip_headers CF-Connecting-IP
+  }
+}
+
+# Trust the visitor scheme only when the immediate peer is Cloudflare.
+# Never trust a spoofed forwarding header from a direct origin connection.
+(visitor_transport) {
+  @cloudflare_https {
+    remote_ip 173.245.48.0/20 103.21.244.0/22 103.22.200.0/22 103.31.4.0/22 141.101.64.0/18 108.162.192.0/18 190.93.240.0/20 188.114.96.0/20 197.234.240.0/22 198.41.128.0/17 162.158.0.0/15 104.16.0.0/13 104.24.0.0/14 172.64.0.0/13 131.0.72.0/22 2400:cb00::/32 2606:4700::/32 2803:f800::/32 2405:b500::/32 2405:8100::/32 2a06:98c0::/29 2c0f:f248::/32
+    header X-Forwarded-Proto https
+  }
+  # Preserve host deployment health checks, without allowing HTTP app pages.
+  # 172.18.0.1 is the observed gateway of the existing Docker bridge.
+  @local_health {
+    remote_ip 127.0.0.1 ::1 172.18.0.1
+    path /health/live /health/ready
+    method GET HEAD
+  }
+}
+
+(board_backend) {
   request_body {
     max_size 24KB
   }
@@ -7,5 +31,46 @@ http://hauntboard.taritracker.com {
     header_up -X-Forwarded-Host
     header_up -X-Forwarded-For
     header_up -X-Forwarded-Proto
+  }
+}
+
+(faucet_backend) {
+  request_body {
+    max_size 4KB
+  }
+  reverse_proxy testnet-faucet:8290 {
+    header_up X-Real-IP {client_ip}
+  }
+}
+
+http://hauntboard.taritracker.com {
+  import visitor_transport
+  route {
+    handle @cloudflare_https {
+      header Strict-Transport-Security "max-age=86400"
+      import board_backend
+    }
+    handle @local_health {
+      import board_backend
+    }
+    handle {
+      redir https://hauntboard.taritracker.com{uri} 308
+    }
+  }
+}
+
+http://testnet-faucet.taritracker.com {
+  import visitor_transport
+  route {
+    handle @cloudflare_https {
+      header Strict-Transport-Security "max-age=86400"
+      import faucet_backend
+    }
+    handle @local_health {
+      import faucet_backend
+    }
+    handle {
+      redir https://testnet-faucet.taritracker.com{uri} 308
+    }
   }
 }

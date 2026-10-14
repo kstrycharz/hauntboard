@@ -5,7 +5,6 @@ services:
     environment:
       HAUNTBOARD_PROFILE: public
       HAUNTBOARD_TESTNET_BETA: 'true'
-      HAUNTBOARD_FAUCET_ENABLED: ${HAUNTBOARD_FAUCET_ENABLED:-false}
       PORT: '8280'
       ORIGIN: https://hauntboard.taritracker.com
       INDEXER_URL: https://ootle-indexer-a.tari.com

@@ -140,7 +140,7 @@ services:
     volumes: [privacy_companion:/companion]
     networks: [localtest, client]
     ports: ['0.0.0.0:8283:8280']
-    environment: { PORT: '8280', LOCAL_BROWSER_PORT: '8283', HAUNTBOARD_FAUCET_ENABLED: '${HAUNTBOARD_FAUCET_ENABLED:-true}', LOCAL_LAN_HOSTS: '${HAUNTBOARD_LAN_HOSTS:-192.168.1.250,192.168.2.187}', ROLE: sender, INDEXER_URL: 'http://indexer:18300', CONFIG_FILE: /companion/config.json }
+    environment: { PORT: '8280', LOCAL_BROWSER_PORT: '8283', LOCAL_LAN_HOSTS: '${HAUNTBOARD_LAN_HOSTS:-192.168.1.250,192.168.2.187}', ROLE: sender, INDEXER_URL: 'http://indexer:18300', CONFIG_FILE: /companion/config.json }
     command: [node, hauntboard/server.mjs]
 networks:
   client: {}

@@ -76,7 +76,6 @@ export async function confirmPhrase(){confirmed=true;}
 export async function recoveryPhrase(){return ${JSON.stringify(phrase)};}
 export async function verifyCredential(){}
 export function lock(){wallet=null;}
-export function faucetStatus(){return {claimed:false,pending:false};}
 export function fundScanStatus(){return {complete:scanComplete};}
 export function privateFunds(){return {ready:1,quarantined:2,reserved:0};}
 export async function privateBalance(){return {ready:'1000000',quarantined:'2000000',reserved:'0',revealed:'0',total:'3000000'};}
@@ -85,7 +84,6 @@ export async function syncPrivateFunds(){scanComplete=true;return {complete:true
 export async function review(body){return {...await call('/api/quote',body),browser:true,privateFee:true};}
 export async function submit(quote){return call('/api/browser-submit',{operation:quote.operation});}
 export async function transaction(id){return call('/api/transaction?id='+id);}
-export async function requestTestFunds(){return {faucet:true};}
 export async function fund(){return {};}
 export async function importIncoming(){return {};}
 `;
@@ -189,7 +187,6 @@ async function fixture(browser, options = {}) {
         networkByte: 38,
         resetIdentity: "fixture",
         testnetBeta: true,
-        faucetEnabled: true,
         board: boardAddress,
         label: "Ghost A",
         provider: "Fixture provider",
@@ -272,6 +269,10 @@ async function unlock(page) {
   await page.locator("#browser-wallet-button").click();
   await enterWalletCredential(page, "604281");
   await expect(page.locator("#wallet-ready-panel")).toBeVisible();
+  await expect(page.locator("#wallet-faucet, #wallet-fund")).toHaveCount(0);
+  const tokenLink = page.getByRole("link", { name: "Need test tokens?" });
+  await expect(tokenLink).toHaveAttribute("href", "https://testnet-faucet.taritracker.com/");
+  await expect(tokenLink).toHaveAttribute("rel", "noopener noreferrer");
   await page.locator('[data-close="browser-wallet-dialog"]').click();
 }
 async function compose(page) {

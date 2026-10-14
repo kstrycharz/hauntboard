@@ -4,7 +4,7 @@
 
 The VPS serves HTTP on port 80 for `hauntboard.taritracker.com`. Cloudflare supplies browser HTTPS and proxies to the origin over HTTP, as requested. Configure a proxied A record `hauntboard` -> `104.131.40.85`, and Cloudflare SSL/TLS mode **Flexible** for this HTTP origin. A Cloudflare Tunnel connector is not used in this setup. The app requires canonical HTTPS Origin headers on writes; do not browse the bare IP to use wallets.
 
-The application has no public internal port or Docker socket, runs as the Node non-root user, and retains its operations volume. The app is an explicitly enabled Esmeralda testnet beta; compatibility/privacy evidence flags remain honest rather than being changed to bypass release gates. The faucet defaults off for self-hosted copies.
+The application has no public internal port or Docker socket, runs as the Node non-root user, and retains its operations volume. The app is an explicitly enabled Esmeralda testnet beta; compatibility/privacy evidence flags remain honest rather than being changed to bypass release gates. Built-in faucet claims are removed. The wallet links to https://testnet-faucet.taritracker.com/ for test tokens.
 
 ## Automatic releases
 

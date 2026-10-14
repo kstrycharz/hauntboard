@@ -80,7 +80,7 @@ let feedGeneration = 0,
   seedCheck = null,
   scanIncomplete = false;
 let walletUnlockMethod = "pin";
-let recoveryPlan = null, fundingPin = null, walletDialogGeneration = 0, lastWalletBalance = null, lastWalletIdentity = null;
+let recoveryPlan = null, walletDialogGeneration = 0, lastWalletBalance = null, lastWalletIdentity = null;
 const walletActions = new Map();
 const pinEntry = new PinEntry({
   dialog: $("browser-wallet-dialog"), input: $("wallet-password"), label: $("wallet-password-label"),
@@ -95,19 +95,6 @@ const pinEntry = new PinEntry({
       recoveryPlan.pin = pin;
       setWalletStep("recover-review");
       $("wallet-restore").focus();
-      return;
-    }
-    if (purpose === "fund") {
-      // Authentication is entered here, but funding still needs an explicit action.
-      const generation = walletDialogGeneration;
-      const pinGeneration = pinEntry.generation;
-      await browserWallet.verifyCredential(pin);
-      if (generation !== walletDialogGeneration || pinGeneration !== pinEntry.generation || walletStep !== "fund" || !$("browser-wallet-dialog").open) return;
-      fundingPin = pin;
-      pinEntry.cancel();
-      $("wallet-password-panel").hidden = true;
-      $("wallet-fund").hidden = false;
-      $("wallet-fund").focus();
       return;
     }
     await walletActions.get({ create: "wallet-create", unlock: "wallet-unlock", "change-pin": "wallet-save-pin", "show-phrase": "wallet-show-seed" }[purpose])(pin);
@@ -1575,7 +1562,7 @@ function showWalletBalance(balance, version = ++walletBalanceVersion) {
           ? "Funds are available. Review a post to check its exact fee."
           : BigInt(balance?.revealed ?? 0) > 0n
             ? "Your funds are in a standard Tari account. Choose Convert to posting funds to make 10 test TARI available for posting."
-            : "No funds are available for posting. Check incoming funds or claim test funds when offered.";
+            : "No funds are available for posting. Use Need test tokens? or check for incoming funds.";
 }
 function setWalletStep(step) {
   const changed = walletStep !== step;
@@ -1587,7 +1574,6 @@ function setWalletStep(step) {
     "unlock",
     "recover-pin",
     "show-phrase",
-    "fund",
     "change-pin",
   ].includes(step);
   $("wallet-entry").hidden = step !== "entry";
@@ -1610,7 +1596,6 @@ function setWalletStep(step) {
     "delete",
     "change-pin",
     "show-phrase",
-    "fund",
   ].includes(step);
   $("wallet-save-pin").hidden = step !== "change-pin";
   $("wallet-back").hidden = ["entry", "ready", "seed"].includes(step);
@@ -1673,14 +1658,14 @@ function setWalletStep(step) {
   } else $("wallet-create-choice").hidden = false;
   $("wallet-show-seed").hidden =
     !browserWallet.active() || !["ready", "show-phrase"].includes(step);
-  if (["show-phrase", "fund"].includes(step)) {
+  if (step === "show-phrase") {
     $("wallet-ready-panel").hidden = false;
     $("wallet-ready-panel")
       .querySelectorAll(":scope > *")
       .forEach(
         (el) =>
           (el.hidden =
-            el.id !== (step === "fund" ? "wallet-fund" : "wallet-show-seed")),
+            el.id !== "wallet-show-seed"),
       );
   } else
     $("wallet-ready-panel")
@@ -1690,7 +1675,6 @@ function setWalletStep(step) {
   if (password && !legacyPassword && (changed || !pinEntry.active))
     pinEntry.start({ purpose: step, setup: newPin });
   else if ((!password || legacyPassword) && pinEntry.active) pinEntry.cancel();
-  if (step === "fund" && !legacyPassword && !fundingPin) $("wallet-fund").hidden = true;
   $("browser-wallet-dialog").dataset.step = step;
 }
 async function walletView() {
@@ -1707,7 +1691,7 @@ async function walletView() {
   showWalletBalance(wallet ? wallet.address === lastWalletIdentity ? lastWalletBalance ?? {} : {} : null, balanceVersion);
   if (wallet) {
     if (
-      !["seed", "show-phrase", "fund", "change-pin", "delete", "recover", "recover-pin", "recover-review", "forgot"].includes(
+      !["seed", "show-phrase", "change-pin", "delete", "recover", "recover-pin", "recover-review", "forgot"].includes(
         walletStep,
       )
     )
@@ -1735,21 +1719,7 @@ async function walletView() {
   $("wallet-change-pin").hidden = !wallet;
   $("wallet-change-pin").textContent =
     walletUnlockMethod === "password" ? "Set six-digit PIN" : "Change PIN";
-  $("wallet-fund").hidden =
-    !wallet || Boolean(wallet.account) || config.posterPrivacy;
   $("incoming-funds").hidden = !wallet || !config.posterPrivacy;
-  $("wallet-faucet-panel").hidden =
-    !config.faucetEnabled || !config.posterPrivacy || !wallet;
-  if (wallet) {
-    const faucet = browserWallet.faucetStatus();
-    $("wallet-faucet").disabled =
-      walletWorking || (faucet.claimed && !faucet.pending);
-    $("wallet-faucet").textContent = faucet.pending
-      ? "Check funding status"
-      : faucet.claimed
-        ? "Testnet funds claimed"
-        : "Claim 500 test TARI";
-  }
   $("private-receive-address").value = wallet?.address ?? "";
   if (!wallet) return;
   if (config.posterPrivacy)
@@ -1836,9 +1806,8 @@ function walletAction(id, action, message) {
         "wallet-restore",
         "wallet-save-pin",
       ].includes(id) ||
-        (id === "wallet-show-seed" && walletStep === "show-phrase") ||
-        (id === "wallet-fund" && walletStep === "fund")) &&
-      credential === undefined && id !== "wallet-restore" && !(id === "wallet-fund" && fundingPin) && !$("wallet-password").reportValidity()
+        (id === "wallet-show-seed" && walletStep === "show-phrase")) &&
+      credential === undefined && id !== "wallet-restore" && !$("wallet-password").reportValidity()
     )
       return;
     walletWorking = true;
@@ -1849,7 +1818,7 @@ function walletAction(id, action, message) {
     $("wallet-message").classList.remove("error");
     $("wallet-message").textContent = message;
     try {
-      const result = await action(credential ?? (id === "wallet-fund" ? fundingPin : null) ?? $("wallet-password").value, isCurrent);
+      const result = await action(credential ?? $("wallet-password").value, isCurrent);
       if (!isCurrent()) { browserWallet.lock(); return; }
       if (result?.credentialRequired) { $("wallet-message").hidden = true; return; }
       clearWalletCredential();
@@ -1876,8 +1845,6 @@ function walletAction(id, action, message) {
                 ? "Wallet recovered. Still checking for funds. Choose Continue syncing."
                 : result?.prepared
                   ? "Posting funds confirmed on Tari. Review your post to check its fee."
-                : result?.faucet
-                  ? "Test funds confirmed on Tari. Review your post to check its fee."
                   : walletStep === "seed"
                     ? "Save your words, then confirm the requested word before continuing."
                     : id === "wallet-lock"
@@ -1891,10 +1858,6 @@ function walletAction(id, action, message) {
       $("wallet-message").textContent = error.message;
       $("wallet-message").classList.add("error");
       if (id === "wallet-restore") $("wallet-recovery-advanced").open = true;
-      if (id === "wallet-fund" && walletStep === "fund") {
-        clearWalletCredential();
-        setWalletStep("fund");
-      }
       if (credential !== undefined) throw error;
     } finally {
       walletWorking = false;
@@ -1903,8 +1866,6 @@ function walletAction(id, action, message) {
         .forEach((b) => (b.disabled = false));
       updateSeedConfirmation();
       updateDeleteConfirmation();
-      const faucet = browserWallet.faucetStatus();
-      $("wallet-faucet").disabled = faucet.claimed && !faucet.pending;
       if (browserWallet.postingPreparationStatus().pending) {
         $("wallet-prepare").textContent = "Check conversion status";
         $("wallet-prepare-confirm").hidden = true;
@@ -1988,11 +1949,6 @@ walletAction(
   (password) => browserWallet.unlock(password),
   "Unlocking your wallet…",
 );
-walletAction(
-  "wallet-faucet",
-  () => browserWallet.requestTestFunds(),
-  "Checking test funding…",
-);
 walletAction("wallet-prepare", async () => {
   if (browserWallet.postingPreparationStatus().pending) {
     const result = await browserWallet.confirmPostingPreparation();
@@ -2002,7 +1958,7 @@ walletAction("wallet-prepare", async () => {
   }
   const quote = await browserWallet.reviewPostingPreparation();
   if (quote.pending) return quote;
-  $("wallet-prepare-review").textContent = `Convert ${units(quote.amount)} from your account into ${quote.outputs} posting outputs. Maximum transaction fee: ${units(quote.fee)}, paid from your account in addition to the amount moved. The rest stays in your account. This uses your existing native test TARI; it does not claim the faucet.`;
+  $("wallet-prepare-review").textContent = `Convert ${units(quote.amount)} from your account into ${quote.outputs} posting outputs. Maximum transaction fee: ${units(quote.fee)}, paid from your account in addition to the amount moved. The rest stays in your account. This uses your existing native test TARI.`;
   $("wallet-prepare-confirm").hidden = false;
   return quote;
 }, "Checking the conversion fee on Tari…");
@@ -2012,20 +1968,6 @@ walletAction("wallet-prepare-confirm", async () => {
   $("wallet-prepare-review").textContent = "Posting funds confirmed on Tari.";
   return result;
 }, "Converting to posting funds on Tari…");
-walletAction(
-  "wallet-fund",
-  async (password) => {
-    if (walletStep !== "fund") {
-      setWalletStep("fund");
-      $("wallet-password").focus();
-      return { credentialRequired: true };
-    }
-    const result = await browserWallet.fund(password);
-    setWalletStep("ready");
-    return result;
-  },
-  "Requesting local test funds…",
-);
 walletAction(
   "wallet-find-funds",
   () => browserWallet.importIncoming($("incoming-transaction").value.trim()),
@@ -2103,13 +2045,12 @@ $("browser-wallet-dialog").addEventListener("close", () => {
 });
 function clearWalletCredential() {
   pinEntry.cancel();
-  fundingPin = null;
   $("wallet-password").value = "";
 }
 $("wallet-password").addEventListener("keydown", (event) => {
   if (!pinEntry.active && event.key === "Enter") {
     event.preventDefault();
-    $(walletStep === "show-phrase" ? "wallet-show-seed" : walletStep === "fund" ? "wallet-fund" : "wallet-unlock").click();
+    $(walletStep === "show-phrase" ? "wallet-show-seed" : "wallet-unlock").click();
   }
 });
 $("wallet-change-pin").addEventListener("click", () => {

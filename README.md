@@ -21,6 +21,10 @@ Stop with `docker compose -f compose.client.yaml down`. Do not add `-v`: that de
 
 This is an independently hosted **client**, not an independent network node. The current release only accepts two Tari-hosted Esmeralda indexers. You still trust the downloaded client, providers and testnet; resets can erase testnet state. Your own indexer requires additional integration and verification. We do not claim complete anonymity or full decentralization.
 
+## Wallet funding
+
+The wallet includes a **Need test tokens?** link to [the testnet faucet](https://testnet-faucet.taritracker.com/). Hauntboard no longer submits faucet claims. Receive funds or recover a funded wallet, then use **Check for incoming funds**. For funds held in a standard Tari account, choose **Convert to posting funds** and review the network fee.
+
 ## Check posts on chain
 
 Each forum row has **View thread on chain**, and each post has **View on chain**. These links open the relevant component directly at the configured Tari indexer. Expand **Post details** to see the page address and entry containing that post. Public post payloads are stored as byte arrays in the component state. This is an indexer-reported chain-state check, not proof of authorship or independent consensus verification.

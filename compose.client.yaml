@@ -8,7 +8,6 @@ services:
     environment:
       HAUNTBOARD_PROFILE: client
       HAUNTBOARD_TESTNET_BETA: 'true'
-      HAUNTBOARD_FAUCET_ENABLED: 'false'
       ORIGIN: http://localhost:8282
       PORT: '8280'
       INDEXER_URL: https://ootle-indexer-a.tari.com

@@ -22,4 +22,6 @@ Runtime configuration lives in `/opt/hauntboard`: `.env`, `network.json`, `compo
 
 Inspect: `cd /opt/hauntboard && docker compose ps`. Readiness is `/health/ready`; liveness alone is insufficient. To restore a retained image, set `APP_IMAGE` in `.env` to the previously recorded image ID and run `docker compose up -d --wait`. Do not delete the operations volume. Browser wallet recovery is separate: keys live in each user's browser.
 
+Public readiness checks that the configured board can be read with a verified response, an approved template and schema 4. Indexer runtime versions and diagnostic endpoints (`info`, `validators`, `epoch-manager/stats`) do not gate readiness or API requests. `providerRuntimeVersion` in the manifest is historical metadata, not a compatibility requirement. The read-only network probe remains available for diagnosis; an indexer upgrade alone does not establish transaction compatibility. Each API validates its own inputs and provider results without a global board-read preflight.
+
 The public board/template addresses are in `network.public.json`. Preserve them during updates. New contract publication requires separate review and an explicit fee budget. Back up operational data off the VPS; logs are bounded. The deployment cache retains only the current downloaded archive; old image pruning must preserve the previous rollback image.

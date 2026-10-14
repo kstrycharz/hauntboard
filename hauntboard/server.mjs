@@ -9,7 +9,6 @@ import {decodeState} from './lib/state.mjs';
 import {serverProfile,TARI_TESTNET_PROVIDERS} from './lib/server-profile.mjs';
 import {networkProfile} from './web/network-profile.mjs';
 import {Relay} from './lib/relay.mjs';
-import {readTestnetWitness} from './lib/testnet-provider.mjs';
 import {testnetBeta,validatePublicManifest} from './lib/release-mode.mjs';
 import {transactionIdentity} from './web/transaction-identity.mjs';
 
@@ -57,11 +56,8 @@ async function config(){
   if(publicMode)try{validatePublicManifest(c,beta);}catch(e){throw error(e.message,503);}
   return {...c,...p};
 }
-let witnessPromise,witnessVersion,witnessValidUntil=0;
-async function ready(){const c=await config();if(publicMode){
-  if(!witnessPromise||witnessVersion!==c.providerRuntimeVersion||Date.now()>=witnessValidUntil){witnessVersion=c.providerRuntimeVersion;witnessValidUntil=Date.now()+5000;witnessPromise=readTestnetWitness(indexer,c.providerRuntimeVersion);}
-  try{await witnessPromise;}catch{witnessPromise=null;throw error('Public testnet identity, runtime, proof verification or validator checks failed.',503);}
-}else{const r=await fetch(`${indexer}/network`,{redirect:'error',signal:AbortSignal.timeout(5000)});const n=await r.json();if(!r.ok||n.network!==c.network||n.network_byte!==c.networkByte)throw error('Provider network mismatch.',503);}await readState(c,c.board);return c;}
+// Readiness follows usable board state, not indexer release/diagnostic metadata.
+async function ready(){const c=await config();if(!publicMode){const r=await fetch(`${indexer}/network`,{redirect:'error',signal:AbortSignal.timeout(5000)});const n=await r.json();if(!r.ok||n.network!==c.network||n.network_byte!==c.networkByte)throw error('Provider network mismatch.',503);}await readState(c,c.board);return c;}
 const templates=c=>[c.template,...(c.legacyTemplates??[])];
 async function readState(c,address){const state=decodeState(await getSubstate(indexer,address,templates(c),boardReadFallbacks),address);if(publicMode&&state.schema!==4)throw error('This public profile requires the no-author schema-4 contract.',503);return state;}
 async function readThread(c,address,before){
@@ -192,7 +188,7 @@ const server=createServer(async(req,res)=>{
     if(url.pathname==='/api/faucet-submit')throw error('Not found.',404);
     if(publicMode&&['/api/wallet','/api/quote','/api/submit','/api/transaction'].includes(url.pathname))throw error('Not found.',404);
     const c=await config();
-    if(publicMode)await ready();
+    // Each route checks the data it needs; indexer preflights must not gate all APIs.
     if(req.method==='POST'){
       if(!allowedHosts.has(new URL(req.headers.origin??'http://invalid').host)||req.headers.origin!==(runtime.origin??`http://${req.headers.host}`)||!(req.headers['content-type']??'').startsWith('application/json'))throw error('Request origin rejected. Open this client at its configured address.',403);
       if(req.headers['x-hauntboard-csrf']!==csrf)throw Object.assign(error('This client session expired. Refresh the session before continuing.',403),{clientCode:'SESSION_EXPIRED'});

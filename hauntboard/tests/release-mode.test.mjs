@@ -7,6 +7,7 @@ test('testnet beta allows owner-operated frontend testing without fabricating re
   assert.throws(()=>testnetBeta({HAUNTBOARD_TESTNET_BETA:'yes'}));
   assert.throws(()=>validatePublicManifest(manifest));
   validatePublicManifest(manifest,true);
+  for(const providerRuntimeVersion of [undefined,'0.99.0','0.99.0-rc.1'])validatePublicManifest({...manifest,providerRuntimeVersion},true);
   assert.equal(manifest.posterPrivacyVerified,false);
   for(const change of [{network:'mainnet'},{networkByte:16},{schema:3},{posterPrivacy:null},{sdkVersion:'wrong'}])assert.throws(()=>validatePublicManifest({...manifest,...change},true));
   assert.throws(()=>validatePublicManifest({...manifest,compatibilityVerified:true}));

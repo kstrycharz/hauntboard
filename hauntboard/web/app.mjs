@@ -1554,6 +1554,12 @@ function showWalletBalance(balance, version = ++walletBalanceVersion) {
   }
   $("wallet-readiness").textContent = balance?.unavailable
     ? "Funds could not be checked. Any displayed amounts are from the last successful check. Retry syncing before posting."
+    : balance?.discoveryUnavailable
+      ? "Known funds are verified. Incoming faucet funds could not be checked; retrying automatically."
+    : balance?.discoveryCapacityReached
+      ? "Known funds are verified. The wallet output limit prevents importing more incoming funds."
+    : balance?.discoveryHistoryIncomplete
+      ? "Available funds are verified. Some older faucet receipts are unavailable; older incoming funds may be missing."
     : scanIncomplete
       ? "Wallet recovered. Still checking for funds; this balance may be incomplete."
       : available === undefined
@@ -1564,6 +1570,29 @@ function showWalletBalance(balance, version = ++walletBalanceVersion) {
             ? "Your funds are in a standard Tari account. Choose Convert to posting funds to make 10 test TARI available for posting."
             : "No funds are available for posting. Use Need test tokens? or check for incoming funds.";
 }
+let refreshingIncoming = false;
+let lastIncomingBalanceCheck = 0;
+async function refreshIncomingFunds() {
+  if (refreshingIncoming || document.hidden || walletWorking || transactionPending || !config?.posterPrivacy || !browserWallet.active()) return;
+  const address = browserWallet.active().address;
+  refreshingIncoming = true;
+  try {
+    // Poll the small receipt feed every two seconds; a full verified balance
+    // read is needed only on a new deposit or every thirty seconds.
+    if (Date.now() - lastIncomingBalanceCheck < 30000) {
+      const incoming = await browserWallet.syncFaucetFunds();
+      if (!incoming.found) return;
+    }
+    const balance = await browserWallet.privateBalance();
+    lastIncomingBalanceCheck = Date.now();
+    if (browserWallet.active()?.address === address) showWalletBalance(balance);
+  } catch {
+    if (browserWallet.active()?.address === address) showWalletBalance({ unavailable: true });
+  } finally { refreshingIncoming = false; }
+}
+setInterval(refreshIncomingFunds, 2000);
+window.addEventListener('focus', () => { lastIncomingBalanceCheck = 0; refreshIncomingFunds(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { lastIncomingBalanceCheck = 0; refreshIncomingFunds(); } });
 function setWalletStep(step) {
   const changed = walletStep !== step;
   if (changed) clearWalletCredential();

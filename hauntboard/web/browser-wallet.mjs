@@ -7,6 +7,7 @@ import {
   transactionMetadata,
 } from "./transaction-identity.mjs";
 import { scanOutputLedger } from "./output-ledger.mjs";
+import { decryptFaucetDiscovery, discoverFaucetOutputs } from "./faucet-discovery.mjs";
 import {
   newPhrase,
   keysFromPhrase,
@@ -720,6 +721,9 @@ export async function privateBalance() {
   await refreshPrivateMaterial();
   await requireNetwork();
   await discoverExistingAccount();
+  let discovery;
+  try { discovery = await discoverFaucetFunds(); }
+  catch { discovery = { unavailable: true }; }
   const native = new sdk.WasmStealthCrypto(config.networkByte),
     totals = { ready: 0n, quarantined: 0n, reserved: 0n };
   for (const coin of material.coins ?? []) {
@@ -743,13 +747,13 @@ export async function privateBalance() {
     if (owned) totals[coin.state] += owned.value;
   }
   const revealed = BigInt(await balance());
-  return Object.fromEntries(
+  return { ...Object.fromEntries(
     Object.entries({
       ...totals,
       revealed,
       total: totals.ready + totals.quarantined + totals.reserved + revealed,
     }).map(([key, value]) => [key, value.toString()]),
-  );
+  ), discoveryUnavailable: discovery.unavailable === true, discoveryCapacityReached: discovery.capacityReached === true, discoveryHistoryIncomplete: discovery.historyComplete === false };
   });
 }
 async function discoverExistingAccount() {
@@ -775,6 +779,14 @@ const isPostingChange = (owned) => {
 export async function syncPrivateFunds() {
   return coordinated(() => scanOwnedOutputs());
 }
+export async function syncFaucetFunds() {
+  return coordinated(async () => {
+    requireSigner();
+    await refreshPrivateMaterial();
+    await requireNetwork();
+    return discoverFaucetFunds();
+  });
+}
 async function scanOwnedOutputs() {
   requireSigner();
   if (!privateMode())
@@ -784,6 +796,7 @@ async function scanOwnedOutputs() {
   await refreshPrivateMaterial();
   await requireNetwork();
   await discoverExistingAccount();
+  const faucet = await discoverFaucetFunds();
   const native = new sdk.WasmStealthCrypto(config.networkByte);
   const result = await scanOutputLedger({
     coins: material.coins ?? [],
@@ -840,11 +853,29 @@ async function scanOwnedOutputs() {
     },
   });
   return {
-    found: result.found,
+    found: result.found + faucet.found,
     complete: result.complete,
     capacityReached: result.capacityReached,
     ...privateFunds(),
   };
+}
+async function discoverFaucetFunds() {
+  if (config.network !== 'esmeralda') return { found: 0 };
+  const native = new sdk.WasmStealthCrypto(config.networkByte);
+  const capsule = await api('/api/faucet-outputs', { address: material.address });
+  const payload = await decryptFaucetDiscovery({ capsule, address: material.address, viewSecret: await signer.getViewSecret(), deriveAeadKey: (secret, nonce) => native.deriveAeadKey(secret, nonce), network: config.network, resetIdentity: config.resetIdentity });
+  const result = await discoverFaucetOutputs({ coins: material.coins ?? [], outputs: payload.outputs,
+    verifyOwned: async id => {
+      let row;
+      try { row = await provider.getSubstate(id); }
+      catch (error) { if (String(error.message) === `Input substate ${id} (v0) is down`) return null; throw error; }
+      if (row.verified !== true) throw new Error('Incoming faucet output is not verified.');
+      const owned = await sdk.decryptOwnedUtxo(native, await signer.getViewSecret(), row, id);
+      return owned ? { change: isPostingChange(owned) } : null;
+    },
+    checkpoint: async coins => { material.coins = coins; await persistMaterial(); },
+  });
+  return { ...result, historyComplete: payload.historyComplete };
 }
 export async function importIncoming(transactionId) {
   return coordinated(async () => {

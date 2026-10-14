@@ -1,0 +1,13 @@
+# Automatic faucet funding discovery
+
+The external faucet can successfully finalize a private native payout that is absent from the indexer's general UTXO list. The wallet now obtains encrypted, exact-address output hints from the faucet through `/api/faucet-outputs`. It decrypts them with its local native Tari view key and rereads each output as a verified substate on the configured indexer. Only native ownership decryption can activate funds; hints never supply balances or authorize spending.
+
+An unlocked visible wallet checks the small discovery feed every two seconds. It rereads its full verified balance on a new incoming output, every thirty seconds and when the tab regains focus or visibility. Discovery and balance errors keep existing funds/reservations intact and display a retry status. Existing general scanning and manual transaction import remain available for other senders. The 32-output ledger capacity and quarantine rules are unchanged.
+
+The proxy accepts only a receive address and forwards to one of two configured fixed origins. Default: `https://testnet-faucet.taritracker.com`. On the existing shared VPS, `FAUCET_DISCOVERY_ORIGIN=http://testnet-faucet:8290` removes the extra public network hop over the existing Docker network. Configure it in `/opt/hauntboard/compose.yaml` or through the supplied compose variable. Arbitrary URLs are rejected. No keys, wallet daemon credentials or plaintext receipt associations leave the browser through this route.
+
+The faucet persists final signed output IDs with its claim journal and can backfill older IDs from exact signed envelopes after indexer result expiry. Five existing claims/eight outputs were backfilled without resending any payment. Native cryptographic ownership verification remains required before recovered historical outputs contribute to a balance.
+
+October 13, 2026 evidence: indexers A and B each omitted two verified confirmed recipient outputs from a complete 878-output listing. The live pre-upgrade one-token regression payout was also omitted. Its verified output was recovered automatically by the new flow. Candidate validation passed 27 faucet tests and 14 targeted Hauntboard tests; Chromium verified automatic credit and reload without duplicate credit. Consensus is required before a payout can appear. Two-second polling is not a guarantee of instantaneous chain finality.
+
+The deployment preserves schema-4 board/template addresses, reset identity, operation volume, site assets and the existing honest compatibility/privacy flags. No contract was published and no public post was made. A separate old transaction-identity test references an expired public transaction result that now returns 404; current native identity/crypto and live payout checks passed.

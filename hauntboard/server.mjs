@@ -21,6 +21,8 @@ if(!['sender','receiver'].includes(role))throw new Error('INVALID_LOCAL_ROLE');
 const port=runtime.port;
 const configPath=process.env.CONFIG_FILE??'/companion/config.json';
 const indexer=runtime.indexer;
+const faucetDiscoveryOrigin=process.env.FAUCET_DISCOVERY_ORIGIN??'https://testnet-faucet.taritracker.com';
+if(!['https://testnet-faucet.taritracker.com','http://testnet-faucet:8290'].includes(faucetDiscoveryOrigin))throw new Error('UNAPPROVED_FAUCET_DISCOVERY_ORIGIN');
 const boardReadFallbacks=publicMode?TARI_TESTNET_PROVIDERS.filter(p=>p!==indexer&&(process.env.APPROVED_PROVIDER_ORIGINS??'').split(',').includes(p)):[];
 const siteRoot=fileURLToPath(new URL('./web/',import.meta.url));
 const csrf=randomBytes(32).toString('hex');
@@ -45,6 +47,7 @@ knownFiles.set('/wallet-recovery.wasm','wallet-recovery.wasm');
 knownFiles.set('/transaction-identity.mjs','transaction-identity.mjs');
 knownFiles.set('/transaction-identity.wasm','transaction-identity.wasm');
 knownFiles.set('/output-ledger.mjs','output-ledger.mjs');
+knownFiles.set('/faucet-discovery.mjs','faucet-discovery.mjs');
 const mime={html:'text/html; charset=utf-8',mjs:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8',wasm:'application/wasm'};
 const error=(message,status=400)=>Object.assign(new Error(message),{status});
 async function config(){
@@ -196,6 +199,13 @@ const server=createServer(async(req,res)=>{
     }
     if(req.method==='GET'&&url.pathname==='/api/config'){
       json(res,{network:c.network,networkByte:c.networkByte,resetIdentity:c.resetIdentity,profile:runtime.profile,testnetBeta:publicMode&&beta,compatibilityVerified:c.compatibilityVerified===true,posterPrivacyVerified:c.posterPrivacyVerified===true,providerRuntimeVersion:c.providerRuntimeVersion,posterPrivacy:c.posterPrivacy,schema:c.schema,version:'0.43.0',board:c.board,template:c.template,legacyBoards:c.legacyBoards??[],instance:c.instance,role,label:publicMode?'Browser wallet':role==='sender'?'Ghost A':'Ghost B',account:publicMode?undefined:c.account,receiveAddress:publicMode?undefined:c.address,provider:publicMode?'Tari Esmeralda provider · '+new URL(indexer).host:role==='sender'?'Primary local indexer':'Independent local indexer',providerUrl:publicMode?indexer:undefined,csrf,limits:{posts:2048,pageSize:16,pages:128,threads:128,envelopeBytes:4096},walletExpiresAt:publicMode?undefined:c.expiresAt});return;
+    }
+    if(req.method==='POST'&&url.pathname==='/api/faucet-outputs'){
+      const body=await input(req);
+      if(typeof body.address!=='string'||body.address.length>300||!/^otl_esm_[a-z0-9]+$/.test(body.address))throw error('Enter an Esmeralda Ootle receive address.');
+      // A fixed read-only discovery endpoint; never accept a browser-supplied URL.
+      const upstream=await fetch(`${faucetDiscoveryOrigin}/api/wallet-outputs`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:body.address}),signal:AbortSignal.timeout(15000),redirect:'error'});
+      json(res,await upstream.json(),upstream.status);return;
     }
     if(req.method==='POST'&&url.pathname==='/api/indexer'){
       // Fixed local provider and a small REST allowlist. No wallet daemon credential crosses this boundary.

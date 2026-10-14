@@ -8,6 +8,7 @@ services:
       PORT: '8280'
       ORIGIN: https://hauntboard.taritracker.com
       INDEXER_URL: https://ootle-indexer-a.tari.com
+      FAUCET_DISCOVERY_ORIGIN: ${FAUCET_DISCOVERY_ORIGIN:-https://testnet-faucet.taritracker.com}
       APPROVED_PROVIDER_ORIGINS: https://ootle-indexer-a.tari.com,https://ootle-indexer-b.tari.com
       CONFIG_FILE: /run/hauntboard/network.json
     volumes:

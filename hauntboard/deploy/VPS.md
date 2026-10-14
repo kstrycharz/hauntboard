@@ -2,7 +2,11 @@
 
 ## Current origin
 
-The VPS serves HTTP on port 80 for `hauntboard.taritracker.com`. Cloudflare supplies browser HTTPS and proxies to the origin over HTTP, as requested. Configure a proxied A record `hauntboard` -> `104.131.40.85`, and Cloudflare SSL/TLS mode **Flexible** for this HTTP origin. A Cloudflare Tunnel connector is not used in this setup. The app requires canonical HTTPS Origin headers on writes; do not browse the bare IP to use wallets.
+Public visitors use HTTPS for `hauntboard.taritracker.com` and `testnet-faucet.taritracker.com`. The shared Caddy edge redirects visitor HTTP requests to the corresponding HTTPS hostname with status 308, preserving paths and queries. Verified HTTPS responses include one-day HSTS without `includeSubDomains` or preload. The supplied `Caddyfile.cloudflare` contains both hostname routes.
+
+Cloudflare supplies browser TLS and still reaches the VPS origin over HTTP on port 80 under the recorded Flexible setup. Keep this listener open until origin TLS is installed and Cloudflare is migrated to Full (strict). The proxy serves application traffic only when the immediate peer matches Cloudflare's current IP ranges and its `X-Forwarded-Proto` is `https`; direct-origin spoofed headers cannot bypass the redirect. Local GET/HEAD health checks have a narrow exception for loopback and the observed Docker gateway `172.18.0.1`, so deployment readiness remains runnable. Verify the gateway and refresh Cloudflare ranges when changing the network.
+
+Configure a proxied A record `hauntboard` -> `104.131.40.85`. A Cloudflare Tunnel connector is not used in this setup. The app requires canonical HTTPS Origin headers on writes. Port 80 must not be closed merely to enforce visitor HTTPS: that would break the existing Cloudflare origin connection. Cloudflare's Always Use HTTPS is another visitor redirect option, but it applies zone-wide; a hostname-specific rule avoids altering unrelated subdomains. Full (strict) additionally requires a matching trusted origin certificate and port 443 before switching the Cloudflare mode.
 
 The application has no public internal port or Docker socket, runs as the Node non-root user, and retains its operations volume. The app is an explicitly enabled Esmeralda testnet beta; compatibility/privacy evidence flags remain honest rather than being changed to bypass release gates. Built-in faucet claims are removed. The wallet links to https://testnet-faucet.taritracker.com/ for test tokens.
 

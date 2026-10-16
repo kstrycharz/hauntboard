@@ -45,7 +45,7 @@ Allow at least 8 GB RAM and compiler-cache storage for this full build. It runs 
 
 Read the [threat model](hauntboard/docs/privacy-threat-model.md), [reproducible verification and judge walkthrough](hauntboard/docs/privacy-verification.md), and [contest submission draft](hauntboard/docs/contest-submission.md). The recorded local run has 38 passing Node test entries, seven native engine cases and ten browser scenarios per browser in Chromium and Firefox. These are separate evidence layers, not an inflated count of independent attacks.
 
-Native fee signing omits stable wallet identifiers; it does not prove unlinkability. Shared funding origins, output graphs, fees, timing and network connections remain observable. The new read-only [public audit](hauntboard/evidence/privacy-public-audit.json) records insufficient recent receipts for a two-post Esmeralda comparison. The sealed flow is locally tested and awaits website release and funded public validation. Manifest verification flags remain false.
+Native fee signing omits stable wallet identifiers; it does not prove unlinkability. Shared funding origins, output graphs, fees, timing and network connections remain observable. The read-only [public audit](hauntboard/evidence/privacy-public-audit.json) records insufficient recent receipts for a two-post Esmeralda comparison. The sealed-message reader was deployed on October 16, 2026 and passed [live asset and browser checks](hauntboard/evidence/privacy-deployment.json). Funded public posting validation remains pending. Manifest verification flags remain false.
 
 ## VPS deployment
 

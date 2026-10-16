@@ -90,6 +90,8 @@ Recorded October 8 deployment evidence identifies release `0.6.14-square-pin` on
 
 For changes, select the relevant gates: native contract tests for access/limits/retry behavior; transaction-identity and relay-reconciliation tests for unknown outcomes; output-ledger and seed-wallet tests for recovery; Chromium/Firefox browser tests for wallet lifecycle; isolated funded-chain tests for real fee execution and reads. GUI mocks are useful UI evidence, not chain evidence. Recheck public compatibility only against the authorized target and spending budget.
 
+The October 16 privacy release deployed the compatible version-2 sealed-envelope reader while preserving the existing board, template and operation volume. [Live deployment evidence](../evidence/privacy-deployment.json) records exact asset hashes, healthy readiness, public controls and browser-local cryptography in Chromium/Firefox. These read-only checks made no fee spends or chain writes and do not establish funded Esmeralda posting privacy.
+
 ## Extending the app
 
 Start with the desired chain invariant, then update the template, state decoder, transaction builder and browser flow together. New schemas need a fresh published template/component and explicit compatibility handling for historical boards. Package source/WASM hashes and record actual confirmed addresses; template publication and component creation are separate operations. Preserve old wallets, boards and volumes. Never treat a frontend-only update as a contract migration.

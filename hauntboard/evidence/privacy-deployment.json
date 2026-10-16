@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-10-16T17:28:28.954Z",
+  "origin": "https://hauntboard.taritracker.com",
+  "releaseCommit": "296762400b3ebc18e5827e19f586846892f1d615",
+  "releaseUrl": "https://github.com/kstrycharz/hauntboard/releases/tag/release-296762400b3ebc18e5827e19f586846892f1d615",
+  "scope": "Public HTTPS assets, readiness and fresh-browser controls. Browser-local synthetic encryption only; no wallet creation, signing, chain writes or fee spends.",
+  "assets": {
+    "app.mjs": "65139bd58565faaa3f24629fd0df93792595b8bfde62485c1268ee8da9fddf3d",
+    "sealed-posts.mjs": "b1f222f8e3230f9075a5f4b5ee3321f1f1e17643d8c9c834b43d7b7048a12848",
+    "crypto.mjs": "744acc3fedfd049d747ebc230b7882ea2be262cb99d0c7e326c1968ac2518e96",
+    "browser-wallet.mjs": "cbd66061396578609f79952f26c7e00b07e86b0572dc6e7078c0c05ca578ff7f",
+    "stealth-fee.mjs": "e66b02fa4f94743f9a30ea15395ec50815de81d46ebce77bbad0d451c184cfe3",
+    "index.html": "b96910d111dec751c328b789641e94c63f2398182c64a5cfad2049c21c197649",
+    "about.mjs": "b96a9832855b24f7a90f52a1bbdb2eb7cb2148acd33bf4268673609770f9cded",
+    "about.html": "e0d0a4381300278957faefae360561a917f2b4aa7a0fae5228f28115d80fa2de",
+    "forums.html": "72f37056e32f1152b4bcdae7cf0a90d22b6dee268da31e2b0b440066b7f056d7"
+  },
+  "browsers": {
+    "chromium": {
+      "status": "PASSED",
+      "publicDefault": true,
+      "sealedChoice": true,
+      "noPlaintextDraft": true,
+      "mobileDialog": true,
+      "accurateHelpCopy": true,
+      "cryptoChecks": {
+        "roundTrip": true,
+        "wrongKeyRejected": true,
+        "publicTitle": true,
+        "noPlaintext": true
+      },
+      "mutatingRequests": 0,
+      "runtimeErrors": 0
+    },
+    "firefox": {
+      "status": "PASSED",
+      "publicDefault": true,
+      "sealedChoice": true,
+      "noPlaintextDraft": true,
+      "mobileDialog": true,
+      "accurateHelpCopy": true,
+      "cryptoChecks": {
+        "roundTrip": true,
+        "wrongKeyRejected": true,
+        "publicTitle": true,
+        "noPlaintext": true
+      },
+      "mutatingRequests": 0,
+      "runtimeErrors": 0
+    }
+  },
+  "status": "LIVE_PRIVACY_RELEASE_VERIFIED",
+  "board": "component_594f90d8cb8c2d0f70d941ba1c513769727feceeabd9d2137b5b6a130a6aa28e",
+  "template": "f6773b90f8919097266a73e6c68e343724e2a4bdaf248f01e11b463bbc4e0b2d",
+  "health": "ready",
+  "workflowChecks": {
+    "release": "https://github.com/kstrycharz/hauntboard/actions/runs/38939510844",
+    "contract": "https://github.com/kstrycharz/hauntboard/actions/runs/38938683278"
+  },
+  "deploymentStatus": "success"
+}

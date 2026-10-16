@@ -101,6 +101,10 @@ const server = createServer(async (req, res) => {
         "pin-entry.mjs",
         "crypto.mjs",
         "sealed-posts.mjs",
+        "about.html",
+        "about.mjs",
+        "about.css",
+        "forums.html",
         "style.css",
         "mobile.css",
       ].includes(name)
@@ -185,7 +189,7 @@ async function fixture(browser, options = {}) {
       return json({
         network: "esmeralda",
         profile: options.demo ? "local" : "public",
-        posterPrivacy: !options.demo,
+        posterPrivacy: options.demo ? null : "stealth-fee-v1",
         networkByte: 38,
         resetIdentity: "fixture",
         testnetBeta: true,
@@ -613,9 +617,19 @@ try {
         path: `hauntboard/evidence/gui-desktop-${name}.png`,
         fullPage: true,
       });
+      await f.page.goto(`${origin}/about.html`);
+      await expect(f.page.locator("#getting-started-profile")).toContainText("sealed");
+      await expect(f.page.locator("#secrets")).toContainText("no key revocation or author authentication");
+      await expect(f.page.locator("#storage")).toContainText("public title/category and encrypted body");
+      await expect(f.page.locator("#about-deployment-copy")).toContainText("sealed bodies require an invitation key");
+      await f.page.goto(`${origin}/forums.html`);
+      await expect(f.page.locator("main")).toContainText("public category and title");
+      await expect(f.page.locator("main")).toContainText("There is no key revocation or author authentication");
+      await f.page.setViewportSize({ width: 390, height: 844 });
+      assert(await f.page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
       assert.deepEqual(f.errors, []);
       await f.context.close();
-      checks.push("Responsive widths and mobile menu keyboard");
+      checks.push("Responsive widths, mobile menu keyboard and accurate privacy help copy");
       // Real WebCrypto and key storage; wallet/provider execution remains simulated.
       f = await fixture(browser, { saved: true, sealed: true });
       await ready(f.page);
@@ -773,6 +787,8 @@ try {
         "hauntboard/web/app.mjs",
         "hauntboard/web/sealed-posts.mjs",
         "hauntboard/web/crypto.mjs",
+        "hauntboard/web/about.mjs",
+        "hauntboard/web/forums.html",
         "hauntboard/tests/gui.mjs",
       ].map(async (path) => [
         path,

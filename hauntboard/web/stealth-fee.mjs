@@ -5,7 +5,7 @@ export async function prepareStealthFee({provider,signer,coinId,networkByte,maxF
   const crypto=new sdk.WasmStealthCrypto(networkByte),commitment=sdk.commitmentOf(coinId);
   if(!commitment||coinId!==sdk.stealthUtxoSubstateId(NATIVE,commitment))throw new Error('Select a native stealth fee output.');
   const row=await provider.getSubstate(coinId);
-  if(row.verified!==true)throw new Error('Unverified stealth output.');
+  if(row.verified!==true||!Number.isSafeInteger(row.version)||row.version<0)throw new Error('Unverified stealth output.');
   const owned=await sdk.decryptOwnedUtxo(crypto,await signer.getViewSecret(),row,coinId);
   const fee=BigInt(maxFee);
   if(fee<=0n||fee>1000000n)throw new Error('Stealth fee exceeds the permitted ceiling.');
@@ -23,7 +23,13 @@ export async function prepareStealthFee({provider,signer,coinId,networkByte,maxF
   const unsignedTx=await sdk.resolveTransaction(provider,builder.buildUnsignedTransaction());
   const wallet=new sdk.OotleWallet().registerKeyProvider(address,signer).setDefaultSigner(address);
   const spec={unsignedTx,statement,outputMask:outputs.outputMask,state:{resource:NATIVE,revealedInput:null,inputsToSpend:new Map([[coinId,{input,owner:address}]]),outputs:[output],revealedOutput:{amount:fee,receiver}},requiredSigners:[address],inputs:[{input,owner:address}]};
-  const authorized=await sdk.WalletStealthAuthorizer.fromSpec(wallet,spec,{crypto,mustSignWithAccountKey:false}).prepare(provider);
+  // Authorize the exact verified snapshot already checked for ownership. A second
+  // provider read must not silently replace it between selection and signing.
+  const authorizationProvider={...provider,getStealthUtxo:async(resource,inputCommitment)=>{
+    if(sdk.stealthUtxoSubstateId(resource,inputCommitment)!==coinId)throw new Error('Unexpected stealth authorization input.');
+    return row;
+  }};
+  const authorized=await sdk.WalletStealthAuthorizer.fromSpec(wallet,spec,{crypto,mustSignWithAccountKey:false}).prepare(authorizationProvider);
   // SDK 0.7.0 hydrates a main-instruction stealth statement. Move the completed fee
   // program before generating ANY transaction signatures; fee/main workspaces differ.
   const transaction=authorized.getSpec().unsignedTx;

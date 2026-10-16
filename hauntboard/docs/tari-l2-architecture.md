@@ -1,12 +1,12 @@
 # Hauntboard and Tari L2
 
-Source review: October 8, 2026. This guide describes the current working tree, including uncommitted GUI changes. Deployment statements below refer to saved evidence, not a new live verification.
+Source review: October 15, 2026. This guide describes current source, including optional version-2 sealed browser envelopes. Deployment statements below refer to saved evidence, not deployment of the new source.
 
 ## What the app does
 
 Hauntboard is a public message board with General, Tari and Politics forums, browser wallet creation/recovery, reviewed posting fees and persistent threads/replies. Tari Ootle, Tari's L2 execution platform, is the application's content store and transaction engine. Full public messages live in component state rather than an application content database. The browser supplies the interface and wallet; a Node companion supplies configuration, reads and a durable transaction relay.
 
-The earlier Hauntbox application under `apps/` is a different design: encrypted submissions remain off chain, while contracts anchor receipt digests and an operator processes rewards. Historical Hauntboard schema 3 supports sealed envelopes and local demo tips. The current schema-4 public board accepts public threads only; those historical features are not current public onboarding capabilities.
+The earlier Hauntbox application under `apps/` is a different design: encrypted submissions remain off chain, while contracts anchor receipt digests and an operator processes rewards. Historical Hauntboard schema 3 supports sealed envelopes and local demo tips. The current schema-4 contract accepts mode 0 and opaque post bytes. The current browser source supports public text or version-2 sealed bodies, with public titles/categories and the same native fee path. Sealed envelope support requires a compatible client release; it does not change the contract or enable historical tips.
 
 ## Architecture and storage
 
@@ -27,11 +27,11 @@ flowchart LR
 |---|---|---|
 | Board title and thread directory | L2 board component | Shared chain state; capacity is 128 threads |
 | Thread title, ID, page addresses and post count | L2 thread component | Stable reply numbering across pages |
-| Message payload, logical nonce, parent index and consensus epoch | L2 page component | Public, persistent bytes; no accepted-post edit/delete method |
+| Message payload, logical nonce, parent index and consensus epoch | L2 page component | Public persistent bytes: readable text or ciphertext; no accepted-post edit/delete method |
 | Forum category | Public opening-post payload | Application convention within a shared board directory |
 | Seed, owner/view keys and output ledger | Encrypted browser IndexedDB | Device credential protects local access; operator receives no seed |
 | Signed submissions and reconciliation metadata | Browser pending-operation storage and relay journal | Recovery from lost acknowledgements depends on preserving operation state |
-| Historical sealed-thread keys | Local browser/invitation backups | Schema-3 compatibility only; not schema-4 secrecy |
+| Sealed-thread keys | Device-key-encrypted IndexedDB and optional encrypted invitation-key backup | Current version-2 schema-4 envelopes and legacy schema-3 support; wallet words do not restore invitation keys |
 
 An epoch is chain metadata, not a precise wall-clock timestamp. Browser hiding affects only that browser. Retaining relay volumes does not replace preserving chain data or wallet recovery credentials.
 
@@ -66,7 +66,7 @@ Posting change is quarantined, including through an encrypted native memo, becau
 
 ## Privacy and trust boundaries
 
-Public post text, titles, reply relationships and epochs are readable chain data. Removing an author field and persistent owner signature reduces stable wallet linkage; it does not make messages anonymous. Fees, input ancestry, spent-output graphs, timing, funding behavior and network connections remain observable. The current fee path pays the reviewed allowance; do not assume an unused allowance is refunded.
+Public post text, titles, categories, reply relationships and epochs are readable chain data. Sealed bodies are encrypted locally in version-2 AES-GCM envelopes while titles/categories remain public; see the [threat model](privacy-threat-model.md) for context binding, invitation delivery and key-holder limits. The contract remains payload-agnostic and permissionless. Removing an author field and persistent owner signature reduces stable wallet linkage; it does not make messages anonymous. Fees, input ancestry, spent-output graphs, timing, funding behavior and network connections remain observable. Outputs from one funding conversion share that origin. The current fee path pays the reviewed allowance; do not assume an unused allowance is refunded.
 
 The browser relies on configured indexers and their `verified` responses. It does not independently verify validator consensus proofs. An indexer can lag or omit outputs, affecting display and balance discovery. The relay is a single-host availability dependency with finite concurrency and journal capacity. Independent clients/providers improve application recovery, but the one-validator localnet does not demonstrate decentralized public consensus.
 

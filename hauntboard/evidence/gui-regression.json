@@ -12,7 +12,8 @@
         "Progressive feed and retained stale rows",
         "History/filter restoration, parent focus, reply cancel, local hide undo, Unicode limit, sealed dismissal",
         "Advanced recovery collapsed; incomplete sync differentiated",
-        "Responsive widths and mobile menu keyboard"
+        "Responsive widths and mobile menu keyboard",
+        "Sealed creation/reply; actual encryption; no plaintext/key requests or drafts; lost acknowledgement; fresh reader locked; invitation decrypts and survives reload"
       ],
       "status": "PASSED"
     },
@@ -26,11 +27,18 @@
         "Progressive feed and retained stale rows",
         "History/filter restoration, parent focus, reply cancel, local hide undo, Unicode limit, sealed dismissal",
         "Advanced recovery collapsed; incomplete sync differentiated",
-        "Responsive widths and mobile menu keyboard"
+        "Responsive widths and mobile menu keyboard",
+        "Sealed creation/reply; actual encryption; no plaintext/key requests or drafts; lost acknowledgement; fresh reader locked; invitation decrypts and survives reload"
       ],
       "status": "PASSED"
     }
   },
   "status": "GUI_FIXTURE_REGRESSIONS_PASSED",
-  "checkedAt": "2026-10-08T15:34:21.513Z"
+  "checkedAt": "2026-10-16T17:17:23.772Z",
+  "sourceHashes": {
+    "hauntboard/web/app.mjs": "65139bd58565faaa3f24629fd0df93792595b8bfde62485c1268ee8da9fddf3d",
+    "hauntboard/web/sealed-posts.mjs": "b1f222f8e3230f9075a5f4b5ee3321f1f1e17643d8c9c834b43d7b7048a12848",
+    "hauntboard/web/crypto.mjs": "744acc3fedfd049d747ebc230b7882ea2be262cb99d0c7e326c1968ac2518e96",
+    "hauntboard/tests/gui.mjs": "60b4586f53d7c946e0fea88e662b07fae17dbe06bfa036b1ae10a103dacb150f"
+  }
 }

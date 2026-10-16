@@ -15,6 +15,15 @@ import * as browserWallet from "./browser-wallet.mjs";
 import { PinEntry } from "./pin-entry.mjs";
 import { createApiClient } from "./api-client.mjs";
 import { chainStateLink, postProof } from "./post-proof.mjs";
+import {
+  isSealedPayload,
+  sealedMetadata,
+  sealedThread,
+  sealedSpace,
+  sealPost,
+  openSealedPost,
+  invitationUrl,
+} from "./sealed-posts.mjs";
 const $ = (id) => document.getElementById(id);
 let config,
   board,
@@ -292,10 +301,52 @@ async function keyFor(thread) {
   }
   return keys.get(thread);
 }
+async function acceptInvitation(threadAddress, boardAddress, key) {
+  if (
+    !component.test(threadAddress ?? "") ||
+    !component.test(boardAddress ?? "")
+  )
+    throw new Error("Invalid invitation.");
+  const thread = await api(`/api/thread?address=${threadAddress}`);
+  if (thread.board !== boardAddress || !sealedThread(thread))
+    throw new Error(
+      "Invitation does not identify a sealed thread on this board.",
+    );
+  const opening = thread.posts.find((post) => post.index === 0);
+  if (thread.schema === 4)
+    await openSealedPost(
+      opening.payload,
+      key,
+      config,
+      postContext(thread, opening),
+      thread.title,
+    );
+  else
+    await decodePost(
+      opening.payload,
+      thread.mode,
+      key,
+      postContext(thread, opening),
+    );
+  await keepKey(threadAddress, key);
+}
 function postContext(thread, post) {
   return [thread.board, thread.uid, post.nonce, post.parent];
 }
 async function contentFor(thread, post) {
+  if (thread.schema === 4 && sealedThread(thread)) {
+    if (!isSealedPayload(post.payload))
+      throw new Error(
+        "Unencrypted message in a sealed conversation. Hidden to prevent a misleading privacy claim.",
+      );
+    return openSealedPost(
+      post.payload,
+      await keyFor(thread.address),
+      config,
+      postContext(thread, post),
+      thread.title,
+    );
+  }
   return decodePost(
     post.payload,
     thread.mode,
@@ -307,7 +358,7 @@ function persistHidden() {
   localStorage.setItem("hauntboard-hidden", JSON.stringify([...hidden]));
 }
 function invite(thread, key, base = location.origin) {
-  return `${base}/#${new URLSearchParams({ thread: thread.address, board: thread.board, key })}`;
+  return invitationUrl(thread, key, base);
 }
 function updateOtherClient() {
   const other =
@@ -397,7 +448,17 @@ async function retrieveRow(ref, expectedBoard) {
     let content;
     try {
       content = await contentFor(thread, thread.posts[0]);
-    } catch {}
+    } catch {
+      if (thread.schema === 4 && isSealedPayload(thread.posts[0]?.payload)) {
+        const metadata = sealedMetadata(thread.posts[0].payload);
+        content = {
+          title: thread.title,
+          category: metadata.category,
+          body: "Encrypted message. Open an invitation to read.",
+          locked: true,
+        };
+      }
+    }
     return { ref, thread, content, error: null };
   } catch (error) {
     return { ref, error: error.message };
@@ -418,39 +479,54 @@ function renderRows() {
     (row) => categoryOf(row.content) === category,
   ).length;
   const rows = threadRows.filter(
-    ({ ref, content }) =>
+    ({ ref, content, thread }) =>
       categoryOf(content) === category &&
       (showHidden || !hidden.has(ref.address)) &&
       (filter === "all" ||
-        (filter === "public" ? ref.mode === 0 : ref.mode === 1)),
+        (filter === "public" ? !sealedThread(thread) : sealedThread(thread))),
   );
   if (!rows.length) {
     const loading = threadRows.some((row) => row.loading);
-    const hasForumThreads = threadRows.some((row) => categoryOf(row.content) === category);
+    const hasForumThreads = threadRows.some(
+      (row) => categoryOf(row.content) === category,
+    );
     const empty = node("div", "empty");
     empty.append(
       node(
         "h3",
         "",
-        loading ? "Loading this forum…" : hasForumThreads ? "No threads match this view." : "No threads in this forum yet.",
+        loading
+          ? "Loading this forum…"
+          : hasForumThreads
+            ? "No threads match this view."
+            : "No threads in this forum yet.",
       ),
     );
     empty.append(
       node(
         "p",
         "",
-        loading ? "Retrieving conversations from the provider." : hasForumThreads ? "Try showing hidden threads or changing the filter." : `Start a conversation in ${categories[category].title}. Public posts are stored on Tari.`,
+        loading
+          ? "Retrieving conversations from the provider."
+          : hasForumThreads
+            ? "Try showing hidden threads or changing the filter."
+            : `Start a conversation in ${categories[category].title}. Public posts are stored on Tari.`,
       ),
     );
     if (!loading && hasForumThreads) {
-      empty.append(button("Show all threads in this forum", "subtle", () => {
-        setFilter("all"); showHidden = true;
-        $("show-hidden").textContent = "Hide filtered threads";
-        rememberFeed(); renderRows();
-      }));
+      empty.append(
+        button("Show all threads in this forum", "subtle", () => {
+          setFilter("all");
+          showHidden = true;
+          $("show-hidden").textContent = "Hide filtered threads";
+          rememberFeed();
+          renderRows();
+        }),
+      );
     } else if (!loading) {
       const start = button("Start a thread", "subtle", () => openCompose());
-      start.disabled = !config || config.preview || board?.threads.length >= 128;
+      start.disabled =
+        !config || config.preview || board?.threads.length >= 128;
       empty.append(start);
     }
     root.append(empty);
@@ -462,8 +538,8 @@ function renderRows() {
     row.append(
       node(
         "div",
-        `thread-icon${ref.mode ? " secret" : ""}`,
-        ref.mode ? "◇" : "✦",
+        `thread-icon${sealedThread(thread) ? " secret" : ""}`,
+        sealedThread(thread) ? "◇" : "✦",
       ),
     );
     const middle = node("div");
@@ -496,13 +572,20 @@ function renderRows() {
     threadChainLink.href = chainStateLink(config, ref.address);
     threadChainLink.target = "_blank";
     threadChainLink.rel = "noopener noreferrer";
-    threadChainLink.setAttribute("aria-label", `View ${content?.title ?? ref.title} on chain (opens a new tab)`);
+    threadChainLink.setAttribute(
+      "aria-label",
+      `View ${content?.title ?? ref.title} on chain (opens a new tab)`,
+    );
     meta.append(threadChainLink);
     meta.append(
       node(
         "span",
-        `badge${ref.mode ? " sealed" : ""}`,
-        ref.mode ? (content ? "SEALED · OPENED" : "SEALED · LOCKED") : "PUBLIC",
+        `badge${sealedThread(thread) ? " sealed" : ""}`,
+        sealedThread(thread)
+          ? content && !content.locked
+            ? "SEALED · OPENED"
+            : "SEALED · LOCKED"
+          : "PUBLIC",
       ),
     );
     if (!config.posterPrivacy)
@@ -587,10 +670,9 @@ async function openThread(address, { navigate = true, focus = true } = {}) {
   currentThread = thread;
   boardAddress = thread.board;
   if (changed) {
-    $("reply-body").value =
-      thread.mode === 0
-        ? readStorage(sessionStorage, `hauntboard-reply-${thread.address}`, "")
-        : "";
+    $("reply-body").value = !sealedThread(thread)
+      ? readStorage(sessionStorage, `hauntboard-reply-${thread.address}`, "")
+      : "";
     resetReplyTarget();
   }
   await renderThread(thread);
@@ -603,6 +685,7 @@ async function openThread(address, { navigate = true, focus = true } = {}) {
 }
 async function renderThread(thread) {
   boardAddress = thread.board;
+  const key = await keyFor(thread.address);
   document.body.dataset.view = "thread";
   $("board-view").hidden = true;
   $("thread-view").hidden = false;
@@ -613,12 +696,20 @@ async function renderThread(thread) {
     const opening = await contentFor(thread, thread.posts[0]);
     title = opening.title;
     selectCategory(categoryOf(opening));
-  } catch {}
+  } catch {
+    if (thread.schema === 4 && isSealedPayload(thread.posts[0]?.payload)) {
+      try { selectCategory(sealedMetadata(thread.posts[0].payload).category); } catch {}
+    }
+  }
   heading.append(
     node(
       "span",
-      `badge${thread.mode ? " sealed" : ""}`,
-      thread.mode ? "SEALED CONVERSATION" : "PUBLIC CONVERSATION",
+      `badge${sealedThread(thread) ? " sealed" : ""}`,
+      sealedThread(thread)
+        ? thread.schema === 4
+          ? "SEALED CONVERSATION · PUBLIC TITLE"
+          : "SEALED CONVERSATION"
+        : "PUBLIC CONVERSATION",
     ),
   );
   const titleNode = node("h2", "", title);
@@ -692,13 +783,22 @@ async function renderThread(thread) {
     );
     footer.append(details);
     const proof = postProof(config, thread, post);
-    details.append(node("p", "small chain-locator", `Stored in ${proof.address}. Post ${proof.postNumber}: page ${proof.pageNumber}, entry ${proof.slot + 1} (raw array index ${proof.slot}). The indexer reports verified chain state; this does not prove who wrote the post.`));
+    details.append(
+      node(
+        "p",
+        "small chain-locator",
+        `Stored in ${proof.address}. Post ${proof.postNumber}: page ${proof.pageNumber}, entry ${proof.slot + 1} (raw array index ${proof.slot}). The indexer reports verified chain state; this does not prove who wrote the post.`,
+      ),
+    );
     const proofLink = node("a", "text-button post-chain-link", "View on chain");
     proofLink.href = proof.href;
     proofLink.target = "_blank";
     proofLink.rel = "noopener noreferrer";
     proofLink.title = `Post ${proof.postNumber} · page ${proof.pageNumber}, entry ${proof.slot + 1}`;
-    proofLink.setAttribute("aria-label", `View post ${proof.postNumber} on chain (opens a new tab)`);
+    proofLink.setAttribute(
+      "aria-label",
+      `View post ${proof.postNumber} on chain (opens a new tab)`,
+    );
     footer.append(proofLink);
     if (content?.recipient && config.profile === "local")
       footer.append(
@@ -707,22 +807,23 @@ async function renderThread(thread) {
           dialog("tip-dialog");
         }),
       );
-    footer.append(
-      button("Reply", "text-button", () => {
-        $("reply-form").dataset.parent = String(post.index);
-        $("reply-context").textContent = `Replying to post ${post.index + 1}`;
-        $("reply-target").hidden = false;
-        $("reply-excerpt").textContent =
-          content?.body.slice(0, 180) ?? "Sealed post";
-        $("reply-body").focus();
-      }),
-    );
+    if (!sealedThread(thread) || key) {
+      footer.append(
+        button("Reply", "text-button", () => {
+          $("reply-form").dataset.parent = String(post.index);
+          $("reply-context").textContent = `Replying to post ${post.index + 1}`;
+          $("reply-target").hidden = false;
+          $("reply-excerpt").textContent =
+            content?.body.slice(0, 180) ?? "Sealed post";
+          $("reply-body").focus();
+        }),
+      );
+    }
     article.append(footer);
     posts.append(article);
   }
-  const key = await keyFor(thread.address);
-  $("invite-button").hidden = !(thread.mode === 1 && key);
-  $("reply-form").hidden = thread.mode === 1 && !key;
+  $("invite-button").hidden = !(sealedThread(thread) && key);
+  $("reply-form").hidden = sealedThread(thread) && !key;
   if (thread.nextBefore !== null) {
     const older = button("Load older replies", "secondary", async () => {
       older.disabled = true;
@@ -835,15 +936,12 @@ async function review(body, context) {
         : body.kind === "reply"
           ? "Review your reply"
           : "Review your post";
-    const sealed =
-      body.kind === "thread"
-        ? body.mode === 1
-        : body.kind === "reply" && currentThread?.mode === 1;
+    const sealed = body.mode === 1 || isSealedPayload(body.payload);
     $("review-copy").textContent =
       body.kind === "tip"
         ? `Send ${units(body.amount)} as a separate native stealth transfer.`
         : sealed
-          ? "Only encrypted message bytes will be published. Keep the invitation key to read this thread."
+          ? "The message body is encrypted locally. The title, category, reply links and chain metadata are public. Share the invitation only through a trusted private channel; anyone with it can read and reply. There is no key revocation or author authentication."
           : "Public posts cannot be edited or deleted through Hauntboard. Testnet resets may remove history.";
     $("review-preview").hidden = body.kind === "tip";
     $("review-content-title").textContent = context.content?.title ?? "";
@@ -1050,6 +1148,12 @@ async function publish() {
   }
 }
 function preserveDraft() {
+  if (document.querySelector("input[name=mode]:checked").value === "1") {
+    sessionStorage.removeItem("hauntboard-compose-draft");
+    $("draft-status").textContent =
+      "Sealed draft is not saved. Keep this tab open.";
+    return;
+  }
   try {
     sessionStorage.setItem(
       "hauntboard-compose-draft",
@@ -1083,16 +1187,21 @@ function composeContent() {
 function updateSpace(kind) {
   const reply = kind === "reply",
     mode = reply
-      ? (currentThread?.mode ?? 0)
+      ? sealedThread(currentThread)
+        ? 1
+        : 0
       : Number(document.querySelector("input[name=mode]:checked").value);
   const content = reply
     ? {
         title: "",
-        name: config?.label ?? "Ghost",
+        name: config?.posterPrivacy ? "Ghost" : (config?.label ?? "Ghost"),
         body: $("reply-body").value.trim(),
       }
     : composeContent();
-  const space = postSpace(content, mode);
+  const space =
+    config?.posterPrivacy && mode === 1
+      ? sealedSpace(content)
+      : postSpace(content, mode);
   $(`${kind}-space`).textContent =
     space.remaining >= 0
       ? `${space.remaining.toLocaleString()} bytes available · includes message formatting`
@@ -1143,7 +1252,7 @@ $("reply-body").addEventListener("input", () => {
   $("reply-error").hidden = true;
   $("reply-body").removeAttribute("aria-invalid");
   updateSpace("reply");
-  if (currentThread?.mode === 0) {
+  if (currentThread && !sealedThread(currentThread)) {
     try {
       sessionStorage.setItem(
         `hauntboard-reply-${currentThread.address}`,
@@ -1177,18 +1286,20 @@ $("compose-form").addEventListener("submit", async (e) => {
     }
     if (!content.body || !content.title)
       throw new Error("Give your thread a title and opening post.");
-    const payload = await encodePost(content, mode, key, [
-      boardAddress,
-      uid,
-      uid,
-      null,
-    ]);
+    const context = [boardAddress, uid, uid, null];
+    const nativeSealed = config.posterPrivacy && mode === 1;
+    const payload = nativeSealed
+      ? await sealPost(content, key, config, context, {
+          title: content.title,
+          category: content.category,
+        })
+      : await encodePost(content, mode, key, context);
     await review(
       {
         kind: "thread",
         board: boardAddress,
-        title: mode ? "Sealed thread" : content.title,
-        mode,
+        title: mode && !nativeSealed ? "Sealed thread" : content.title,
+        mode: nativeSealed ? 0 : mode,
         uid,
         payload,
       },
@@ -1213,16 +1324,22 @@ $("reply-form").addEventListener("submit", async (e) => {
     }
     const content = {
       title: "",
-      name: config.label,
+      name: config.posterPrivacy ? "Ghost" : config.label,
       body: $("reply-body").value.trim(),
     };
     if (!content.body) throw new Error("Write a reply first.");
-    const payload = await encodePost(
-      content,
-      currentThread.mode,
-      await keyFor(currentThread.address),
-      [currentThread.board, currentThread.uid, nonce, parent],
-    );
+    const context = [currentThread.board, currentThread.uid, nonce, parent];
+    const key = await keyFor(currentThread.address);
+    const payload =
+      currentThread.schema === 4 && sealedThread(currentThread)
+        ? await sealPost(
+            content,
+            key,
+            config,
+            context,
+            sealedMetadata(currentThread.posts[0].payload),
+          )
+        : await encodePost(content, currentThread.mode, key, context);
     await review(
       { kind: "reply", thread: currentThread.address, nonce, parent, payload },
       { content },
@@ -1302,12 +1419,12 @@ $("thread-category").addEventListener("change", () => {
 $("continue-thread").addEventListener("click", () => {
   const reference = `${location.origin}/?board=${boardAddress}&thread=${currentThread.address}`;
   $("compose-form").reset();
-  if (currentThread.mode === 1 && !config.posterPrivacy)
+  if (sealedThread(currentThread))
     document.querySelector('input[name=mode][value="1"]').checked = true;
   $("thread-title").value =
     `Continuation: ${$("conversation-title").textContent}`.slice(0, 80);
   $("thread-body").value = `Continuing the conversation: ${reference}\n\n`;
-  if (currentThread.mode === 0) preserveDraft();
+  if (!sealedThread(currentThread)) preserveDraft();
   openCompose(false);
 });
 $("review-edit").addEventListener("click", () => {
@@ -1333,7 +1450,9 @@ $("review-dialog").addEventListener("close", () => {
 $("compose-form").addEventListener("change", () => {
   $("compose-hint").textContent =
     document.querySelector("input[name=mode]:checked").value === "1"
-      ? "Secret title and body are encrypted locally."
+      ? config.posterPrivacy
+        ? "Title and category are public. Message body is encrypted locally."
+        : "Secret title and body are encrypted locally."
       : "Public text is visible on chain.";
 });
 document
@@ -2207,7 +2326,8 @@ $("restore-keys").addEventListener("click", async () => {
 $("privacy-button").addEventListener("click", () => {
   if (config.posterPrivacy) {
     info("What is private here?", [
-      "All titles and messages are publicly readable. Schema 4 stores no author key. Public posts cannot be edited or deleted through Hauntboard. Testnet resets may remove history.",
+      "Titles and categories are public. Public threads store readable messages; sealed threads store encrypted bodies. Schema 4 stores no author key. Accepted posts cannot be edited or deleted through Hauntboard. Testnet resets may remove history.",
+      "Sealed invitations contain a shared key in the URL fragment. Send it through a trusted private channel. Every key holder can read past and future messages and share the key. There is no revocation or author authentication. Wallet recovery words do not restore invitation keys; use the separate key backup.",
       "Your browser signs posting fees with native one-time stealth spend keys. Your persistent owner signature and named account are omitted.",
       "Fees, spent-output graph, timing, public message clues and network connections remain visible. This does not prove complete anonymity.",
       "Each separately received output funds one post. Change stays held separately to avoid linking another post. Your recovery phrase restores wallet keys; keep it private.",
@@ -2274,7 +2394,7 @@ $("network-button").addEventListener("click", () => {
         b = params.get("board");
       if (!component.test(thread ?? "") || !component.test(b ?? "") || !key)
         throw new Error("Use a board address or a complete secret invitation.");
-      await keepKey(thread, key);
+      await acceptInvitation(thread, b, key);
       boardAddress = b;
       $("info-dialog").close();
       await openThread(thread);
@@ -2308,9 +2428,11 @@ function configureShell() {
     $("notice-copy").textContent +=
       " Public posting privacy verification remains pending.";
   $("wallet-button").hidden = !demo;
-  $("keys-button").hidden = !demo;
+  $("keys-button").hidden = !(demo || config.posterPrivacy);
   $("other-client").hidden = !demo;
-  document.querySelector(".mode-picker").hidden = !demo;
+  document.querySelector(".mode-picker").hidden = !(
+    demo || config.posterPrivacy
+  );
   for (const b of document.querySelectorAll(
     '[data-filter="public"],[data-filter="secret"]',
   ))
@@ -2320,12 +2442,12 @@ function configureShell() {
   $("post-name").hidden = !demo;
   document.querySelector('label[for="post-name"]').hidden = !demo;
   const sealed = document.querySelector('input[name=mode][value="1"]');
-  sealed.disabled = !demo;
+  sealed.disabled = !(demo || config.posterPrivacy);
   if (!demo)
     document.querySelector('input[name=mode][value="0"]').checked = true;
   $("compose-copy").textContent = demo
     ? "A story for everyone, or a secret for a few."
-    : "Your title and opening post will be publicly readable.";
+    : "Choose a public message or an encrypted body. Thread titles and categories are always public.";
   $("wallet-disclosure").textContent = config.posterPrivacy
     ? "One incoming output funds one post. Change stays held separately to avoid linking another post. Your words, PIN and keys never go to the relay."
     : "Your wallet words, PIN and keys stay in this browser. Sealed-thread keys have a separate backup.";
@@ -2344,7 +2466,6 @@ function configureShell() {
     $("notice-copy").textContent =
       "Wallet and posting actions are unavailable in this deployment preview.";
   }
-
 }
 async function init() {
   if (transactionPending)
@@ -2363,19 +2484,18 @@ async function init() {
     const invitedThread = secret.get("thread"),
       invitedKey = secret.get("key");
     if (invitedThread && invitedKey) {
-      if (config.posterPrivacy)
-        throw new Error(
-          "Sealed invitations are not available on this public board.",
-        );
       if (!component.test(invitedThread))
         throw new Error("Invalid invitation.");
-      await keepKey(invitedThread, invitedKey);
-      boardAddress = secret.get("board") ?? boardAddress;
+      const invitedBoard = secret.get("board") ?? boardAddress;
+      if (!component.test(invitedBoard))
+        throw new Error("Invalid invitation board.");
       history.replaceState(
         {},
         "",
-        `/?board=${boardAddress}&thread=${invitedThread}`,
+        `/?board=${invitedBoard}&thread=${invitedThread}`,
       );
+      await acceptInvitation(invitedThread, invitedBoard, invitedKey);
+      boardAddress = invitedBoard;
     } else
       history.replaceState(
         { filter, showHidden, scroll: 0 },
@@ -2403,7 +2523,9 @@ async function init() {
           "Could not reach this board. Reload or use Refresh threads when available.",
         ),
       );
-      $("thread-list").firstElementChild.append(button("Retry loading", "subtle", () => location.reload()));
+      $("thread-list").firstElementChild.append(
+        button("Retry loading", "subtle", () => location.reload()),
+      );
     }
     $("thread-list").setAttribute("aria-busy", "false");
   }

@@ -9,6 +9,7 @@ try{
  for(let i=0;i<50&&!startup.includes('listening');i++)await new Promise(r=>setTimeout(r,100));
  assert(startup.includes('public listening'),startup);
  assert.equal((await request('/health/live')).status,200);
+ assert.equal((await request('/sealed-posts.mjs')).status,200,'The sealed envelope module must ship in the runtime image.');
  assert.equal((await request('/api/faucet-submit',{method:'POST'})).status,404,'Removed faucet route stays unavailable even with the legacy flag enabled.');
  assert.equal((await request('/health/ready')).status,503);
  assert.equal((await request('/',{headers:{Host:'attacker.example'}})).status,403);

@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-15T22:42:43.127Z",
+  "network": "esmeralda",
+  "board": "component_594f90d8cb8c2d0f70d941ba1c513769727feceeabd9d2137b5b6a130a6aa28e",
+  "providers": [
+    "https://ootle-indexer-a.tari.com",
+    "https://ootle-indexer-b.tari.com"
+  ],
+  "scope": "Read-only public transaction inspection. No transactions signed or submitted.",
+  "status": "INSUFFICIENT_PUBLIC_POSTING_RECEIPTS",
+  "discovered": [],
+  "strongUnlinkabilityProven": false,
+  "limitation": "Recent provider history is bounded. Supply two known post IDs with --ids; no substitute fee spends were created."
+}

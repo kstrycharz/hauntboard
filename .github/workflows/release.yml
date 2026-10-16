@@ -28,7 +28,7 @@ jobs:
           persist-credentials: false
       - name: Verify artifacts and test server and wallet foundations
         run: |
-          docker run --rm -v "$PWD:/workspace" -w /workspace node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c sh -c 'node hauntboard/scripts/verify-release.mjs && node --test hauntboard/tests/component-provider.mjs hauntboard/tests/delivery.test.mjs hauntboard/tests/release-mode.test.mjs hauntboard/tests/state.test.mjs hauntboard/tests/operations-backup.test.mjs hauntboard/tests/output-ledger.test.mjs hauntboard/tests/faucet-discovery.test.mjs hauntboard/tests/pin-entry.test.mjs hauntboard/tests/api-client.test.mjs hauntboard/tests/post-proof.test.mjs'
+          docker run --rm -v "$PWD:/workspace" -w /workspace node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c sh -c 'node hauntboard/scripts/verify-release.mjs && node hauntboard/scripts/test-privacy.mjs && node --test hauntboard/tests/release-mode.test.mjs hauntboard/tests/operations-backup.test.mjs hauntboard/tests/faucet-discovery.test.mjs hauntboard/tests/pin-entry.test.mjs'
       - name: Build immutable application image and verify runtime
         run: |
           docker build -f infra/docker/hauntboard.Dockerfile -t "hauntboard:release-$GITHUB_SHA" .
@@ -42,6 +42,10 @@ jobs:
           printf '%s\n' "$GITHUB_SHA" > release-output/SOURCE_COMMIT
           cd release-output
           sha256sum hauntboard-image.tar.gz hauntboard_public.wasm network.public.json IMAGE_ID SOURCE_COMMIT > SHA256SUMS
+      - name: Verify browser privacy flows in Chromium and Firefox
+        run: |
+          docker build -f infra/docker/local-tests.Dockerfile -t hauntboard-browser-tests:privacy .
+          docker run --rm --shm-size=1g -v "$PWD:/workspace" -v hauntboard_privacy_browser_modules:/workspace/node_modules -w /workspace hauntboard-browser-tests:privacy node hauntboard/tests/gui.mjs
       - name: Publish downloadable release
         env:
           GH_TOKEN: ${{ github.token }}

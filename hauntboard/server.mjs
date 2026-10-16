@@ -38,6 +38,7 @@ knownFiles.set('/browser-wallet.mjs','browser-wallet.mjs');
 knownFiles.set('/pin-entry.mjs','pin-entry.mjs');
 knownFiles.set('/api-client.mjs','api-client.mjs');
 knownFiles.set('/post-proof.mjs','post-proof.mjs');
+knownFiles.set('/sealed-posts.mjs','sealed-posts.mjs');
 knownFiles.set('/mobile.css','mobile.css');
 knownFiles.set('/network-profile.mjs','network-profile.mjs');
 knownFiles.set('/stealth-fee.mjs','stealth-fee.mjs');

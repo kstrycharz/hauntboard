@@ -7,6 +7,7 @@ import { createServer } from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
+import { createHash } from "node:crypto";
 const web = fileURLToPath(new URL("../web/", import.meta.url));
 const origin = "http://localhost:8796";
 const boardAddress = `component_${"a".repeat(64)}`,
@@ -99,6 +100,7 @@ const server = createServer(async (req, res) => {
         "post-proof.mjs",
         "pin-entry.mjs",
         "crypto.mjs",
+        "sealed-posts.mjs",
         "style.css",
         "mobile.css",
       ].includes(name)
@@ -132,7 +134,7 @@ async function fixture(browser, options = {}) {
   const context = await browser.newContext({
     viewport: { width: 1280, height: 900 },
   });
-  const state = {
+  const state = options.state ?? {
     submits: 0,
     quotes: 0,
     unknown: false,
@@ -199,11 +201,19 @@ async function fixture(browser, options = {}) {
       return json({
         address: boardAddress,
         version: 1,
-        threads: options.full
-          ? Array.from({ length: 128 }, () => ref(threadAddress))
-          : options.slow
-            ? [ref(slowAddress), ref(threadAddress)]
-            : [ref(threadAddress)],
+        threads: state.sealedOpening
+          ? [
+              {
+                ...ref(threadAddress),
+                uid: state.sealedOpening.uid,
+                title: state.sealedOpening.title,
+              },
+            ]
+          : options.full
+            ? Array.from({ length: 128 }, () => ref(threadAddress))
+            : options.slow
+              ? [ref(slowAddress), ref(threadAddress)]
+              : [ref(threadAddress)],
       });
     }
     if (path === "/api/thread") {
@@ -214,6 +224,27 @@ async function fixture(browser, options = {}) {
       if (state.indexing)
         return json({ error: "Fixture indexer catching up" }, 503);
       const view = thread();
+      if (state.sealedOpening) {
+        Object.assign(view, {
+          title: state.sealedOpening.title,
+          uid: state.sealedOpening.uid,
+          postCount: 1,
+          posts: [
+            {
+              index: 0,
+              parent: null,
+              epoch: 1,
+              nonce: state.sealedOpening.uid,
+              payload: state.sealedOpening.payload,
+            },
+          ],
+        });
+        if (state.sealedReply) {
+          view.posts.push(state.sealedReply);
+          view.postCount++;
+        }
+        return json(view);
+      }
       if (state.submits && !state.unknown && state.body?.kind === "reply") {
         view.posts.push({
           index: 3,
@@ -240,6 +271,16 @@ async function fixture(browser, options = {}) {
     }
     if (path === "/api/browser-submit" || path === "/api/submit") {
       state.submits++;
+      if (options.sealed && state.body.kind === "thread")
+        state.sealedOpening = structuredClone(state.body);
+      if (options.sealed && state.body.kind === "reply")
+        state.sealedReply = {
+          index: 1,
+          epoch: 2,
+          nonce: state.body.nonce,
+          parent: state.body.parent,
+          payload: state.body.payload,
+        };
       if (state.unknown) return r.abort();
       return json({ transactionId });
     }
@@ -258,7 +299,7 @@ async function fixture(browser, options = {}) {
     errors.push(error.message);
     console.error(`Fixture runtime error: ${error.message}`);
   });
-  await page.goto(origin);
+  await page.goto(options.url ?? origin);
   return { context, page, state, errors };
 }
 async function ready(page) {
@@ -271,7 +312,10 @@ async function unlock(page) {
   await expect(page.locator("#wallet-ready-panel")).toBeVisible();
   await expect(page.locator("#wallet-faucet, #wallet-fund")).toHaveCount(0);
   const tokenLink = page.getByRole("link", { name: "Need test tokens?" });
-  await expect(tokenLink).toHaveAttribute("href", "https://testnet-faucet.taritracker.com/");
+  await expect(tokenLink).toHaveAttribute(
+    "href",
+    "https://testnet-faucet.taritracker.com/",
+  );
   await expect(tokenLink).toHaveAttribute("rel", "noopener noreferrer");
   await page.locator('[data-close="browser-wallet-dialog"]').click();
 }
@@ -572,6 +616,147 @@ try {
       assert.deepEqual(f.errors, []);
       await f.context.close();
       checks.push("Responsive widths and mobile menu keyboard");
+      // Real WebCrypto and key storage; wallet/provider execution remains simulated.
+      f = await fixture(browser, { saved: true, sealed: true });
+      await ready(f.page);
+      await unlock(f.page);
+      const sentBodies = [];
+      f.context.on("request", (request) => {
+        if (request.method() === "POST")
+          sentBodies.push(request.postData() ?? "");
+      });
+      await f.page.locator("#new-thread").click();
+      await f.page.locator('input[name=mode][value="1"]').check();
+      await f.page.locator("#thread-title").fill("Public sealed title");
+      await f.page
+        .locator("#thread-body")
+        .fill("SYNTHETIC-SEALED-OPENING-BODY");
+      await f.page.locator("#thread-category").selectOption("tari");
+      assert.equal(
+        await f.page.evaluate(() =>
+          sessionStorage.getItem("hauntboard-compose-draft"),
+        ),
+        null,
+      );
+      await f.page.locator("#compose-form button[type=submit]").click();
+      await expect(f.page.locator("#review-copy")).toContainText(
+        "title, category",
+      );
+      assert.equal(f.state.submits, 0, "Review never submits a transaction.");
+      assert.equal(
+        f.state.body.mode,
+        0,
+        "Sealed envelopes use the unchanged schema-4 byte payload ABI.",
+      );
+      f.state.unknown = true;
+      await f.page.locator("#confirm-publish").click();
+      await expect(f.page.locator("#operation-panel")).toHaveAttribute(
+        "data-state",
+        "unknown",
+      );
+      f.state.unknown = false;
+      await f.page.reload();
+      await expect(f.page.locator("#posts .post-body")).toHaveText(
+        "SYNTHETIC-SEALED-OPENING-BODY",
+      );
+      assert.equal(
+        f.state.submits,
+        1,
+        "Lost acknowledgement reconciliation never resubmits.",
+      );
+      const invitation = await f.page.evaluate(
+        async ({ address, board }) => {
+          const { loadKey } = await import("/crypto.mjs");
+          const { invitationUrl } = await import("/sealed-posts.mjs");
+          return invitationUrl(
+            { address, board },
+            await loadKey(address),
+            location.origin,
+          );
+        },
+        { address: threadAddress, board: boardAddress },
+      );
+      const invitationKey = new URLSearchParams(
+        new URL(invitation).hash.slice(1),
+      ).get("key");
+      await unlock(f.page);
+      await f.page.locator("#reply-body").fill("SYNTHETIC-SEALED-REPLY-BODY");
+      assert.equal(
+        await f.page.evaluate(
+          (address) => sessionStorage.getItem(`hauntboard-reply-${address}`),
+          threadAddress,
+        ),
+        null,
+      );
+      await f.page.locator("#reply-form button[type=submit]").click();
+      await expect(f.page.locator("#review-dialog")).toBeVisible();
+      await f.page.locator("#confirm-publish").click();
+      await expect(f.page.locator("#posts .post-body")).toHaveCount(2);
+      assert(
+        !sentBodies.some(
+          (body) =>
+            body.includes("SYNTHETIC-SEALED") || body.includes(invitationKey),
+        ),
+        "Plaintext and invitation key never enter requests.",
+      );
+      assert.deepEqual(f.errors, []);
+      const observer = await fixture(browser, {
+        state: f.state,
+        url: `${origin}/?thread=${threadAddress}`,
+      });
+      await expect(observer.page.locator("#posts .post-body")).toHaveCount(0);
+      await expect(observer.page.locator(".locked-copy").first()).toContainText(
+        "invitation",
+      );
+      await expect(observer.page.locator("#reply-form")).toBeHidden();
+      await expect(observer.page.locator("#posts").getByRole("button", { name: "Reply", exact: true })).toHaveCount(0);
+      const recipient = await fixture(browser, {
+        state: f.state,
+        url: invitation,
+      });
+      await expect(recipient.page.locator("#posts .post-body")).toHaveCount(2);
+      assert.equal(new URL(recipient.page.url()).hash, "");
+      await recipient.page.reload();
+      await expect(recipient.page.locator("#posts .post-body")).toHaveCount(2);
+      const wrong = new URL(invitation);
+      const params = new URLSearchParams(wrong.hash.slice(1));
+      params.set("key", "A".repeat(43));
+      wrong.hash = params.toString();
+      await recipient.page.goto(wrong.href);
+      await expect(recipient.page.locator("#flash")).toContainText("incorrect");
+      assert.equal(
+        await recipient.page.evaluate(
+          async (address) => (await import("/crypto.mjs")).loadKey(address),
+          threadAddress,
+        ),
+        invitationKey,
+        "A bad invitation cannot replace a saved valid key.",
+      );
+      const encryptedReply = f.state.sealedReply.payload;
+      f.state.sealedReply.payload = payload("ATTACKER PUBLIC REPLY");
+      await recipient.page.goto(`${origin}/?thread=${threadAddress}`);
+      await expect(recipient.page.locator("#posts .post-body")).toHaveCount(1);
+      await expect(recipient.page.locator(".locked-copy")).toContainText(
+        "Unencrypted message",
+      );
+      f.state.sealedReply.payload = encryptedReply;
+      await observer.page.setViewportSize({ width: 390, height: 844 });
+      assert(
+        await observer.page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      );
+      await observer.page.screenshot({
+        path: `hauntboard/evidence/sealed-locked-${name}.png`,
+        fullPage: true,
+      });
+      assert.deepEqual(recipient.errors, []);
+      await observer.context.close();
+      await recipient.context.close();
+      await f.context.close();
+      checks.push(
+        "Sealed creation/reply; actual encryption; no plaintext/key requests or drafts; lost acknowledgement; fresh reader locked; invitation decrypts and survives reload",
+      );
       report.browsers[name] = { checks, status: "PASSED" };
       console.log(
         `${name}: ${checks.length} GUI scenarios passed (simulated chain)`,
@@ -582,6 +767,21 @@ try {
   }
   report.status = "GUI_FIXTURE_REGRESSIONS_PASSED";
   report.checkedAt = new Date().toISOString();
+  report.sourceHashes = Object.fromEntries(
+    await Promise.all(
+      [
+        "hauntboard/web/app.mjs",
+        "hauntboard/web/sealed-posts.mjs",
+        "hauntboard/web/crypto.mjs",
+        "hauntboard/tests/gui.mjs",
+      ].map(async (path) => [
+        path,
+        createHash("sha256")
+          .update(await readFile(path))
+          .digest("hex"),
+      ]),
+    ),
+  );
   await writeFile(
     "hauntboard/evidence/gui-regression.json",
     JSON.stringify(report, null, 2) + "\n",

@@ -27,6 +27,26 @@ fn sealed_mode_and_invalid_payload_bounds_fail_atomically(){
  let counts:(u32,u32)=t.call_method(b,"get_counts",args![],vec![]);assert_eq!(counts,(0,0));
 }
 #[test]
+fn invalid_parent_and_conflicting_thread_retries_cannot_rewrite_history(){
+ let mut t=TemplateTest::my_crate();let b=board(&mut t);let c=thread(&mut t,b);let key=t.secret_key().clone();
+ for parent in [-2i32,1,2048]{
+  t.execute_expect_failure(t.transaction().call_method(c,"append",args![nonce(0,9),parent,b"Invalid reply".to_vec()]).build_and_seal(&key),vec![]);
+ }
+ for (title,payload) in [("Changed title",b"Public body".to_vec()),("Public title",b"Replacement body".to_vec())]{
+  t.execute_expect_failure(t.transaction().call_method(b,"create_thread",args![title.to_string(),0u8,vec![7u8;16],payload]).build_and_seal(&key),vec![]);
+ }
+ let counts:(u32,u32)=t.call_method(c,"get_counts",args![],vec![]);assert_eq!(counts.1,1);
+ let original:(Vec<u8>,i32,Vec<u8>,u64)=t.call_method(c,"get_post",args![0u32],vec![]);assert_eq!(original.2,b"Public body");
+}
+#[test]
+fn schema_four_preserves_opaque_envelope_bytes_without_an_author_field(){
+ let mut t=TemplateTest::my_crate();let b=board(&mut t);
+ // The contract is deliberately payload-agnostic. AES authentication is a client invariant.
+ let envelope=vec![0u8;4096];
+ let c:ComponentAddress=t.call_method(b,"create_thread",args!["Public encrypted title".to_string(),0u8,vec![8u8;16],envelope.clone()],vec![]);
+ let post:(Vec<u8>,i32,Vec<u8>,u64)=t.call_method(c,"get_post",args![0u32],vec![]);assert_eq!(post.2,envelope);
+}
+#[test]
 fn pages_keep_public_history_and_block_direct_mutation(){
  let mut t=TemplateTest::my_crate();let b=board(&mut t);let c=thread(&mut t,b);
  for i in 1..34u32{let index:u32=t.call_method(c,"append",args![nonce(i/16,i as u8),0i32,vec![i as u8;4096]],vec![]);assert_eq!(index,i);}

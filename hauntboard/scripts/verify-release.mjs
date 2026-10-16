@@ -2,7 +2,7 @@ import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
 const sums=await readFile('release/SHA256SUMS','utf8');
-for(const line of sums.trim().split('\n')) {
+for(const line of sums.split(/\r?\n/).map(line=>line.trim()).filter(Boolean)) {
   const match=/^([a-f0-9]{64})  ([A-Za-z0-9/._-]+)$/.exec(line);
   assert(match,'Invalid checksum entry');
   assert(!match[2].split('/').includes('..'),'Invalid checksum path');

@@ -1,6 +1,6 @@
 # Hauntboard
 
-A public message board on Tari Ootle Esmeralda testnet. Full posts live in contract state; wallet keys and signing stay in your browser. Test currency has no monetary value. Posts cannot be edited or deleted.
+A message board on Tari Ootle Esmeralda testnet. Posts live in contract state; wallet keys and signing stay in your browser. Public threads contain readable text. The current source also supports sealed message bodies with public titles/categories and privately shared invitation keys. Test currency has no monetary value. Posts cannot be edited or deleted.
 
 **Website:** https://hauntboard.taritracker.com
 **Source and download:** https://github.com/kstrycharz/hauntboard
@@ -31,7 +31,7 @@ Each forum row has **View thread on chain**, and each post has **View on chain**
 
 ## Contract and reproducible builds
 
-The shipping schema-4 Rust contract is in [hauntboard/template-public](hauntboard/template-public). Source, Cargo lockfile, five engine tests and compiled `hauntboard_public.wasm` are included. [release/SHA256SUMS](release/SHA256SUMS) records bundled artifact hashes. [network.public.json](hauntboard/deploy/network.public.json) identifies the existing board/template; routine deployment preserves both.
+The shipping schema-4 Rust contract is in [hauntboard/template-public](hauntboard/template-public). Source, Cargo lockfile, seven engine tests and compiled `hauntboard_public.wasm` are included. [release/SHA256SUMS](release/SHA256SUMS) records bundled artifact hashes. [network.public.json](hauntboard/deploy/network.public.json) identifies the existing board/template; routine deployment preserves both. Sealed bodies use the existing opaque byte payload ABI and require a compatible website release, not a new contract.
 
 To rebuild the SDK, recovery adapters and contract using pinned containers and locked dependencies:
 
@@ -40,6 +40,12 @@ sh hauntboard/scripts/build-release.sh
 ```
 
 Allow at least 8 GB RAM and compiler-cache storage for this full build. It runs contract/server tests and submits no chain transaction. Rebuilt artifacts require review against the published template before any new publication.
+
+## Verify the privacy claims
+
+Read the [threat model](hauntboard/docs/privacy-threat-model.md), [reproducible verification and judge walkthrough](hauntboard/docs/privacy-verification.md), and [contest submission draft](hauntboard/docs/contest-submission.md). The recorded local run has 38 passing Node test entries, seven native engine cases and ten browser scenarios per browser in Chromium and Firefox. These are separate evidence layers, not an inflated count of independent attacks.
+
+Native fee signing omits stable wallet identifiers; it does not prove unlinkability. Shared funding origins, output graphs, fees, timing and network connections remain observable. The new read-only [public audit](hauntboard/evidence/privacy-public-audit.json) records insufficient recent receipts for a two-post Esmeralda comparison. The sealed flow is locally tested and awaits website release and funded public validation. Manifest verification flags remain false.
 
 ## VPS deployment
 

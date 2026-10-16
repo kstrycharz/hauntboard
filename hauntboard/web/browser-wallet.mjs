@@ -937,7 +937,7 @@ async function privateReview(body) {
     throw new Error("Save and confirm your recovery phrase before posting.");
   await refreshPrivateMaterial();
   if (body.kind === "tip" || body.mode === 1)
-    throw new Error("This release publishes public messages only.");
+    throw new Error("Use schema-4 byte payloads and native posting fees for this board.");
   const target = body.board ?? body.thread,
     state = await api(
       body.kind === "thread"

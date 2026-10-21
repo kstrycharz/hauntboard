@@ -33,7 +33,6 @@
           <button class="board-nav" data-category="pol" aria-pressed="false"><span>/pol/ · Politics</span><small>Current affairs &amp; debate</small></button>
           <a class="side-button" href="/forums">How forums work</a>
           <a class="side-button" href="/about">About Hauntboard</a>
-          <a class="side-button" href="/privacy-demo">Try the privacy demonstration</a>
           <a class="side-button" href="https://github.com/kstrycharz/hauntboard#run-your-own-copy" target="_blank" rel="noopener noreferrer">Download &amp; run locally</a>
           <details id="advanced-navigation">
             <summary>Advanced</summary>
@@ -149,7 +148,7 @@
             <div>
               <button id="refresh-thread" class="subtle">
                 Refresh conversation</button
-              ><button id="room-access-button" class="subtle" hidden>Room access</button><button id="invite-button" class="subtle" hidden>
+              ><button id="room-access-button" class="primary" hidden>Room access</button><button id="invite-button" class="subtle" hidden>
                 Copy secret invitation
               </button>
               <details class="thread-advanced">
@@ -363,8 +362,7 @@
         </button>
       </div>
       <h2 id="keys-title">Sealed-thread key backup</h2>
-      <p><a href="/privacy-demo" target="_blank" rel="noopener noreferrer">Try the recipient-key privacy demonstration ↗</a></p>
-      <button id="room-vault-button" class="subtle full">Open recipient-key vault</button>
+      <button id="room-vault-button" class="primary full">Back up or restore room access</button>
       <p class="muted">
         Invitation keys are encrypted in this browser's storage. Back them up to
         open threads on another device. Anyone with a key can read its entire
@@ -393,7 +391,7 @@
     </dialog>
     <dialog id="room-dialog" aria-labelledby="room-title">
       <div class="dialog-top"><span class="eyebrow">MANAGE YOUR SEALED ROOM</span><button data-close="room-dialog" class="close" aria-label="Close room access">×</button></div>
-      <h2 id="room-title">Room access and recovery</h2>
+      <h2 id="room-title">Room access</h2>
       <p id="room-status" role="status" aria-live="polite"></p>
       <div id="room-controls"></div>
     </dialog>

@@ -1,0 +1,40 @@
+{
+  "status": "DEPLOYED_AND_VERIFIED",
+  "checkedAt": "2026-10-21T03:49:02.549Z",
+  "origin": "https://hauntboard.taritracker.com",
+  "image": "sha256:c106d825c335284c7ed6e767d69421bad2c888bfd9bfe3d03296450304ff944b",
+  "imageConfig": "sha256:782fce7eb7bb766a0a085cb2ea6011157c08cdb133c4025d1ae60d61f29f3512",
+  "archiveSha256": "2dd3e0b72ceede45688a90d136d61524c1190bc57ccd1f22dc81b6cafff3a01a",
+  "previousImage": "sha256:60e0197705341810223486176d81c9536d9772359386226cf8fbee8c84cb58c1",
+  "rollbackDirectory": "/opt/hauntboard/room-keys-20261020-guided",
+  "changes": [
+    "Removed standalone demo and all served demo assets",
+    "Guided recovery setup requires backup download and acknowledgement",
+    "Task-based room access, recipient request codes and named member removal",
+    "Restore and clipboard-failure handling verified"
+  ],
+  "newChainWrites": 0,
+  "boardAndRegistryPreserved": true,
+  "operationsVolumePreserved": true,
+  "tests": {
+    "nodePrivacyCases": 47,
+    "roomBrowser": "hauntboard/evidence/room-browser.json",
+    "liveUi": "hauntboard/evidence/room-live.json",
+    "gui": "hauntboard/evidence/gui-regression.json"
+  },
+  "routes": {
+    "/health/ready": 200,
+    "/privacy-demo": 404,
+    "/room-demo.mjs": 404,
+    "/room-demo.css": 404,
+    "/room-demo-evidence.json": 404
+  },
+  "assets": {
+    "index.html": "aab693987418332c20db6ea31efcf8b65125a47cd155a38f5809eb6b8255cd15",
+    "app.mjs": "d6bf32c9e6ff8040f25dbd920e3a7586f8a560548bfc1e3d6a777b89d5d9bf73",
+    "room-manager.mjs": "14132e723444f2ed4e44e7da1dde5a747c72c21e9cdecaedfd045029e4ef0d02",
+    "room-vault.mjs": "42c699a2da7389257cd03f5a928d2915a7869b2e067610901a205aa645557f95",
+    "room-access-request.mjs": "7f721ef9eb962c220b65d9983d2b5cd2c626bdd06340fd30bb53caf63326eadd",
+    "style.css": "b564dd4a8a7febd2e244847b5060490868de7f025c49fd5e1a1acca3558469d0"
+  }
+}

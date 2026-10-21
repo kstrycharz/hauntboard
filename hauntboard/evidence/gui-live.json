@@ -2,7 +2,7 @@
   {
     "engine": "chromium",
     "origin": "https://hauntboard.taritracker.com",
-    "checkedAt": "2026-10-21T03:15:27.948Z",
+    "checkedAt": "2026-10-21T03:48:07.728Z",
     "widths": [
       320,
       390,
@@ -15,15 +15,15 @@
     "assets": [
       {
         "name": "index.html",
-        "sha256": "55343ee91e62891def54c747d1f8e1afa3d85f411d4e2a3dcd7b90c73f2ca7e0"
+        "sha256": "aab693987418332c20db6ea31efcf8b65125a47cd155a38f5809eb6b8255cd15"
       },
       {
         "name": "app.mjs",
-        "sha256": "5ad66b792bfeb7a3c68961f79498aa7fde02acea38ea8a293788b069e3047379"
+        "sha256": "d6bf32c9e6ff8040f25dbd920e3a7586f8a560548bfc1e3d6a777b89d5d9bf73"
       },
       {
         "name": "style.css",
-        "sha256": "7275519d94acddbad1c36a57868819a08ecba8595f31df2abb6e4c04e680b916"
+        "sha256": "b564dd4a8a7febd2e244847b5060490868de7f025c49fd5e1a1acca3558469d0"
       },
       {
         "name": "mobile.css",
@@ -51,7 +51,7 @@
   {
     "engine": "firefox",
     "origin": "https://hauntboard.taritracker.com",
-    "checkedAt": "2026-10-21T03:15:31.144Z",
+    "checkedAt": "2026-10-21T03:48:10.452Z",
     "widths": [
       320,
       390,
@@ -64,15 +64,15 @@
     "assets": [
       {
         "name": "index.html",
-        "sha256": "55343ee91e62891def54c747d1f8e1afa3d85f411d4e2a3dcd7b90c73f2ca7e0"
+        "sha256": "aab693987418332c20db6ea31efcf8b65125a47cd155a38f5809eb6b8255cd15"
       },
       {
         "name": "app.mjs",
-        "sha256": "5ad66b792bfeb7a3c68961f79498aa7fde02acea38ea8a293788b069e3047379"
+        "sha256": "d6bf32c9e6ff8040f25dbd920e3a7586f8a560548bfc1e3d6a777b89d5d9bf73"
       },
       {
         "name": "style.css",
-        "sha256": "7275519d94acddbad1c36a57868819a08ecba8595f31df2abb6e4c04e680b916"
+        "sha256": "b564dd4a8a7febd2e244847b5060490868de7f025c49fd5e1a1acca3558469d0"
       },
       {
         "name": "mobile.css",

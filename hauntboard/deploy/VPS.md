@@ -2,6 +2,8 @@
 
 The recipient-key release adds `keyRegistryTemplate` to the existing `network.json`, preserving the original board, template, network/reset identity and operations volume. Keep that pin during future app deployments. The companion template is `9de14a5ca71a3c243c0c8a4a9f5896de6f89a5d60f2f42da0ad9351ca0c08527`. Its publication and funded demonstration are recorded in `hauntboard/evidence/room-key-esmeralda.json`. Room vaults and recovery secrets remain browser/user owned; server backups do not restore them. The app also accepts the current indexer `state.up.substate` response shape and rejects down/conflicting states.
 
+The guided Room access update removes the standalone privacy demo and all four demo routes. It introduces recovery-code/backup setup, copyable access requests, named invitations and member removal. Its current deployment evidence is `hauntboard/evidence/room-access-ux-deployment.json`; rollback image/configuration are retained at `/opt/hauntboard/room-keys-20261020-guided`. This website-only update made no chain writes and kept the network manifest and operations volume unchanged.
+
 ## Current origin
 
 Public visitors use HTTPS for `hauntboard.taritracker.com` and `testnet-faucet.taritracker.com`. The shared Caddy edge redirects visitor HTTP requests to the corresponding HTTPS hostname with status 308, preserving paths and queries. Verified HTTPS responses include one-day HSTS without `includeSubDomains` or preload. The supplied `Caddyfile.cloudflare` contains both hostname routes.

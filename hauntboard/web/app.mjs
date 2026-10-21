@@ -27,7 +27,7 @@ import {
   invitationUrl,
 } from "./sealed-posts.mjs";
 const $ = (id) => document.getElementById(id);
-const roomManager=createRoomManager({api:(...args)=>api(...args),review,cancelReview:invalidateReview,legacyKey:keyFor,refresh:async()=>{if(currentThread)await renderThread(currentThread);},openDialog:dialog,pending:()=>Boolean(transactionPending)});
+const roomManager=createRoomManager({api:(...args)=>api(...args),review,cancelReview:invalidateReview,legacyKey:keyFor,refresh:async()=>{if(currentThread)await renderThread(currentThread);},openDialog:dialog,pending:()=>Boolean(transactionPending),checkOperation:reconcilePending,unlockWallet:async()=>{$('room-dialog').close();await openWallet();}});
 let config,
   board,
   currentThread,
@@ -1103,7 +1103,7 @@ async function finishTransaction(pending) {
   quote = null;
   operationState(
     "confirmed",
-    pending.kind === "tip"
+    pending.kind === 'registry' ? 'Room access updated. Download a fresh access backup from Room access.' : pending.kind === "tip"
       ? "Your private tip was accepted."
       : `Your ${pending.kind === "reply" ? "reply" : "post"} is on Tari. Network fee: ${units(tx.fee ?? "0")}.`,
   );
@@ -1575,7 +1575,7 @@ $('room-access-button').addEventListener('click',async()=>{
   try{await roomManager.open(currentThread,config);}catch(e){flash(e.message,true);}
 });
 $('room-vault-button').addEventListener('click',async()=>{
-  try{$('keys-dialog').close();await roomManager.open(currentThread,config);}catch(e){flash(e.message,true);}
+  try{$('keys-dialog').close();await roomManager.open(currentThread&&sealedThread(currentThread)?currentThread:null,config);}catch(e){flash(e.message,true);}
 });
 window.addEventListener('room-vault-locked',()=>{invalidateReview();roomManager.clearView();if(currentThread)renderThread(currentThread).catch(()=>{});});
 $("inspect-button").addEventListener("click", async () => {

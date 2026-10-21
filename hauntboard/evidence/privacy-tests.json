@@ -1,13 +1,14 @@
 {
-  "checkedAt": "2026-10-21T03:06:10.820Z",
+  "checkedAt": "2026-10-21T03:43:26.022Z",
   "status": "PASSED",
   "runtime": "v22.21.1",
-  "tests": 45,
-  "passed": 45,
+  "tests": 47,
+  "passed": 47,
   "failed": 0,
   "scope": "Local adversarial/unit checks. Actual released Tari SDK/WASM cryptography uses synthetic provider rows; no chain spends. Browser and native-engine evidence are separate.",
   "suites": [
     "hauntboard/tests/room-keys.test.mjs",
+    "hauntboard/tests/room-access-request.test.mjs",
     "hauntboard/tests/provider-state.test.mjs",
     "hauntboard/tests/sealed-posts.test.mjs",
     "hauntboard/tests/stealth-fee-privacy.test.mjs",
@@ -22,6 +23,7 @@
   ],
   "sourceHashes": {
     "hauntboard/tests/room-keys.test.mjs": "e70185e90dcefea52af084af1207e5293800823af97e9adc9fda3eaf516eb020",
+    "hauntboard/tests/room-access-request.test.mjs": "919d89c9e6db1b35d919bf281c9f9163fd0c9b55479e46a6227e395cceb0e9fd",
     "hauntboard/tests/provider-state.test.mjs": "ae42301e2ca4191790b06e0c12e58505cc33ec56bddd8f25a5739286535c516b",
     "hauntboard/tests/sealed-posts.test.mjs": "c9af0f36a2bd6f78799549638e68ba98393ac317a2d2609cb1c02a161e8723f8",
     "hauntboard/tests/stealth-fee-privacy.test.mjs": "3e139a602645b88ca1fde384574d36e878518bfab12cfdcbce181f00784455bc",

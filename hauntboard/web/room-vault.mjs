@@ -4,6 +4,7 @@ const channel = typeof BroadcastChannel === 'function' ? new BroadcastChannel('h
 channel?.addEventListener('message', () => { session=null; window.dispatchEvent(new Event('room-vault-locked')); });
 export const vaultScope = p => JSON.stringify(['hauntboard-room-vault',1,p.network,p.resetIdentity]);
 const locator = p => `hauntboard-room-vault:${vaultScope(p)}`;
+export function roomVaultExists(profile){return Boolean(localStorage.getItem(locator(profile)));}
 export function roomVaultActive() { return Boolean(session); }
 export function lockRoomVault(broadcast=true) { session=null; if(broadcast)channel?.postMessage('lock'); window.dispatchEvent(new Event('room-vault-locked')); }
 export async function createRoomVault(profile) {

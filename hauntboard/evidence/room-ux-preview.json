@@ -1,0 +1,30 @@
+{
+  "status": "PASSED",
+  "origin": "http://localhost:8791",
+  "checkedAt": "2026-10-21T03:45:48.727Z",
+  "chainWrites": 0,
+  "browsers": {
+    "chromium": {
+      "ready": true,
+      "pinnedRegistry": true,
+      "currentRegistryReadable": true,
+      "guidedRecoverySetup": true,
+      "mainUiRequestAndUnlock": true,
+      "demoRemoved": true,
+      "mobileOverflow": false,
+      "pageErrors": 0,
+      "assetHashesMatch": true
+    },
+    "firefox": {
+      "ready": true,
+      "pinnedRegistry": true,
+      "currentRegistryReadable": true,
+      "guidedRecoverySetup": true,
+      "mainUiRequestAndUnlock": true,
+      "demoRemoved": true,
+      "mobileOverflow": false,
+      "pageErrors": 0,
+      "assetHashesMatch": true
+    }
+  }
+}

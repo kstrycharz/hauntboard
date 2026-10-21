@@ -833,3 +833,14 @@ h1, h2, h3 { letter-spacing: .3px; }
 ::selection { background: var(--purple); color: var(--cloud); }
 .tari-credit { display: inline-flex; align-items: center; gap: 10px; margin-top: 16px; font: 12px var(--sans); color: var(--muted); }
 .tari-credit img { width: 54px; height: 24px; object-fit: contain; }
+
+#room-dialog h3 { margin: 20px 0 10px; overflow-wrap:anywhere; }
+#room-dialog h4 { margin:20px 0 8px; }
+#room-controls > button { margin: 8px 0; }
+#room-controls p, #room-controls details { overflow-wrap:anywhere; line-height:1.5; }
+#room-controls details { margin:16px 0; }
+#room-controls .room-check { display:flex; gap:10px; align-items:flex-start; margin:18px 0; line-height:1.5; }
+#room-controls .room-check input { width:20px; min-width:20px; height:20px; margin-top:2px; }
+#room-controls .room-share-code { font:13px/1.5 var(--mono,monospace); word-break:break-all; }
+#room-controls .room-member, #room-controls .room-request-result { border:1px solid var(--purple); border-radius:8px; padding:12px; margin:12px 0; }
+#room-recovery-code { font:16px/1.6 var(--mono,monospace); word-break:break-all; }

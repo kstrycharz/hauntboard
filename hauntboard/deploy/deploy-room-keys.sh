@@ -43,11 +43,12 @@ sleep 2
 docker exec "$candidate" node --input-type=module -e '
 import assert from "node:assert/strict";
 import {get as httpGet} from "node:http";
-const get=path=>new Promise((resolve,reject)=>{const request=httpGet("http://127.0.0.1:8280"+path,{headers:{Host:"hauntboard.taritracker.com"}},r=>{let text="";r.on("data",b=>text+=b);r.on("end",()=>{try{assert.equal(r.statusCode,200,path);resolve({json:async()=>JSON.parse(text)});}catch(e){reject(e);}});});request.on("error",reject);});
+const get=(path,expected=200)=>new Promise((resolve,reject)=>{const request=httpGet("http://127.0.0.1:8280"+path,{headers:{Host:"hauntboard.taritracker.com"}},r=>{let text="";r.on("data",b=>text+=b);r.on("end",()=>{try{assert.equal(r.statusCode,expected,path);resolve({json:async()=>JSON.parse(text)});}catch(e){reject(e);}});});request.on("error",reject);});
 await get("/health/ready");
 const c=await(await get("/api/config")).json();assert.equal(c.keyRegistryTemplate,"9de14a5ca71a3c243c0c8a4a9f5896de6f89a5d60f2f42da0ad9351ca0c08527");
 const s=await(await get("/api/key-registry?address=component_dd15b354b77523cb53cf8a6f64913926cf31062f8811102ca5804b8609b4681e")).json();assert.equal(s.generation,1);assert.equal(s.revision,2);
-for(const path of ["/privacy-demo","/room-demo.mjs","/room-demo.css","/room-demo-evidence.json","/room-manager.mjs","/room-vault.mjs","/room-keys.mjs","/vendor/hpke.mjs"])await get(path);
+for(const path of ["/room-manager.mjs","/room-access-request.mjs","/room-vault.mjs","/room-keys.mjs","/vendor/hpke.mjs"])await get(path);
+for(const path of ["/privacy-demo","/room-demo.mjs","/room-demo.css","/room-demo-evidence.json"])await get(path,404);
 console.log("Candidate readiness, registry reads and assets passed.");'
 cp "$stage/network.candidate.json" network.json
 python3 - "$image" <<'PY'

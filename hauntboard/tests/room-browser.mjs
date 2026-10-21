@@ -45,7 +45,8 @@ try{for(const[name,engine]of[['chromium',chromium],['firefox',firefox]]){
       window.manager=createRoomManager({api:async()=>state,review:async(body,context)=>{reviewed={body,context};},legacyKey:async()=>keys[0].key,refresh:async()=>{},openDialog:id=>document.getElementById(id).showModal(),pending:()=>false});
       window.threadView={address:thread,board,title:'Synthetic room',posts:[]};await manager.open(threadView,p);
     });
-    await alice.getByRole('button',{name:'Enable managed access for future messages',exact:true}).click();
+    await alice.getByRole('button',{name:'Set up invitations',exact:true}).click();
+    await alice.getByRole('button',{name:'Review invitation setup',exact:true}).click();
     await alice.waitForFunction(()=>reviewed?.body.action==='new');
     assert(await alice.evaluate(async()=>{
       state={address:registryAddress,scope:reviewed.body.scope,board,thread,admin:reviewed.body.admin,generation:0,revision:0,generations:[reviewed.body.envelopes]};
@@ -53,21 +54,46 @@ try{for(const[name,engine]of[['chromium',chromium],['firefox',firefox]]){
       return vault.roomRecord(p,thread).registry===registryAddress&&!vault.roomRecord(p,thread).pending;
     }));
     await alice.evaluate(async()=>{document.getElementById('room-dialog').close();await manager.open(threadView,p);});
-    await alice.getByLabel('Recipient request JSON').fill(JSON.stringify(br));
-    await alice.getByRole('button',{name:'Review invitation for this recipient',exact:true}).click();
+    await alice.getByRole('button',{name:'Invite someone',exact:true}).click();
+    const requestCode=await alice.evaluate(async request=>(await import('/room-access-request.mjs')).accessRequestCode({...request,name:'Bob'}),br);
+    await alice.getByLabel('Access request from your contact').fill(requestCode);
+    await alice.getByRole('button',{name:'Check access request',exact:true}).click();
+    await alice.getByRole('heading',{name:'Invite Bob?',exact:true}).waitFor();
+    await alice.getByRole('button',{name:'Review invitation',exact:true}).click();
     await alice.waitForFunction(()=>reviewed?.body.action==='grant');
     await alice.evaluate(async()=>{
       state.generations[0].push(...reviewed.body.envelopes);state.revision=1;await manager.finish(p,reviewed.context.roomAction,{});
       document.getElementById('room-dialog').close();await manager.open(threadView,p);
     });
-    await alice.getByLabel(br.id,{exact:true}).uncheck();
-    await alice.getByRole('button',{name:'Review removal and key rotation',exact:true}).click();
+    await alice.getByRole('button',{name:'Manage members',exact:true}).click();
+    assert(await alice.getByRole('button',{name:'Review removal',exact:true}).isDisabled());
+    await alice.getByLabel('Remove Bob',{exact:true}).check();
+    await alice.getByRole('button',{name:'Review removal',exact:true}).click();
     await alice.waitForFunction(()=>reviewed?.body.action==='rotate');
     assert(await alice.evaluate(async bobId=>{
       state.generations.push(reviewed.body.envelopes);state.generation=1;state.revision=2;await manager.finish(p,reviewed.context.roomAction,{});
       const r=vault.roomRecord(p,thread);return r.generation===1&&!r.members.some(m=>m.id===bobId);
     },br.id));
-    report.browsers[name]={recipientDelivery:true,outsiderDenied:true,cleanBrowserRecovery:true,removedRecipientDenied:true,crossTabLock:true,concurrentCreationSafe:true,managementUiCreateGrantAndRotate:true};
+    // First-use setup cannot finish until both recovery items are acknowledged.
+    const freshContext=await browser.newContext({acceptDownloads:true}),fresh=await freshContext.newPage();await fresh.goto(origin);
+    await fresh.evaluate(async()=>{
+      const {createRoomManager}=await import('/room-manager.mjs');window.setupManager=createRoomManager({api:async()=>null,review:async()=>{},legacyKey:async()=>null,refresh:async()=>{},openDialog:id=>document.getElementById(id).showModal(),pending:()=>false});
+      await setupManager.open({address:`component_${'b'.repeat(64)}`,board:`component_${'a'.repeat(64)}`,title:'Fresh room'}, {network:'esmeralda',networkByte:38,resetIdentity:'browser-test',keyRegistryTemplate:'f'.repeat(64)});
+    });
+    await fresh.getByRole('button',{name:'Set up room access',exact:true}).click();await fresh.locator('#room-recovery-code').waitFor();
+    assert(await fresh.getByRole('button',{name:'Continue to room access',exact:true}).isDisabled());
+    const recoveryCode=await fresh.locator('#room-recovery-code').inputValue();
+    const downloadPromise=fresh.waitForEvent('download');await fresh.getByRole('button',{name:'Download access backup',exact:true}).click();const backupDownload=await downloadPromise;const backupPath=`/tmp/hauntboard-access-${name}.json`;await backupDownload.saveAs(backupPath);
+    assert(await fresh.getByRole('button',{name:'Continue to room access',exact:true}).isDisabled());
+    await fresh.getByLabel('I saved my recovery code separately from the backup file.').check();await fresh.getByRole('button',{name:'Continue to room access',exact:true}).click();
+    await fresh.getByRole('button',{name:'Get an invitation',exact:true}).click();await fresh.getByLabel('Name to show your contact').fill('Fresh reader');await fresh.getByRole('button',{name:'Create access request',exact:true}).click();await fresh.getByRole('button',{name:'Copy access request',exact:true}).waitFor();
+    const initialRequest=await fresh.locator('#room-output').inputValue();assert(initialRequest.startsWith('hauntboard-access-v1.'));
+    const restoreContext=await browser.newContext(),restored=await restoreContext.newPage();await restored.goto(origin);
+    await restored.evaluate(async()=>{const {createRoomManager}=await import('/room-manager.mjs');const m=createRoomManager({api:async()=>null,review:async()=>{},legacyKey:async()=>null,refresh:async()=>{},openDialog:id=>document.getElementById(id).showModal(),pending:()=>false});await m.open({address:`component_${'b'.repeat(64)}`,board:`component_${'a'.repeat(64)}`,title:'Fresh room'}, {network:'esmeralda',networkByte:38,resetIdentity:'browser-test',keyRegistryTemplate:'f'.repeat(64)});});
+    await restored.getByRole('button',{name:'I already have an access backup',exact:true}).click();await restored.getByLabel('Access backup file').setInputFiles(backupPath);await restored.getByLabel('Recovery code',{exact:true}).fill(recoveryCode);await restored.getByRole('button',{name:'Restore room access',exact:true}).click();
+    await restored.getByRole('button',{name:'Get an invitation',exact:true}).click();await restored.getByLabel('Name to show your contact').fill('Fresh reader');await restored.getByRole('button',{name:'Create access request',exact:true}).click();await restored.getByRole('button',{name:'Copy access request',exact:true}).waitFor();assert.equal(await restored.locator('#room-output').inputValue(),initialRequest);
+    await restored.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async()=>{throw Error('Synthetic clipboard denial');}}}));await restored.getByRole('button',{name:'Copy access request',exact:true}).click();assert(await restored.locator('#room-output').isVisible());
+    report.browsers[name]={recipientDelivery:true,outsiderDenied:true,cleanBrowserRecovery:true,removedRecipientDenied:true,crossTabLock:true,concurrentCreationSafe:true,managementUiCreateGrantAndRotate:true,namedMembers:true,opaqueRequestCodes:true,recoverySetupRequiresBackupAndAcknowledgement:true,restoreUiKeepsRecipientIdentity:true,clipboardFallback:true};
     console.log(name+': room recovery and recipient isolation passed');
   }finally{await browser.close();}
 }report.status='PASSED';await writeFile('hauntboard/evidence/room-browser.json',JSON.stringify(report,null,2)+'\n');}finally{server.close();}

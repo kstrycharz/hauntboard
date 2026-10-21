@@ -103,6 +103,7 @@ const server = createServer(async (req, res) => {
         "crypto.mjs",
         "sealed-posts.mjs",
         "room-manager.mjs",
+        "room-access-request.mjs",
         "room-vault.mjs",
         "room-keys.mjs",
         "key-registry.mjs",

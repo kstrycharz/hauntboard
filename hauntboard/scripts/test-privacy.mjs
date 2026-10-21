@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 
 const suites = [
   'room-keys.test.mjs',
+  'room-access-request.test.mjs',
   'provider-state.test.mjs',
   'sealed-posts.test.mjs',
   'stealth-fee-privacy.test.mjs',

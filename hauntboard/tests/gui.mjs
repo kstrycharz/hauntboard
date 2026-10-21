@@ -97,10 +97,16 @@ const server = createServer(async (req, res) => {
         "index.html",
         "app.mjs",
         "api-client.mjs",
+        "faucet-client.mjs",
         "post-proof.mjs",
         "pin-entry.mjs",
         "crypto.mjs",
         "sealed-posts.mjs",
+        "room-manager.mjs",
+        "room-vault.mjs",
+        "room-keys.mjs",
+        "key-registry.mjs",
+        "vendor/hpke.mjs",
         "about.html",
         "about.mjs",
         "about.css",
@@ -197,7 +203,17 @@ async function fixture(browser, options = {}) {
         label: "Ghost A",
         provider: "Fixture provider",
         csrf: "fixture",
+        faucetEnabled: options.faucet === true,
       });
+    }
+    if (path === "/api/faucet-claim") {
+      state.faucetClaims = (state.faucetClaims ?? 0) + 1;
+      state.faucetReceipt = r.request().postDataJSON().receipt;
+      return json({receipt: state.faucetReceipt, status: "queued", transactionId: null}, 202);
+    }
+    if (path === "/api/faucet-status") {
+      assert.equal(r.request().postDataJSON().receipt, state.faucetReceipt);
+      return json({receipt: state.faucetReceipt, status: state.faucetStatus ?? "queued", transactionId: null});
     }
     if (path === "/api/board") {
       if (state.failFeed)
@@ -314,8 +330,9 @@ async function unlock(page) {
   await page.locator("#browser-wallet-button").click();
   await enterWalletCredential(page, "604281");
   await expect(page.locator("#wallet-ready-panel")).toBeVisible();
-  await expect(page.locator("#wallet-faucet, #wallet-fund")).toHaveCount(0);
-  const tokenLink = page.getByRole("link", { name: "Need test tokens?" });
+  if (!(await page.evaluate(() => document.querySelector('#wallet-faucet').hidden)))
+    await expect(page.locator("#wallet-faucet")).toHaveText("Get 100 test tXTR");
+  const tokenLink = page.getByRole("link", { name: "TariTracker.com faucet" });
   await expect(tokenLink).toHaveAttribute(
     "href",
     "https://testnet-faucet.taritracker.com/",
@@ -356,6 +373,28 @@ try {
       await expect(f.page.locator("#wallet-button")).toBeHidden();
       await f.context.close();
       checks.push("Configuration failure closes posting");
+      f = await fixture(browser, {saved: true, faucet: true});
+      await ready(f.page);
+      await unlock(f.page);
+      await f.page.locator('#browser-wallet-button').click();
+      await f.page.locator('#wallet-faucet').click();
+      await expect(f.page.locator('#wallet-faucet-status')).toContainText('queued');
+      assert.equal(f.state.faucetClaims, 1);
+      await f.page.reload();
+      await ready(f.page);
+      await f.page.locator('#browser-wallet-button').click();
+      await enterWalletCredential(f.page, '604281');
+      f.state.faucetStatus = 'uncertain';
+      await expect(f.page.locator('#wallet-faucet-status')).toContainText('reconciling', {timeout: 15000});
+      f.state.faucetStatus = 'confirmed';
+      await expect(f.page.locator('#wallet-faucet-status')).toContainText('100 test tXTR confirmed', {timeout: 15000});
+      assert.equal(f.state.faucetClaims, 1, 'Reload and uncertain reconciliation must not create another payment.');
+      await f.page.setViewportSize({width: 390, height: 844});
+      await f.page.locator('.wallet-faucet').scrollIntoViewIfNeeded();
+      await f.page.screenshot({path: `hauntboard/evidence/faucet-api-${name}.png`});
+      assert.equal(f.errors.length, 0);
+      await f.context.close();
+      checks.push('Faucet claim, reload, uncertain reconciliation and confirmation use one receipt; mobile attribution is linked');
       f = await fixture(browser);
       await ready(f.page);
       await compose(f.page);

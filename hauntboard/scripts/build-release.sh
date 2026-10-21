@@ -6,6 +6,7 @@ rust_run() {
   docker run --rm --cpus 2 --memory 6g -v "$PWD:/workspace" -v hauntboard_release_target:/target -v hauntboard_release_registry:/usr/local/cargo/registry -e CARGO_TARGET_DIR=/target -e CARGO_BUILD_JOBS=2 -w /workspace hauntboard-rust:1.97.1 "$@"
 }
 rust_run sh hauntboard/template-public/test-engine.sh
+rust_run sh hauntboard/key-registry/build.sh
 rust_run sh -c 'cd hauntboard/template-public && cargo build --locked --release --target wasm32-unknown-unknown && cp /target/wasm32-unknown-unknown/release/hauntboard_public.wasm hauntboard_public.wasm'
 docker run --rm -v "$PWD:/workspace" -v hauntboard_release_modules:/workspace/hauntboard/browser-sdk/node_modules -v hauntboard_release_pnpm:/pnpm/store -w /workspace hauntboard-node:22.21.1 sh -c 'pnpm --dir hauntboard/browser-sdk install --ignore-workspace --frozen-lockfile && pnpm --dir hauntboard/browser-sdk build'
 rust_run sh hauntboard/wallet-recovery/build.sh

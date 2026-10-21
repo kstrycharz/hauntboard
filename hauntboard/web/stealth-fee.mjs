@@ -1,7 +1,7 @@
 // Tari's WASM creates commitments, range/balance proofs and one-time spend signatures.
 import * as sdk from './vendor/wallet-sdk.mjs';
 export const NATIVE=`resource_${'01'.repeat(32)}`;
-export async function prepareStealthFee({provider,signer,coinId,networkByte,maxFee,mainInstructions,mainInputs,dryRun=false}){
+export async function prepareStealthFee({provider,signer,coinId,networkByte,maxFee,mainInstructions,mainInputs,dryRun=false,extraSigners=[]}){
   const crypto=new sdk.WasmStealthCrypto(networkByte),commitment=sdk.commitmentOf(coinId);
   if(!commitment||coinId!==sdk.stealthUtxoSubstateId(NATIVE,commitment))throw new Error('Select a native stealth fee output.');
   const row=await provider.getSubstate(coinId);
@@ -38,6 +38,9 @@ export async function prepareStealthFee({provider,signer,coinId,networkByte,maxF
   transaction.dry_run=dryRun;
   const signatures=await ephemeral.signTransaction(transaction,authorized.getSealPublicKey());
   for(const signature of signatures)authorized.addSignature(signature);
+  for(const extra of extraSigners){
+    for(const signature of await extra.signTransaction(transaction,authorized.getSealPublicKey()))authorized.addSignature(signature);
+  }
   const envelope=await authorized.seal();
   return {envelope,transaction,coinId,feeStatement:JSON.parse(authorized.getSpec().statement.toCompactJson()),maxFee:fee.toString(),changePolicy:'Do not automatically spend change for the next post: the UTXO graph would link those posts.'};
 }

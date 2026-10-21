@@ -14,6 +14,8 @@ import {
 import * as browserWallet from "./browser-wallet.mjs";
 import { PinEntry } from "./pin-entry.mjs";
 import { createApiClient } from "./api-client.mjs";
+import { FaucetClient, faucetMessage } from "./faucet-client.mjs";
+import {createRoomManager} from './room-manager.mjs';
 import { chainStateLink, postProof } from "./post-proof.mjs";
 import {
   isSealedPayload,
@@ -25,6 +27,7 @@ import {
   invitationUrl,
 } from "./sealed-posts.mjs";
 const $ = (id) => document.getElementById(id);
+const roomManager=createRoomManager({api:(...args)=>api(...args),review,cancelReview:invalidateReview,legacyKey:keyFor,refresh:async()=>{if(currentThread)await renderThread(currentThread);},openDialog:dialog,pending:()=>Boolean(transactionPending)});
 let config,
   board,
   currentThread,
@@ -34,6 +37,7 @@ let config,
   publishContext,
   busy = false;
 let threadRows = [];
+let threadRenderGeneration=0;
 const categories = {
   tari: {
     title: "/tari/ · Tari",
@@ -150,6 +154,7 @@ function clearFlash() {
   document.querySelectorAll(".dialog-message").forEach((n) => n.remove());
 }
 const api = createApiClient({getConfig: () => config});
+const faucetClient = new FaucetClient({api});
 function dialog(id) {
   clearFlash();
   if ($(id).open) return;
@@ -341,7 +346,7 @@ async function contentFor(thread, post) {
       );
     return openSealedPost(
       post.payload,
-      await keyFor(thread.address),
+      await roomManager.key(config,thread,post) ?? await keyFor(thread.address),
       config,
       postContext(thread, post),
       thread.title,
@@ -365,7 +370,7 @@ function updateOtherClient() {
     config.role === "sender"
       ? "http://localhost:8281"
       : "http://localhost:8280";
-  const key = currentThread ? keys.get(currentThread.address) : null;
+  const key = currentThread && !roomManager.managed(config,currentThread) ? keys.get(currentThread.address) : null;
   $("other-client").href = currentThread
     ? key
       ? invite(currentThread, key, other)
@@ -684,8 +689,10 @@ async function openThread(address, { navigate = true, focus = true } = {}) {
   return thread;
 }
 async function renderThread(thread) {
+  const generation=++threadRenderGeneration;
   boardAddress = thread.board;
-  const key = await keyFor(thread.address);
+  const key = await roomManager.key(config,thread,thread.posts[0]).catch(()=>null) ?? await keyFor(thread.address);
+  if(generation!==threadRenderGeneration)return;
   document.body.dataset.view = "thread";
   $("board-view").hidden = true;
   $("thread-view").hidden = false;
@@ -701,6 +708,7 @@ async function renderThread(thread) {
       try { selectCategory(sealedMetadata(thread.posts[0].payload).category); } catch {}
     }
   }
+  if(generation!==threadRenderGeneration)return;
   heading.append(
     node(
       "span",
@@ -750,6 +758,7 @@ async function renderThread(thread) {
       article.classList.add("locked");
       article.append(node("p", "locked-copy", e.message));
     }
+    if(generation!==threadRenderGeneration)return;
     const header = node("div", "post-header");
     if (!config.posterPrivacy)
       header.append(node("strong", "", content?.name || "Ghost"));
@@ -822,7 +831,8 @@ async function renderThread(thread) {
     article.append(footer);
     posts.append(article);
   }
-  $("invite-button").hidden = !(sealedThread(thread) && key);
+  $("invite-button").hidden = !(sealedThread(thread) && key) || roomManager.managed(config,thread);
+  $("room-access-button").hidden = !sealedThread(thread);
   $("reply-form").hidden = sealedThread(thread) && !key;
   if (thread.nextBefore !== null) {
     const older = button("Load older replies", "secondary", async () => {
@@ -926,7 +936,7 @@ async function review(body, context) {
   try {
     quote =
       browserWallet.active() && body.kind !== "tip"
-        ? await browserWallet.review(body)
+        ? body.kind==='registry' ? await browserWallet.reviewRegistry(body,context.admin) : await browserWallet.review(body)
         : await api("/api/quote", body);
     publishContext = { ...context, body, quote };
     document.querySelectorAll("dialog[open]").forEach((d) => d.close());
@@ -976,6 +986,14 @@ async function review(body, context) {
             ? "Publish sealed post"
             : "Publish public post";
     $("confirm-publish").disabled = false;
+    if(body.kind==='registry'){
+      $('review-title').textContent='Review room access change';
+      $('review-copy').textContent=context.content.body;
+      $('review-mode').textContent='Recipient-encrypted key delivery';
+      $('review-signing').textContent='Your browser signs with a separate room administration key and funds the fee from a native stealth output. Registry updates within this room are linked to that administration key. Member pseudonyms, timing and fees are public. The existing board remains permissionless.';
+      $('confirm-publish').textContent='Publish room access change';
+    }
+    if(context.managed)$('review-copy').textContent='This message uses the current managed-room key. Removed members do not receive new generation keys. Old messages and previously shared keys remain accessible. Titles, categories and chain metadata are public.';
     operationState(
       "review",
       "Review the exact content and fee before publishing.",
@@ -1042,7 +1060,10 @@ async function finishTransaction(pending) {
     "indexing",
     "Your post was accepted. Loading its confirmed view…",
   );
-  if (pending.kind === "thread") {
+  if(pending.kind==='registry'){
+    await roomManager.finish(config,pending.roomAction,tx);
+    await openThread(pending.roomAction.thread);
+  } else if (pending.kind === "thread") {
     const latest = await api(`/api/board?address=${pending.board}`);
     const ref = latest.threads.find(
       (t) => JSON.stringify(t.uid) === JSON.stringify(pending.uid),
@@ -1111,12 +1132,17 @@ async function publish() {
       uid: body.uid,
       thread: body.thread,
       nonce: body.nonce,
+      ...(context.roomAction?{roomAction:context.roomAction}:{}),
     };
     if (context.key) {
       // Keep the pending secret encrypted locally under a temporary canonical locator until its address is known.
       const temporary = `component_${context.quote.operation}`;
       await saveKey(temporary, context.key);
       pending.keyLocator = temporary;
+    }
+    if(context.managed){
+      const state=await api(`/api/key-registry?address=${context.managed.registry}`);
+      if(state.revision!==context.managed.revision)throw Error('Room membership changed. Review your reply again before submitting.');
     }
     localStorage.setItem("hauntboard-pending", JSON.stringify(pending));
     transactionPending = pending;
@@ -1329,7 +1355,8 @@ $("reply-form").addEventListener("submit", async (e) => {
     };
     if (!content.body) throw new Error("Write a reply first.");
     const context = [currentThread.board, currentThread.uid, nonce, parent];
-    const key = await keyFor(currentThread.address);
+    const managed=sealedThread(currentThread)?await roomManager.writing(config,currentThread):null;
+    const key = managed?.key ?? await keyFor(currentThread.address);
     const payload =
       currentThread.schema === 4 && sealedThread(currentThread)
         ? await sealPost(
@@ -1337,12 +1364,12 @@ $("reply-form").addEventListener("submit", async (e) => {
             key,
             config,
             context,
-            sealedMetadata(currentThread.posts[0].payload),
+            {...sealedMetadata(currentThread.posts[0].payload),...(managed?{registry:managed.registry,generation:managed.generation}:{})},
           )
         : await encodePost(content, currentThread.mode, key, context);
     await review(
       { kind: "reply", thread: currentThread.address, nonce, parent, payload },
-      { content },
+      { content, managed },
     );
   } catch (e) {
     fieldError("reply", e.message);
@@ -1544,6 +1571,13 @@ $("invite-button").addEventListener("click", async () => {
     area.select();
   }
 });
+$('room-access-button').addEventListener('click',async()=>{
+  try{await roomManager.open(currentThread,config);}catch(e){flash(e.message,true);}
+});
+$('room-vault-button').addEventListener('click',async()=>{
+  try{$('keys-dialog').close();await roomManager.open(currentThread,config);}catch(e){flash(e.message,true);}
+});
+window.addEventListener('room-vault-locked',()=>{invalidateReview();roomManager.clearView();if(currentThread)renderThread(currentThread).catch(()=>{});});
 $("inspect-button").addEventListener("click", async () => {
   try {
     const raw = await api(`/api/raw?address=${currentThread.address}`);
@@ -1626,6 +1660,51 @@ $("copy-address").addEventListener("click", () =>
 );
 let walletBalanceVersion = 0;
 let walletWorking = false;
+let faucetWorking = false;
+let faucetUiError = null;
+function renderFaucet() {
+  const address = browserWallet.active()?.address;
+  const enabled = Boolean(config?.faucetEnabled && address && !browserWallet.needsPhraseConfirmation());
+  $("wallet-faucet").hidden = !enabled;
+  if (!enabled) {
+    $("wallet-faucet-status").textContent = config?.faucetEnabled ? "Finish your wallet backup to request test tokens." : "Open the TariTracker faucet to fund your Esmeralda wallet, then check for incoming funds.";
+    return;
+  }
+  try {
+    const record = faucetClient.read(config, address);
+    const waiting = record?.retryAt > Date.now();
+    const cooldown = record && ["confirmed", "failed", "rejected"].includes(record.status) && record.createdAt + 3600000 > Date.now();
+    $("wallet-faucet").disabled = walletWorking || faucetWorking || Boolean(waiting) || Boolean(cooldown);
+    $("wallet-faucet").textContent = faucetWorking ? "Checking funding request…" : cooldown ? `Next request in ${Math.ceil((record.createdAt + 3600000 - Date.now()) / 60000)} min` : !record || ["confirmed", "failed", "rejected"].includes(record.status) ? "Get 100 test tXTR" : record.status === "unknown" ? "Retry saved funding request" : "Check funding request";
+    $("wallet-faucet-status").textContent = faucetUiError?.address === address ? faucetUiError.message : faucetMessage(record) + (record?.error && waiting ? ` Try again in ${Math.ceil((record.retryAt - Date.now()) / 1000)} seconds.` : "");
+  } catch (error) {
+    $("wallet-faucet").disabled = true;
+    $("wallet-faucet-status").textContent = error.message;
+  }
+}
+async function refreshFaucet(request = false) {
+  const address = browserWallet.active()?.address;
+  if (faucetWorking || walletWorking || !config?.faucetEnabled || !address || browserWallet.needsPhraseConfirmation() || (!request && document.hidden)) return;
+  faucetWorking = true;
+  renderFaucet();
+  try {
+    const previous = faucetClient.read(config, address);
+    const record = await faucetClient.run(config, address, request);
+    if (request || record) faucetUiError = null;
+    if (browserWallet.active()?.address !== address) return;
+    if (record?.status === "confirmed" && previous?.status !== "confirmed") {
+      lastIncomingBalanceCheck = 0;
+      await refreshIncomingFunds();
+    }
+  } catch (error) {
+    if (browserWallet.active()?.address === address) faucetUiError = {address, message: error.message};
+  } finally {
+    faucetWorking = false;
+    renderFaucet();
+  }
+}
+$("wallet-faucet").addEventListener("click", () => refreshFaucet(true));
+setInterval(() => { renderFaucet(); refreshFaucet(); }, 4000);
 function showWalletBalance(balance, version = ++walletBalanceVersion) {
   if (version !== walletBalanceVersion) return;
   const identity = browserWallet.active()?.address ?? null;
@@ -1687,7 +1766,7 @@ function showWalletBalance(balance, version = ++walletBalanceVersion) {
           ? "Funds are available. Review a post to check its exact fee."
           : BigInt(balance?.revealed ?? 0) > 0n
             ? "Your funds are in a standard Tari account. Choose Convert to posting funds to make 10 test TARI available for posting."
-            : "No funds are available for posting. Use Need test tokens? or check for incoming funds.";
+            : "No funds are available for posting. Request test tokens below or check for incoming funds.";
 }
 let refreshingIncoming = false;
 let lastIncomingBalanceCheck = 0;
@@ -1869,6 +1948,7 @@ async function walletView() {
     walletUnlockMethod === "password" ? "Set six-digit PIN" : "Change PIN";
   $("incoming-funds").hidden = !wallet || !config.posterPrivacy;
   $("private-receive-address").value = wallet?.address ?? "";
+  renderFaucet();
   if (!wallet) return;
   if (config.posterPrivacy)
     scanIncomplete = !browserWallet.fundScanStatus().complete;
@@ -2014,6 +2094,7 @@ function walletAction(id, action, message) {
         .forEach((b) => (b.disabled = false));
       updateSeedConfirmation();
       updateDeleteConfirmation();
+      renderFaucet();
       if (browserWallet.postingPreparationStatus().pending) {
         $("wallet-prepare").textContent = "Check conversion status";
         $("wallet-prepare-confirm").hidden = true;
@@ -2126,6 +2207,7 @@ walletAction(
   () => {
     clearSeed();
     browserWallet.lock();
+    roomManager.lock();
     walletStep = "entry";
   },
   "Locking your wallet…",
@@ -2327,7 +2409,7 @@ $("privacy-button").addEventListener("click", () => {
   if (config.posterPrivacy) {
     info("What is private here?", [
       "Titles and categories are public. Public threads store readable messages; sealed threads store encrypted bodies. Schema 4 stores no author key. Accepted posts cannot be edited or deleted through Hauntboard. Testnet resets may remove history.",
-      "Sealed invitations contain a shared key in the URL fragment. Send it through a trusted private channel. Every key holder can read past and future messages and share the key. There is no revocation or author authentication. Wallet recovery words do not restore invitation keys; use the separate key backup.",
+      "Classic sealed invitations contain a shared key in the URL fragment. Send them through a trusted private channel. Room access adds recipient-specific encrypted invitations, a separate recovery vault and rotation for future messages. Old keys and plaintext cannot be revoked. Wallet recovery words do not restore either kind of room key; keep the appropriate encrypted backup and its recovery credential. Messages do not authenticate individual authors.",
       "Your browser signs posting fees with native one-time stealth spend keys. Your persistent owner signature and named account are omitted.",
       "Fees, spent-output graph, timing, public message clues and network connections remain visible. This does not prove complete anonymity.",
       "Each separately received output funds one post. Change stays held separately to avoid linking another post. Your recovery phrase restores wallet keys; keep it private.",
@@ -2483,7 +2565,16 @@ async function init() {
     const secret = new URLSearchParams(location.hash.slice(1));
     const invitedThread = secret.get("thread"),
       invitedKey = secret.get("key");
-    if (invitedThread && invitedKey) {
+    const invitedRegistry=secret.get('registry'),invitedAdmin=secret.get('admin');
+    if(invitedThread&&invitedRegistry){
+      const invitedBoard=secret.get('board');
+      if(!component.test(invitedThread)||!component.test(invitedBoard??'')||!component.test(invitedRegistry)||!/^[a-f0-9]{64}$/.test(invitedAdmin??''))throw Error('Invalid managed invitation.');
+      history.replaceState({},'',`/?board=${invitedBoard}&thread=${invitedThread}`);
+      const thread=await api(`/api/thread?address=${invitedThread}`);
+      if(thread.board!==invitedBoard||!sealedThread(thread))throw Error('Invalid managed room binding.');
+      boardAddress=invitedBoard;
+      await roomManager.accept(thread,config,invitedRegistry,invitedAdmin);
+    } else if (invitedThread && invitedKey) {
       if (!component.test(invitedThread))
         throw new Error("Invalid invitation.");
       const invitedBoard = secret.get("board") ?? boardAddress;

@@ -1,5 +1,21 @@
 # Hauntboard — public conversation without a persistent wallet author
 
+## October 20 update: recipient-encrypted sealed rooms
+
+Try the [interactive privacy demonstration](https://hauntboard.taritracker.com/privacy-demo). Create a room, invite Bob, recover his access, remove him, and see who can decrypt the next message. It runs actual HPKE and AES-256-GCM locally with synthetic data and links to the separate finalized Esmeralda receipts; the walkthrough creates no wallet and spends no funds.
+
+The new companion Tari contract authorizes recipient-envelope grants and room-key rotation with a separate per-room administration key. Managed invitations contain the registry binding, with no AES master key in the URL. The encrypted room vault stores recipient/admin private keys and key generations; restore requires the exported encrypted file and its separate high-entropy recovery secret. Wallet words do not restore it. Keep a new backup after access changes.
+
+Eight finalized [Esmeralda transactions](../evidence/room-key-esmeralda.json) cover template publication, preparing native posting outputs, sealed posting, registry creation, a recipient grant, another managed message, removal/rotation and a future message. The run verified outsider rejection, recipient delivery, encrypted recovery, retained historical access, and rejection of future ciphertext under the removed recipient's old key. [Public receipt list](https://hauntboard.taritracker.com/room-demo-evidence.json).
+
+Verification includes 45 Node privacy/foundation cases, four native registry engine tests, the existing 11 GUI scenarios per browser, recipient/recovery/management UI tests, and public HTTPS checks in Chromium and Firefox. [Live browser evidence](../evidence/room-live.json), [native engine evidence](../evidence/key-registry-engine.json), [protocol](../key-registry/README.md), [user guide](room-access.md). These are different evidence layers, not a sum of independent attacks.
+
+Existing board writes remain permissionless. Registry administration within a room is linkable. Titles, recipient pseudonyms, funding/output ancestry, fees and timing remain observable. Removal protects future messages under a fresh key; old envelopes, copied keys and saved plaintext remain usable. Members can share keys, and group encryption does not authenticate individual authors. Broad privacy/compatibility manifest flags remain unchanged. This is not an anonymity or strong unlinkability claim.
+
+When updating the existing forum submission, retain its Tari winnings address and Bluesky/Reddit announcement link, and add this update to the same post. This document does not publish a forum or social message.
+
+## Original submission text (historical)
+
 Hauntboard is an accessible message board running on Tari Ootle Esmeralda. Full posts are stored in contract state and can be read from an independently hosted client. Its privacy demonstration asks a concrete question: can a public application call pay its network fee without publishing the poster's persistent wallet key or named account?
 
 The browser uses Tari-native stealth inputs and one-time spend authorization to pay posting fees, with a fresh fee signer. The schema-4 contract stores no author field and has no edit/delete operation. Posting change is quarantined to avoid automatically funding the next post from a previous post's output. Browser wallet secrets remain local.

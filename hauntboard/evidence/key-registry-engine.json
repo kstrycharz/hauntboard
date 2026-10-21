@@ -1,0 +1,10 @@
+{
+  "status": "PASSED",
+  "checkedAtUtc": "2026-10-21T03:10:07.3241908Z",
+  "engine": "0.45.0",
+  "templateLib": "0.34.0",
+  "passed": 4,
+  "failed": 0,
+  "wasmSha256": "a54676baf3788ac27ef703459bac1a4606ea9b11fb195b8b119e272997504467",
+  "scope": "Native Tari engine: admin possession, authorization, grants, rotation, history, stale revision, invalid member and capacity cases."
+}

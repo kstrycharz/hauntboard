@@ -1,6 +1,6 @@
 // Decode and calculate transaction identity using released Tari code.
 use tari_ootle_transaction::Transaction;
-static mut INPUT: [u8; 16000] = [0; 16000];
+static mut INPUT: [u8; 262144] = [0; 262144];
 static mut OUTPUT: [u8; 32] = [0; 32];
 static mut MAX_EPOCH: u64 = 0;
 #[unsafe(no_mangle)]
@@ -11,7 +11,7 @@ pub extern "C" fn identity_buffer() -> *mut u8 { std::ptr::addr_of_mut!(OUTPUT).
 pub extern "C" fn transaction_max_epoch() -> u64 { unsafe { MAX_EPOCH } }
 #[unsafe(no_mangle)]
 pub extern "C" fn transaction_identity(len: usize) -> u32 {
-    if len == 0 || len > 16000 { return 1; }
+    if len == 0 || len > 262144 { return 1; }
     let bytes = unsafe { std::slice::from_raw_parts(transaction_buffer(), len) };
     let Ok(transaction) = tari_bor::decode_exact::<Transaction>(bytes) else { return 2; };
     let id = transaction.calculate_id();

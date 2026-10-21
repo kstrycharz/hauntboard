@@ -13,6 +13,9 @@ services:
       INDEXER_URL: https://ootle-indexer-a.tari.com
       APPROVED_PROVIDER_ORIGINS: https://ootle-indexer-a.tari.com,https://ootle-indexer-b.tari.com
       CONFIG_FILE: /run/hauntboard/network.json
+      # Optional server-only key; .env is ignored by Git and excluded from images.
+      FAUCET_API_KEY: ${FAUCET_API_KEY:-}
+      HAUNTBOARD_FAUCET_ENABLED: ${HAUNTBOARD_FAUCET_ENABLED:-true}
     volumes:
       - ./hauntboard/deploy/network.public.json:/run/hauntboard/network.json:ro
       - operations:/companion

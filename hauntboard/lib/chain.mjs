@@ -73,7 +73,7 @@ export async function getSubstate(indexer, address, template, fallbackProviders 
     try {
       const response = await fetch(`${provider}/substates/${address}`, {signal:AbortSignal.timeout(fallbackProviders.length?12000:20000),redirect:'error'});
       if(!response.ok) continue;
-      row = await response.json();
+      row = providerState(await response.json());
     } catch { continue; }
     // A second provider may supply a verified row during indexing/proof delays.
     // Never accept an unverified row, or widen the configured template allowlist.
@@ -107,3 +107,4 @@ export async function quoteTip(config, destination, amount, selection='Confident
   }
   return {...request,max_fee:maxFee,dry_run:false};
 }
+import {providerState} from '../web/provider-state.mjs';

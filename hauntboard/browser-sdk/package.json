@@ -2,15 +2,25 @@
   "name": "hauntboard-browser-sdk",
   "private": true,
   "type": "module",
-  "scripts": {"build": "vite build"},
+  "scripts": {
+    "build": "vite build && vite build --config hpke.vite.config.mjs"
+  },
   "dependencies": {
+    "@hpke/core": "1.9.0",
+    "@scure/bip39": "2.0.1",
     "@tari-project/ootle": "0.7.0",
     "@tari-project/ootle-indexer": "0.7.0",
     "@tari-project/ootle-secret-key-wallet": "0.7.0",
     "@tari-project/ootle-wasm": "0.43.0",
-    "@scure/bip39": "2.0.1",
     "cbor-x": "1.6.6"
   },
-  "devDependencies": {"vite": "8.3.2", "vite-plugin-wasm": "3.6.0"},
-  "pnpm": {"overrides": {"@tari-project/ootle-wasm": "0.43.0"}}
+  "devDependencies": {
+    "vite": "8.3.2",
+    "vite-plugin-wasm": "3.6.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@tari-project/ootle-wasm": "0.43.0"
+    }
+  }
 }

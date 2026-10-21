@@ -1,12 +1,14 @@
 {
-  "checkedAt": "2026-10-16T17:17:09.735Z",
+  "checkedAt": "2026-10-21T03:06:10.820Z",
   "status": "PASSED",
   "runtime": "v22.21.1",
-  "tests": 38,
-  "passed": 38,
+  "tests": 45,
+  "passed": 45,
   "failed": 0,
   "scope": "Local adversarial/unit checks. Actual released Tari SDK/WASM cryptography uses synthetic provider rows; no chain spends. Browser and native-engine evidence are separate.",
   "suites": [
+    "hauntboard/tests/room-keys.test.mjs",
+    "hauntboard/tests/provider-state.test.mjs",
     "hauntboard/tests/sealed-posts.test.mjs",
     "hauntboard/tests/stealth-fee-privacy.test.mjs",
     "hauntboard/tests/privacy-audit.test.mjs",
@@ -19,8 +21,10 @@
     "hauntboard/tests/component-provider.mjs"
   ],
   "sourceHashes": {
+    "hauntboard/tests/room-keys.test.mjs": "e70185e90dcefea52af084af1207e5293800823af97e9adc9fda3eaf516eb020",
+    "hauntboard/tests/provider-state.test.mjs": "ae42301e2ca4191790b06e0c12e58505cc33ec56bddd8f25a5739286535c516b",
     "hauntboard/tests/sealed-posts.test.mjs": "c9af0f36a2bd6f78799549638e68ba98393ac317a2d2609cb1c02a161e8723f8",
-    "hauntboard/tests/stealth-fee-privacy.test.mjs": "2efb41787013fb642f4beabcef9f68dd42d9cfea55807a2c4c2d7aa8c267f329",
+    "hauntboard/tests/stealth-fee-privacy.test.mjs": "3e139a602645b88ca1fde384574d36e878518bfab12cfdcbce181f00784455bc",
     "hauntboard/tests/privacy-audit.test.mjs": "d7ec39262b7b2445211f81aabca1e3f967713573e04bdeb2b82ceeb772b3ae6d",
     "hauntboard/tests/state.test.mjs": "71500718032d697ca36aa50d722c86ac41fcc4d102243097ae2698e07e8b81d8",
     "hauntboard/tests/output-ledger.test.mjs": "0203c22dde0fd1057b6aa96cbd2b7cca781d48d79025ad7599899bb662fd509d",
@@ -29,8 +33,8 @@
     "hauntboard/tests/relay-reconciliation.test.mjs": "7637d27619a5e80d42c41580b94e94976fb1108030921c6d79441cd550cf3fa0",
     "hauntboard/tests/post-proof.test.mjs": "cca1fd5e95ddaaf8962240189d2f29a6cf95bbdd8ceee1ec0d32eaaaf1348768",
     "hauntboard/tests/component-provider.mjs": "44be988683c3399e98015fcce3eddbe8dddaa96b4940cead0ddba0ac59c06fc9",
-    "hauntboard/web/sealed-posts.mjs": "b1f222f8e3230f9075a5f4b5ee3321f1f1e17643d8c9c834b43d7b7048a12848",
-    "hauntboard/web/stealth-fee.mjs": "e66b02fa4f94743f9a30ea15395ec50815de81d46ebce77bbad0d451c184cfe3",
+    "hauntboard/web/sealed-posts.mjs": "f7274524b6bfc1242d5b5eb6652047112abc7d50fb25a2d3d12774c281341cb8",
+    "hauntboard/web/stealth-fee.mjs": "c93a2777407d156f0c3ce64df380d30bb7f90f3fc9c1c691b463b30af304dbb7",
     "hauntboard/lib/privacy-audit.mjs": "7b27708a09d571891885adea5ca9a78c4b21ab19425cc1bdd28ac4b63f2bc3b7"
   },
   "strongUnlinkabilityProven": false

@@ -18,14 +18,14 @@ export function createApiClient({getConfig, fetchImpl = fetch}) {
       const refreshed = await fetchImpl('/api/config', {cache:'no-store'});
       if(!refreshed.ok) throw new Error('Could not refresh this client session. Reload and check your existing submission.');
       const next = await refreshed.json();
-      const identity = ['network','networkByte','resetIdentity','board','template','schema','posterPrivacy','profile'];
+      const identity = ['network','networkByte','resetIdentity','board','template','keyRegistryTemplate','schema','posterPrivacy','profile'];
       if(identity.some(key => previous[key] !== next[key]) || typeof next.csrf !== 'string' || !next.csrf)
         throw new Error('The network or board configuration changed. Reload before continuing; your saved wallet and pending submission are preserved.');
       previous.csrf = next.csrf;
       result = await send();
     }
     if(!result.response.ok)
-      throw Object.assign(new Error(result.data.error ?? 'The client service is unavailable.'), {status:result.response.status});
+      throw Object.assign(new Error(result.data.error ?? 'The client service is unavailable.'), {status:result.response.status, retryAfter:result.response.headers?.get('Retry-After')});
     return result.data;
   };
 }

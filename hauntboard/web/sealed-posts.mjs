@@ -20,7 +20,7 @@ function parse(payload) {
 export function isSealedPayload(payload) {
   try {
     const p = parse(payload);
-    return p.v === 2 && p.kind === 'sealed';
+    return [2,3].includes(p.v) && p.kind === 'sealed';
   } catch {
     return false;
   }
@@ -29,7 +29,7 @@ export function isSealedPayload(payload) {
 export function sealedMetadata(payload) {
   const p = parse(payload);
   if (
-    p.v !== 2 ||
+    ![2,3].includes(p.v) ||
     p.kind !== 'sealed' ||
     p.alg !== 'A256GCM' ||
     typeof p.title !== 'string' ||
@@ -40,6 +40,7 @@ export function sealedMetadata(payload) {
     unbase64(p.ct).length !== PADDED_BYTES + 16
   )
     throw new Error('Invalid sealed envelope.');
+  if(p.v===3 && (!/^component_[a-f0-9]{64}$/.test(p.registry??'') || !Number.isInteger(p.generation) || p.generation<0 || p.generation>=16)) throw new Error('Invalid managed-room envelope.');
   return p;
 }
 
@@ -47,18 +48,19 @@ export function sealedThread(thread) {
   return thread?.mode === 1 || isSealedPayload(thread?.posts?.find((p) => p.index === 0)?.payload);
 }
 
-function aad(profile, context, title, category) {
+function aad(profile, context, title, category, managed) {
   if (!['localnet', 'esmeralda'].includes(profile?.network) || !profile.resetIdentity)
     throw new Error('A pinned network and reset identity are required.');
   return encoder.encode(
     JSON.stringify([
       'hauntboard-sealed',
-      2,
+      managed ? 3 : 2,
       profile.network,
       profile.resetIdentity,
       ...context,
       title,
       category,
+      ...(managed ? [managed.registry,managed.generation] : []),
     ]),
   );
 }
@@ -91,7 +93,7 @@ export async function sealPost(content, key, profile, context, metadata) {
       {
         name: 'AES-GCM',
         iv,
-        additionalData: aad(profile, context, metadata.title, metadata.category),
+        additionalData: aad(profile, context, metadata.title, metadata.category, metadata.registry ? metadata : null),
       },
       await aesKey(key, 'encrypt'),
       padded,
@@ -99,11 +101,12 @@ export async function sealPost(content, key, profile, context, metadata) {
     const payload = Array.from(
       encoder.encode(
         JSON.stringify({
-          v: 2,
+          v: metadata.registry ? 3 : 2,
           kind: 'sealed',
           alg: 'A256GCM',
           title: metadata.title,
           category: metadata.category,
+          ...(metadata.registry ? {registry:metadata.registry,generation:metadata.generation} : {}),
           iv: base64(iv),
           ct: base64(new Uint8Array(ciphertext)),
         }),
@@ -129,7 +132,7 @@ export async function openSealedPost(payload, key, profile, context, expectedTit
         {
           name: 'AES-GCM',
           iv: unbase64(p.iv),
-          additionalData: aad(profile, context, p.title, p.category),
+          additionalData: aad(profile, context, p.title, p.category, p.v===3 ? p : null),
         },
         await aesKey(key, 'decrypt'),
         unbase64(p.ct),

@@ -3,6 +3,8 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 
 const suites = [
+  'room-keys.test.mjs',
+  'provider-state.test.mjs',
   'sealed-posts.test.mjs',
   'stealth-fee-privacy.test.mjs',
   'privacy-audit.test.mjs',

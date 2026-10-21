@@ -1,0 +1,30 @@
+{
+  "status": "PASSED",
+  "origin": "https://hauntboard.taritracker.com",
+  "checkedAt": "2026-10-21T03:17:26.341Z",
+  "chainWrites": 0,
+  "browsers": {
+    "chromium": {
+      "ready": true,
+      "pinnedRegistry": true,
+      "currentRegistryReadable": true,
+      "mainUiVaultRequestAndUnlock": true,
+      "interactiveDemoCompleted": true,
+      "receiptLinks": 8,
+      "mobileOverflow": false,
+      "pageErrors": 0,
+      "assetHashesMatch": true
+    },
+    "firefox": {
+      "ready": true,
+      "pinnedRegistry": true,
+      "currentRegistryReadable": true,
+      "mainUiVaultRequestAndUnlock": true,
+      "interactiveDemoCompleted": true,
+      "receiptLinks": 8,
+      "mobileOverflow": false,
+      "pageErrors": 0,
+      "assetHashesMatch": true
+    }
+  }
+}

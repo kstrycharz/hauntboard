@@ -7,6 +7,8 @@ on:
       - 'hauntboard/lib/**'
       - 'hauntboard/web/**'
       - 'hauntboard/template-public/**'
+      - 'hauntboard/key-registry/**'
+      - 'hauntboard/browser-sdk/**'
       - 'release/SHA256SUMS'
       - 'infra/docker/hauntboard.Dockerfile'
       - '.github/workflows/release.yml'
@@ -28,12 +30,13 @@ jobs:
           persist-credentials: false
       - name: Verify artifacts and test server and wallet foundations
         run: |
-          docker run --rm -v "$PWD:/workspace" -w /workspace node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c sh -c 'node hauntboard/scripts/verify-release.mjs && node hauntboard/scripts/test-privacy.mjs && node --test hauntboard/tests/release-mode.test.mjs hauntboard/tests/operations-backup.test.mjs hauntboard/tests/faucet-discovery.test.mjs hauntboard/tests/pin-entry.test.mjs'
+          docker run --rm -v "$PWD:/workspace" -w /workspace node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c sh -c 'node hauntboard/scripts/verify-release.mjs && node hauntboard/scripts/test-privacy.mjs && node --test hauntboard/tests/release-mode.test.mjs hauntboard/tests/operations-backup.test.mjs hauntboard/tests/faucet-discovery.test.mjs hauntboard/tests/pin-entry.test.mjs hauntboard/tests/faucet-api.test.mjs hauntboard/tests/faucet-client.test.mjs'
       - name: Build immutable application image and verify runtime
         run: |
           docker build -f infra/docker/hauntboard.Dockerfile -t "hauntboard:release-$GITHUB_SHA" .
           docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /companion:uid=1000,gid=1000 -v "$PWD/hauntboard/tests:/tests:ro" "hauntboard:release-$GITHUB_SHA" node /tests/public-server.mjs
           docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /companion:uid=1000,gid=1000 -v "$PWD/hauntboard/tests:/tests:ro" "hauntboard:release-$GITHUB_SHA" node /tests/public-availability.mjs
+          docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /companion:uid=1000,gid=1000 -v "$PWD/hauntboard/tests:/tests:ro" "hauntboard:release-$GITHUB_SHA" node /tests/faucet-server.mjs
           mkdir -p release-output
           docker save "hauntboard:release-$GITHUB_SHA" | gzip > release-output/hauntboard-image.tar.gz
           cp hauntboard/template-public/hauntboard_public.wasm release-output/
@@ -46,6 +49,7 @@ jobs:
         run: |
           docker build -f infra/docker/local-tests.Dockerfile -t hauntboard-browser-tests:privacy .
           docker run --rm --shm-size=1g -v "$PWD:/workspace" -v hauntboard_privacy_browser_modules:/workspace/node_modules -w /workspace hauntboard-browser-tests:privacy node hauntboard/tests/gui.mjs
+          docker run --rm --shm-size=1g -v "$PWD:/workspace" -v hauntboard_privacy_browser_modules:/workspace/node_modules -w /workspace hauntboard-browser-tests:privacy node hauntboard/tests/room-browser.mjs
       - name: Publish downloadable release
         env:
           GH_TOKEN: ${{ github.token }}

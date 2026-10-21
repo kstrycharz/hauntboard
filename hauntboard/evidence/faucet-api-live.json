@@ -1,0 +1,33 @@
+{
+  "origin": "https://hauntboard.taritracker.com",
+  "scope": "Live HTTPS assets/config and real isolated browser wallets; faucet claim/status responses simulated in browser routing. No on-chain writes, withdrawals or public posts.",
+  "claimsCreated": 0,
+  "browsers": {
+    "chromium": {
+      "status": "PASSED",
+      "checks": [
+        "live 100 tXTR button and linked attribution",
+        "real native wallet creation; recovery words remain in isolated browser",
+        "receipt saved before intercepted request",
+        "reload resumes the same receipt",
+        "uncertain payment reconciled without replacement",
+        "confirmation triggers incoming-funds scan and shows cooldown"
+      ],
+      "actualWithdrawals": 0
+    },
+    "firefox": {
+      "status": "PASSED",
+      "checks": [
+        "live 100 tXTR button and linked attribution",
+        "real native wallet creation; recovery words remain in isolated browser",
+        "receipt saved before intercepted request",
+        "reload resumes the same receipt",
+        "uncertain payment reconciled without replacement",
+        "confirmation triggers incoming-funds scan and shows cooldown"
+      ],
+      "actualWithdrawals": 0
+    }
+  },
+  "checkedAt": "2026-10-16T18:04:49.830Z",
+  "status": "PASSED"
+}

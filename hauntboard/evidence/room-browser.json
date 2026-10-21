@@ -1,0 +1,25 @@
+{
+  "checkedAt": "2026-10-21T03:15:52.646Z",
+  "scope": "Real browser cryptography, encrypted recovery and Web Locks; no network spends.",
+  "browsers": {
+    "chromium": {
+      "recipientDelivery": true,
+      "outsiderDenied": true,
+      "cleanBrowserRecovery": true,
+      "removedRecipientDenied": true,
+      "crossTabLock": true,
+      "concurrentCreationSafe": true,
+      "managementUiCreateGrantAndRotate": true
+    },
+    "firefox": {
+      "recipientDelivery": true,
+      "outsiderDenied": true,
+      "cleanBrowserRecovery": true,
+      "removedRecipientDenied": true,
+      "crossTabLock": true,
+      "concurrentCreationSafe": true,
+      "managementUiCreateGrantAndRotate": true
+    }
+  },
+  "status": "PASSED"
+}

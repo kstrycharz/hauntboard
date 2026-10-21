@@ -23,7 +23,9 @@ This is an independently hosted **client**, not an independent network node. The
 
 ## Wallet funding
 
-The wallet includes a **Need test tokens?** link to [the testnet faucet](https://testnet-faucet.taritracker.com/). Hauntboard no longer submits faucet claims. Receive funds or recover a funded wallet, then use **Check for incoming funds**. For funds held in a standard Tari account, choose **Convert to posting funds** and review the network fee.
+The hosted wallet's **Need test tokens?** section includes **Get 100 test tXTR**, powered by the [TariTracker.com faucet](https://testnet-faucet.taritracker.com/). Hauntboard sends requests through its backend; the faucet API key never reaches the browser. Requests share your receive address with Hauntboard and the faucet. A saved receipt tracks queued, pending, uncertain and confirmed payments across reloads. Interrupted requests reuse the same receipt and payload; confirmation still requires the wallet to scan the incoming output before the balance updates.
+
+The faucet allows one withdrawal per wallet owner per hour across its website and API. Hauntboard also limits each browser session to one new request per hour; shared faucet budgets and quotas apply. Self-hosted clients without a backend API key show the faucet link instead. Receive funds or recover a funded wallet, then use **Check for incoming funds**. For funds held in a standard Tari account, choose **Convert to posting funds** and review the network fee.
 
 ## Check posts on chain
 
@@ -42,6 +44,10 @@ sh hauntboard/scripts/build-release.sh
 Allow at least 8 GB RAM and compiler-cache storage for this full build. It runs contract/server tests and submits no chain transaction. Rebuilt artifacts require review against the published template before any new publication.
 
 ## Verify the privacy claims
+
+Recipient-specific invitations, encrypted room-vault recovery and key rotation are available through **Room access** in a sealed thread. See the [usage guide](hauntboard/docs/room-access.md), [registry specification](hauntboard/key-registry/README.md), and [interactive demonstration](https://hauntboard.taritracker.com/privacy-demo). The companion registry authorizes key distribution; existing board writes remain permissionless. Classic invitations remain supported. Removal protects future messages; copied old keys and plaintext remain usable.
+
+The [Esmeralda demonstration](hauntboard/evidence/room-key-esmeralda.json) records finalized template publication, native-stealth-funded posts, recipient delivery and removal/rotation. Four native registry engine tests and the Chromium/Firefox recipient/recovery/management scenarios are recorded separately. These checks establish the exercised behavior, not anonymity or a comprehensive security audit. Broader privacy/compatibility manifest flags remain unchanged.
 
 Read the [threat model](hauntboard/docs/privacy-threat-model.md), [reproducible verification and judge walkthrough](hauntboard/docs/privacy-verification.md), and [contest submission draft](hauntboard/docs/contest-submission.md). The recorded local run has 38 passing Node test entries, seven native engine cases and ten browser scenarios per browser in Chromium and Firefox. These are separate evidence layers, not an inflated count of independent attacks.
 

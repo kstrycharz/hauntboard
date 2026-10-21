@@ -23,6 +23,7 @@ playwright-report/
 test-results/
 docs/evidence/m1/walkthrough/
 .cache/
+.pnpm-store/
 .next/
 .vercel/
 
@@ -33,7 +34,9 @@ docs/evidence/m1/walkthrough/
 /templates/hauntbox-room/hauntbox-room.wasm
 /hauntboard/template/hauntboard.wasm
 /hauntboard/template-public/hauntboard_public.wasm
-/hauntboard/web/vendor/
+/hauntboard/web/vendor/*
+!/hauntboard/web/vendor/hpke.mjs
+!/hauntboard/web/vendor/hpke-LICENSE.txt
 /hauntboard/web/wallet-recovery.wasm
 /hauntboard/artifacts/
 /hauntboard/evidence/failure*.png

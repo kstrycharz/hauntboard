@@ -1,5 +1,11 @@
 # Hauntboard privacy claims and adversaries
 
+## October 20 recipient-key update
+
+The historical version-2 statements below describe classic bearer invitations. New managed access uses a separately published companion registry, recipient-specific HPKE envelopes, encrypted room-vault exports and independent random keys for future generations. See [room access](room-access.md) and [the complete registry protocol](../key-registry/README.md). Existing board writes are still permissionless. Removal protects subsequent messages encrypted under the rotated key, not old ciphertext, saved plaintext or key sharing by another member. Admin signatures authorize registry changes and link those changes within a room. Managed invitation bindings must be delivered through a trusted channel; an ownerless existing board cannot attest its creator retrospectively.
+
+The live [Esmeralda run](../evidence/room-key-esmeralda.json) now establishes finalized sealed posting, recipient delivery, recovery and future-message exclusion for that demonstration. It does not establish broad transaction unlinkability, independent consensus verification or device security. Older pending statements below remain historical context.
+
 Reviewed October 15, 2026. The implementation targets the existing Esmeralda schema-4 board. New sealed content is a browser envelope inside the existing mode-0 byte payload; no contract migration is required. This document separates source behavior, local execution and public-chain evidence.
 
 ## The claim worth demonstrating

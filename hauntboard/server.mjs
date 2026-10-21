@@ -11,9 +11,12 @@ import {networkProfile} from './web/network-profile.mjs';
 import {Relay} from './lib/relay.mjs';
 import {testnetBeta,validatePublicManifest} from './lib/release-mode.mjs';
 import {transactionIdentity} from './web/transaction-identity.mjs';
+import {Faucet} from './lib/faucet.mjs';
+import {decodeRegistry} from './web/key-registry.mjs';
 
 const runtime=serverProfile(process.env),publicMode=runtime.profile!=='local';
 const beta=testnetBeta(process.env);
+const faucet=process.env.FAUCET_API_KEY && process.env.HAUNTBOARD_FAUCET_ENABLED!=='false' ? new Faucet({key:process.env.FAUCET_API_KEY}) : null;
 const relay=new Relay('/companion/browser-operations');
 const role=process.env.ROLE??'sender';
 if(!['sender','receiver'].includes(role))throw new Error('INVALID_LOCAL_ROLE');
@@ -48,7 +51,12 @@ knownFiles.set('/transaction-identity.mjs','transaction-identity.mjs');
 knownFiles.set('/transaction-identity.wasm','transaction-identity.wasm');
 knownFiles.set('/output-ledger.mjs','output-ledger.mjs');
 knownFiles.set('/faucet-discovery.mjs','faucet-discovery.mjs');
-const mime={html:'text/html; charset=utf-8',mjs:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8',wasm:'application/wasm'};
+knownFiles.set('/faucet-client.mjs','faucet-client.mjs');
+for(const name of ['room-keys.mjs','room-vault.mjs','room-manager.mjs','key-registry.mjs','vendor/hpke.mjs'])knownFiles.set('/'+name,name);
+knownFiles.set('/provider-state.mjs','provider-state.mjs');
+for(const [route,name]of [['/privacy-demo','room-demo.html'],['/room-demo.mjs','room-demo.mjs'],['/room-demo.css','room-demo.css'],['/room-demo-evidence.json','room-demo-evidence.json']])knownFiles.set(route,name);
+knownFiles.set('/vendor/hpke-LICENSE.txt','vendor/hpke-LICENSE.txt');
+const mime={json:'application/json; charset=utf-8',html:'text/html; charset=utf-8',mjs:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8',wasm:'application/wasm'};
 const error=(message,status=400)=>Object.assign(new Error(message),{status});
 async function config(){
   const c=JSON.parse(await readFile(configPath,'utf8'));
@@ -80,7 +88,7 @@ async function readThread(c,address,before){
 function json(res,body,status=200){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(body));}
 async function input(req){
   let size=0;const chunks=[];
-  for await(const chunk of req){size+=chunk.length;if(size>24000)throw error('Request is too large.',413);chunks.push(chunk);}
+  for await(const chunk of req){size+=chunk.length;if(size>200000)throw error('Request is too large.',413);chunks.push(chunk);}
   try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw error('Invalid request.');}
 }
 function byteInput(value,length){if(!Array.isArray(value)||value.length!==length||!value.every(x=>Number.isInteger(x)&&x>=0&&x<=255))throw error('Invalid post identity.');return value;}
@@ -195,7 +203,15 @@ const server=createServer(async(req,res)=>{
       if(req.headers['x-hauntboard-csrf']!==csrf)throw Object.assign(error('This client session expired. Refresh the session before continuing.',403),{clientCode:'SESSION_EXPIRED'});
     }
     if(req.method==='GET'&&url.pathname==='/api/config'){
-      json(res,{network:c.network,networkByte:c.networkByte,resetIdentity:c.resetIdentity,profile:runtime.profile,testnetBeta:publicMode&&beta,compatibilityVerified:c.compatibilityVerified===true,posterPrivacyVerified:c.posterPrivacyVerified===true,providerRuntimeVersion:c.providerRuntimeVersion,posterPrivacy:c.posterPrivacy,schema:c.schema,version:'0.43.0',board:c.board,template:c.template,legacyBoards:c.legacyBoards??[],instance:c.instance,role,label:publicMode?'Browser wallet':role==='sender'?'Ghost A':'Ghost B',account:publicMode?undefined:c.account,receiveAddress:publicMode?undefined:c.address,provider:publicMode?'Tari Esmeralda provider · '+new URL(indexer).host:role==='sender'?'Primary local indexer':'Independent local indexer',providerUrl:publicMode?indexer:undefined,csrf,limits:{posts:2048,pageSize:16,pages:128,threads:128,envelopeBytes:4096},walletExpiresAt:publicMode?undefined:c.expiresAt});return;
+      if(faucet&&c.network==='esmeralda')faucet.session(req,res,runtime.origin?.startsWith('https:'));
+      json(res,{keyRegistryTemplate:c.keyRegistryTemplate??null,network:c.network,networkByte:c.networkByte,resetIdentity:c.resetIdentity,profile:runtime.profile,testnetBeta:publicMode&&beta,compatibilityVerified:c.compatibilityVerified===true,posterPrivacyVerified:c.posterPrivacyVerified===true,providerRuntimeVersion:c.providerRuntimeVersion,posterPrivacy:c.posterPrivacy,schema:c.schema,version:'0.43.0',board:c.board,template:c.template,legacyBoards:c.legacyBoards??[],instance:c.instance,role,label:publicMode?'Browser wallet':role==='sender'?'Ghost A':'Ghost B',account:publicMode?undefined:c.account,receiveAddress:publicMode?undefined:c.address,provider:publicMode?'Tari Esmeralda provider · '+new URL(indexer).host:role==='sender'?'Primary local indexer':'Independent local indexer',providerUrl:publicMode?indexer:undefined,faucetEnabled:Boolean(faucet&&c.network==='esmeralda'),faucetAmountTokens:100,csrf,limits:{posts:2048,pageSize:16,pages:128,threads:128,envelopeBytes:4096},walletExpiresAt:publicMode?undefined:c.expiresAt});return;
+    }
+    if(req.method==='POST'&&['/api/faucet-claim','/api/faucet-status'].includes(url.pathname)){
+      if(!faucet||c.network!=='esmeralda')throw error('In-app faucet funding is unavailable. Use the linked TariTracker faucet.',404);
+      const body=await input(req),session=faucet.authenticate(req),scope=`${c.network}:${c.resetIdentity}`;
+      if(!body||typeof body!=='object'||Array.isArray(body))throw error('Invalid faucet request.');
+      const result=url.pathname==='/api/faucet-claim'?await faucet.claim(scope,session,body):await faucet.status(scope,session,body.receipt);
+      json(res,result);return;
     }
     if(req.method==='POST'&&url.pathname==='/api/faucet-outputs'){
       const body=await input(req);
@@ -215,7 +231,7 @@ const server=createServer(async(req,res)=>{
     }
     if(req.method==='POST'&&url.pathname==='/api/browser-submit'){
       const body=await input(req);
-      if(!/^[a-f0-9]{64}$/.test(body.operation??'')||typeof body.transaction!=='string'||body.transaction.length>20000)throw error('Invalid signed browser transaction.');
+      if(!/^[a-f0-9]{64}$/.test(body.operation??'')||typeof body.transaction!=='string'||body.transaction.length>180000)throw error('Invalid signed browser transaction.');
       // Preserve historical local operation records for already-open clients.
       if(!publicMode){let prior;try{prior=JSON.parse(await readFile(`/companion/operations/${body.operation}.json`,'utf8'));}catch(e){if(e.code!=='ENOENT')throw e;}if(prior){if(prior.fingerprint!==createHash('sha256').update(body.transaction).digest('hex'))throw error('Operation contains different signed bytes.',409);if(prior.tx){json(res,{transaction_id:prior.tx,reused:true});return;}throw error('Submission outcome is uncertain.',409);}}
       const expectedId=await transactionIdentity(body.transaction,()=>readFile(join(siteRoot,'transaction-identity.wasm')));
@@ -226,6 +242,12 @@ const server=createServer(async(req,res)=>{
         if(!upstream.ok)throw error('Provider did not acknowledge submission. Reconcile its outcome.',503);
         return sent;
       },{transactionId:expectedId}));return;
+    }
+    if(req.method==='GET'&&url.pathname==='/api/key-registry'){
+      const address=url.searchParams.get('address');
+      if(!COMPONENT.test(address??'')||!/^[a-f0-9]{64}$/.test(c.keyRegistryTemplate??''))throw error('Key registry is not enabled for this network.',404);
+      const row=await getSubstate(indexer,address,[c.keyRegistryTemplate],boardReadFallbacks);
+      json(res,decodeRegistry(row,address,c.keyRegistryTemplate));return;
     }
     if(req.method==='GET'&&['/api/board','/api/thread','/api/raw'].includes(url.pathname)){
       const address=url.searchParams.get('address')??c.board;
@@ -259,6 +281,7 @@ const server=createServer(async(req,res)=>{
     if(req.method==='POST'&&url.pathname==='/api/submit'){const body=await input(req);json(res,await sendQuote(c,body.quoteId));return;}
     throw error('Not found.',404);
   }catch(e){
+    if(e.retryAfter)res.setHeader('Retry-After',String(e.retryAfter));
     if(!publicMode&&e.rpcCode!==undefined)await atomicJson('/companion/last-rpc-error.json',{code:e.rpcCode,message:e.message,diagnostic:e.diagnostic}).catch(()=>{});
     const friendly=e.rpcCode===401?'Local wallet authentication expired. Run the local bootstrap again.':e.diagnostic?.includes('Post page changed')?'New replies opened another page. Sync from chain, then review your reply again. Your draft is preserved.':e.rpcCode!==undefined?`Wallet simulation rejected this operation (${e.rpcCode}). Your draft is preserved.`:e.message;
     json(res,{error:friendly,code:e.clientCode,transactionId:e.transactionId},e.status??503);

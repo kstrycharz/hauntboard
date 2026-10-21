@@ -8,6 +8,8 @@ import {
 } from "./transaction-identity.mjs";
 import { scanOutputLedger } from "./output-ledger.mjs";
 import { decryptFaucetDiscovery, discoverFaucetOutputs } from "./faucet-discovery.mjs";
+import { envelopeEntries } from './key-registry.mjs';
+import {providerState} from './provider-state.mjs';
 import {
   newPhrase,
   keysFromPhrase,
@@ -619,7 +621,7 @@ const provider = {
     (await api("/api/indexer", { method: "GET", path: "epoch-manager/stats" }))
       .current_epoch,
   getSubstate: async (id) =>
-    api("/api/indexer", { method: "GET", path: `substates/${id}` }),
+    providerState(await api("/api/indexer", { method: "GET", path: `substates/${id}` })),
   getStealthUtxo: async (resource, commitment) =>
     provider.getSubstate(sdk.stealthUtxoSubstateId(resource, commitment)),
   resolveInputs: async (inputs) =>
@@ -932,19 +934,19 @@ export async function importIncoming(transactionId) {
     return { found, ...privateFunds() };
   });
 }
-async function privateReview(body) {
+async function privateReview(body, registrySigner) {
   if (needsPhraseConfirmation())
     throw new Error("Save and confirm your recovery phrase before posting.");
   await refreshPrivateMaterial();
   if (body.kind === "tip" || body.mode === 1)
     throw new Error("Use schema-4 byte payloads and native posting fees for this board.");
-  const target = body.board ?? body.thread,
+  const target = body.kind==='registry' ? (body.registry ?? body.board) : body.board ?? body.thread,
     state = await api(
-      body.kind === "thread"
+      body.kind === 'registry' && body.registry ? `/api/key-registry?address=${target}` : body.kind === "thread" || body.kind==='registry'
         ? `/api/board?address=${target}`
         : `/api/thread?address=${target}`,
     );
-  if (state.schema !== 4)
+  if (body.kind!=='registry' && state.schema !== 4)
     throw new Error(
       "Use the public privacy contract; legacy boards retain signer identities.",
     );
@@ -998,7 +1000,19 @@ async function privateReview(body) {
     );
   const builder = new sdk.TransactionBuilder(config.networkByte, 0),
     extra = [];
-  if (body.kind === "thread")
+  if (body.kind === 'registry') {
+    if(!registrySigner || !/^[a-f0-9]{64}$/.test(config.keyRegistryTemplate??'')) throw Error('Key registry is not enabled on this network.');
+    const entries=envelopeEntries(body.envelopes);
+    if(!entries.length || entries.length>16) throw Error('Invalid room member count.');
+    // vectorLiteral encodes nested arrays as BOR, not as a byte string.
+    if(body.action==='new') builder.callFunction({templateAddress:config.keyRegistryTemplate,functionName:'new'},[
+      sdk.literalArg(body.scope),sdk.literalArg(body.board),sdk.literalArg(body.thread),
+      sdk.bytesLiteral(unhex(body.admin)),sdk.vectorLiteral(entries),
+    ]);
+    else if(body.action==='rotate') builder.callMethod({componentAddress:target,methodName:'rotate'},[sdk.intLiteral(BigInt(body.revision)),sdk.vectorLiteral(entries)]);
+    else if(body.action==='grant' && entries.length===1) builder.callMethod({componentAddress:target,methodName:'grant'},[sdk.intLiteral(BigInt(body.revision)),sdk.vectorLiteral(entries[0][0]),sdk.vectorLiteral(entries[0][1])]);
+    else throw Error('Invalid registry action.');
+  } else if (body.kind === "thread")
     builder.callMethod(
       { componentAddress: body.board, methodName: "create_thread" },
       [
@@ -1030,6 +1044,7 @@ async function privateReview(body) {
     networkByte: config.networkByte,
     mainInstructions: builder.buildUnsignedTransaction().instructions,
     mainInputs: [input(target), ...extra.map(input)],
+    extraSigners: registrySigner ? [registrySigner] : [],
   };
   const simulated = await api("/api/indexer", {
     method: "POST",
@@ -1329,6 +1344,23 @@ export async function review(body) {
     operation: hex(crypto.getRandomValues(new Uint8Array(32))),
   };
 }
+// Registry admin is a separate per-room Tari key, never the persistent wallet key.
+export async function reviewRegistry(body, admin) {
+  requireSigner(); await requireNetwork();
+  if(!privateMode() || body.kind!=='registry') throw Error('Registry changes require native stealth fees.');
+  const owner=unhex(admin.owner), view=unhex(admin.view);
+  const registrySigner=sdk.SecretKeyWallet.fromSecretKey(new Uint8Array(owner),config.networkByte,new Uint8Array(view));
+  try { return await privateReview(body,registrySigner); }
+  finally { owner.fill(0);view.fill(0); }
+}
+export function newRoomAdmin() {
+  const keys=sdk.generateOotleSecretKey();
+  try {
+    const pub=sdk.ootlePublicKeyFromSecretKey(keys.owner_key,keys.view_key);
+    try { return {owner:hex(keys.owner_key),view:hex(keys.view_key),publicKey:hex(pub.owner_key)}; }
+    finally {pub.free();}
+  } finally {keys.free();}
+}
 export async function submit(quote) {
   return coordinated(async () => {
     requireSigner();
@@ -1369,7 +1401,7 @@ export async function transaction(id) {
   return coordinated(() => transactionResult(id));
 }
 async function transactionResult(id) {
-  const row = await provider.getTransactionResult(id);
+  let row;try{row=await provider.getTransactionResult(id);}catch(e){if(e.status===404)return {status:'Pending'};throw e;}
   if (row.result === "Pending") return { status: "Pending" };
   const final = row.result.Finalized;
   await refreshPrivateMaterial();
@@ -1418,5 +1450,6 @@ async function transactionResult(id) {
         ? "Accepted"
         : "Rejected",
     fee: final.execution_result?.finalize?.fee_receipt?.total_fees_paid,
+    components: (final.execution_result?.finalize?.result?.Accept?.up_substates??[]).map(([id])=>id).filter(id=>id.startsWith('component_')),
   };
 }

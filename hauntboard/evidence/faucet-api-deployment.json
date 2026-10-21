@@ -1,0 +1,80 @@
+{
+  "status": "DEPLOYED",
+  "image": "sha256:f859f053728d0f402146f35b156d8cf83fa747f62bbed91c0151cd5e7c7119c9",
+  "previousImage": "sha256:748273db2137c1b6dd288e84b8dd7d7ac5c3d1c91ce60d17f3078d256d2efda5",
+  "archiveSha256": "0a972dab3dd81a8e6a11f5f7887c6e8268d78f977b75abf6b9bb142bf229d8d4",
+  "networkManifestSha256": "e42d04cb72fd1f473326acf3f8bbf1424af2e8697d4d5aa4d8427c489526fc39",
+  "healthy": true,
+  "backendKeyLoaded": true,
+  "faucetEnabled": true,
+  "mountsPreserved": true,
+  "boardAndTemplatePreserved": true,
+  "claimsCreated": 0,
+  "verifiedAtUtc": "2026-10-16T18:06:18.9871423Z",
+  "sourceBaseCommit": "0598b28c22d26c1bb2d43215b7b3f823dadadd0c",
+  "sourceStatus": "Tested workspace changes deployed directly; source changes are uncommitted and unpushed.",
+  "tests": {
+    "liveBrowsers": {
+      "actualWithdrawals": 0,
+      "evidence": "hauntboard/evidence/faucet-api-live.json",
+      "paymentRequestsIntercepted": true
+    },
+    "gui": {
+      "chromium": "11 scenarios passed",
+      "firefox": "11 scenarios passed",
+      "evidence": "hauntboard/evidence/gui-regression.json"
+    },
+    "faucetHttpIntegration": "PASSED with simulated upstream, including restart, CSRF, Origin, session scoping and fixed amount",
+    "foundationAndUnit": {
+      "scope": "One historical live indexer lookup was excluded after it returned HTTP 404 for an old transaction.",
+      "failed": 0,
+      "passed": 55,
+      "skipped": 1
+    }
+  },
+  "publicChecks": {
+    "status": "PASSED",
+    "checks": {
+      "/health/ready": {
+        "publicHttps": true,
+        "secretAbsent": true,
+        "sha256": "31bf75f4c0a97cc1f7b60df824fa390b3be9ba014f29b63c87c698ba63d9a9fd"
+      },
+      "/api/config": {
+        "publicHttps": true,
+        "secretAbsent": true,
+        "sha256": "da58165d0a3725a64f211d37befcca7dfd30057ddd52a0effc0b8c4e7f1e72b7"
+      },
+      "/": {
+        "publicHttps": true,
+        "secretAbsent": true,
+        "sha256": "3dc392e228fab1db53a3e977c03d2cf6eea4947d9ae0f2fc9974c3735075da9a"
+      },
+      "/app.mjs": {
+        "publicHttps": true,
+        "secretAbsent": true,
+        "sha256": "7c386eb238dd6f4e920769b455d55b4ddb30efed016a59900c6c39eb7abf54fd"
+      },
+      "/faucet-client.mjs": {
+        "publicHttps": true,
+        "secretAbsent": true,
+        "sha256": "9e2d9be5becb10b6d992adb62b846cb79d5357a7b015ea115b054056270ac0b4"
+      },
+      "/api-client.mjs": {
+        "publicHttps": true,
+        "secretAbsent": true,
+        "sha256": "e3cb599199a822187608cabb465c6b0462baf7e6dbcde19c6b7190eca366613b"
+      },
+      "/style.css": {
+        "publicHttps": true,
+        "secretAbsent": true,
+        "sha256": "7275519d94acddbad1c36a57868819a08ecba8595f31df2abb6e4c04e680b916"
+      }
+    },
+    "claimsCreated": 0,
+    "readiness": "ready",
+    "faucetEnabled": true,
+    "verificationFlagsPreserved": true
+  },
+  "publicAssetsMatchWorkspace": true
+}

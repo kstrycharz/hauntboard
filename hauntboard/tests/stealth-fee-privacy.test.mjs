@@ -116,6 +116,14 @@ test('authorization is bound to the owned verified row and rejects missing or in
   }
 });
 
+test('registry changes carry their separate admin signer while the funding wallet key stays absent', async()=>{
+  const {signer,output,args}=await setup(),admin=sdk.SecretKeyWallet.randomWithViewKey(16);
+  const ready=await prepareStealthFee({...args,coinId:await output(),extraSigners:[admin]});
+  const signed=Buffer.from(ready.envelope,'base64');
+  assert(signed.includes(Buffer.from(await admin.getPublicKey())));
+  assert(!signed.includes(Buffer.from(await signer.getPublicKey())));
+});
+
 test('native fee preparation rejects unverified, foreign, nonnative and frozen outputs without signing', async () => {
   const { signer, output, rows, args } = await setup();
   const id = await output();

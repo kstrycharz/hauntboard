@@ -1,8 +1,8 @@
 [
   {
     "engine": "chromium",
-    "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
-    "checkedAt": "2026-10-08T02:10:26.380Z",
+    "origin": "https://hauntboard.taritracker.com",
+    "checkedAt": "2026-10-21T03:15:27.948Z",
     "widths": [
       320,
       390,
@@ -15,19 +15,19 @@
     "assets": [
       {
         "name": "index.html",
-        "sha256": "d390715eef8aacb82b681375b4c83952903f7131d810bd78a1c44a38e5c9c025"
+        "sha256": "55343ee91e62891def54c747d1f8e1afa3d85f411d4e2a3dcd7b90c73f2ca7e0"
       },
       {
         "name": "app.mjs",
-        "sha256": "72311667dd57af9666147896cf677dfdd2fda697e36ea3f551d9e89437e97280"
+        "sha256": "5ad66b792bfeb7a3c68961f79498aa7fde02acea38ea8a293788b069e3047379"
       },
       {
         "name": "style.css",
-        "sha256": "06dc049b012a594f062004949fd41bbc94bf246553624870d998cce567a745ba"
+        "sha256": "7275519d94acddbad1c36a57868819a08ecba8595f31df2abb6e4c04e680b916"
       },
       {
         "name": "mobile.css",
-        "sha256": "43ec9b7e6d891a389a862fcbf6bff32eea402714f1ce01b478e1d45b5a3353c6"
+        "sha256": "850bc5f294685f2ba42e5c4e4a6dcdc025c5a2766e486fdbd8fb3e250a7d713f"
       },
       {
         "name": "crypto.mjs",
@@ -35,11 +35,11 @@
       },
       {
         "name": "browser-wallet.mjs",
-        "sha256": "7d2c49961bd419d7660ef93b47d9f122f2c0c65402b05dd9567a747d60e14191"
+        "sha256": "4ccdc06c953ed24171d1c6143f8e886fb547e80e767479199eb422b47b0a255e"
       },
       {
         "name": "transaction-identity.wasm",
-        "sha256": "21de1772618576ca2cf980e8dc4c416350e1f88a299874f449adbe9b995d2bef"
+        "sha256": "b85d6391ef16677c54f9a808b4ee4388f2fecb67d3049c884a248c6d31e63211"
       },
       {
         "name": "wallet-recovery.wasm",
@@ -50,8 +50,8 @@
   },
   {
     "engine": "firefox",
-    "origin": "https://payroll-levels-sensitivity-bit.trycloudflare.com",
-    "checkedAt": "2026-10-08T02:10:30.876Z",
+    "origin": "https://hauntboard.taritracker.com",
+    "checkedAt": "2026-10-21T03:15:31.144Z",
     "widths": [
       320,
       390,
@@ -64,19 +64,19 @@
     "assets": [
       {
         "name": "index.html",
-        "sha256": "d390715eef8aacb82b681375b4c83952903f7131d810bd78a1c44a38e5c9c025"
+        "sha256": "55343ee91e62891def54c747d1f8e1afa3d85f411d4e2a3dcd7b90c73f2ca7e0"
       },
       {
         "name": "app.mjs",
-        "sha256": "72311667dd57af9666147896cf677dfdd2fda697e36ea3f551d9e89437e97280"
+        "sha256": "5ad66b792bfeb7a3c68961f79498aa7fde02acea38ea8a293788b069e3047379"
       },
       {
         "name": "style.css",
-        "sha256": "06dc049b012a594f062004949fd41bbc94bf246553624870d998cce567a745ba"
+        "sha256": "7275519d94acddbad1c36a57868819a08ecba8595f31df2abb6e4c04e680b916"
       },
       {
         "name": "mobile.css",
-        "sha256": "43ec9b7e6d891a389a862fcbf6bff32eea402714f1ce01b478e1d45b5a3353c6"
+        "sha256": "850bc5f294685f2ba42e5c4e4a6dcdc025c5a2766e486fdbd8fb3e250a7d713f"
       },
       {
         "name": "crypto.mjs",
@@ -84,11 +84,11 @@
       },
       {
         "name": "browser-wallet.mjs",
-        "sha256": "7d2c49961bd419d7660ef93b47d9f122f2c0c65402b05dd9567a747d60e14191"
+        "sha256": "4ccdc06c953ed24171d1c6143f8e886fb547e80e767479199eb422b47b0a255e"
       },
       {
         "name": "transaction-identity.wasm",
-        "sha256": "21de1772618576ca2cf980e8dc4c416350e1f88a299874f449adbe9b995d2bef"
+        "sha256": "b85d6391ef16677c54f9a808b4ee4388f2fecb67d3049c884a248c6d31e63211"
       },
       {
         "name": "wallet-recovery.wasm",

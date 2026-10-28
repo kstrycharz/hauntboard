@@ -2,6 +2,7 @@
   "name": "hauntboard-browser-sdk",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.18.3",
   "scripts": {
     "build": "vite build && vite build --config hpke.vite.config.mjs"
   },

@@ -34,7 +34,7 @@ jobs:
       - name: Build pinned browser tools
         run: docker build -f infra/docker/local-tests.Dockerfile -t hauntboard-browser-tests:privacy .
       - name: Audit only the shipping browser dependencies
-        run: docker run --rm -v "$PWD:/workspace" -w /workspace node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c corepack pnpm --dir hauntboard/browser-sdk audit --prod --ignore-workspace
+        run: docker run --rm -v "$PWD:/workspace" -w /workspace/hauntboard/browser-sdk node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c sh -c 'corepack prepare pnpm@10.18.3 --activate && corepack pnpm audit --prod --ignore-workspace'
       - name: Check actual browser encryption, recovery, persistence and evidence page
         run: |
           for suite in gui room-browser vault-browser proof-browser wallet-compatibility-browser; do

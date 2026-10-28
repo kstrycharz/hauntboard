@@ -8,10 +8,10 @@
   "dependencies": {
     "@hpke/core": "1.9.0",
     "@scure/bip39": "2.0.1",
-    "@tari-project/ootle": "0.7.0",
-    "@tari-project/ootle-indexer": "0.7.0",
-    "@tari-project/ootle-secret-key-wallet": "0.7.0",
-    "@tari-project/ootle-wasm": "0.43.0",
+    "@tari-project/ootle": "0.11.1",
+    "@tari-project/ootle-indexer": "0.11.1",
+    "@tari-project/ootle-secret-key-wallet": "0.11.1",
+    "@tari-project/ootle-wasm": "0.47.0",
     "cbor-x": "1.6.6"
   },
   "devDependencies": {
@@ -20,7 +20,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@tari-project/ootle-wasm": "0.43.0"
+      "@tari-project/ootle-wasm": "0.47.0"
     }
   }
 }

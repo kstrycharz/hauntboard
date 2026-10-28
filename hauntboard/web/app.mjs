@@ -2418,7 +2418,7 @@ $("privacy-button").addEventListener("click", () => {
   }
   info("Secrets have boundaries.", [
     "Public threads publish the full title and text. Accepted posts cannot be edited or deleted through Hauntboard. Testnet resets may remove history.",
-    "Sealed threads encrypt messages in this browser. Every invitation-key holder can read the full history and future messages. There is no member revocation.",
+    "Sealed threads encrypt messages in this browser. Classic invitation keys grant history and future access. Managed Room access can rotate keys for future messages after member removal; retained history and copied keys cannot be erased.",
     "Transaction activity, signer linkage, reply relationships and timing remain visible. A display name is a pseudonym, not proof of anonymity.",
     ...(config.profile === "local"
       ? [

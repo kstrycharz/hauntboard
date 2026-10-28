@@ -27,7 +27,7 @@ export async function prepareStealthFee({provider,signer,coinId,networkByte,maxF
   // provider read must not silently replace it between selection and signing.
   const authorizationProvider={...provider,getStealthUtxo:async(resource,inputCommitment)=>{
     if(sdk.stealthUtxoSubstateId(resource,inputCommitment)!==coinId)throw new Error('Unexpected stealth authorization input.');
-    return row;
+    return row.state?row:{...row,state:{up:{substate:row.substate}}};
   }};
   const authorized=await sdk.WalletStealthAuthorizer.fromSpec(wallet,spec,{crypto,mustSignWithAccountKey:false}).prepare(authorizationProvider);
   // SDK 0.7.0 hydrates a main-instruction stealth statement. Move the completed fee

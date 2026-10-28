@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-10-28T04:04:46.417Z",
+  "scope": "Evidence page browser behavior and accessibility with explicitly simulated registry lookup; no chain writes.",
+  "browsers": {
+    "chromium": {
+      "recordMatchesSource": true,
+      "eightTransactionLinks": true,
+      "perspectiveControls": true,
+      "availabilitySuccessAndFailure": true,
+      "accessibilityViolations": 0,
+      "responsiveWidths": [
+        320,
+        390,
+        768,
+        1280
+      ],
+      "pageErrors": 0
+    },
+    "firefox": {
+      "recordMatchesSource": true,
+      "eightTransactionLinks": true,
+      "perspectiveControls": true,
+      "availabilitySuccessAndFailure": true,
+      "accessibilityViolations": 0,
+      "responsiveWidths": [
+        320,
+        390,
+        768,
+        1280
+      ],
+      "pageErrors": 0
+    }
+  },
+  "status": "PASSED"
+}

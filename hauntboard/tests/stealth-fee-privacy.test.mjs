@@ -1,6 +1,8 @@
 // Real released SDK/WASM proofs/signatures with synthetic provider rows. No network or spends.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { transactionMetadata } from '../web/transaction-identity.mjs';
 import * as sdk from '../web/vendor/wallet-sdk.mjs';
 import { prepareStealthFee, NATIVE } from '../web/stealth-fee.mjs';
 
@@ -101,6 +103,9 @@ test('one wallet authorizes multiple independent outputs with fresh one-time key
     b.feeStatement.outputs_statement.revealed_output,
   );
   assert.notEqual(a.coinId, b.coinId);
+  const identities=await Promise.all([a,b].map(ready=>transactionMetadata(ready.envelope,()=>readFile('hauntboard/web/transaction-identity.wasm'))));
+  assert.notEqual(identities[0].id,identities[1].id);
+  assert(identities.every(meta=>meta.maxEpoch===15),'The native decoder must accept the exact signed fee program and preserve its expiry.');
 });
 
 test('authorization is bound to the owned verified row and rejects missing or invalid versions', async () => {

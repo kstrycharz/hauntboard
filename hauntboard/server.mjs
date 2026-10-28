@@ -54,6 +54,8 @@ knownFiles.set('/faucet-discovery.mjs','faucet-discovery.mjs');
 knownFiles.set('/faucet-client.mjs','faucet-client.mjs');
 for(const name of ['room-keys.mjs','room-vault.mjs','room-manager.mjs','room-access-request.mjs','key-registry.mjs','vendor/hpke.mjs'])knownFiles.set('/'+name,name);
 knownFiles.set('/provider-state.mjs','provider-state.mjs');
+for(const name of ['proof.html','proof.mjs','proof.css','proof-evidence.json'])knownFiles.set('/'+name,name);
+knownFiles.set('/proof','proof.html');
 knownFiles.set('/vendor/hpke-LICENSE.txt','vendor/hpke-LICENSE.txt');
 const mime={json:'application/json; charset=utf-8',html:'text/html; charset=utf-8',mjs:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8',wasm:'application/wasm'};
 const error=(message,status=400)=>Object.assign(new Error(message),{status});

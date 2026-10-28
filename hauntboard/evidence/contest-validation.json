@@ -1,0 +1,63 @@
+{
+  "checkedAt": "2026-10-28T04:06:49.2001852Z",
+  "status": "PASSED_WITH_PUBLIC_ACCEPTANCE_GATES",
+  "scope": "Container source validation; no chain writes or deployment in this run.",
+  "unitTests": {
+    "passed": 66,
+    "liveIdentityReference": "1af7c68d147f2c8d6dd46c7afcc517a97c14186a553e3d034bc8716881ea5236",
+    "skipped": 0,
+    "failed": 0
+  },
+  "privacyTests": {
+    "independentAttackCount": false,
+    "passed": 47
+  },
+  "nativeEngine": {
+    "registry": 4,
+    "board": 7
+  },
+  "browsers": [
+    "chromium",
+    "firefox"
+  ],
+  "browserChecks": {
+    "responsiveWidths": [
+      320,
+      390,
+      768,
+      1280
+    ],
+    "proofAccessibilityViolations": 0,
+    "vaultPersistenceCasesPerBrowser": 8,
+    "nativeWalletCreationAndRecovery": true,
+    "guiScenariosPerBrowser": 11,
+    "recipientRecoveryAndManagement": true
+  },
+  "release": {
+    "nativeIdentityByteForByte": true,
+    "lockedSdkRebuild": true,
+    "readOnlyImage": true,
+    "checksums": true,
+    "publicAndClientAvailability": true,
+    "faucetHttpSimulated": true,
+    "productionBrowserDependencyVulnerabilities": 0
+  },
+  "versions": {
+    "nativeTransaction": "0.47.0",
+    "engineTests": "0.45.0",
+    "cryptoWasm": "0.47.0",
+    "browserSdk": "0.11.1",
+    "boardTemplateLib": "0.34.0"
+  },
+  "remaining": [
+    "Funded Esmeralda posting acceptance on the updated client libraries",
+    "Same-wallet multi-post public receipt audit",
+    "Deploy with the documented manifest version migration",
+    "Update the external contest forum post"
+  ],
+  "notes": [
+    "Unit and privacy suites overlap; do not sum them as distinct attacks.",
+    "The saved room execution record is historical and remains dated October 21 UTC.",
+    "Existing board, template, reset identity and verification flags are preserved."
+  ]
+}

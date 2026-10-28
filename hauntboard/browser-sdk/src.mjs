@@ -1,6 +1,13 @@
 export {TransactionBuilder,Network,literalArg,intLiteral,amountLiteral,bytesLiteral,resolveTransaction,signTransaction,sealTransaction,watchTransaction,sendDryRun,iterVaultIdsInState,XTR_FAUCET_COMPONENT_ADDRESS,XTR_FAUCET_VAULT_ADDRESS,XTR_FAUCET_CLAIM_RESOURCE_ADDRESS} from '@tari-project/ootle';
 export {SecretKeyWallet,EphemeralKeySigner} from '@tari-project/ootle-secret-key-wallet';
-export {WasmStealthCrypto,OotleWallet,WalletStealthAuthorizer,StealthInput,StealthTransferStatement,stealthTransferInstruction,stealthUtxoSubstateId,commitmentOf,createOutput,decryptOwnedUtxo} from '@tari-project/ootle';
+export {WasmStealthCrypto,OotleWallet,WalletStealthAuthorizer,StealthInput,StealthTransferStatement,stealthTransferInstruction,stealthUtxoSubstateId,commitmentOf,createOutput} from '@tari-project/ootle';
+import {decryptOwnedUtxo as nativeDecryptOwnedUtxo} from '@tari-project/ootle';
+// The app accepts normalized historical rows as well as current up/down rows.
+// The maintained SDK expects the explicit up-state form. Verification, ownership
+// and version checks remain the caller's responsibility; no flag is manufactured.
+export function decryptOwnedUtxo(crypto,secret,row,id){
+  return nativeDecryptOwnedUtxo(crypto,secret,row.state?row:{...row,state:{up:{substate:row.substate}}},id);
+}
 export {generateOotleSecretKey,ootlePublicKeyFromSecretKey,generateOotleAddress} from '@tari-project/ootle-wasm';
 export {borEncodeTransaction} from '@tari-project/ootle-wasm';
 export {generateMnemonic,validateMnemonic,mnemonicToEntropy} from '@scure/bip39';

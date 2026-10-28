@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-10-28T04:00:12.706Z",
+  "scope": "Unfunded, browser-local creation and recovery using bundled native WASM and released SDK. Provider transport unavailable by design. No secrets exported and no chain writes.",
+  "browsers": {
+    "chromium": {
+      "nativePhraseCreation": true,
+      "phraseConfirmation": true,
+      "recoveryPreview": true,
+      "wrongPinRejected": true,
+      "pinUnlockSameAddress": true,
+      "recoverySameAddress": true
+    },
+    "firefox": {
+      "nativePhraseCreation": true,
+      "phraseConfirmation": true,
+      "recoveryPreview": true,
+      "wrongPinRejected": true,
+      "pinUnlockSameAddress": true,
+      "recoverySameAddress": true
+    }
+  },
+  "status": "PASSED"
+}

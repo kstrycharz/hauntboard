@@ -8,5 +8,5 @@ const manifest=JSON.parse(await readFile(process.env.CONFIG_FILE??'hauntboard/de
 const profile=networkProfile(manifest);
 if(!/^\d+\.\d+\.\d+$/.test(manifest.providerRuntimeVersion??''))throw new Error('Pin the measured provider runtime version.');
 if(manifest.schema!==4||manifest.posterPrivacy!=='stealth-fee-v1'||manifest.posterPrivacyVerified!==true)throw new Error('Public poster privacy evidence/contract gate has not passed.');
-if(profile.network!=='esmeralda'||manifest.compatibilityVerified!==true||manifest.sdkVersion!=='0.7.0'||manifest.wasmVersion!=='0.43.0'||!/^component_[a-f0-9]{64}$/.test(manifest.board??'')||!/^[a-f0-9]{64}$/.test(manifest.template??''))throw new Error('Public compatibility/publication manifest gate has not passed.');
+if(profile.network!=='esmeralda'||manifest.compatibilityVerified!==true||manifest.sdkVersion!=='0.11.1'||manifest.wasmVersion!=='0.47.0'||!/^component_[a-f0-9]{64}$/.test(manifest.board??'')||!/^[a-f0-9]{64}$/.test(manifest.template??''))throw new Error('Public compatibility/publication manifest gate has not passed.');
 console.log(JSON.stringify({status:'DEPLOYMENT_CONFIG_VALID',network:profile.network,resetIdentity:profile.resetIdentity,scope:'Configuration checks only. Public acceptance evidence is separately required.'}));

@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-21T03:43:26.022Z",
+  "checkedAt": "2026-10-28T04:04:44.985Z",
   "status": "PASSED",
   "runtime": "v22.21.1",
   "tests": 47,
@@ -26,7 +26,7 @@
     "hauntboard/tests/room-access-request.test.mjs": "919d89c9e6db1b35d919bf281c9f9163fd0c9b55479e46a6227e395cceb0e9fd",
     "hauntboard/tests/provider-state.test.mjs": "ae42301e2ca4191790b06e0c12e58505cc33ec56bddd8f25a5739286535c516b",
     "hauntboard/tests/sealed-posts.test.mjs": "c9af0f36a2bd6f78799549638e68ba98393ac317a2d2609cb1c02a161e8723f8",
-    "hauntboard/tests/stealth-fee-privacy.test.mjs": "3e139a602645b88ca1fde384574d36e878518bfab12cfdcbce181f00784455bc",
+    "hauntboard/tests/stealth-fee-privacy.test.mjs": "fcce6fe43bcde0aacf946222519716ecb761b5ac431eb6785557ce14cb91b3dc",
     "hauntboard/tests/privacy-audit.test.mjs": "d7ec39262b7b2445211f81aabca1e3f967713573e04bdeb2b82ceeb772b3ae6d",
     "hauntboard/tests/state.test.mjs": "71500718032d697ca36aa50d722c86ac41fcc4d102243097ae2698e07e8b81d8",
     "hauntboard/tests/output-ledger.test.mjs": "0203c22dde0fd1057b6aa96cbd2b7cca781d48d79025ad7599899bb662fd509d",
@@ -36,7 +36,15 @@
     "hauntboard/tests/post-proof.test.mjs": "cca1fd5e95ddaaf8962240189d2f29a6cf95bbdd8ceee1ec0d32eaaaf1348768",
     "hauntboard/tests/component-provider.mjs": "44be988683c3399e98015fcce3eddbe8dddaa96b4940cead0ddba0ac59c06fc9",
     "hauntboard/web/sealed-posts.mjs": "f7274524b6bfc1242d5b5eb6652047112abc7d50fb25a2d3d12774c281341cb8",
-    "hauntboard/web/stealth-fee.mjs": "c93a2777407d156f0c3ce64df380d30bb7f90f3fc9c1c691b463b30af304dbb7",
+    "hauntboard/web/stealth-fee.mjs": "524f87d2c75dd0b04ea65fff20d32780715b2d6d6174b86784f26f42a2a60c8d",
+    "hauntboard/web/room-vault.mjs": "a5e2ea6c6de513cd104be676228ea0de68a1579434699f52b29758ed17c7624c",
+    "hauntboard/web/room-keys.mjs": "8a04b5d7f0d9963030f819de73ae06a19ce4313b948aa480f12e4e4c414213ff",
+    "hauntboard/web/room-manager.mjs": "14132e723444f2ed4e44e7da1dde5a747c72c21e9cdecaedfd045029e4ef0d02",
+    "hauntboard/web/provider-state.mjs": "80ee00dc9b228d8cdf438de7a696a7e287226245c0ba37c90e56146cafe2bcc4",
+    "hauntboard/web/vendor/wallet-sdk.mjs": "58650d094cf7a849de5822324cc0fcb0df86b26d2cfb1807d53d1b135208f485",
+    "hauntboard/web/transaction-identity.wasm": "86c3156f147874afae59995afb32e3a611a4fdaa9d222c68c1adcfba3b2e2789",
+    "hauntboard/browser-sdk/package.json": "958d2131cf7c67e140c22a4889d7a8c30a035ea4c46414bbeedaebb1cb8f1630",
+    "hauntboard/browser-sdk/pnpm-lock.yaml": "05384c1fe82161d3957f3aa7e09a8e6eb62cbda284ba658522b13aa75e6430d5",
     "hauntboard/lib/privacy-audit.mjs": "7b27708a09d571891885adea5ca9a78c4b21ab19425cc1bdd28ac4b63f2bc3b7"
   },
   "strongUnlinkabilityProven": false

@@ -5,7 +5,7 @@ import {join} from 'node:path';
 import {request as httpRequest} from 'node:http';
 
 const root=await mkdtemp('/companion/availability-');
-const manifest={network:'esmeralda',networkByte:38,resetIdentity:'synthetic-availability',instance:'synthetic',sdkVersion:'0.7.0',wasmVersion:'0.43.0',providerRuntimeVersion:'0.45.0',compatibilityVerified:false,posterPrivacyVerified:false,schema:4,posterPrivacy:'stealth-fee-v1',board:`component_${'ab'.repeat(32)}`,template:'cd'.repeat(32)};
+const manifest={network:'esmeralda',networkByte:38,resetIdentity:'synthetic-availability',instance:'synthetic',sdkVersion:'0.11.1',wasmVersion:'0.47.0',providerRuntimeVersion:'0.45.0',compatibilityVerified:false,posterPrivacyVerified:false,schema:4,posterPrivacy:'stealth-fee-v1',board:`component_${'ab'.repeat(32)}`,template:'cd'.repeat(32)};
 const configPath=join(root,'config.json'),modePath=join(root,'mode');
 await writeFile(configPath,JSON.stringify(manifest));
 const request=(path,{body,headers,...options}={})=>new Promise((resolve,reject)=>{

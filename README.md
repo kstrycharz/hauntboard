@@ -5,6 +5,8 @@ A message board on Tari Ootle Esmeralda testnet. Posts live in contract state; w
 **Website:** https://hauntboard.taritracker.com
 **Source and download:** https://github.com/kstrycharz/hauntboard
 
+**Start with the privacy walkthrough:** open **Privacy evidence** in the app (`/proof`), or read the [judge walkthrough](hauntboard/docs/judge-walkthrough.md). Compare outsider, invited-reader and removed-reader access, then follow the eight recorded Esmeralda transactions. The optional registry lookup reports current provider availability separately from recorded execution.
+
 ## Run your own copy
 
 Install Docker with Docker Compose, then:
@@ -51,7 +53,9 @@ The [Esmeralda demonstration](hauntboard/evidence/room-key-esmeralda.json) recor
 
 Read the [threat model](hauntboard/docs/privacy-threat-model.md), [reproducible verification and judge walkthrough](hauntboard/docs/privacy-verification.md), and [contest submission draft](hauntboard/docs/contest-submission.md). The recorded local run has 38 passing Node test entries, seven native engine cases and ten browser scenarios per browser in Chromium and Firefox. These are separate evidence layers, not an inflated count of independent attacks.
 
-Native fee signing omits stable wallet identifiers; it does not prove unlinkability. Shared funding origins, output graphs, fees, timing and network connections remain observable. The read-only [public audit](hauntboard/evidence/privacy-public-audit.json) records insufficient recent receipts for a two-post Esmeralda comparison. The sealed-message reader was deployed on October 16, 2026 and passed [live asset and browser checks](hauntboard/evidence/privacy-deployment.json). Funded public posting validation remains pending. Manifest verification flags remain false.
+Native fee signing omits stable wallet identifiers; it does not prove unlinkability. Shared funding origins, output graphs, fees, timing and network connections remain observable. The read-only [public audit](hauntboard/evidence/privacy-public-audit.json) records insufficient recent receipts for a two-post Esmeralda comparison. The later [room execution record](hauntboard/evidence/room-key-esmeralda.json), checked October 21 UTC, covers native-stealth-funded sealed posting and recipient-key rotation. It does not complete the separate same-wallet multi-post comparison. Manifest verification flags remain false.
+
+The October 28 source update hardens room-vault persistence: failed saves preserve prior keys, queued writes preserve different rooms, and locking cancels in-flight saves/unlocks. [Browser regression evidence](hauntboard/evidence/vault-browser.json) exercises real storage and cryptography in Chromium and Firefox. The browser SDK is now pinned to 0.11.1 and its crypto/transaction identity code to 0.47.0. A saved public transaction vector checks modern transaction identity without depending on indexer retention; its capture preserves large integer nonces exactly. [Native wallet checks](hauntboard/evidence/wallet-compatibility-browser.json) exercise local creation, PIN unlock and recovery in both browsers. These source changes need their own deployment; older deployment records do not establish that they are live. A funded post on the new library versions and the same-wallet public audit remain separate gates.
 
 ## VPS deployment
 

@@ -1,5 +1,7 @@
 # Hauntboard — public conversation without a persistent wallet author
 
+For the current full submission, use [the October 28 draft](contest-submission-current.md). Older claims and pending gates below are retained as dated history, not the current release summary.
+
 ## October 20 update: recipient-encrypted sealed rooms
 
 Use **Room access** inside an actual sealed room on [Hauntboard](https://hauntboard.taritracker.com/). A guided setup asks users to save their recovery code and download an encrypted backup before continuing. Copyable access requests, named invitations and explicit member removal keep cryptographic implementation details out of the main flow. The standalone demonstration page has been removed in favor of these real room controls.

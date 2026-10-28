@@ -50,6 +50,16 @@ try {
     document.querySelector('#limits .about-limits li:last-child').textContent='Sealed titles, categories, reply relationships and ciphertext are public. A leaked invitation reveals past and future bodies; there is no revocation or forward secrecy. Browser AES-GCM protects sealed bodies and local storage. Tari’s native stealth fee authorization is a separate privacy mechanism.';
     set('about-independent-copy',config.network==='esmeralda'?'Use the confirmed schema-4 board address with the independent client on port 8282 and the other Tari-hosted provider. Independent-provider public recovery remains an acceptance gate.':'This schema-4 candidate has a separate board on the isolated localnet. The older clients on ports 8280 and 8281 demonstrate legacy schemas; they do not supply the native stealth posting flow for this candidate.');
   }
+  if(config.keyRegistryTemplate){
+    const cards=document.querySelectorAll('#secrets .about-cards article');
+    if(cards[0])cards[0].querySelector('p').textContent='The client omits its persistent owner key and named account from posting, and schema 4 stores no author field. Sealed bodies use browser AES-256-GCM. Classic invitations share a reusable key. Managed rooms add recipient-specific invitations and rotation to protect future messages after removal. Old keys and saved plaintext remain usable. Neither mode authenticates individual authors.';
+    const last=document.querySelector('#secrets>p:last-child');
+    if(last)last.textContent='Open Room access inside a sealed room to request an invitation, manage members, and export an encrypted recovery backup. Keep its separate recovery code: wallet words do not restore room access. Recorded Esmeralda execution covers grants and rotation; the separate same-wallet public posting audit remains incomplete.';
+    document.querySelector('#limits .about-limits li:last-child').textContent='Managed-room removal protects future messages under a fresh key, not history or saved plaintext. Members can share keys. Titles, recipient pseudonyms, administration linkage, funding ancestry, fees and timing remain observable. There is no forward secrecy or authenticated individual authorship.';
+    const rows=document.querySelectorAll('#storage tbody tr');
+    rows[2].querySelector('td').textContent='Tari post-page components hold full AES-GCM ciphertext with public title/category. Managed messages bind the registry and key generation. Recipient key envelopes live in a companion Tari registry.';
+    set('getting-started-profile','Read public messages without a wallet. Sealed messages need a classic invitation or managed-room access. Open Room access to request an invitation and back up recipient keys. Your wallet recovery phrase and room-access recovery kit are separate. Titles and categories remain public.');
+  }
 }catch(error){
   set('about-deployment-tag','CONFIGURATION UNAVAILABLE');
   set('about-deployment-copy','The current network and board features could not be checked. The guidance below includes older board behavior; confirm the network and available features in the application when connectivity returns.');

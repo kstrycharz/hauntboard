@@ -8,7 +8,7 @@ const root = await mkdtemp('/companion/faucet-routes-');
 const configFile = join(root, 'config.json'), modeFile = join(root, 'mode'), callsFile = join(root, 'calls');
 const receipt = '6cf1df90-7645-44d2-8ed5-a00121aa8001';
 const payload = {receipt, address: 'otl_esm_synthetic', amountTokens: 100};
-await writeFile(configFile, JSON.stringify({network:'esmeralda', networkByte:38, resetIdentity:'synthetic-faucet-routes', instance:'synthetic', sdkVersion:'0.7.0', wasmVersion:'0.43.0', schema:4, posterPrivacy:'stealth-fee-v1', compatibilityVerified:false, posterPrivacyVerified:false, board:`component_${'ab'.repeat(32)}`, template:'cd'.repeat(32)}));
+await writeFile(configFile, JSON.stringify({network:'esmeralda', networkByte:38, resetIdentity:'synthetic-faucet-routes', instance:'synthetic', sdkVersion:'0.11.1', wasmVersion:'0.47.0', schema:4, posterPrivacy:'stealth-fee-v1', compatibilityVerified:false, posterPrivacyVerified:false, board:`component_${'ab'.repeat(32)}`, template:'cd'.repeat(32)}));
 await writeFile(modeFile, 'queued');
 await writeFile(callsFile, '');
 const request = (path, {body, headers = {}, ...options} = {}) => new Promise((resolve, reject) => {

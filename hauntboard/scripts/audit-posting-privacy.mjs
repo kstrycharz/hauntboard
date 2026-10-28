@@ -1,6 +1,7 @@
 // Read-only. Accept public transaction IDs, never a seed, view key or wallet export.
 import { readFile, writeFile } from 'node:fs/promises';
 import { decodeState } from '../lib/state.mjs';
+import { providerState } from '../web/provider-state.mjs';
 import {
   auditPostingTransactions,
   calledComponent,
@@ -28,8 +29,9 @@ async function get(origin, path) {
 }
 async function state(address) {
   const rows = await Promise.all(providers.map((p) => get(p, `substates/${address}`)));
-  const decoded = rows.map((row) => {
-    if (row.substate?.Component?.header?.template_address !== config.template)
+  const decoded = rows.map((raw) => {
+    const row = providerState(raw);
+    if (row.substate?.Component?.header?.template_address?.replace(/^template_/, '') !== config.template)
       throw new Error('Unexpected board template.');
     return decodeState(row, address);
   });

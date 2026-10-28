@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-10-28T03:58:37.102Z",
+  "scope": "Real browser storage, Web Locks and WebCrypto; no chain writes.",
+  "browsers": {
+    "chromium": {
+      "detachedRecords": true,
+      "failedWriteRollback": true,
+      "serializedWrites": true,
+      "lockDuringSave": true,
+      "lockDuringUnlock": true,
+      "failedRestoreRollback": true,
+      "staleExportRejected": true,
+      "failedCreationRollback": true
+    },
+    "firefox": {
+      "detachedRecords": true,
+      "failedWriteRollback": true,
+      "serializedWrites": true,
+      "lockDuringSave": true,
+      "lockDuringUnlock": true,
+      "failedRestoreRollback": true,
+      "staleExportRejected": true,
+      "failedCreationRollback": true
+    }
+  },
+  "status": "PASSED"
+}

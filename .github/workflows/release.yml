@@ -50,6 +50,9 @@ jobs:
           docker build -f infra/docker/local-tests.Dockerfile -t hauntboard-browser-tests:privacy .
           docker run --rm --shm-size=1g -v "$PWD:/workspace" -v hauntboard_privacy_browser_modules:/workspace/node_modules -w /workspace hauntboard-browser-tests:privacy node hauntboard/tests/gui.mjs
           docker run --rm --shm-size=1g -v "$PWD:/workspace" -v hauntboard_privacy_browser_modules:/workspace/node_modules -w /workspace hauntboard-browser-tests:privacy node hauntboard/tests/room-browser.mjs
+          docker run --rm --shm-size=1g -v "$PWD:/workspace" -v hauntboard_privacy_browser_modules:/workspace/node_modules -w /workspace hauntboard-browser-tests:privacy node hauntboard/tests/vault-browser.mjs
+          docker run --rm --shm-size=1g -v "$PWD:/workspace" -v hauntboard_privacy_browser_modules:/workspace/node_modules -w /workspace hauntboard-browser-tests:privacy node hauntboard/tests/proof-browser.mjs
+          docker run --rm --shm-size=1g -v "$PWD:/workspace" -v hauntboard_privacy_browser_modules:/workspace/node_modules -w /workspace hauntboard-browser-tests:privacy node hauntboard/tests/wallet-compatibility-browser.mjs
       - name: Publish downloadable release
         env:
           GH_TOKEN: ${{ github.token }}

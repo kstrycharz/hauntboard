@@ -27,6 +27,14 @@ const sourceFiles = [
   ...suites,
   'hauntboard/web/sealed-posts.mjs',
   'hauntboard/web/stealth-fee.mjs',
+  'hauntboard/web/room-vault.mjs',
+  'hauntboard/web/room-keys.mjs',
+  'hauntboard/web/room-manager.mjs',
+  'hauntboard/web/provider-state.mjs',
+  'hauntboard/web/vendor/wallet-sdk.mjs',
+  'hauntboard/web/transaction-identity.wasm',
+  'hauntboard/browser-sdk/package.json',
+  'hauntboard/browser-sdk/pnpm-lock.yaml',
   'hauntboard/lib/privacy-audit.mjs',
 ];
 const sourceHashes = Object.fromEntries(

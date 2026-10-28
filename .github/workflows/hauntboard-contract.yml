@@ -4,6 +4,7 @@ on:
     paths:
       - 'hauntboard/template/**'
       - 'hauntboard/template-public/**'
+      - 'hauntboard/key-registry/**'
       - 'hauntboard/POSTER_PRIVACY.md'
       - 'hauntboard/schema3.md'
       - 'hauntboard/scripts/*contract.mjs'
@@ -15,6 +16,7 @@ on:
     paths:
       - 'hauntboard/template/**'
       - 'hauntboard/template-public/**'
+      - 'hauntboard/key-registry/**'
       - 'hauntboard/POSTER_PRIVACY.md'
       - 'hauntboard/schema3.md'
       - 'hauntboard/scripts/*contract.mjs'
@@ -45,6 +47,8 @@ jobs:
         run: docker compose build board-engine board-build
       - name: Test contract in the real local engine
         run: docker compose run --rm --no-deps board-engine sh /workspace/hauntboard/template-public/test-engine.sh
+      - name: Test recipient registry authorization and rotation in the real engine
+        run: docker compose run --rm --no-deps -w /workspace/hauntboard/key-registry board-engine cargo test --locked --test registry -- --test-threads=1
       - name: Compile shipping WASM with locked dependencies
         run: docker compose run --rm --no-deps -w /workspace/hauntboard/template-public board-build sh -c 'cargo build --locked --release --target wasm32-unknown-unknown && cp /target/wasm32-unknown-unknown/release/hauntboard_public.wasm /workspace/hauntboard/template-public/hauntboard_public.wasm'
       - name: Package and verify contract and source checksums

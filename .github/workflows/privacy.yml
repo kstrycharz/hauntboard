@@ -1,0 +1,62 @@
+name: Hauntboard privacy and browser checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: privacy-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  native_identity:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Build pinned native tools
+        run: docker build -f infra/docker/rust-spike.Dockerfile -t hauntboard-native:privacy .
+      - name: Reproduce bundled transaction decoder from locked source
+        run: |
+          docker run --rm -v "$PWD:/workspace" -v hauntboard_identity_registry:/usr/local/cargo/registry -v hauntboard_identity_target:/target -e 'RUSTFLAGS=--cfg getrandom_backend="unsupported"' -w /workspace/hauntboard/transaction-identity hauntboard-native:privacy sh -c 'cargo build --locked --release --target wasm32-unknown-unknown && cmp /target/wasm32-unknown-unknown/release/hauntboard_transaction_identity.wasm /workspace/hauntboard/web/transaction-identity.wasm'
+  privacy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Check release artifacts and unit tests without wallet credentials
+        run: |
+          docker run --rm -v "$PWD:/workspace" -w /workspace node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c sh -c 'node hauntboard/scripts/verify-release.mjs && node --test hauntboard/tests/*.test.mjs && node hauntboard/scripts/test-privacy.mjs'
+      - name: Build pinned browser tools
+        run: docker build -f infra/docker/local-tests.Dockerfile -t hauntboard-browser-tests:privacy .
+      - name: Audit only the shipping browser dependencies
+        run: docker run --rm -v "$PWD:/workspace" -w /workspace node:22.21.1-bookworm-slim@sha256:25b3eb23a00590b7499f2a2ce939322727fcce1b15fdd69754fcd09536a3ae2c corepack pnpm --dir hauntboard/browser-sdk audit --prod --ignore-workspace
+      - name: Check actual browser encryption, recovery, persistence and evidence page
+        run: |
+          for suite in gui room-browser vault-browser proof-browser wallet-compatibility-browser; do
+            docker run --rm --shm-size=1g -v "$PWD:/workspace" -v hauntboard_privacy_browser_modules:/workspace/node_modules -w /workspace hauntboard-browser-tests:privacy node "hauntboard/tests/$suite.mjs"
+          done
+      - name: Build and smoke-test the read-only runtime
+        run: |
+          docker build -f infra/docker/hauntboard.Dockerfile -t hauntboard:privacy .
+          docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /companion:uid=1000,gid=1000 -v "$PWD/hauntboard/tests:/tests:ro" hauntboard:privacy node /tests/public-server.mjs
+          docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /companion:uid=1000,gid=1000 -v "$PWD/hauntboard/tests:/tests:ro" hauntboard:privacy node /tests/public-availability.mjs
+          docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /companion:uid=1000,gid=1000 -v "$PWD/hauntboard/tests:/tests:ro" hauntboard:privacy node /tests/faucet-server.mjs
+      - name: Keep public test reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: privacy-${{ github.sha }}
+          path: |
+            hauntboard/evidence/privacy-tests.json
+            hauntboard/evidence/privacy-tests.tap
+            hauntboard/evidence/gui-regression.json
+            hauntboard/evidence/room-browser.json
+            hauntboard/evidence/vault-browser.json
+            hauntboard/evidence/proof-browser.json
+            hauntboard/evidence/wallet-compatibility-browser.json
+          if-no-files-found: error

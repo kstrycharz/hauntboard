@@ -47,7 +47,7 @@ var ae = /* @__PURE__ */ o(((e, t) => {
 	t.exports = {};
 }));
 //#endregion
-//#region ../../node_modules/.pnpm/@hpke+common@1.10.1/node_modules/@hpke/common/esm/src/algorithm.js
+//#region node_modules/.pnpm/@hpke+common@1.10.1/node_modules/@hpke/common/esm/src/algorithm.js
 async function oe() {
 	if (ie !== void 0 && globalThis.crypto !== void 0) return globalThis.crypto.subtle;
 	try {
@@ -250,7 +250,7 @@ function de(e, t) {
 	return n;
 }
 //#endregion
-//#region ../../node_modules/.pnpm/@hpke+common@1.10.1/node_modules/@hpke/common/esm/src/kems/dhkem.js
+//#region node_modules/.pnpm/@hpke+common@1.10.1/node_modules/@hpke/common/esm/src/kems/dhkem.js
 var fe = /* @__PURE__ */ new Uint8Array([
 	101,
 	97,
@@ -1015,14 +1015,14 @@ var Se = class extends v {
 	}
 };
 //#endregion
-//#region ../../node_modules/.pnpm/@hpke+core@1.9.0/node_modules/@hpke/core/esm/src/utils/emitNotSupported.js
+//#region node_modules/.pnpm/@hpke+core@1.9.0/node_modules/@hpke/core/esm/src/utils/emitNotSupported.js
 function W() {
 	return new Promise((e, t) => {
 		t(new g("Not supported"));
 	});
 }
 //#endregion
-//#region ../../node_modules/.pnpm/@hpke+core@1.9.0/node_modules/@hpke/core/esm/src/exporterContext.js
+//#region node_modules/.pnpm/@hpke+core@1.9.0/node_modules/@hpke/core/esm/src/exporterContext.js
 var De = new Uint8Array([
 	115,
 	101,
@@ -1136,7 +1136,7 @@ var De = new Uint8Array([
 };
 q = /* @__PURE__ */ new WeakMap();
 //#endregion
-//#region ../../node_modules/.pnpm/@hpke+core@1.9.0/node_modules/@hpke/core/esm/src/recipientContext.js
+//#region node_modules/.pnpm/@hpke+core@1.9.0/node_modules/@hpke/core/esm/src/recipientContext.js
 var Y = function(e, t, n, r) {
 	if (n === "a" && !r) throw TypeError("Private accessor was defined without a getter");
 	if (typeof t == "function" ? e !== t || !r : !t.has(e)) throw TypeError("Cannot read private member from an object whose class did not declare it");
@@ -1165,7 +1165,7 @@ var Y = function(e, t, n, r) {
 };
 X = /* @__PURE__ */ new WeakMap();
 //#endregion
-//#region ../../node_modules/.pnpm/@hpke+core@1.9.0/node_modules/@hpke/core/esm/src/senderContext.js
+//#region node_modules/.pnpm/@hpke+core@1.9.0/node_modules/@hpke/core/esm/src/senderContext.js
 var Z = function(e, t, n, r) {
 	if (n === "a" && !r) throw TypeError("Private accessor was defined without a getter");
 	if (typeof t == "function" ? e !== t || !r : !t.has(e)) throw TypeError("Cannot read private member from an object whose class did not declare it");
@@ -1199,7 +1199,7 @@ var Z = function(e, t, n, r) {
 };
 Q = /* @__PURE__ */ new WeakMap();
 //#endregion
-//#region ../../node_modules/.pnpm/@hpke+core@1.9.0/node_modules/@hpke/core/esm/src/cipherSuiteNative.js
+//#region node_modules/.pnpm/@hpke+core@1.9.0/node_modules/@hpke/core/esm/src/cipherSuiteNative.js
 var Fe = new Uint8Array([
 	98,
 	97,

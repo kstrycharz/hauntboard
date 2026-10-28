@@ -1,5 +1,11 @@
 # VPS and GitHub deployment
 
+## October 28 client compatibility update
+
+The source now pins SDK 0.11.1 and crypto/transaction identity 0.47.0. This changes only `sdkVersion` and `wasmVersion` in the public manifest; board, template, reset identity, key-registry pin and evidence flags are preserved. Before deployment, stage an explicit copy of the existing server manifest with those two version fields updated. Retain the old manifest and image together for rollback. The fixed deployment agent intentionally compares manifests byte-for-byte and will refuse this version migration until it is installed through a reviewed server update. Do not disable that check or mark privacy/compatibility flags true. Preserve pending operation records and reconcile previously signed operations with the version that created them before allowing new writes. Browser-local recovery and current public transaction-ID checks pass; a new funded-post acceptance check remains outstanding. No fresh board or template publication is needed for the website changes.
+
+The `/proof` page is part of this source release. Its eight historical transaction links remain dated evidence; the optional availability lookup does not certify finality or restore expired indexer history.
+
 The recipient-key release adds `keyRegistryTemplate` to the existing `network.json`, preserving the original board, template, network/reset identity and operations volume. Keep that pin during future app deployments. The companion template is `9de14a5ca71a3c243c0c8a4a9f5896de6f89a5d60f2f42da0ad9351ca0c08527`. Its publication and funded demonstration are recorded in `hauntboard/evidence/room-key-esmeralda.json`. Room vaults and recovery secrets remain browser/user owned; server backups do not restore them. The app also accepts the current indexer `state.up.substate` response shape and rejects down/conflicting states.
 
 The guided Room access update removes the standalone privacy demo and all four demo routes. It introduces recovery-code/backup setup, copyable access requests, named invitations and member removal. Its current deployment evidence is `hauntboard/evidence/room-access-ux-deployment.json`; rollback image/configuration are retained at `/opt/hauntboard/room-keys-20261020-guided`. This website-only update made no chain writes and kept the network manifest and operations volume unchanged.

@@ -14,10 +14,20 @@ test('released Tari decoder computes stable signed identity and rejects malforme
  assert.notEqual(await transactionIdentity(sdk.sealTransaction(await sdk.signTransaction([signer],changed)),load),id);
  for(const envelope of ['','!','AAAA','a'.repeat(20001)])await assert.rejects(transactionIdentity(envelope,load));
 });
-test('native identity agrees with an already confirmed Esmeralda board creation',async()=>{
- const expected='4cea075beef93e8a5cd7203f030006c88a236d53e02c809f158378d24045811e';
+test('native identity matches the archived public Esmeralda vector with an exact u64 nonce',async()=>{
+ const vector=JSON.parse(await readFile('hauntboard/tests/fixtures/esmeralda-identity.json','utf8'));
+ assert.equal(await transactionIdentity(vector.envelope,load),vector.id);
+});
+
+// Indexer retention is bounded. Run this external compatibility check explicitly
+// with a currently available public ID; ordinary unit checks stay offline.
+test('native identity agrees with an explicitly selected public Esmeralda transaction',{skip:!process.env.HAUNTBOARD_LIVE_IDENTITY_TX},async()=>{
+ const expected=process.env.HAUNTBOARD_LIVE_IDENTITY_TX;assert.match(expected,/^[a-f0-9]{64}$/);
  const r=await fetch(`https://ootle-indexer-a.tari.com/transactions/${expected}`,{redirect:'error',signal:AbortSignal.timeout(10000)});assert.equal(r.status,200);
- const row=await r.json(),raw=row.transaction?.transaction??row.transaction;
+ // Preserve u64 nonces exactly. JSON.parse's default Number conversion rounds
+ // values above 2^53, changing the signed transaction before BOR encoding.
+ const row=JSON.parse(await r.text(),(_key,value,context)=>typeof value==='number'&&!Number.isSafeInteger(value)?JSON.rawJSON(context.source):value),raw=row.transaction?.transaction??row.transaction;
+ assert.deepEqual(raw.V1.body.transaction.blob_hashes??[],[],'Pruned blobs cannot be reconstructed by the transaction encoder.');
  const envelope=sdk.sealTransaction({sealedJson:JSON.stringify(raw)});
  assert.equal(await transactionIdentity(envelope,load),expected);
 });

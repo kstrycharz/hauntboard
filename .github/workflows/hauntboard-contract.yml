@@ -1,6 +1,7 @@
 name: Hauntboard contract artifact
 on:
   push:
+    branches: [main]
     paths:
       - 'hauntboard/template/**'
       - 'hauntboard/template-public/**'

@@ -606,8 +606,12 @@ try {
           `Overflow at ${width}`,
         );
         await expect(f.page.locator(".thread-row").first()).toBeVisible();
-        const first = await f.page.locator(".thread-row").first().boundingBox();
-        assert(first.y < 900, `Feed below fold at ${width}`);
+        // A feed refresh can replace the row between visibility and geometry
+        // reads. Retry the measurement without weakening the above-fold check.
+        await expect.poll(async()=>{
+          const first=await f.page.locator(".thread-row").first().boundingBox();
+          return Boolean(first&&first.y<900);
+        },{message:`Feed below fold at ${width}`}).toBe(true);
         await f.page.locator("#new-thread").click();
         assert(
           await f.page

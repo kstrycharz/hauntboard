@@ -36,13 +36,13 @@
     }
   },
   "status": "GUI_FIXTURE_REGRESSIONS_PASSED",
-  "checkedAt": "2026-10-28T03:58:31.573Z",
+  "checkedAt": "2026-10-28T04:11:23.566Z",
   "sourceHashes": {
-    "hauntboard/web/app.mjs": "d6bf32c9e6ff8040f25dbd920e3a7586f8a560548bfc1e3d6a777b89d5d9bf73",
+    "hauntboard/web/app.mjs": "d914d714e8d616a7472cce3237a031dcd47993cbabbe96d512311f3cdd5e4de8",
     "hauntboard/web/sealed-posts.mjs": "f7274524b6bfc1242d5b5eb6652047112abc7d50fb25a2d3d12774c281341cb8",
     "hauntboard/web/crypto.mjs": "744acc3fedfd049d747ebc230b7882ea2be262cb99d0c7e326c1968ac2518e96",
     "hauntboard/web/about.mjs": "a2acb20eb86fe7b228e08f2cc64c2e558319237c5a644bc8dbba06a63ec75d67",
     "hauntboard/web/forums.html": "72f37056e32f1152b4bcdae7cf0a90d22b6dee268da31e2b0b440066b7f056d7",
-    "hauntboard/tests/gui.mjs": "ce9e54d460e592e6a3979f1236dba89828ab2bde87747e87f255650a63fa8fb7"
+    "hauntboard/tests/gui.mjs": "9e270bd89543ed63a2e2063dbf43697d84d00ee53905b65a9f50db9a34276b8e"
   }
 }

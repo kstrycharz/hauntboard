@@ -12,7 +12,6 @@ Optional sealed bodies are now implemented in the current source as version-2 br
 
 - [Threat model and exact claims](docs/privacy-threat-model.md)
 - [Reproducible tests, public audit and three-minute walkthrough](docs/privacy-verification.md)
-- [Contest submission draft](docs/contest-submission.md)
 - [Local Node report](evidence/privacy-tests.json) and [TAP output](evidence/privacy-tests.tap)
 - [Native engine report](evidence/public-contract-engine.json)
 - [Chromium/Firefox browser report](evidence/gui-regression.json)

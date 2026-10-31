@@ -40,6 +40,8 @@ knownFiles.set('/vendor/wallet-recovery-glue.mjs','vendor/wallet-recovery-glue.m
 knownFiles.set('/browser-wallet.mjs','browser-wallet.mjs');
 knownFiles.set('/sapient-wallet.mjs','sapient-wallet.mjs');
 knownFiles.set('/wallet-options.mjs','wallet-options.mjs');
+knownFiles.set('/sapient-logo.svg','sapient-logo.svg');
+knownFiles.set('/sapient-logo.LICENSE.txt','sapient-logo.LICENSE.txt');
 knownFiles.set('/pin-entry.mjs','pin-entry.mjs');
 knownFiles.set('/api-client.mjs','api-client.mjs');
 knownFiles.set('/post-proof.mjs','post-proof.mjs');
@@ -59,7 +61,7 @@ knownFiles.set('/provider-state.mjs','provider-state.mjs');
 for(const name of ['proof.html','proof.mjs','proof.css','proof-evidence.json'])knownFiles.set('/'+name,name);
 knownFiles.set('/proof','proof.html');
 knownFiles.set('/vendor/hpke-LICENSE.txt','vendor/hpke-LICENSE.txt');
-const mime={json:'application/json; charset=utf-8',html:'text/html; charset=utf-8',mjs:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8',wasm:'application/wasm'};
+const mime={json:'application/json; charset=utf-8',html:'text/html; charset=utf-8',mjs:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8',wasm:'application/wasm',svg:'image/svg+xml',txt:'text/plain; charset=utf-8'};
 const error=(message,status=400)=>Object.assign(new Error(message),{status});
 async function config(){
   const c=JSON.parse(await readFile(configPath,'utf8'));

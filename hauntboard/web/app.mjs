@@ -931,10 +931,11 @@ async function review(body, context) {
     walletReturn = body.kind === "thread" ? "compose" : "reply";
     document.querySelectorAll("dialog[open]").forEach((d) => d.close());
     await openWallet();
+    if (body.kind === 'registry') walletOptions.browser();
     $("wallet-message").hidden = false;
     $("wallet-message").textContent = browserWallet.needsPhraseConfirmation()
       ? "Save and confirm your recovery phrase before publishing. Use Show recovery phrase, then return to your post."
-      : "Set up or unlock your wallet, then return to your preserved post to review its fee.";
+      : "Connect Sapient to continue with your post, or choose the browser wallet below.";
     return;
   }
   if (config.profile !== "local" && body.kind === "tip")
@@ -2016,7 +2017,8 @@ async function openWallet() {
   walletOptions.refresh();
   try {
     await walletView();
-    if (generation === walletDialogGeneration && $("browser-wallet-dialog").open && walletStep === "unlock") $("wallet-password").focus({ preventScroll: true });
+    walletOptions.present();
+    if (generation === walletDialogGeneration && $("browser-wallet-dialog").open && walletStep === "unlock" && $('browser-wallet-fallback').open) $("wallet-password").focus({ preventScroll: true });
   } catch (error) {
     flash(error.message, true);
   }

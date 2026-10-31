@@ -412,6 +412,14 @@ try {
       await ready(f.page);
       await f.page.locator('#browser-wallet-button').click();
       await expect(f.page.locator('#sapient-options')).toHaveAttribute('open');
+      await expect(f.page.locator('#browser-wallet-title')).toHaveText('Connect your wallet');
+      await expect(f.page.locator('#wallet-entry')).not.toBeVisible();
+      await expect.poll(() => f.page.locator('.sapient-brand img').evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
+      await f.page.screenshot({path: `hauntboard/evidence/gui-sapient-desktop-${name}.png`});
+      await f.page.setViewportSize({width: 390, height: 844});
+      await expect(f.page.locator('#sapient-use-browser')).toBeInViewport();
+      await f.page.screenshot({path: `hauntboard/evidence/gui-sapient-mobile-${name}.png`});
+      await f.page.setViewportSize({width: 1280, height: 900});
       await expect(f.page.locator('#sapient-connect')).toBeHidden();
       await f.page.evaluate(() => window.fixtureInstallTari());
       await expect(f.page.locator('#sapient-provider option')).toHaveCount(1);

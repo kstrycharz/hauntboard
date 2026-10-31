@@ -56,6 +56,7 @@ jobs:
             hauntboard/evidence/privacy-tests.json
             hauntboard/evidence/privacy-tests.tap
             hauntboard/evidence/gui-regression.json
+            hauntboard/evidence/gui-sapient-*.png
             hauntboard/evidence/room-browser.json
             hauntboard/evidence/vault-browser.json
             hauntboard/evidence/proof-browser.json

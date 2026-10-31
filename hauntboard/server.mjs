@@ -38,6 +38,8 @@ const knownFiles=new Map([['/','index.html'],['/index.html','index.html'],['/for
 knownFiles.set('/vendor/wallet-sdk.mjs','vendor/wallet-sdk.mjs');
 knownFiles.set('/vendor/wallet-recovery-glue.mjs','vendor/wallet-recovery-glue.mjs');
 knownFiles.set('/browser-wallet.mjs','browser-wallet.mjs');
+knownFiles.set('/sapient-wallet.mjs','sapient-wallet.mjs');
+knownFiles.set('/wallet-options.mjs','wallet-options.mjs');
 knownFiles.set('/pin-entry.mjs','pin-entry.mjs');
 knownFiles.set('/api-client.mjs','api-client.mjs');
 knownFiles.set('/post-proof.mjs','post-proof.mjs');

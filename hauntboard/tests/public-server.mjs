@@ -10,6 +10,7 @@ try{
  assert(startup.includes('public listening'),startup);
  assert.equal((await request('/health/live')).status,200);
  assert.equal((await request('/sealed-posts.mjs')).status,200,'The sealed envelope module must ship in the runtime image.');
+ for(const path of ['/sapient-wallet.mjs','/wallet-options.mjs','/network-profile.mjs'])assert.equal((await request(path)).status,200,path);
  for(const path of ['/proof','/proof.mjs','/proof.css','/proof-evidence.json'])assert.equal((await request(path)).status,200,path);
  assert.equal((await request('/api/faucet-submit',{method:'POST'})).status,404,'Removed faucet route stays unavailable even with the legacy flag enabled.');
  assert.equal((await request('/health/ready')).status,503);

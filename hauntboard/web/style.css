@@ -820,6 +820,9 @@ pre {
 .post-chain-link { text-decoration: underline; text-underline-offset: 3px; }
 .wallet-faucet { margin-block: 20px; padding: 16px; border: 1px solid var(--muted); border-radius: 8px; }
 .wallet-faucet h3 { margin-top: 0; }
+.wallet-options { margin-block: 16px; padding: 12px; border: 1px solid var(--muted); border-radius: 8px; overflow-wrap: anywhere; }
+.wallet-options select { width: 100%; min-width: 0; }
+.wallet-options li { margin-block: 8px; }
 .wallet-faucet .small { overflow-wrap: anywhere; }
 
 /* Tari brand kit: ink, cloud, purple and lime. Font files are not supplied. */

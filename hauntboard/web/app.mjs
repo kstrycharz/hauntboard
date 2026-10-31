@@ -12,6 +12,7 @@ import {
   postSpace,
 } from "./crypto.mjs";
 import * as browserWallet from "./browser-wallet.mjs";
+import { setupWalletOptions } from './wallet-options.mjs';
 import { PinEntry } from "./pin-entry.mjs";
 import { createApiClient } from "./api-client.mjs";
 import { FaucetClient, faucetMessage } from "./faucet-client.mjs";
@@ -155,6 +156,14 @@ function clearFlash() {
 }
 const api = createApiClient({getConfig: () => config});
 const faucetClient = new FaucetClient({api});
+const walletOptions = setupWalletOptions({
+  document, getConfig: () => config, pending: () => Boolean(transactionPending),
+  useBrowserWallet: () => {
+    $("sapient-options").open = false;
+    const target = $("wallet-entry").hidden ? $("wallet-password-panel").hidden ? $("browser-wallet-title") : $("wallet-password") : $("wallet-create-choice");
+    target.focus({ preventScroll: true });
+  },
+});
 function dialog(id) {
   clearFlash();
   if ($(id).open) return;
@@ -1976,6 +1985,7 @@ async function openWallet() {
   setWalletStep("entry");
   const generation = walletDialogGeneration;
   dialog("browser-wallet-dialog");
+  walletOptions.refresh();
   try {
     await walletView();
     if (generation === walletDialogGeneration && $("browser-wallet-dialog").open && walletStep === "unlock") $("wallet-password").focus({ preventScroll: true });
@@ -2558,6 +2568,7 @@ async function init() {
   try {
     config = await api("/api/config");
     browserWallet.configure(config, api);
+    walletOptions.refresh();
     boardAddress ??= config.board;
     configureShell();
     await walletView().catch((error) => flash(error.message, true));

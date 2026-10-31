@@ -25,6 +25,10 @@ This is an independently hosted **client**, not an independent network node. The
 
 ## Wallet funding
 
+**Wallet choice:** the current browser wallet remains the posting wallet. Open **Wallet → Sapient & wallet options** to discover an injected Tari provider and connect for a compatibility check. This check shares the public account, requests no private-balance grant, and cannot sign or submit transactions. Never enter a Sapient seed into Hauntboard. Sapient 0.6.17's reviewed generic private-fee path retains a persistent account signer and does not expose the change-isolation and interrupted-submission recovery controls needed for Hauntboard's posting mode. See the [implementation decision and fallback risks](hauntboard/docs/sapient-wallet-implementation.md) and [project plan](hauntboard/docs/sapient-wallet-project-plan.md).
+
+The browser-wallet fallback trusts this site's code while unlocked. Its PIN is a local convenience, browser data can be lost, and recovery words do not restore room-access keys or every pending operation. Keep the separate backups; a timeout or missing transaction body does not authorize another spend.
+
 The hosted wallet's **Need test tokens?** section includes **Get 100 test tXTR**, powered by the [TariTracker.com faucet](https://testnet-faucet.taritracker.com/). Hauntboard sends requests through its backend; the faucet API key never reaches the browser. Requests share your receive address with Hauntboard and the faucet. A saved receipt tracks queued, pending, uncertain and confirmed payments across reloads. Interrupted requests reuse the same receipt and payload; confirmation still requires the wallet to scan the incoming output before the balance updates.
 
 The faucet allows one withdrawal per wallet owner per hour across its website and API. Hauntboard also limits each browser session to one new request per hour; shared faucet budgets and quotas apply. Self-hosted clients without a backend API key show the faucet link instead. Receive funds or recover a funded wallet, then use **Check for incoming funds**. For funds held in a standard Tari account, choose **Convert to posting funds** and review the network fee.

@@ -96,6 +96,9 @@ const server = createServer(async (req, res) => {
       ![
         "index.html",
         "app.mjs",
+        "sapient-wallet.mjs",
+        "wallet-options.mjs",
+        "network-profile.mjs",
         "api-client.mjs",
         "faucet-client.mjs",
         "post-proof.mjs",
@@ -158,6 +161,30 @@ async function fixture(browser, options = {}) {
     await context.addInitScript(() =>
       sessionStorage.setItem("gui-fixture-wallet", "saved"),
     );
+  if (options.tari) await context.addInitScript(({ network, reject }) => {
+    window.fixtureTariCalls = [];
+    const listeners = new Map();
+    window.fixtureTariAccountChanged = () => listeners.get('accountsChanged')?.([]);
+    window.fixtureInstallTari = () => {
+      const provider = {
+        info: { name: 'Sapient fixture' },
+        on(event, callback) { listeners.set(event, callback); return () => listeners.delete(event); },
+        async request({ method }) {
+          window.fixtureTariCalls.push(method);
+          if (method === 'tari_getNetwork') return network;
+          if (method === 'tari_requestAccounts') {
+            if (reject) throw { code: 4001 };
+            return [`component_${'ab'.repeat(32)}`];
+          }
+          if (method === 'tari_getCapabilities') return { supportsPrivateFees: true, transactionRequests: true, transactionResultLookup: true };
+          if (method === 'tari_disconnect') return null;
+          throw Error('Unexpected provider method');
+        },
+      };
+      window.tari = provider; window.tariProviders = [provider, provider];
+      window.dispatchEvent(new Event('tari:announceProvider'));
+    };
+  }, options.tari);
   if (options.pending)
     await context.addInitScript(
       ({ boardAddress, threadAddress, operationId }) => {
@@ -374,6 +401,42 @@ try {
       await expect(f.page.locator("#wallet-button")).toBeHidden();
       await f.context.close();
       checks.push("Configuration failure closes posting");
+      f = await fixture(browser, { saved: true, tari: { network: 'esmeralda' } });
+      await ready(f.page);
+      await f.page.locator('#browser-wallet-button').click();
+      await f.page.locator('#sapient-options > summary').click();
+      await expect(f.page.locator('#sapient-connect')).toBeDisabled();
+      await f.page.evaluate(() => window.fixtureInstallTari());
+      await expect(f.page.locator('#sapient-provider option')).toHaveCount(1);
+      await f.page.locator('#sapient-connect').click();
+      await expect(f.page.locator('#sapient-status')).toContainText('Connected for compatibility checks');
+      assert.deepEqual(await f.page.evaluate(() => window.fixtureTariCalls), ['tari_getNetwork', 'tari_requestAccounts', 'tari_getCapabilities']);
+      await expect(f.page.locator('#sapient-gates li')).toHaveCount(5);
+      await expect(f.page.locator('#identity')).toHaveText('Browser wallet locked');
+      await f.page.evaluate(() => window.fixtureTariAccountChanged());
+      await expect(f.page.locator('#sapient-disconnect')).toBeHidden();
+      await f.page.locator('#sapient-use-browser').click();
+      await expect(f.page.locator('#sapient-options')).not.toHaveAttribute('open');
+      await enterWalletCredential(f.page, '604281');
+      await expect(f.page.locator('#wallet-ready-panel')).toBeVisible();
+      assert.equal(f.state.submits, 0);
+      assert.deepEqual(f.errors, []);
+      await f.context.close();
+      checks.push('Late injected wallet discovery, deduplication, capability check without private access/spending, account-change invalidation and current-wallet fallback');
+      for (const scenario of [{ network: 'igor' }, { network: 'esmeralda', reject: true }]) {
+        f = await fixture(browser, { tari: scenario });
+        await ready(f.page);
+        await f.page.evaluate(() => window.fixtureInstallTari());
+        await f.page.locator('#browser-wallet-button').click();
+        await f.page.locator('#sapient-options > summary').click();
+        await f.page.locator('#sapient-connect').click();
+        await expect(f.page.locator('#sapient-status')).toContainText(scenario.reject ? 'declined' : 'did not complete');
+        assert.equal(f.state.submits, 0);
+        assert(!(await f.page.evaluate(() => window.fixtureTariCalls)).some(m => /Submit|Transaction|ViewAccess/.test(m)));
+        assert.deepEqual(f.errors, []);
+        await f.context.close();
+      }
+      checks.push('Wrong-network and rejected external connections preserve the browser-wallet path without spending');
       f = await fixture(browser, {saved: true, faucet: true});
       await ready(f.page);
       await unlock(f.page);
@@ -829,6 +892,8 @@ try {
     await Promise.all(
       [
         "hauntboard/web/app.mjs",
+        "hauntboard/web/sapient-wallet.mjs",
+        "hauntboard/web/wallet-options.mjs",
         "hauntboard/web/sealed-posts.mjs",
         "hauntboard/web/crypto.mjs",
         "hauntboard/web/about.mjs",

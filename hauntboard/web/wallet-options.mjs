@@ -30,7 +30,7 @@ export function setupWalletOptions({ surface = window, document, getConfig, useB
     $('sapient-status').textContent = notice || (connection
       ? `Posts will use Sapient. Approve each transaction in the extension.`
       : providers.length ? 'Sapient is ready. Connect to start posting.'
-      : 'Use a desktop browser with Sapient installed. Already installed? Refresh the page after enabling it.');
+      : 'Sapient isn’t detected. Install it in your desktop browser to get started.');
     const config = getConfig();
     const list = $('sapient-gates');
     list.replaceChildren();

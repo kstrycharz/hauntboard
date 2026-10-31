@@ -823,6 +823,10 @@ pre {
 .wallet-options { margin-block: 24px 8px; padding: 24px; border: 1px solid #8f63dc; border-radius: 18px; background: radial-gradient(ellipse at top right, #813bf52b, transparent 75%), var(--panel); overflow-wrap: anywhere; }
 .wallet-options select { width: 100%; min-width: 0; }
 .wallet-options li { margin-block: 8px; }
+#browser-wallet-dialog { max-width: 520px; padding: 24px; }
+#browser-wallet-dialog .wallet-options { padding: 20px; margin-top: 16px; }
+#browser-wallet-dialog .sapient-lead { font-size: 18px; margin-top: 18px; }
+#browser-wallet-dialog .sapient-reassurance { margin-block: 12px; }
 .sapient-brand { display: flex; align-items: center; gap: 14px; list-style: none; }
 .sapient-brand::-webkit-details-marker { display: none; }
 .sapient-brand > span:nth-child(2) { display: grid; flex: 1; }

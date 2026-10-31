@@ -1966,7 +1966,7 @@ async function walletView() {
   $("identity").textContent = walletOptions.adapter.connection ? 'Sapient connected' : wallet
     ? "Browser wallet unlocked"
     : has || config.profile !== "local" || config.posterPrivacy
-      ? "Browser wallet locked"
+      ? has ? "Browser wallet available" : "Connect Sapient"
       : `${config.label} · demo wallet`;
   $("browser-wallet-status").textContent = wallet
     ? browserWallet.needsPhraseConfirmation() ? walletStep === "seed" ? "Save your phrase, then confirm the requested word before continuing." : "Finish your recovery backup before publishing. Choose Finish recovery backup below." : "Unlocked. Keys stay on this device."
@@ -1987,6 +1987,7 @@ async function walletView() {
   $("incoming-funds").hidden = !wallet || !config.posterPrivacy;
   $("private-receive-address").value = wallet?.address ?? "";
   renderFaucet();
+  walletOptions.present();
   if (!wallet) return;
   if (config.posterPrivacy)
     scanIncomplete = !browserWallet.fundScanStatus().complete;

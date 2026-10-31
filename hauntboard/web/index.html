@@ -64,7 +64,7 @@
             ><span id="beta-label" class="tag" hidden></span>
           </div>
           <div class="wallet-topbar">
-            <button class="subtle" id="browser-wallet-button" disabled>Wallet</button>
+            <button class="subtle wallet-nav" id="browser-wallet-button" aria-label="Wallet" disabled><img src="/sapient-logo.svg" alt="" width="22" height="22" />Wallet</button>
             <button
               id="wallet-balance-button"
               class="wallet-balance"
@@ -447,26 +447,26 @@
         </button>
       </div>
       <h2 id="browser-wallet-title" tabindex="-1">Your wallet</h2>
-      <p id="wallet-introduction" class="muted">
-        Your six-digit PIN unlocks this browser. Your 24-word Tari L2 recovery
-        phrase restores your wallet on another device.
-      </p>
-      <p id="browser-wallet-status" role="status"></p>
-      <details id="sapient-options" class="wallet-options">
-        <summary>Sapient &amp; wallet options</summary>
-        <p class="small">Connect Sapient to create posts and replies. You approve each transaction in your wallet. Connecting does not move funds.</p>
-        <label for="sapient-provider">Detected Tari wallet</label>
-        <select id="sapient-provider"></select>
+      <details id="sapient-options" class="wallet-options" open>
+        <summary class="sapient-brand"><img src="/sapient-logo.svg" alt="" width="56" height="56" /><span><strong>Sapient</strong><span class="small">Your wallet. Your posts.</span></span><span class="wallet-recommended">Default</span></summary>
+        <p class="sapient-lead">Connect once. Join the conversation.</p>
+        <p class="muted small">Keep your keys in Sapient and approve posts in your wallet.</p>
+        <div id="sapient-provider-picker"><label for="sapient-provider">Choose your Tari wallet</label>
+        <select id="sapient-provider"></select></div>
         <button id="sapient-refresh" type="button" class="subtle full">Check for wallets</button>
         <button id="sapient-connect" type="button" class="primary full">Connect Sapient</button>
         <button id="sapient-disconnect" type="button" class="subtle full" hidden>Disconnect external wallet</button>
+        <div id="sapient-account" class="sapient-account" hidden></div>
         <p id="sapient-status" class="small" role="status" aria-live="polite"></p>
-        <p class="small">Never enter your Sapient recovery phrase here. Connecting does not import its funds. Private balance access is not requested.</p>
-        <p><a href="https://sapient.tari.mw/" target="_blank" rel="noopener noreferrer">Get Sapient and check browser support</a></p>
-        <details><summary>Posting requirements</summary><ul id="sapient-gates"></ul><p class="small">Sapient manages transaction signatures and fee change. Posts may be linked to your wallet. Room administration uses the browser wallet. If submission is interrupted, check the existing request in Sapient before posting again.</p></details>
-        <details><summary>Browser wallet risks &amp; recovery</summary><p class="small">An unlocked wallet trusts this website's code with its keys. A copied encrypted wallet can be attacked offline; a six-digit PIN is a device convenience. Clearing browser data can remove local access and pending records. Keep your recovery words and any seed passphrase/account index privately. Room access needs its own backup and recovery code. Provider outages and incomplete scans can delay funds or transaction status. Testnet resets can erase state. Neither wallet guarantees anonymity.</p></details>
-        <button id="sapient-use-browser" type="button" class="primary full">Continue with browser wallet</button>
+        <a id="sapient-install" class="sapient-install" href="https://sapient.tari.mw/" target="_blank" rel="noopener noreferrer">Get Sapient <span aria-hidden="true">↗</span></a>
+        <p class="small muted sapient-reassurance">No recovery phrase. No funds moved when connecting.</p>
+        <details class="sapient-information"><summary>Fees &amp; privacy</summary><ul id="sapient-gates"></ul><p class="small">Posts require private-fee funds in Sapient, with a maximum requested fee of 1 test TARI. Wallet signatures and change may link posts. Check interrupted submissions before retrying. Room administration uses the browser wallet.</p></details>
       </details>
+      <button id="sapient-use-browser" type="button" class="text-button full wallet-alternative">Use browser wallet instead <span aria-hidden="true">→</span></button>
+      <details id="browser-wallet-fallback" class="browser-wallet-fallback">
+      <summary>Browser wallet &amp; recovery</summary>
+      <p id="wallet-introduction" class="muted">Your PIN unlocks this browser. Keep your recovery phrase separately.</p>
+      <p id="browser-wallet-status" role="status"></p>
       <div id="wallet-secure-context" class="caution" hidden>
         Wallets need HTTPS or localhost. You can read the board here; open a
         secure connection to create or recover a wallet.
@@ -735,6 +735,8 @@
         Your words, PIN and keys stay in this browser. Test currency has no
         monetary value.
       </p>
+      <details class="small"><summary>Browser wallet risks</summary><p>An unlocked browser wallet trusts this site's code with its keys. Copied encrypted data can be attacked offline; clearing browser data can remove access and pending records. Keep recovery words and room-access backups privately. Neither wallet guarantees anonymity.</p></details>
+      </details>
       <p id="wallet-message" class="flash" hidden role="status"></p>
     </dialog>
   </body>

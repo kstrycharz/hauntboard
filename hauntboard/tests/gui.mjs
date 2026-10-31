@@ -117,6 +117,8 @@ const server = createServer(async (req, res) => {
         "about.css",
         "forums.html",
         "style.css",
+        "sapient-logo.svg",
+        "sapient-logo.LICENSE.txt",
         "mobile.css",
       ].includes(name)
     ) {
@@ -128,6 +130,7 @@ const server = createServer(async (req, res) => {
       "Content-Type",
       name.endsWith(".html")
         ? "text/html"
+        : name.endsWith('.svg') ? 'image/svg+xml'
         : name.endsWith(".css")
           ? "text/css"
           : "text/javascript",
@@ -408,8 +411,8 @@ try {
       f = await fixture(browser, { saved: true, tari: { network: 'esmeralda' } });
       await ready(f.page);
       await f.page.locator('#browser-wallet-button').click();
-      await f.page.locator('#sapient-options > summary').click();
-      await expect(f.page.locator('#sapient-connect')).toBeDisabled();
+      await expect(f.page.locator('#sapient-options')).toHaveAttribute('open');
+      await expect(f.page.locator('#sapient-connect')).toBeHidden();
       await f.page.evaluate(() => window.fixtureInstallTari());
       await expect(f.page.locator('#sapient-provider option')).toHaveCount(1);
       await f.page.locator('#sapient-connect').click();
@@ -434,7 +437,7 @@ try {
         await ready(f.page);
         await f.page.evaluate(() => window.fixtureInstallTari());
         await f.page.locator('#browser-wallet-button').click();
-        await f.page.locator('#sapient-options > summary').click();
+        await expect(f.page.locator('#sapient-options')).toHaveAttribute('open');
         await f.page.locator('#sapient-connect').click();
         await expect(f.page.locator('#sapient-status')).toContainText(scenario.reject ? 'declined' : 'did not complete');
         assert.equal(f.state.submits, 0);
@@ -447,7 +450,7 @@ try {
       await ready(f.page);
       await f.page.evaluate(() => window.fixtureInstallTari());
       await f.page.locator('#browser-wallet-button').click();
-      await f.page.locator('#sapient-options > summary').click();
+      await expect(f.page.locator('#sapient-options')).toHaveAttribute('open');
       await f.page.locator('#sapient-connect').click();
       await expect(f.page.locator('#browser-wallet-dialog')).not.toBeVisible();
       await f.page.locator('.thread-link').click();
@@ -492,6 +495,9 @@ try {
       f = await fixture(browser);
       await ready(f.page);
       await compose(f.page);
+      await expect(f.page.locator('#sapient-options')).toHaveAttribute('open');
+      await expect(f.page.locator('#wallet-entry')).not.toBeVisible();
+      await f.page.locator('#sapient-use-browser').click();
       await expect(f.page.locator("#wallet-entry")).toBeVisible();
       await f.page.locator("#wallet-create-choice").click();
       await enterWalletCredential(f.page, "604281");
@@ -672,6 +678,7 @@ try {
       f = await fixture(browser);
       await ready(f.page);
       await f.page.locator("#browser-wallet-button").click();
+      await f.page.locator('#sapient-use-browser').click();
       await f.page.locator("#wallet-recover-choice").click();
       await expect(f.page.locator("#wallet-account-index")).toBeHidden();
       await f.page.locator("#wallet-recovery-input").fill(phrase);

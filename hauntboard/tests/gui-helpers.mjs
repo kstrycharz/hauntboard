@@ -1,6 +1,7 @@
 // Read a requested recovery word only inside the browser test. Never log it.
 import { expect } from "@playwright/test";
 export async function enterWalletCredential(page, value = "604281") {
+  if (await page.locator('#browser-wallet-fallback').count() && !(await page.locator('#browser-wallet-fallback').getAttribute('open') !== null)) await page.locator('#sapient-use-browser').click();
   const input = page.locator("#wallet-password");
   if (!/^\d{6}$/.test(value)) {
     await input.fill(value);

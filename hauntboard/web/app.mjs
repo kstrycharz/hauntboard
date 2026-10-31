@@ -160,7 +160,9 @@ const walletOptions = setupWalletOptions({
   document, getConfig: () => config, pending: () => Boolean(transactionPending),
   useBrowserWallet: () => {
     $("sapient-options").open = false;
-    const target = $("wallet-entry").hidden ? $("wallet-password-panel").hidden ? $("browser-wallet-title") : $("wallet-password") : $("wallet-create-choice");
+    const target = !$("wallet-password-panel").hidden ? $("wallet-password")
+      : !$("wallet-entry").hidden && !$("wallet-create-choice").hidden ? $("wallet-create-choice")
+      : $("browser-wallet-title");
     target.focus({ preventScroll: true });
   },
 });

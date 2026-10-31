@@ -418,7 +418,7 @@ try {
       await expect(f.page.locator('#sapient-status')).toContainText('Posts will use Sapient');
       assert.deepEqual(await f.page.evaluate(() => window.fixtureTariCalls), ['tari_getNetwork', 'tari_requestAccounts', 'tari_getCapabilities']);
       await expect(f.page.locator('#sapient-gates li')).toHaveCount(0);
-      await expect(f.page.locator('#identity')).toHaveText('Browser wallet locked');
+      await expect(f.page.locator('#identity')).toHaveText('Sapient connected');
       await f.page.evaluate(() => window.fixtureTariAccountChanged());
       await expect(f.page.locator('#sapient-disconnect')).toBeHidden();
       await f.page.locator('#sapient-use-browser').click();

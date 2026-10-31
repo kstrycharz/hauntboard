@@ -1,10 +1,10 @@
 import { SapientWallet, discoverTariProviders, postingReadiness, providerLabel } from './sapient-wallet.mjs';
 
-export function setupWalletOptions({ surface = window, document, getConfig, useBrowserWallet, pending, connected = () => {} }) {
+export function setupWalletOptions({ surface = window, document, getConfig, useBrowserWallet, pending, connected = () => {}, selectionChanged = () => {} }) {
   const $ = id => document.getElementById(id);
   const select = $('sapient-provider');
   let providers = [], busy = false, notice = '';
-  const adapter = new SapientWallet({ changed: render });
+  const adapter = new SapientWallet({ changed: () => { render(); selectionChanged(adapter.connection); } });
 
   function render() {
     const connection = adapter.connection;

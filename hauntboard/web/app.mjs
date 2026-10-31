@@ -158,6 +158,7 @@ const api = createApiClient({getConfig: () => config});
 const faucetClient = new FaucetClient({api});
 const walletOptions = setupWalletOptions({
   document, getConfig: () => config, pending: () => Boolean(transactionPending),
+  selectionChanged: connection => { if (connection) $('identity').textContent = 'Sapient connected'; else if (config) walletView().catch(() => {}); },
   connected: () => { $('browser-wallet-dialog').close(); if (walletReturn) resumeWalletTask(); else flash('Sapient connected. You can now create a post or reply.'); },
   useBrowserWallet: () => {
     $("sapient-options").open = false;
@@ -1961,7 +1962,7 @@ async function walletView() {
       setWalletStep("ready");
   } else if (!["create", "recover", "recover-pin", "recover-review", "forgot", "delete"].includes(walletStep))
     setWalletStep(has ? "unlock" : "entry");
-  $("identity").textContent = wallet
+  $("identity").textContent = walletOptions.adapter.connection ? 'Sapient connected' : wallet
     ? "Browser wallet unlocked"
     : has || config.profile !== "local" || config.posterPrivacy
       ? "Browser wallet locked"

@@ -1,5 +1,7 @@
 # Sapient: resolve all five Hauntboard integration blockers
 
+Historical proposal. Superseded by the user's decision to use unchanged stock Sapient; see [the implemented integration](stock-sapient-posting.md). No wallet fork or upstream remediation is required for that selected scope.
+
 Prepared October 30, 2026. Status: implementation plan; fixes and acceptance evidence pending. This plan supersedes the future-work estimates in [the original integration plan](sapient-wallet-project-plan.md). The deployed connection-only integration remains unchanged.
 
 ## Outcome and scope

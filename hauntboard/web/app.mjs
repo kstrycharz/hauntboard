@@ -1038,7 +1038,12 @@ async function sapientResult(id) {
 }
 async function finishTransaction(pending) {
   if (pending.sapient && !pending.id) {
-    const sent = await walletOptions.adapter.recover(pending);
+    let sent;
+    try { sent = await walletOptions.adapter.recover(pending); }
+    catch (error) {
+      if (error.notSubmitted && !pending.sapientAttempted) { localStorage.removeItem('hauntboard-pending'); transactionPending = null; }
+      throw error;
+    }
     pending.id = sent.transactionId;
     localStorage.setItem('hauntboard-pending', JSON.stringify(pending));
   }

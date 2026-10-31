@@ -61,7 +61,7 @@ export class SapientWallet {
     try {
       return await Promise.race([
         Promise.resolve().then(() => provider.request({ method, ...(params === undefined ? {} : { params }) })),
-        new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('Wallet response timed out. Check the extension before trying again.')), this.timeoutMs); }),
+        new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('Wallet response timed out. Check the extension before trying again.')), method === 'tari_submitTransactionRequest' ? Math.max(this.timeoutMs, 120000) : this.timeoutMs); }),
       ]);
     } finally { clearTimeout(timer); }
   }
@@ -81,7 +81,7 @@ export class SapientWallet {
       const hint = new DataView(new Uint8Array(body.nonce).buffer).getUint32(0, true);
       if (state.pages[hint]) inputs.push({substate_id: state.pages[hint], version: null, is_write: true});
     }
-    return {sapient: true, operation: crypto.randomUUID().replaceAll('-', ''), account: this.connection.account, network: this.connection.network, reset: profile.resetIdentity, maxFee: '1000000', operationRequest: {kind: 'instructions', instructions: builder.buildUnsignedTransaction().instructions, inputs, maxFee: '1000000', feeType: 'private', enforceFeeType: true}};
+    return {sapient: true, operation: Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2, '0')).join(''), account: this.connection.account, network: this.connection.network, reset: profile.resetIdentity, expiresAt: Date.now() + 300000, maxFee: '1000000', operationRequest: {kind: 'instructions', instructions: builder.buildUnsignedTransaction().instructions, inputs, maxFee: '1000000', feeType: 'private', enforceFeeType: true}};
   }
 
   async submit(quote, saved, persist) {
@@ -89,6 +89,7 @@ export class SapientWallet {
     if (!connection || quote.account !== connection.account || quote.network !== connection.network) throw new Error('Reconnect the reviewed Sapient account before continuing.');
     if (quote.expiresAt && quote.expiresAt < Date.now()) throw Object.assign(new Error('Review expired. Review your post again.'), {notSubmitted: true});
     if (await this.call(provider, 'tari_getNetwork') !== quote.network) throw new Error('Sapient network changed.');
+    if (this.provider !== provider || this.connection !== connection) throw new Error('Sapient account changed. Reconnect before continuing.');
     if (!saved.sapientRequest) {
       saved.sapientCreating = true; persist();
       const created = await this.call(provider, 'tari_createTransactionRequest', quote.operationRequest);

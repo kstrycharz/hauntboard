@@ -1,12 +1,12 @@
-// Read-only provider boundary. Spending stays disabled until the reviewed release
-// satisfies Hauntboard's transaction signing, recovery and change-isolation gates.
+// Stock Sapient transaction-request integration. Wallet-managed signing and change
+// differ from the browser wallet's isolated posting policy; disclose this in review.
 import { networkProfile } from './network-profile.mjs';
 
 export const SAPIENT_REVIEW = Object.freeze({
   version: '0.6.17',
   commit: 'e2f7bf9772faa35c4bce55f5e2b741a37b38a36c',
   sdkVersion: '0.1.30',
-  postingEnabled: false,
+  postingEnabled: true,
   blockers: Object.freeze([
     'The reviewed private-fee posting path still signs with the persistent wallet key.',
     'Posting change cannot be isolated through the reviewed provider interface.',
@@ -31,7 +31,7 @@ export function providerLabel(provider, index = 0) {
 // version handshake. They cannot override the source-review release gate.
 export function postingReadiness(profile, connection) {
   const expected = networkProfile(profile);
-  const blockers = [...SAPIENT_REVIEW.blockers];
+  const blockers = [];
   if (!connection) blockers.unshift('Connect a wallet to check its network and capabilities.');
   else {
     if (connection.network !== expected.network) blockers.unshift('The connected wallet is on a different network.');
@@ -39,10 +39,11 @@ export function postingReadiness(profile, connection) {
       if (connection.capabilities?.[capability] !== true) blockers.push(`The connected account does not support ${capability}.`);
     }
   }
-  return { postingEnabled: false, recommendedWallet: 'browser', blockers };
+  return { postingEnabled: blockers.length === 0, recommendedWallet: connection ? 'sapient' : 'browser', blockers };
 }
 
 const READ_METHODS = new Set(['tari_getNetwork', 'tari_requestAccounts', 'tari_getCapabilities', 'tari_disconnect']);
+const POST_METHODS = new Set(['tari_createTransactionRequest', 'tari_getTransactionRequest', 'tari_submitTransactionRequest']);
 
 export class SapientWallet {
   constructor({ timeoutMs = 15000, changed = () => {} } = {}) {
@@ -54,15 +55,65 @@ export class SapientWallet {
     this.unsubscribe = null;
   }
 
-  async call(provider, method) {
-    if (!READ_METHODS.has(method)) throw new Error('Sapient spending and private-balance access are disabled in this release.');
+  async call(provider, method, params) {
+    if (!READ_METHODS.has(method) && !POST_METHODS.has(method)) throw new Error('Unsupported Sapient method.');
     let timer;
     try {
       return await Promise.race([
-        Promise.resolve().then(() => provider.request({ method })),
+        Promise.resolve().then(() => provider.request({ method, ...(params === undefined ? {} : { params }) })),
         new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('Wallet response timed out. Check the extension before trying again.')), this.timeoutMs); }),
       ]);
     } finally { clearTimeout(timer); }
+  }
+
+  async review(body, profile, api) {
+    if (!postingReadiness(profile, this.connection).postingEnabled) throw new Error('Connect Sapient on the configured network before posting.');
+    if (!['thread', 'reply'].includes(body.kind)) throw new Error('Use the browser wallet for room administration.');
+    const sdk = await import('./vendor/wallet-sdk.mjs');
+    const target = body.kind === 'thread' ? body.board : body.thread;
+    const state = await api(body.kind === 'thread' ? `/api/board?address=${target}` : `/api/thread?address=${target}`);
+    if (state.schema !== 4) throw new Error('This board is not supported by Sapient posting.');
+    const builder = new sdk.TransactionBuilder(profile.networkByte, 0);
+    const inputs = [{substate_id: target, version: null, is_write: true}];
+    if (body.kind === 'thread') builder.callMethod({componentAddress: target, methodName: 'create_thread'}, [sdk.literalArg(body.title), sdk.intLiteral(0n), sdk.vectorLiteral(body.uid), sdk.vectorLiteral(body.payload)]);
+    else {
+      builder.callMethod({componentAddress: target, methodName: 'append'}, [sdk.vectorLiteral(body.nonce), sdk.intLiteral(BigInt(body.parent ?? -1)), sdk.vectorLiteral(body.payload)]);
+      const hint = new DataView(new Uint8Array(body.nonce).buffer).getUint32(0, true);
+      if (state.pages[hint]) inputs.push({substate_id: state.pages[hint], version: null, is_write: true});
+    }
+    return {sapient: true, operation: crypto.randomUUID().replaceAll('-', ''), account: this.connection.account, network: this.connection.network, reset: profile.resetIdentity, maxFee: '1000000', operationRequest: {kind: 'instructions', instructions: builder.buildUnsignedTransaction().instructions, inputs, maxFee: '1000000', feeType: 'private', enforceFeeType: true}};
+  }
+
+  async submit(quote, saved, persist) {
+    const provider = this.provider, connection = this.connection;
+    if (!connection || quote.account !== connection.account || quote.network !== connection.network) throw new Error('Reconnect the reviewed Sapient account before continuing.');
+    if (quote.expiresAt && quote.expiresAt < Date.now()) throw Object.assign(new Error('Review expired. Review your post again.'), {notSubmitted: true});
+    if (await this.call(provider, 'tari_getNetwork') !== quote.network) throw new Error('Sapient network changed.');
+    if (!saved.sapientRequest) {
+      saved.sapientCreating = true; persist();
+      const created = await this.call(provider, 'tari_createTransactionRequest', quote.operationRequest);
+      if (typeof created?.requestId !== 'string' || !created.requestId) throw new Error('Sapient did not return a transaction request ID. Check its history before retrying.');
+      saved.sapientRequest = created.requestId; saved.sapientCreating = false; persist();
+    }
+    for (let i = 0; i < 180; i++) {
+      if (this.provider !== provider || this.connection !== connection) throw new Error('Reconnect Sapient to check the pending request.');
+      const record = await this.call(provider, 'tari_getTransactionRequest', {requestId: saved.sapientRequest});
+      if (record.status === 'rejected') throw Object.assign(new Error('Sapient approval declined. Your draft is preserved.'), {notSubmitted: true});
+      if (record.status === 'approved' && !saved.sapientAttempted) {
+        saved.sapientAttempted = true; persist();
+        const result = await this.call(provider, 'tari_submitTransactionRequest', {requestId: saved.sapientRequest});
+        return {transactionId: sapientTransactionId(result)};
+      }
+      if (record.status === 'submitted') return {transactionId: sapientTransactionId(record.result)};
+      if (['failed', 'submitting'].includes(record.status)) throw new Error('Check this request in Sapient. Its submission outcome is unresolved; do not post it again.');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    throw new Error('Approve the request in Sapient, then check the existing submission.');
+  }
+
+  async recover(pending) {
+    if (!this.provider || !pending.sapientRequest) throw new Error('Reconnect Sapient and check its history for the pending submission.');
+    return this.submit({account: pending.sapientAccount, network: pending.sapientNetwork}, pending, () => localStorage.setItem('hauntboard-pending', JSON.stringify(pending)));
   }
 
   clear() {
@@ -119,4 +170,10 @@ export class SapientWallet {
     this.clear();
     if (provider) await this.call(provider, 'tari_disconnect');
   }
+}
+
+export function sapientTransactionId(result) {
+  const id = result?.transactionId ?? result?.transaction_id;
+  if (typeof id !== 'string' || !/^[a-f0-9]{64}$/i.test(id)) throw new Error('Sapient has not returned a valid transaction identity. Check the existing request.');
+  return id;
 }

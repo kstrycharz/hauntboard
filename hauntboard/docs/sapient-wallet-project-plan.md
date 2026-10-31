@@ -1,5 +1,7 @@
 # Hauntboard: Sapient primary wallet implementation plan
 
+Follow-up: [the five-blocker remediation plan](sapient-remediation-plan.md) specifies wallet/SDK changes, full room-admin parity, acceptance evidence and revised estimates. Its future-work scope and estimates supersede those below; the historical fallback decision remains accurate.
+
 Prepared October 30, 2026. Status: fallback decision implemented after P0 source review found promotion blockers. See [implementation findings and shipping behavior](sapient-wallet-implementation.md). The phases below remain the roadmap for a future spending integration after upstream gaps are resolved; funded-chain validation has not been performed.
 
 ## Decision

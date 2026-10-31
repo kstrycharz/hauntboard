@@ -454,16 +454,16 @@
       <p id="browser-wallet-status" role="status"></p>
       <details id="sapient-options" class="wallet-options">
         <summary>Sapient &amp; wallet options</summary>
-        <p class="small">The browser wallet is the current posting option. Sapient posting is awaiting compatibility and privacy support. You can connect it here to check capabilities; this does not move funds or approve a transaction.</p>
+        <p class="small">Connect Sapient to create posts and replies. You approve each transaction in your wallet. Connecting does not move funds.</p>
         <label for="sapient-provider">Detected Tari wallet</label>
         <select id="sapient-provider"></select>
         <button id="sapient-refresh" type="button" class="subtle full">Check for wallets</button>
-        <button id="sapient-connect" type="button" class="subtle full">Connect for compatibility check</button>
+        <button id="sapient-connect" type="button" class="primary full">Connect Sapient</button>
         <button id="sapient-disconnect" type="button" class="subtle full" hidden>Disconnect external wallet</button>
         <p id="sapient-status" class="small" role="status" aria-live="polite"></p>
         <p class="small">Never enter your Sapient recovery phrase here. Connecting does not import its funds. Private balance access is not requested.</p>
         <p><a href="https://sapient.tari.mw/" target="_blank" rel="noopener noreferrer">Get Sapient and check browser support</a></p>
-        <details><summary>Why Sapient posting is unavailable</summary><ul id="sapient-gates"></ul></details>
+        <details><summary>Posting requirements</summary><ul id="sapient-gates"></ul><p class="small">Sapient manages transaction signatures and fee change. Posts may be linked to your wallet. Room administration uses the browser wallet. If submission is interrupted, check the existing request in Sapient before posting again.</p></details>
         <details><summary>Browser wallet risks &amp; recovery</summary><p class="small">An unlocked wallet trusts this website's code with its keys. A copied encrypted wallet can be attacked offline; a six-digit PIN is a device convenience. Clearing browser data can remove local access and pending records. Keep your recovery words and any seed passphrase/account index privately. Room access needs its own backup and recovery code. Provider outages and incomplete scans can delay funds or transaction status. Testnet resets can erase state. Neither wallet guarantees anonymity.</p></details>
         <button id="sapient-use-browser" type="button" class="primary full">Continue with browser wallet</button>
       </details>

@@ -99,6 +99,7 @@ const server = createServer(async (req, res) => {
         "sapient-wallet.mjs",
         "wallet-options.mjs",
         "network-profile.mjs",
+        "vendor/wallet-sdk.mjs",
         "api-client.mjs",
         "faucet-client.mjs",
         "post-proof.mjs",
@@ -178,6 +179,9 @@ async function fixture(browser, options = {}) {
           }
           if (method === 'tari_getCapabilities') return { supportsPrivateFees: true, transactionRequests: true, transactionResultLookup: true };
           if (method === 'tari_disconnect') return null;
+          if (method === 'tari_createTransactionRequest') { window.fixtureTariRequest = arguments[0].params; return {requestId: 'fixture-sapient-request'}; }
+          if (method === 'tari_getTransactionRequest') return {status: 'approved'};
+          if (method === 'tari_submitTransactionRequest') return {transactionId: 'd'.repeat(64)};
           throw Error('Unexpected provider method');
         },
       };
@@ -409,9 +413,11 @@ try {
       await f.page.evaluate(() => window.fixtureInstallTari());
       await expect(f.page.locator('#sapient-provider option')).toHaveCount(1);
       await f.page.locator('#sapient-connect').click();
-      await expect(f.page.locator('#sapient-status')).toContainText('Connected for compatibility checks');
+      await expect(f.page.locator('#browser-wallet-dialog')).not.toBeVisible();
+      await f.page.locator('#browser-wallet-button').click();
+      await expect(f.page.locator('#sapient-status')).toContainText('Posts will use Sapient');
       assert.deepEqual(await f.page.evaluate(() => window.fixtureTariCalls), ['tari_getNetwork', 'tari_requestAccounts', 'tari_getCapabilities']);
-      await expect(f.page.locator('#sapient-gates li')).toHaveCount(5);
+      await expect(f.page.locator('#sapient-gates li')).toHaveCount(0);
       await expect(f.page.locator('#identity')).toHaveText('Browser wallet locked');
       await f.page.evaluate(() => window.fixtureTariAccountChanged());
       await expect(f.page.locator('#sapient-disconnect')).toBeHidden();
@@ -437,6 +443,30 @@ try {
         await f.context.close();
       }
       checks.push('Wrong-network and rejected external connections preserve the browser-wallet path without spending');
+      f = await fixture(browser, {tari: {network: 'esmeralda'}});
+      await ready(f.page);
+      await f.page.evaluate(() => window.fixtureInstallTari());
+      await f.page.locator('#browser-wallet-button').click();
+      await f.page.locator('#sapient-options > summary').click();
+      await f.page.locator('#sapient-connect').click();
+      await expect(f.page.locator('#browser-wallet-dialog')).not.toBeVisible();
+      await f.page.locator('.thread-link').click();
+      await f.page.locator('#reply-body').fill('Stock Sapient fixture reply');
+      await f.page.locator('#reply-form button[type=submit]').click();
+      await expect(f.page.locator('#review-wallet')).toHaveText('Sapient wallet');
+      await expect(f.page.locator('#review-signing')).toContainText('Approve in Sapient');
+      await f.page.locator('#confirm-publish').click();
+      await expect.poll(() => f.page.evaluate(() => JSON.parse(localStorage.getItem('hauntboard-pending'))?.id)).toBe(transactionId);
+      const request = await f.page.evaluate(() => window.fixtureTariRequest);
+      assert.equal(request.kind, 'instructions');
+      assert.equal(request.instructions[0].CallMethod.method, 'append');
+      assert.equal(request.feeType, 'private');
+      assert.equal(request.enforceFeeType, true);
+      assert.equal(request.maxFee, '1000000');
+      assert.equal((await f.page.evaluate(() => window.fixtureTariCalls)).filter(m => m === 'tari_submitTransactionRequest').length, 1);
+      assert.deepEqual(f.errors, []);
+      await f.context.close();
+      checks.push('Stock Sapient connects and approves a native SDK-built reply without a browser wallet; pending request and transaction identity persist');
       f = await fixture(browser, {saved: true, faucet: true});
       await ready(f.page);
       await unlock(f.page);

@@ -34,9 +34,9 @@ test('connection checks network before asking for public account; does not read 
   assert.deepEqual(f.calls, ['tari_getNetwork', 'tari_requestAccounts', 'tari_getCapabilities']);
   assert.deepEqual(connected.capabilities, caps);
   const readiness = postingReadiness(profile, connected);
-  assert.equal(readiness.postingEnabled, false);
-  assert.equal(readiness.recommendedWallet, 'browser');
-  assert.equal(readiness.blockers.length, 5, 'Even every advertised capability cannot enable spending.');
+  assert.equal(readiness.postingEnabled, true);
+  assert.equal(readiness.recommendedWallet, 'sapient');
+  assert.equal(readiness.blockers.length, 0);
   assert(Object.isFrozen(SAPIENT_REVIEW.blockers));
 });
 
@@ -107,10 +107,44 @@ test('disconnect is explicit and clears local connection even if the provider fa
   assert.equal(f.calls.at(-1), 'tari_disconnect');
 });
 
-test('method boundary rejects signing, request creation, submission and private reads before provider access', async () => {
+test('method boundary rejects direct signing and private reads before provider access', async () => {
   const f = fixture(), wallet = new SapientWallet();
-  for (const method of ['tari_createTransactionRequest', 'tari_submitTransactionRequest', 'tari_signAndSubmitTransaction', 'tari_requestViewAccess', 'tari_getPrivateBalances']) {
-    await assert.rejects(wallet.call(f.provider, method), /disabled/);
+  for (const method of ['tari_signAndSubmitTransaction', 'tari_requestViewAccess', 'tari_getPrivateBalances']) {
+    await assert.rejects(wallet.call(f.provider, method), /Unsupported/);
   }
   assert.deepEqual(f.calls, []);
+});
+
+test('stock request approval persists request and attempt before submitting exactly once', async () => {
+  const id = 'cd'.repeat(32), snapshots = [];
+  const f = fixture({tari_createTransactionRequest: () => ({requestId: 'request-1'}), tari_getTransactionRequest: () => ({status: 'approved'}), tari_submitTransactionRequest: () => {
+    assert.equal(snapshots.at(-1).sapientAttempted, true);
+    assert.equal(snapshots.at(-1).sapientRequest, 'request-1');
+    return {transactionId: id};
+  }});
+  const wallet = new SapientWallet(); await wallet.connect(f.provider, profile);
+  const pending = {};
+  assert.deepEqual(await wallet.submit({account, network: 'esmeralda', operationRequest: {kind: 'instructions'}}, pending, () => snapshots.push({...pending})), {transactionId: id});
+  assert.equal(f.calls.filter(m => m === 'tari_submitTransactionRequest').length, 1);
+});
+
+test('interrupted submit recovers the existing result without another submission', async () => {
+  let committed = false;
+  const id = 'ef'.repeat(32);
+  const f = fixture({tari_getTransactionRequest: () => committed ? {status: 'submitted', result: {transaction_id: id}} : {status: 'approved'}, tari_submitTransactionRequest: () => {committed = true; throw new Error('lost acknowledgement');}});
+  const wallet = new SapientWallet(); await wallet.connect(f.provider, profile);
+  const pending = {sapientRequest: 'request-2'}, quote = {account, network: 'esmeralda'};
+  await assert.rejects(wallet.submit(quote, pending, () => {}), /lost acknowledgement/);
+  assert.deepEqual(await wallet.submit(quote, pending, () => {}), {transactionId: id});
+  assert.equal(f.calls.filter(m => m === 'tari_submitTransactionRequest').length, 1);
+});
+
+test('rejected approvals and unresolved submissions never create replacement spends', async () => {
+  for (const status of ['rejected', 'failed', 'submitting']) {
+    const f = fixture({tari_getTransactionRequest: () => ({status})});
+    const wallet = new SapientWallet(); await wallet.connect(f.provider, profile);
+    await assert.rejects(wallet.submit({account, network: 'esmeralda'}, {sapientRequest: 'request-3'}, () => {}));
+    assert(!f.calls.includes('tari_submitTransactionRequest'));
+    assert(!f.calls.includes('tari_createTransactionRequest'));
+  }
 });

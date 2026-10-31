@@ -1,5 +1,7 @@
 # Sapient implementation decision
 
+Next implementation: [resolve all five blockers](sapient-remediation-plan.md). That plan covers the required SDK/provider changes and Hauntboard integration; it does not mark these findings resolved.
+
 October 30, 2026. Outcome: implement provider discovery and connection checks; retain the current browser wallet for all posting, funding, and room administration. Sapient has not passed Hauntboard's promotion gates. This is the fallback outcome allowed by the [project plan](sapient-wallet-project-plan.md), not a claim of completed Sapient spending compatibility.
 
 ## What ships

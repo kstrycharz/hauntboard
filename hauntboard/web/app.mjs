@@ -158,6 +158,7 @@ const api = createApiClient({getConfig: () => config});
 const faucetClient = new FaucetClient({api});
 const walletOptions = setupWalletOptions({
   document, getConfig: () => config, pending: () => Boolean(transactionPending),
+  connected: () => { $('browser-wallet-dialog').close(); if (walletReturn) resumeWalletTask(); else flash('Sapient connected. You can now create a post or reply.'); },
   useBrowserWallet: () => {
     $("sapient-options").open = false;
     const target = !$("wallet-password-panel").hidden ? $("wallet-password")
@@ -920,10 +921,11 @@ async function showBoard({ navigate = true, restore = null } = {}) {
   window.scrollTo(0, restore?.scroll ?? 0);
 }
 async function review(body, context) {
+  const useSapient = Boolean(walletOptions.adapter.connection && ['thread', 'reply'].includes(body.kind));
   if (
-    ((config.profile !== "local" || config.posterPrivacy) &&
+    !useSapient && (((config.profile !== "local" || config.posterPrivacy) &&
       !browserWallet.active()) ||
-    browserWallet.needsPhraseConfirmation()
+    browserWallet.needsPhraseConfirmation())
   ) {
     walletReturn = body.kind === "thread" ? "compose" : "reply";
     document.querySelectorAll("dialog[open]").forEach((d) => d.close());
@@ -946,7 +948,7 @@ async function review(body, context) {
   operationState("preparing", "Checking your post and estimating its fee…");
   try {
     quote =
-      browserWallet.active() && body.kind !== "tip"
+      useSapient ? await walletOptions.adapter.review(body, config, api) : browserWallet.active() && body.kind !== "tip"
         ? body.kind==='registry' ? await browserWallet.reviewRegistry(body,context.admin) : await browserWallet.review(body)
         : await api("/api/quote", body);
     publishContext = { ...context, body, quote };
@@ -968,7 +970,7 @@ async function review(body, context) {
     $("review-content-title").textContent = context.content?.title ?? "";
     $("review-content-title").hidden = !context.content?.title;
     $("review-content-body").textContent = context.content?.body ?? "";
-    $("review-wallet").textContent = quote.privateFee
+    $("review-wallet").textContent = quote.sapient ? 'Sapient wallet' : quote.privateFee
       ? "One-time native stealth spend"
       : quote.browser
         ? "Your browser wallet"
@@ -983,7 +985,7 @@ async function review(body, context) {
         : sealed
           ? "Encrypted in this browser"
           : "Public full text";
-    $("review-signing").textContent = quote.privateFee
+    $("review-signing").textContent = quote.sapient ? 'Approve in Sapient. Your wallet builds and submits the transaction with private fees. Wallet signatures and fee change may link posts. If submission is interrupted, check the existing request before trying again.' : quote.privateFee
       ? "Your browser authorizes a native stealth input with its one-time spend key. The full shown fee is paid; the safety buffer cannot be refunded. Your persistent wallet key and account are omitted. Fees, spent-output links, timing and network connections remain visible."
       : quote.browser
         ? "Your browser signs locally. The companion relays the signed transaction to Tari."
@@ -1015,9 +1017,9 @@ async function review(body, context) {
     buttons.forEach((b) => (b.disabled = false));
   }
 }
-async function pollTransaction(id, isBrowser = false) {
+async function pollTransaction(id, isBrowser = false, isSapient = false) {
   for (let i = 0; i < 100; i++) {
-    const tx = isBrowser
+    const tx = isSapient ? await sapientResult(id) : isBrowser
       ? await browserWallet.transaction(id)
       : await api(`/api/transaction?id=${id}`);
     if (!["New", "Pending"].includes(tx.status)) return tx;
@@ -1027,7 +1029,19 @@ async function pollTransaction(id, isBrowser = false) {
     "Confirmation is taking longer than expected. The transaction is saved; refresh to check its status.",
   );
 }
+async function sapientResult(id) {
+  const row = await api('/api/indexer', {method: 'GET', path: `transactions/${id}/result`});
+  if (row.result === 'Pending') return {status: 'Pending'};
+  const final = row.result?.Finalized;
+  if (!final) return {status: 'Pending'};
+  return {status: final.final_decision === 'Commit' && final.execution_result?.finalize?.result?.Accept ? 'Accepted' : 'Rejected', fee: final.execution_result?.finalize?.fee_receipt?.total_fees_paid ?? '0'};
+}
 async function finishTransaction(pending) {
+  if (pending.sapient && !pending.id) {
+    const sent = await walletOptions.adapter.recover(pending);
+    pending.id = sent.transactionId;
+    localStorage.setItem('hauntboard-pending', JSON.stringify(pending));
+  }
   if (!pending.id) {
     const operation = await api(`/api/operation?id=${pending.operation}`);
     if (!operation.transactionId) {
@@ -1050,7 +1064,7 @@ async function finishTransaction(pending) {
       JSON.stringify(transactionPending),
     );
   }
-  const tx = await pollTransaction(pending.id, pending.browser);
+  const tx = await pollTransaction(pending.id, pending.browser, pending.sapient);
   if (pending.browser) await walletView().catch(() => {});
   if (tx.status !== "Accepted") {
     localStorage.removeItem("hauntboard-pending");
@@ -1129,6 +1143,8 @@ async function finishTransaction(pending) {
 }
 async function publish() {
   if (busy || transactionPending || !publishContext?.quote) return;
+  const existing = readStorage(localStorage, 'hauntboard-pending', null);
+  if (existing) { transactionPending = existing; operationError(new Error('Check your existing submission before posting again.')); return; }
   busy = true;
   $("confirm-publish").disabled = true;
   $("review-edit").disabled = true;
@@ -1138,6 +1154,7 @@ async function publish() {
     const pending = {
       operation: context.quote.operation,
       browser: Boolean(context.quote.browser),
+      ...(context.quote.sapient ? {sapient: true, sapientAccount: context.quote.account, sapientNetwork: context.quote.network} : {}),
       kind: body.kind,
       board: body.board,
       uid: body.uid,
@@ -1161,7 +1178,7 @@ async function publish() {
       "submitted",
       "Authorizing your reviewed submission. Do not publish it again.",
     );
-    const sent = context.quote.browser
+    const sent = context.quote.sapient ? await walletOptions.adapter.submit(context.quote, pending, () => localStorage.setItem('hauntboard-pending', JSON.stringify(pending))) : context.quote.browser
       ? await browserWallet.submit(context.quote)
       : await api("/api/submit", { quoteId: context.quote.id });
     pending.id = sent.transactionId;
@@ -1174,6 +1191,9 @@ async function publish() {
     const completed = { ...pending, key: context.key };
     await finishTransaction(completed);
   } catch (error) {
+    if (error.notSubmitted && transactionPending?.sapient && !transactionPending.sapientAttempted) {
+      localStorage.removeItem('hauntboard-pending'); transactionPending = null;
+    }
     $("review-dialog").close();
     operationError(error);
   } finally {

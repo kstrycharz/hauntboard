@@ -1,6 +1,6 @@
 import { SapientWallet, discoverTariProviders, postingReadiness, providerLabel } from './sapient-wallet.mjs';
 
-export function setupWalletOptions({ surface = window, document, getConfig, useBrowserWallet, pending }) {
+export function setupWalletOptions({ surface = window, document, getConfig, useBrowserWallet, pending, connected = () => {} }) {
   const $ = id => document.getElementById(id);
   const select = $('sapient-provider');
   let providers = [], busy = false, notice = '';
@@ -15,8 +15,8 @@ export function setupWalletOptions({ surface = window, document, getConfig, useB
     $('sapient-disconnect').disabled = busy;
     $('sapient-use-browser').disabled = busy;
     $('sapient-status').textContent = notice || (connection
-      ? `Connected for compatibility checks on ${connection.network}. Private balances remain hidden. Posting uses the browser wallet.`
-      : providers.length ? 'An injected wallet is available. Connecting shares its public account with this site. Posting stays in the browser wallet.'
+      ? `Connected on ${connection.network}. Posts will use Sapient. Approve each transaction in the extension.`
+      : providers.length ? 'Connect Sapient to post using your wallet. Connecting shares its public account with this site.'
       : 'No injected Tari wallet found. Install Sapient in a supported desktop browser, then check again. The browser wallet is available here.');
     const config = getConfig();
     const list = $('sapient-gates');
@@ -52,10 +52,12 @@ export function setupWalletOptions({ surface = window, document, getConfig, useB
     const config = getConfig();
     if (!config) throw new Error('Configuration unavailable.');
     await adapter.connect(providers[Number(select.value)], config);
+    connected();
   }));
   $('sapient-disconnect').addEventListener('click', () => action(() => adapter.disconnect()));
   $('sapient-refresh').addEventListener('click', refresh);
   $('sapient-use-browser').addEventListener('click', () => {
+    adapter.clear();
     // This never resubmits, clears, or changes a pending operation.
     notice = pending() ? 'Your existing submission still needs checking. Opening the browser wallet does not publish it again.' : '';
     render(); useBrowserWallet();
@@ -65,5 +67,5 @@ export function setupWalletOptions({ surface = window, document, getConfig, useB
   surface.addEventListener('tari#initialized', refresh);
   surface.addEventListener('pagehide', () => adapter.clear());
   refresh();
-  return { refresh };
+  return { refresh, adapter };
 }

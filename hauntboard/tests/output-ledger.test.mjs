@@ -3,6 +3,12 @@ import assert from 'node:assert/strict';
 import {scanOutputLedger} from '../web/output-ledger.mjs';
 const commitment=n=>n.toString(16).padStart(64,'0'),row=n=>[commitment(n),{synthetic:n}];
 const id=n=>`utxo_${'01'.repeat(32)}_${commitment(n)}`;
+
+test('native shard scans deduplicate repeated locator matches across progressing pages',async()=>{
+ let page=0,verified=0;
+ const result=await scanOutputLedger({coins:[],readPage:async()=>page++===0?{utxos:[row(1)],nextCursor:{v:1,page:1},complete:false}:{utxos:[row(1),row(2)],nextCursor:{v:1,page:2},complete:true},verifyOwned:async()=>{verified++;return {change:false};}});
+ assert.equal(verified,2);assert.equal(result.coins.length,2);assert.equal(result.complete,true);
+});
 test('recovery resumes beyond 1,000 outputs, preserves reserved coins and quarantines change',async()=>{
  const all=Array.from({length:1201},(_,n)=>row(n+1));let saved;
  const readPage=cursor=>({utxos:all.filter(([id])=>!cursor||id>cursor).slice(0,100)});

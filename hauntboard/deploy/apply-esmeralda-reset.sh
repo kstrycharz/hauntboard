@@ -3,7 +3,8 @@ set -eu
 exec 9>/opt/hauntboard/deploy.lock
 flock -n 9 || { echo 'Another deployment is running.'; exit 1; }
 cd /opt/hauntboard
-stage=/opt/hauntboard/esmeralda-reset-20261102
+stage=${HAUNTBOARD_RESET_STAGE:-/opt/hauntboard/esmeralda-reset-20261102}
+case "$stage" in /opt/hauntboard/esmeralda-reset-20261102|/opt/hauntboard/esmeralda-reset-20261102-v[0-9]*) ;; *) echo 'Invalid reset deployment stage.'; exit 1;; esac
 test -f "$stage/network.next.json"
 test -f "$stage/esmeralda-reset-image.tar.gz"
 test ! -f "$stage/deployment-complete"
@@ -11,7 +12,7 @@ for file in .env network.json compose.yaml CURRENT_RELEASE; do
  if [ -f "$file" ] && [ ! -f "$stage/$file.before" ]; then cp "$file" "$stage/$file.before"; chmod 600 "$stage/$file.before"; fi
 done
 old=$(docker inspect hauntboard-app-1 --format '{{.Image}}')
-docker tag "$old" hauntboard:before-esmeralda-reset-20261102
+if ! docker image inspect hauntboard:before-esmeralda-reset-20261102 >/dev/null 2>&1; then docker tag "$old" hauntboard:before-esmeralda-reset-20261102; fi
 gzip -dc "$stage/esmeralda-reset-image.tar.gz" | docker load
 image=$(docker image inspect hauntboard:esmeralda-reset-20261102 --format '{{.Id}}')
 printf '%s' "$image" | grep -Eq '^sha256:[a-f0-9]{64}$'
@@ -36,7 +37,7 @@ docker run -d --name "$candidate" --read-only --tmpfs /companion:uid=1000,gid=10
  -e INDEXER_URL=https://ootle-indexer-a.tari.com -e APPROVED_PROVIDER_ORIGINS=https://ootle-indexer-a.tari.com,https://ootle-indexer-b.tari.com \
  -e CONFIG_FILE=/run/hauntboard/network.json -v "$stage/network.next.json:/run/hauntboard/network.json:ro" "$image" >/dev/null
 attempt=0
-until docker exec "$candidate" node -e "fetch('http://127.0.0.1:8280/health/ready',{headers:{Host:'hauntboard.taritracker.com'}}).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"; do
+until docker exec "$candidate" node -e "require('http').get('http://127.0.0.1:8280/health/ready',{headers:{Host:'hauntboard.taritracker.com'}},r=>{r.resume();r.on('end',()=>process.exit(r.statusCode===200?0:1));}).on('error',()=>process.exit(1));"; do
  attempt=$((attempt+1)); test "$attempt" -lt 12; sleep 3
 done
 # The operations volume and secret env_file reference remain on the existing service.
@@ -46,13 +47,13 @@ docker compose stop app
 docker run --rm --entrypoint sh --user root -v hauntboard_operations:/source:ro -v "$stage:/backup" "$image" -c 'umask 077; tar -czf /backup/operations.before.tar.gz -C /source .'
 cp "$stage/network.next.json" network.json.next
 mv network.json.next network.json
-sed "s|^APP_IMAGE=.*|APP_IMAGE=$image|;s|^HAUNTBOARD_FAUCET_ENABLED=.*|HAUNTBOARD_FAUCET_ENABLED=false|" .env > .env.next
-if ! grep -q '^HAUNTBOARD_FAUCET_ENABLED=' .env.next; then printf '\nHAUNTBOARD_FAUCET_ENABLED=false\n' >> .env.next; fi
+sed "s|^APP_IMAGE=.*|APP_IMAGE=$image|;s|^HAUNTBOARD_FAUCET_ENABLED=.*|HAUNTBOARD_FAUCET_ENABLED=true|" .env > .env.next
+if ! grep -q '^HAUNTBOARD_FAUCET_ENABLED=' .env.next; then printf '\nHAUNTBOARD_FAUCET_ENABLED=true\n' >> .env.next; fi
 chmod 600 .env.next
 mv .env.next .env
 docker compose up -d --no-deps --force-recreate --wait --wait-timeout 150 app
 curl --max-time 30 -fsS -H 'Host: hauntboard.taritracker.com' http://127.0.0.1/health/ready
-docker exec hauntboard-app-1 node -e "fetch('http://127.0.0.1:8280/api/config',{headers:{Host:'hauntboard.taritracker.com'}}).then(r=>r.json()).then(c=>{if(c.board!=='component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b'||c.resetIdentity!=='esmeralda-reset-2026-11-02')process.exit(1);console.log(JSON.stringify({board:c.board,resetIdentity:c.resetIdentity,faucetEnabled:c.faucetEnabled}));})"
+docker exec hauntboard-app-1 node -e "require('http').get('http://127.0.0.1:8280/api/config',{headers:{Host:'hauntboard.taritracker.com'}},r=>{let text='';r.on('data',b=>text+=b);r.on('end',()=>{const c=JSON.parse(text);if(c.board!=='component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b'||c.resetIdentity!=='esmeralda-reset-2026-11-02')process.exit(1);console.log(JSON.stringify({board:c.board,resetIdentity:c.resetIdentity,faucetEnabled:c.faucetEnabled}));});}).on('error',()=>process.exit(1));"
 printf '%s\n' manual-esmeralda-reset-20261102 > CURRENT_RELEASE
 printf '%s\n' "$image" > "$stage/deployment-complete"
 switched=false

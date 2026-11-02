@@ -1,5 +1,45 @@
 # VPS and GitHub deployment
 
+## November 2 Esmeralda reset deployment
+
+The VPS now runs the fresh schema-4 board recorded in `network.public.json`,
+with reset identity `esmeralda-reset-2026-11-02`. The shipped browser SDK is
+0.12.0; crypto/BOR WASM and transaction decoding use 0.49.1. The client decodes
+the current encoded indexer substates/receipts and discovers private outputs
+through bounded protobuf shard streams followed by paginated UTXO fetches.
+The archived pre-reset transaction format is intentionally rejected by this
+reset's decoder; old operation namespaces remain preserved.
+
+The tested image/configuration was installed together through SSH. Readiness
+passes publicly. Chromium and Firefox both rendered the new board and the exact
+General notice, **Esmeralda reset: why the forum started fresh**. That notice
+was published through the deployed browser wallet using a native stealth fee.
+See `hauntboard/evidence/reset-vps-deployment-2026-11-02.json` and
+`reset-vps-browser-2026-11-02.json`. This is exercised compatibility evidence;
+the broader compatibility/privacy manifest flags remain false.
+
+Rollback files, the prior image pin, prior manifest and a protected operations
+volume archive are retained under `/opt/hauntboard/esmeralda-reset-20261102`.
+Restore `.env.before` and `network.json.before` together, then recreate only
+the app service. The pre-reset board will still be unavailable on the reset
+network; rollback restores the old software/configuration, not erased chain data.
+The normal operations volume, Cloudflare edge and secret `env_file` reference
+were preserved. The final client image is pinned in
+`/opt/hauntboard/esmeralda-reset-20261102-v2/deployment-complete`; that directory
+also retains the first working reset image/configuration for rollback. The
+original pre-reset rollback remains in the first directory.
+
+The in-app faucet remains enabled as before. The separately updated faucet now
+reports a funded account and uses the current SDK, but its discovery capsule
+still names the old reset. The client rejects that capsule and falls back to
+verified native output scanning, at most once per thirty seconds for automatic
+polling. No faucet withdrawal was needed for deployment or the notice.
+
+The deployment script is `apply-esmeralda-reset.sh`. Its loopback probes use
+Node's HTTP client with an explicit Host header; Node fetch does not reliably
+preserve that override in the deployed runtime. Ordinary releases retain the
+manifest comparison guard and cannot silently revert to the old board.
+
 ## October 28 client compatibility update
 
 The source now pins SDK 0.11.1 and crypto/transaction identity 0.47.0. This changes only `sdkVersion` and `wasmVersion` in the public manifest; board, template, reset identity, key-registry pin and evidence flags are preserved. Before deployment, stage an explicit copy of the existing server manifest with those two version fields updated. Retain the old manifest and image together for rollback. The fixed deployment agent intentionally compares manifests byte-for-byte and will refuse this version migration until it is installed through a reviewed server update. Do not disable that check or mark privacy/compatibility flags true. Preserve pending operation records and reconcile previously signed operations with the version that created them before allowing new writes. Browser-local recovery and current public transaction-ID checks pass; a new funded-post acceptance check remains outstanding. No fresh board or template publication is needed for the website changes.

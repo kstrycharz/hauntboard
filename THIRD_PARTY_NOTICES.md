@@ -4,7 +4,7 @@ Original Hauntboard source is MIT licensed under `LICENSE`. Coding and verificat
 
 | Dependency / asset | Use | License / retained notice |
 |---|---|---|
-| Ootle SDK 0.7.0 and Tari WASM 0.43.0 | Hauntboard browser key generation, transaction construction, signing and BOR envelopes | BSD-3-Clause; `docs/licenses/ootle-sdk-BSD-3-Clause.txt` and Tari notice below |
+| Ootle SDK 0.12.0 and Tari WASM/BOR 0.49.1 | Hauntboard browser key generation, transaction construction, signing and BOR envelopes | BSD-3-Clause; `docs/licenses/ootle-sdk-BSD-3-Clause.txt` and Tari notice below |
 | @scure/bip39 2.0.1 | Hauntboard English 24-word mnemonic generation/checksum/entropy | MIT; upstream package license retained with browser dependencies |
 | tari_ootle_wallet_crypto 0.45.0 / tari_utilities 0.10.0 | Native owner/view derivation in the recovery adapter | BSD-3-Clause; Tari notice below, dependencies fixed by wallet-recovery/Cargo.lock |
 | cbor-x 1.6.6 | Hauntboard contract argument encoding | MIT; `docs/licenses/cbor-x-MIT.txt` |
@@ -28,6 +28,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 # Native burn proof conversion
 
 `hauntboard/burn-claim/src/l1_proof.rs` is derived from Tari's BSD-3-Clause licensed [v0.45.0 burn claim helper](https://github.com/tari-project/tari-ootle/blob/v0.45.0/applications/tari_ootle_app_utilities/src/burn_claim_proof.rs). Copyright 2026 The Tari Project. The import refers to the published template types crate; cryptography is performed by the native Tari libraries.
+
+`hauntboard/transaction-identity/src/utxo_protobuf.rs` retains the protobuf types
+from the published `tari_indexer_client` 0.50.0 crate, `src/protobuf.rs`.
+Copyright 2025 The Tari Project; BSD-3-Clause under the Tari notice above.
+The native adapter uses the released Prost decoder to parse these frames.
 
 
 # HPKE recipient encryption

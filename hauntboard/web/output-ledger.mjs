@@ -13,11 +13,13 @@ export async function scanOutputLedger({coins,cursor=null,readPage,verifyOwned,c
   const pageIds=new Set();
   for(const row of rows){
    if(!Array.isArray(row)||row.length!==2||typeof row[0]!=='string'||!/^[a-f0-9]{64}$/.test(row[0])||!row[1]||typeof row[1]!=='object'||Array.isArray(row[1]))throw new Error('Invalid output scan response.');
-   if(seen.has(row[0])||pageIds.has(row[0]))throw new Error('Output scan cursor did not advance.');
+   if(seen.has(row[0])){if(modern)continue;throw new Error('Output scan cursor did not advance.');}
+   if(pageIds.has(row[0]))throw new Error('Output scan cursor did not advance.');
    pageIds.add(row[0]);
   }
   for(const commitment of pageIds)seen.add(commitment);
   for(const [commitment,utxo] of rows){
+   if(modern&&!pageIds.has(commitment))continue;
    const id=`utxo_${'01'.repeat(32)}_${commitment}`;
    if(!ledger.some(c=>c.id===id)){
     const owned=await verifyOwned(id,utxo);

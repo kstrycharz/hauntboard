@@ -96,13 +96,13 @@ The sanitized result is written to
 publication and schema-4 board creation, not browser posting compatibility or
 poster privacy.
 
-## Website migration remains separate
+## Website migration
 
-The hosted manifest and browser runtime must be migrated together before the
-site can use this new board. The current browser SDK/reader predates encoded
-indexer substates. Do not install new addresses alone, reuse the old reset
-namespace, or set compatibility/privacy flags to true based on publication.
-Preserve old operation journals and room backups during the migration.
+The hosted manifest and browser runtime were migrated together on November 2.
+SDK 0.12.0, BOR/crypto 0.49.1, current receipt decoding, and bounded private-output
+stream/fetch scanning now ship on the VPS. Do not install new addresses alone,
+reuse the old reset namespace, or set compatibility/privacy flags to true based
+on publication. Old operation journals and room backups were preserved.
 
 An archived L1 burn claim was rejected by finalization because its pre-reset
 block was not in the new network's L1 history. Its final receipt reports zero
@@ -120,7 +120,13 @@ Total actual fees were 3.918211 test TARI, including the superseded publications
 The wallet's remaining revealed balance was 496.081789 test TARI. Detailed
 verification is in `hauntboard/evidence/reset-live-2026-11-02.json`.
 
-`network.esmeralda-reset-2026-11-02.json` stages the new chain addresses and reset
-namespace. It preserves the shipping client's existing SDK version fields; these
-still need migration and validation. The active local/public manifest and VPS
-were not switched by this contract deployment.
+`network.esmeralda-reset-2026-11-02.json` and the active `network.public.json`
+contain the new chain addresses, reset namespace and client version pins. The VPS
+now uses that manifest and the tested client image. The General reset notice was
+published through its browser wallet and rendered in Chromium and Firefox. See
+`reset-vps-deployment-2026-11-02.json` for deployment, fee-budget and test evidence.
+
+The site retains its in-app faucet button. Discovery capsules carrying the old
+reset are rejected; automatic polling falls back to native stream scanning with
+a thirty-second throttle. The wallet also deduplicates output locators shared
+across different advancing shard pages without weakening legacy cursor checks.

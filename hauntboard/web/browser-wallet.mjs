@@ -781,12 +781,17 @@ const isPostingChange = (owned) => {
 export async function syncPrivateFunds() {
   return coordinated(() => scanOwnedOutputs());
 }
+let fallbackDiscovery={key:null,at:0};
 export async function syncFaucetFunds() {
   return coordinated(async () => {
     requireSigner();
     await refreshPrivateMaterial();
     await requireNetwork();
-    return discoverFaucetFunds();
+    try{return await discoverFaucetFunds();}catch{
+      const key=`${networkKey(config)}:${material.address}`;
+      if(fallbackDiscovery.key===key&&Date.now()-fallbackDiscovery.at<30000)return {found:0,discoveryUnavailable:true};
+      fallbackDiscovery={key,at:Date.now()};return scanOwnedOutputs();
+    }
   });
 }
 async function scanOwnedOutputs() {

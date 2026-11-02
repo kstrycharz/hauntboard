@@ -1,0 +1,95 @@
+{
+  "status": "VPS_RESET_DEPLOYED_AND_NOTICE_PUBLISHED",
+  "checkedAt": "2026-11-02T21:29:17.854Z",
+  "url": "https://hauntboard.taritracker.com",
+  "board": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+  "template": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+  "keyRegistryTemplate": "1f0b4d6e32820fb5666098d5ba3aeeee096f0610186335690625ab48ebbf90b0",
+  "sdkVersion": "0.12.0",
+  "wasmVersion": "0.49.1",
+  "transactionCodec": "0.49.1",
+  "imageConfigId": "sha256:d2106e494c751a84c68618c77394622d7cbd00de6d2bf1585984440a518089a3",
+  "vpsImageId": "sha256:c7c422c6fcd2f2dc5864fb0219732865a3c3c81a392b72541e10715b84fd522f",
+  "rollbackDirectory": "/opt/hauntboard/esmeralda-reset-20261102-v2",
+  "operationsVolumePreserved": true,
+  "faucetEnabled": true,
+  "compatibilityVerified": false,
+  "posterPrivacyVerified": false,
+  "tests": {
+    "nodePassed": 82,
+    "nodeSkipped": 1,
+    "boardEnginePassed": 7,
+    "registryEnginePassed": 4,
+    "localBrowsers": [
+      "chromium",
+      "firefox"
+    ],
+    "liveBrowsers": [
+      "chromium",
+      "firefox"
+    ]
+  },
+  "approvedFeeBudgetMicrotari": "20000000",
+  "cumulativeReservedFeesMicrotari": "4835055",
+  "notice": {
+    "status": "RESET_NOTICE_POSTED",
+    "checkedAt": "2026-11-02T21:20:56.505Z",
+    "thread": "component_14ba1630afe627a87ac641b501fc74e5bbb6f505d0cc4148e2506a9eadcc58f0",
+    "transactionId": "a223ade13dcb0272a5af997974c4c510953ada12a39a13583454577b70691176",
+    "category": "general",
+    "title": "Esmeralda reset: why the forum started fresh",
+    "body": "The Tari Ootle Esmeralda testnet was reset, which removed the previous Ootle on-chain state. That included Hauntboard’s board, threads, replies, room-key registries and L2 test-token balances. This is why the old forum was wiped.\n\nHauntboard stores posts in smart-contract state. Rebuilding the website cannot restore data erased by a network reset. We have deployed new board and room-key registry contracts, updated the client for the current network, and switched this site to the new deployment. New discussions and replies now start on this fresh board.\n\nYour recovery phrase still represents your wallet keys, but it does not restore erased on-chain posts or balances. Keep your recovery phrase and room-key backups private. Esmeralda is a testnet, so its data and balances may be reset again.\n\nThanks for testing Hauntboard. Welcome back!",
+    "url": "https://hauntboard.taritracker.com/?category=general&thread=component_14ba1630afe627a87ac641b501fc74e5bbb6f505d0cc4148e2506a9eadcc58f0"
+  },
+  "postingFees": [
+    {
+      "stage": "notice-prepare",
+      "transactionId": "27840d5bcc3d6fd9b0f0adbb92576f9a63ff550871c254ff5b888ab3a75d90f3",
+      "maxFeeMicrotari": "36948",
+      "feesRequiredMicrotari": "29956",
+      "feeReceipt": {
+        "total_fee_payment": 36948,
+        "total_fees_paid": 29956,
+        "total_fee_overcharge": 0,
+        "cost_breakdown": {
+          "breakdown": {
+            "RuntimeCall": 11,
+            "Storage": 1841,
+            "TransactionWeight": 195,
+            "SubstateCreate": 1250,
+            "WasmExecution": 25,
+            "NativeExecution": 26629,
+            "InputLoad": 5
+          }
+        },
+        "exhaust_burn": 1497
+      }
+    },
+    {
+      "stage": "notice-post",
+      "transactionId": "a223ade13dcb0272a5af997974c4c510953ada12a39a13583454577b70691176",
+      "maxFeeMicrotari": "25447",
+      "feesRequiredMicrotari": "20373",
+      "feeReceipt": {
+        "total_fee_payment": 25447,
+        "total_fees_paid": 25447,
+        "total_fee_overcharge": 5074,
+        "cost_breakdown": {
+          "breakdown": {
+            "RuntimeCall": 16,
+            "Storage": 4398,
+            "TransactionWeight": 813,
+            "TemplateLoad": 470,
+            "SubstateCreate": 1000,
+            "WasmExecution": 1334,
+            "NativeExecution": 12335,
+            "InputLoad": 7
+          }
+        },
+        "exhaust_burn": 1272
+      }
+    }
+  ],
+  "preResetRollbackDirectory": "/opt/hauntboard/esmeralda-reset-20261102",
+  "faucetAuthenticatedReadCheck": true
+}

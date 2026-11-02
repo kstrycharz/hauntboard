@@ -5,6 +5,12 @@ A message board on Tari Ootle Esmeralda testnet. Posts live in contract state; w
 **Website:** https://hauntboard.taritracker.com
 **Source and download:** https://github.com/kstrycharz/hauntboard
 
+The November 2 Esmeralda reset removed the previous on-chain forum state.
+Hauntboard now uses a freshly deployed board and registry with the current
+client runtime. Read the [General reset notice](https://hauntboard.taritracker.com/?category=general&thread=component_14ba1630afe627a87ac641b501fc74e5bbb6f505d0cc4148e2506a9eadcc58f0)
+or the [reset deployment record](hauntboard/deploy/RESET.md). Updating the website
+does not restore posts erased by the testnet reset.
+
 **Start with the privacy walkthrough:** open **Privacy evidence** in the app (`/proof`), or read the [judge walkthrough](hauntboard/docs/judge-walkthrough.md). Compare outsider, invited-reader and removed-reader access, then follow the eight recorded Esmeralda transactions. The optional registry lookup reports current provider availability separately from recorded execution.
 
 ## Run your own copy
@@ -59,7 +65,7 @@ Read the [threat model](hauntboard/docs/privacy-threat-model.md) and [reproducib
 
 Native fee signing omits stable wallet identifiers; it does not prove unlinkability. Shared funding origins, output graphs, fees, timing and network connections remain observable. The read-only [public audit](hauntboard/evidence/privacy-public-audit.json) records insufficient recent receipts for a two-post Esmeralda comparison. The later [room execution record](hauntboard/evidence/room-key-esmeralda.json), checked October 21 UTC, covers native-stealth-funded sealed posting and recipient-key rotation. It does not complete the separate same-wallet multi-post comparison. Manifest verification flags remain false.
 
-The October 28 source update hardens room-vault persistence: failed saves preserve prior keys, queued writes preserve different rooms, and locking cancels in-flight saves/unlocks. [Browser regression evidence](hauntboard/evidence/vault-browser.json) exercises real storage and cryptography in Chromium and Firefox. The browser SDK is now pinned to 0.11.1 and its crypto/transaction identity code to 0.47.0. A saved public transaction vector checks modern transaction identity without depending on indexer retention; its capture preserves large integer nonces exactly. [Native wallet checks](hauntboard/evidence/wallet-compatibility-browser.json) exercise local creation, PIN unlock and recovery in both browsers. These source changes need their own deployment; older deployment records do not establish that they are live. A funded post on the new library versions and the same-wallet public audit remain separate gates.
+The October 28 source update hardened room-vault persistence: failed saves preserve prior keys, queued writes preserve different rooms, and locking cancels in-flight saves/unlocks. [Browser regression evidence](hauntboard/evidence/vault-browser.json) exercises real storage and cryptography in Chromium and Firefox. The November 2 reset deployment uses browser SDK 0.12.0 and crypto/BOR/transaction decoding 0.49.1. It supports the current encoded state and receipt APIs and bounded private-output stream/fetch scanning. The archived pre-reset transaction vector remains preserved and is rejected by the new protocol decoder. [Reset browser checks](hauntboard/evidence/reset-client-browser-2026-11-02.json) cover native wallet creation, PIN recovery and live scanning in Chromium and Firefox. The [VPS verification](hauntboard/evidence/reset-vps-deployment-2026-11-02.json) records the deployed client and a finalized native-stealth-funded General notice. Broader compatibility/privacy flags remain false; this exercised posting path does not complete the separate same-wallet public audit.
 
 ## VPS deployment
 

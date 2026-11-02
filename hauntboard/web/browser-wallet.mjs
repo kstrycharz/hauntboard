@@ -798,20 +798,14 @@ async function scanOwnedOutputs() {
   await refreshPrivateMaterial();
   await requireNetwork();
   await discoverExistingAccount();
-  const faucet = await discoverFaucetFunds();
+  // Faucet discovery is an optional shortcut; a stale/reset faucet cannot block
+  // the native stream scan, which independently verifies every owned output.
+  const faucet = await discoverFaucetFunds().catch(() => ({found:0,historyComplete:false}));
   const native = new sdk.WasmStealthCrypto(config.networkByte);
   const result = await scanOutputLedger({
     coins: material.coins ?? [],
     cursor: material.scanComplete ? null : (material.scanCursor ?? null),
-    readPage: (cursor) =>
-      api("/api/indexer", {
-        method: "GET",
-        path:
-          "utxos?resource_address=" +
-          NATIVE +
-          "&limit=100" +
-          (cursor ? "&from_id=" + cursor : ""),
-      }),
+    readPage: (cursor) => api('/api/utxo-scan',{cursor}),
     verifyOwned: async (id, utxo) => {
       if (
         !(await sdk.decryptOwnedUtxo(

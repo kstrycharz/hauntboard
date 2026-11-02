@@ -8,7 +8,8 @@ export async function scanOutputLedger({coins,cursor=null,readPage,verifyOwned,c
  const seen=new Set(cursor===null?[]:[cursor]);
  for(let page=0;page<maxPages;page++){
   const response=await readPage(cursor),rows=response?.utxos;
-  if(!Array.isArray(rows)||rows.length>100)throw new Error('Invalid output scan response.');
+  const modern=Object.hasOwn(response??{},'nextCursor');
+  if(!Array.isArray(rows)||rows.length>(modern?1000:100))throw new Error('Invalid output scan response.');
   const pageIds=new Set();
   for(const row of rows){
    if(!Array.isArray(row)||row.length!==2||typeof row[0]!=='string'||!/^[a-f0-9]{64}$/.test(row[0])||!row[1]||typeof row[1]!=='object'||Array.isArray(row[1]))throw new Error('Invalid output scan response.');
@@ -25,9 +26,10 @@ export async function scanOutputLedger({coins,cursor=null,readPage,verifyOwned,c
      ledger.push({id,state:owned.change?'quarantined':'ready'});found++;
     }
    }
-   cursor=commitment;
+   if(!modern)cursor=commitment;
   }
-  complete=rows.length<100;
+  if(modern)cursor=response.nextCursor;
+  complete=modern?response.complete===true:rows.length<100;
   await checkpoint({coins:ledger,cursor:complete?null:cursor,complete,capacityReached});
   if(complete)break;
  }

@@ -13,6 +13,8 @@ import {testnetBeta,validatePublicManifest} from './lib/release-mode.mjs';
 import {transactionIdentity} from './web/transaction-identity.mjs';
 import {Faucet} from './lib/faucet.mjs';
 import {decodeRegistry} from './web/key-registry.mjs';
+import {providerResult} from './web/provider-results.mjs';
+import {scanUtxos} from './lib/utxo-scan.mjs';
 
 const runtime=serverProfile(process.env),publicMode=runtime.profile!=='local';
 const beta=testnetBeta(process.env);
@@ -58,6 +60,8 @@ knownFiles.set('/faucet-discovery.mjs','faucet-discovery.mjs');
 knownFiles.set('/faucet-client.mjs','faucet-client.mjs');
 for(const name of ['room-keys.mjs','room-vault.mjs','room-manager.mjs','room-access-request.mjs','key-registry.mjs','vendor/hpke.mjs'])knownFiles.set('/'+name,name);
 knownFiles.set('/provider-state.mjs','provider-state.mjs');
+knownFiles.set('/provider-results.mjs','provider-results.mjs');
+knownFiles.set('/indexer-codec.mjs','indexer-codec.mjs');
 for(const name of ['proof.html','proof.mjs','proof.css','proof-evidence.json'])knownFiles.set('/'+name,name);
 knownFiles.set('/proof','proof.html');
 knownFiles.set('/vendor/hpke-LICENSE.txt','vendor/hpke-LICENSE.txt');
@@ -232,7 +236,7 @@ const server=createServer(async(req,res)=>{
       const allowedScan=/^utxos\?resource_address=resource_0101010101010101010101010101010101010101010101010101010101010101&limit=100(?:&from_id=[a-f0-9]{64})?$/;
       if(!((body.method==='GET'&&(allowedGet.test(body.path)||allowedScan.test(body.path)))||(body.method==='POST'&&['transactions/dry-run',...(!publicMode?['transactions']:[])].includes(body.path))))throw error('Unsupported indexer request.');
       const upstream=await fetch(`${indexer}/${body.path}`,{method:body.method,headers:{'Content-Type':'application/json'},body:body.method==='POST'?JSON.stringify(body.body):undefined,signal:AbortSignal.timeout(30000),redirect:'error'});
-      json(res,await upstream.json(),upstream.status);return;
+      const data=await upstream.json();json(res,upstream.ok?providerResult(data):data,upstream.status);return;
     }
     if(req.method==='POST'&&url.pathname==='/api/browser-submit'){
       const body=await input(req);
@@ -247,6 +251,9 @@ const server=createServer(async(req,res)=>{
         if(!upstream.ok)throw error('Provider did not acknowledge submission. Reconcile its outcome.',503);
         return sent;
       },{transactionId:expectedId}));return;
+    }
+    if(req.method==='POST'&&url.pathname==='/api/utxo-scan'){
+      const body=await input(req);json(res,await scanUtxos({cursor:body.cursor,origin:indexer,loadCodec:()=>readFile(join(siteRoot,'transaction-identity.wasm'))}));return;
     }
     if(req.method==='GET'&&url.pathname==='/api/key-registry'){
       const address=url.searchParams.get('address');

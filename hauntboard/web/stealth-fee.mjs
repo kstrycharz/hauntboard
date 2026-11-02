@@ -1,5 +1,6 @@
 // Tari's WASM creates commitments, range/balance proofs and one-time spend signatures.
 import * as sdk from './vendor/wallet-sdk.mjs';
+import {encodeSubstate} from './indexer-codec.mjs';
 export const NATIVE=`resource_${'01'.repeat(32)}`;
 export async function prepareStealthFee({provider,signer,coinId,networkByte,maxFee,mainInstructions,mainInputs,dryRun=false,extraSigners=[]}){
   const crypto=new sdk.WasmStealthCrypto(networkByte),commitment=sdk.commitmentOf(coinId);
@@ -27,7 +28,8 @@ export async function prepareStealthFee({provider,signer,coinId,networkByte,maxF
   // provider read must not silently replace it between selection and signing.
   const authorizationProvider={...provider,getStealthUtxo:async(resource,inputCommitment)=>{
     if(sdk.stealthUtxoSubstateId(resource,inputCommitment)!==coinId)throw new Error('Unexpected stealth authorization input.');
-    return row.state?row:{...row,state:{up:{substate:row.substate}}};
+    if(typeof row.state?.up?.substate==='string')return row;
+    return {...row,state:{up:{substate:await encodeSubstate(row.substate??row.state?.up?.substate)}}};
   }};
   const authorized=await sdk.WalletStealthAuthorizer.fromSpec(wallet,spec,{crypto,mustSignWithAccountKey:false}).prepare(authorizationProvider);
   // SDK 0.7.0 hydrates a main-instruction stealth statement. Move the completed fee

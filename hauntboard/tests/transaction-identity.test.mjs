@@ -14,9 +14,10 @@ test('released Tari decoder computes stable signed identity and rejects malforme
  assert.notEqual(await transactionIdentity(sdk.sealTransaction(await sdk.signTransaction([signer],changed)),load),id);
  for(const envelope of ['','!','AAAA','a'.repeat(20001)])await assert.rejects(transactionIdentity(envelope,load));
 });
-test('native identity matches the archived public Esmeralda vector with an exact u64 nonce',async()=>{
+test('new protocol decoder rejects the preserved pre-reset transaction encoding',async()=>{
  const vector=JSON.parse(await readFile('hauntboard/tests/fixtures/esmeralda-identity.json','utf8'));
- assert.equal(await transactionIdentity(vector.envelope,load),vector.id);
+ assert.match(vector.id,/^[a-f0-9]{64}$/);
+ await assert.rejects(transactionIdentity(vector.envelope,load),/Tari rejected/);
 });
 
 // Indexer retention is bounded. Run this external compatibility check explicitly

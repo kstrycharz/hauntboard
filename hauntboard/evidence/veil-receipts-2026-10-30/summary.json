@@ -1,0 +1,842 @@
+[
+  {
+    "provider": "a",
+    "name": "publishRegistry",
+    "id": "a2ebf2a17314b09055e264fdc0d7ca00308798921ca1152c95a9a07f5f92b3a9",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:29.4963508Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_a2ebf2a17314b09055e264fdc0d7ca00308798921ca1152c95a9a07f5f92b3a9",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-a.tari.com/transactions/a2ebf2a17314b09055e264fdc0d7ca00308798921ca1152c95a9a07f5f92b3a9",
+      "file": "a-publishRegistry-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/transaction-receipts/a2ebf2a17314b09055e264fdc0d7ca00308798921ca1152c95a9a07f5f92b3a9",
+      "file": "a-publishRegistry-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 857984,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/substates/txreceipt_a2ebf2a17314b09055e264fdc0d7ca00308798921ca1152c95a9a07f5f92b3a9?include_proof=true",
+      "file": "a-publishRegistry-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 922,
+      "block_id": "1603131681caab2d19b972aee2f613ae8e30ef0ed2b13a9aa8146e329848390e",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "a",
+    "name": "preparePostingFunds",
+    "id": "1921b0b203c3c2612d5646695f417e4495859f0a3ca8d960d51ce58598185499",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:30.0039398Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_1921b0b203c3c2612d5646695f417e4495859f0a3ca8d960d51ce58598185499",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-a.tari.com/transactions/1921b0b203c3c2612d5646695f417e4495859f0a3ca8d960d51ce58598185499",
+      "file": "a-preparePostingFunds-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/transaction-receipts/1921b0b203c3c2612d5646695f417e4495859f0a3ca8d960d51ce58598185499",
+      "file": "a-preparePostingFunds-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 41504,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/substates/txreceipt_1921b0b203c3c2612d5646695f417e4495859f0a3ca8d960d51ce58598185499?include_proof=true",
+      "file": "a-preparePostingFunds-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 922,
+      "block_id": "1603131681caab2d19b972aee2f613ae8e30ef0ed2b13a9aa8146e329848390e",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "a",
+    "name": "sealedOpeningPost",
+    "id": "43cb29626638e68e94ac89814256dc58727acb212ed05e07b7f00305bed3acc6",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:30.4977971Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_43cb29626638e68e94ac89814256dc58727acb212ed05e07b7f00305bed3acc6",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-a.tari.com/transactions/43cb29626638e68e94ac89814256dc58727acb212ed05e07b7f00305bed3acc6",
+      "file": "a-sealedOpeningPost-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/transaction-receipts/43cb29626638e68e94ac89814256dc58727acb212ed05e07b7f00305bed3acc6",
+      "file": "a-sealedOpeningPost-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 48317,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/substates/txreceipt_43cb29626638e68e94ac89814256dc58727acb212ed05e07b7f00305bed3acc6?include_proof=true",
+      "file": "a-sealedOpeningPost-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 922,
+      "block_id": "1603131681caab2d19b972aee2f613ae8e30ef0ed2b13a9aa8146e329848390e",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "a",
+    "name": "createKeyRegistry",
+    "id": "b2f1d5aa37f2d3c33d4bd9a4de7f9cb00fceb5ba34f98cb4b89b6921a21aeb03",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:30.9957612Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_b2f1d5aa37f2d3c33d4bd9a4de7f9cb00fceb5ba34f98cb4b89b6921a21aeb03",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-a.tari.com/transactions/b2f1d5aa37f2d3c33d4bd9a4de7f9cb00fceb5ba34f98cb4b89b6921a21aeb03",
+      "file": "a-createKeyRegistry-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/transaction-receipts/b2f1d5aa37f2d3c33d4bd9a4de7f9cb00fceb5ba34f98cb4b89b6921a21aeb03",
+      "file": "a-createKeyRegistry-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 19601,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/substates/txreceipt_b2f1d5aa37f2d3c33d4bd9a4de7f9cb00fceb5ba34f98cb4b89b6921a21aeb03?include_proof=true",
+      "file": "a-createKeyRegistry-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 922,
+      "block_id": "1603131681caab2d19b972aee2f613ae8e30ef0ed2b13a9aa8146e329848390e",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "a",
+    "name": "grantBobAccess",
+    "id": "48d270a0b6e7b000a768885a801215c890fc7b1b9f4de3e5a3a08295e47ffc95",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:31.4993371Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_48d270a0b6e7b000a768885a801215c890fc7b1b9f4de3e5a3a08295e47ffc95",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-a.tari.com/transactions/48d270a0b6e7b000a768885a801215c890fc7b1b9f4de3e5a3a08295e47ffc95",
+      "file": "a-grantBobAccess-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/transaction-receipts/48d270a0b6e7b000a768885a801215c890fc7b1b9f4de3e5a3a08295e47ffc95",
+      "file": "a-grantBobAccess-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 23166,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/substates/txreceipt_48d270a0b6e7b000a768885a801215c890fc7b1b9f4de3e5a3a08295e47ffc95?include_proof=true",
+      "file": "a-grantBobAccess-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 922,
+      "block_id": "1603131681caab2d19b972aee2f613ae8e30ef0ed2b13a9aa8146e329848390e",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "a",
+    "name": "managedPostBeforeRemoval",
+    "id": "efc653fa6eb9e20dc6d2fe93eb5ccb19945845e4505bf92435fbda5a55e016ac",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:31.9900616Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_efc653fa6eb9e20dc6d2fe93eb5ccb19945845e4505bf92435fbda5a55e016ac",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-a.tari.com/transactions/efc653fa6eb9e20dc6d2fe93eb5ccb19945845e4505bf92435fbda5a55e016ac",
+      "file": "a-managedPostBeforeRemoval-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/transaction-receipts/efc653fa6eb9e20dc6d2fe93eb5ccb19945845e4505bf92435fbda5a55e016ac",
+      "file": "a-managedPostBeforeRemoval-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 77913,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/substates/txreceipt_efc653fa6eb9e20dc6d2fe93eb5ccb19945845e4505bf92435fbda5a55e016ac?include_proof=true",
+      "file": "a-managedPostBeforeRemoval-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 922,
+      "block_id": "1603131681caab2d19b972aee2f613ae8e30ef0ed2b13a9aa8146e329848390e",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "a",
+    "name": "removeBobAndRotate",
+    "id": "90f6b630229ec2bd00f402b26a39474e556c41bb5b90908a58831cdc08ec2d12",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:32.4790370Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_90f6b630229ec2bd00f402b26a39474e556c41bb5b90908a58831cdc08ec2d12",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-a.tari.com/transactions/90f6b630229ec2bd00f402b26a39474e556c41bb5b90908a58831cdc08ec2d12",
+      "file": "a-removeBobAndRotate-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/transaction-receipts/90f6b630229ec2bd00f402b26a39474e556c41bb5b90908a58831cdc08ec2d12",
+      "file": "a-removeBobAndRotate-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 28108,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/substates/txreceipt_90f6b630229ec2bd00f402b26a39474e556c41bb5b90908a58831cdc08ec2d12?include_proof=true",
+      "file": "a-removeBobAndRotate-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 903,
+      "block_id": "3b79b76d5de0d07242f0ad2cc93029ca7f3922b041b6791f2266d101aeafc422",
+      "state_merkle_root": "6efdfe4fcb8604d06abd372f9571fa57f792958eda79d132a6537f79705555dc"
+    }
+  },
+  {
+    "provider": "a",
+    "name": "managedPostAfterRemoval",
+    "id": "fa06f94a6c72591c140d75f3a1500a4918ae49b0cffbb511996b9f14b44c9e91",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:32.9560888Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_fa06f94a6c72591c140d75f3a1500a4918ae49b0cffbb511996b9f14b44c9e91",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-a.tari.com/transactions/fa06f94a6c72591c140d75f3a1500a4918ae49b0cffbb511996b9f14b44c9e91",
+      "file": "a-managedPostAfterRemoval-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/transaction-receipts/fa06f94a6c72591c140d75f3a1500a4918ae49b0cffbb511996b9f14b44c9e91",
+      "file": "a-managedPostAfterRemoval-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 103773,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/substates/txreceipt_fa06f94a6c72591c140d75f3a1500a4918ae49b0cffbb511996b9f14b44c9e91?include_proof=true",
+      "file": "a-managedPostAfterRemoval-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 922,
+      "block_id": "1603131681caab2d19b972aee2f613ae8e30ef0ed2b13a9aa8146e329848390e",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "a",
+    "name": "originalTemplatePublication",
+    "id": "a285bf80b4e257187156979068ef6d8b2aaba2e6ecbe5c7f99c43317574ab67f",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:33.4548165Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_a285bf80b4e257187156979068ef6d8b2aaba2e6ecbe5c7f99c43317574ab67f",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-a.tari.com/transactions/a285bf80b4e257187156979068ef6d8b2aaba2e6ecbe5c7f99c43317574ab67f",
+      "file": "a-originalTemplatePublication-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/transaction-receipts/a285bf80b4e257187156979068ef6d8b2aaba2e6ecbe5c7f99c43317574ab67f",
+      "file": "a-originalTemplatePublication-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 11966,
+    "paid": 1000886,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/substates/txreceipt_a285bf80b4e257187156979068ef6d8b2aaba2e6ecbe5c7f99c43317574ab67f?include_proof=true",
+      "file": "a-originalTemplatePublication-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 922,
+      "block_id": "1603131681caab2d19b972aee2f613ae8e30ef0ed2b13a9aa8146e329848390e",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "a",
+    "name": "originalBoardCreation",
+    "id": "4cea075beef93e8a5cd7203f030006c88a236d53e02c809f158378d24045811e",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:33.9334831Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_4cea075beef93e8a5cd7203f030006c88a236d53e02c809f158378d24045811e",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-a.tari.com/transactions/4cea075beef93e8a5cd7203f030006c88a236d53e02c809f158378d24045811e",
+      "file": "a-originalBoardCreation-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/transaction-receipts/4cea075beef93e8a5cd7203f030006c88a236d53e02c809f158378d24045811e",
+      "file": "a-originalBoardCreation-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 11966,
+    "paid": 1861,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-a.tari.com/substates/txreceipt_4cea075beef93e8a5cd7203f030006c88a236d53e02c809f158378d24045811e?include_proof=true",
+      "file": "a-originalBoardCreation-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 922,
+      "block_id": "1603131681caab2d19b972aee2f613ae8e30ef0ed2b13a9aa8146e329848390e",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "b",
+    "name": "publishRegistry",
+    "id": "a2ebf2a17314b09055e264fdc0d7ca00308798921ca1152c95a9a07f5f92b3a9",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:34.6204277Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_a2ebf2a17314b09055e264fdc0d7ca00308798921ca1152c95a9a07f5f92b3a9",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-b.tari.com/transactions/a2ebf2a17314b09055e264fdc0d7ca00308798921ca1152c95a9a07f5f92b3a9",
+      "file": "b-publishRegistry-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/transaction-receipts/a2ebf2a17314b09055e264fdc0d7ca00308798921ca1152c95a9a07f5f92b3a9",
+      "file": "b-publishRegistry-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 857984,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/substates/txreceipt_a2ebf2a17314b09055e264fdc0d7ca00308798921ca1152c95a9a07f5f92b3a9?include_proof=true",
+      "file": "b-publishRegistry-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 922,
+      "block_id": "1603131681caab2d19b972aee2f613ae8e30ef0ed2b13a9aa8146e329848390e",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "b",
+    "name": "preparePostingFunds",
+    "id": "1921b0b203c3c2612d5646695f417e4495859f0a3ca8d960d51ce58598185499",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:35.1197945Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_1921b0b203c3c2612d5646695f417e4495859f0a3ca8d960d51ce58598185499",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-b.tari.com/transactions/1921b0b203c3c2612d5646695f417e4495859f0a3ca8d960d51ce58598185499",
+      "file": "b-preparePostingFunds-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/transaction-receipts/1921b0b203c3c2612d5646695f417e4495859f0a3ca8d960d51ce58598185499",
+      "file": "b-preparePostingFunds-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 41504,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/substates/txreceipt_1921b0b203c3c2612d5646695f417e4495859f0a3ca8d960d51ce58598185499?include_proof=true",
+      "file": "b-preparePostingFunds-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 923,
+      "block_id": "0b3fc7b26637199fce2f3fa670c1b330a20a7f54307719d7675bebe69be3ac64",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "b",
+    "name": "sealedOpeningPost",
+    "id": "43cb29626638e68e94ac89814256dc58727acb212ed05e07b7f00305bed3acc6",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:35.6051274Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_43cb29626638e68e94ac89814256dc58727acb212ed05e07b7f00305bed3acc6",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-b.tari.com/transactions/43cb29626638e68e94ac89814256dc58727acb212ed05e07b7f00305bed3acc6",
+      "file": "b-sealedOpeningPost-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/transaction-receipts/43cb29626638e68e94ac89814256dc58727acb212ed05e07b7f00305bed3acc6",
+      "file": "b-sealedOpeningPost-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 48317,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/substates/txreceipt_43cb29626638e68e94ac89814256dc58727acb212ed05e07b7f00305bed3acc6?include_proof=true",
+      "file": "b-sealedOpeningPost-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 923,
+      "block_id": "0b3fc7b26637199fce2f3fa670c1b330a20a7f54307719d7675bebe69be3ac64",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "b",
+    "name": "createKeyRegistry",
+    "id": "b2f1d5aa37f2d3c33d4bd9a4de7f9cb00fceb5ba34f98cb4b89b6921a21aeb03",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:36.0742922Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_b2f1d5aa37f2d3c33d4bd9a4de7f9cb00fceb5ba34f98cb4b89b6921a21aeb03",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-b.tari.com/transactions/b2f1d5aa37f2d3c33d4bd9a4de7f9cb00fceb5ba34f98cb4b89b6921a21aeb03",
+      "file": "b-createKeyRegistry-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/transaction-receipts/b2f1d5aa37f2d3c33d4bd9a4de7f9cb00fceb5ba34f98cb4b89b6921a21aeb03",
+      "file": "b-createKeyRegistry-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 19601,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/substates/txreceipt_b2f1d5aa37f2d3c33d4bd9a4de7f9cb00fceb5ba34f98cb4b89b6921a21aeb03?include_proof=true",
+      "file": "b-createKeyRegistry-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 923,
+      "block_id": "0b3fc7b26637199fce2f3fa670c1b330a20a7f54307719d7675bebe69be3ac64",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "b",
+    "name": "grantBobAccess",
+    "id": "48d270a0b6e7b000a768885a801215c890fc7b1b9f4de3e5a3a08295e47ffc95",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:36.5838806Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_48d270a0b6e7b000a768885a801215c890fc7b1b9f4de3e5a3a08295e47ffc95",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-b.tari.com/transactions/48d270a0b6e7b000a768885a801215c890fc7b1b9f4de3e5a3a08295e47ffc95",
+      "file": "b-grantBobAccess-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/transaction-receipts/48d270a0b6e7b000a768885a801215c890fc7b1b9f4de3e5a3a08295e47ffc95",
+      "file": "b-grantBobAccess-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 23166,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/substates/txreceipt_48d270a0b6e7b000a768885a801215c890fc7b1b9f4de3e5a3a08295e47ffc95?include_proof=true",
+      "file": "b-grantBobAccess-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 923,
+      "block_id": "0b3fc7b26637199fce2f3fa670c1b330a20a7f54307719d7675bebe69be3ac64",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "b",
+    "name": "managedPostBeforeRemoval",
+    "id": "efc653fa6eb9e20dc6d2fe93eb5ccb19945845e4505bf92435fbda5a55e016ac",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:37.0916030Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_efc653fa6eb9e20dc6d2fe93eb5ccb19945845e4505bf92435fbda5a55e016ac",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-b.tari.com/transactions/efc653fa6eb9e20dc6d2fe93eb5ccb19945845e4505bf92435fbda5a55e016ac",
+      "file": "b-managedPostBeforeRemoval-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/transaction-receipts/efc653fa6eb9e20dc6d2fe93eb5ccb19945845e4505bf92435fbda5a55e016ac",
+      "file": "b-managedPostBeforeRemoval-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 77913,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/substates/txreceipt_efc653fa6eb9e20dc6d2fe93eb5ccb19945845e4505bf92435fbda5a55e016ac?include_proof=true",
+      "file": "b-managedPostBeforeRemoval-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 923,
+      "block_id": "0b3fc7b26637199fce2f3fa670c1b330a20a7f54307719d7675bebe69be3ac64",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "b",
+    "name": "removeBobAndRotate",
+    "id": "90f6b630229ec2bd00f402b26a39474e556c41bb5b90908a58831cdc08ec2d12",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:37.5664767Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_90f6b630229ec2bd00f402b26a39474e556c41bb5b90908a58831cdc08ec2d12",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-b.tari.com/transactions/90f6b630229ec2bd00f402b26a39474e556c41bb5b90908a58831cdc08ec2d12",
+      "file": "b-removeBobAndRotate-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/transaction-receipts/90f6b630229ec2bd00f402b26a39474e556c41bb5b90908a58831cdc08ec2d12",
+      "file": "b-removeBobAndRotate-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 28108,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/substates/txreceipt_90f6b630229ec2bd00f402b26a39474e556c41bb5b90908a58831cdc08ec2d12?include_proof=true",
+      "file": "b-removeBobAndRotate-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 923,
+      "block_id": "0b3fc7b26637199fce2f3fa670c1b330a20a7f54307719d7675bebe69be3ac64",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "b",
+    "name": "managedPostAfterRemoval",
+    "id": "fa06f94a6c72591c140d75f3a1500a4918ae49b0cffbb511996b9f14b44c9e91",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:38.0560280Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_fa06f94a6c72591c140d75f3a1500a4918ae49b0cffbb511996b9f14b44c9e91",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-b.tari.com/transactions/fa06f94a6c72591c140d75f3a1500a4918ae49b0cffbb511996b9f14b44c9e91",
+      "file": "b-managedPostAfterRemoval-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/transaction-receipts/fa06f94a6c72591c140d75f3a1500a4918ae49b0cffbb511996b9f14b44c9e91",
+      "file": "b-managedPostAfterRemoval-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 12541,
+    "paid": 103773,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/substates/txreceipt_fa06f94a6c72591c140d75f3a1500a4918ae49b0cffbb511996b9f14b44c9e91?include_proof=true",
+      "file": "b-managedPostAfterRemoval-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 923,
+      "block_id": "0b3fc7b26637199fce2f3fa670c1b330a20a7f54307719d7675bebe69be3ac64",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "b",
+    "name": "originalTemplatePublication",
+    "id": "a285bf80b4e257187156979068ef6d8b2aaba2e6ecbe5c7f99c43317574ab67f",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:38.5330284Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_a285bf80b4e257187156979068ef6d8b2aaba2e6ecbe5c7f99c43317574ab67f",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-b.tari.com/transactions/a285bf80b4e257187156979068ef6d8b2aaba2e6ecbe5c7f99c43317574ab67f",
+      "file": "b-originalTemplatePublication-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/transaction-receipts/a285bf80b4e257187156979068ef6d8b2aaba2e6ecbe5c7f99c43317574ab67f",
+      "file": "b-originalTemplatePublication-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 11966,
+    "paid": 1000886,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/substates/txreceipt_a285bf80b4e257187156979068ef6d8b2aaba2e6ecbe5c7f99c43317574ab67f?include_proof=true",
+      "file": "b-originalTemplatePublication-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 923,
+      "block_id": "0b3fc7b26637199fce2f3fa670c1b330a20a7f54307719d7675bebe69be3ac64",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  },
+  {
+    "provider": "b",
+    "name": "originalBoardCreation",
+    "id": "4cea075beef93e8a5cd7203f030006c88a236d53e02c809f158378d24045811e",
+    "network": {
+      "network": "esmeralda",
+      "network_byte": 38,
+      "epoch": 12747
+    },
+    "checkedAt": "2026-10-31T02:57:39.0324000Z",
+    "veil": "https://explorer.tari.mw/substate/txreceipt_4cea075beef93e8a5cd7203f030006c88a236d53e02c809f158378d24045811e",
+    "transaction": {
+      "status": 404,
+      "url": "https://ootle-indexer-b.tari.com/transactions/4cea075beef93e8a5cd7203f030006c88a236d53e02c809f158378d24045811e",
+      "file": "b-originalBoardCreation-transaction.json"
+    },
+    "receipt": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/transaction-receipts/4cea075beef93e8a5cd7203f030006c88a236d53e02c809f158378d24045811e",
+      "file": "b-originalBoardCreation-receipt.json"
+    },
+    "outcome": "Commit",
+    "epoch": 11966,
+    "paid": 1861,
+    "proof": {
+      "status": 200,
+      "url": "https://ootle-indexer-b.tari.com/substates/txreceipt_4cea075beef93e8a5cd7203f030006c88a236d53e02c809f158378d24045811e?include_proof=true",
+      "file": "b-originalBoardCreation-proof.json"
+    },
+    "verified": true,
+    "proofPresent": true,
+    "anchor": {
+      "epoch": 12747,
+      "shard_group": {
+        "start": 1,
+        "end_inclusive": 256
+      },
+      "height": 923,
+      "block_id": "0b3fc7b26637199fce2f3fa670c1b330a20a7f54307719d7675bebe69be3ac64",
+      "state_merkle_root": "9eaf70e5b3494e4d0fb8c9c5c5dbfb1c82055c20c98379e78a80926f12571f30"
+    }
+  }
+]

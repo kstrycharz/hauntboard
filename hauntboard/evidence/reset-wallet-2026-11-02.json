@@ -1,0 +1,12 @@
+{
+  "status": "ESMERALDA_WALLET_CREATED",
+  "network": "esmeralda",
+  "networkByte": 38,
+  "address": "otl_esm_1wrdly2ftgm7uzpzf5wxjkj2uqq8k6mpvdv9tt4rwxr4ljg7lt483szy4s27egg59y5mp7c0ga2srhuerqtgcl44hcpf24dlvd9hrwzg4gc7d0",
+  "publicKey": "70dbf2292b46fdc10449a38d2b495c000f6d6c2c6b0ab5d46e30ebf923df5d4f",
+  "recoveryFormat": "tari-cipher-seed-v2",
+  "seedRecoveryVerified": true,
+  "onChainAccount": null,
+  "privateBackup": "hauntboard-esmeralda-20261102-operator:/private/esmeralda-deployment.json",
+  "checkedAt": "2026-11-02T16:10:32.508Z"
+}

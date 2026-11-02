@@ -1,0 +1,18 @@
+{
+  "network": "esmeralda",
+  "networkByte": 38,
+  "resetIdentity": "esmeralda-reset-2026-11-02",
+  "instance": "hauntboard-esmeralda-reset-2026-11-02",
+  "sdkVersion": "0.12.0",
+  "wasmVersion": "0.49.1",
+  "providerRuntimeVersion": "0.49.1",
+  "compatibilityVerified": false,
+  "schema": 4,
+  "posterPrivacy": "stealth-fee-v1",
+  "posterPrivacyVerified": false,
+  "board": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+  "template": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+  "legacyBoards": [],
+  "legacyTemplates": [],
+  "keyRegistryTemplate": "1f0b4d6e32820fb5666098d5ba3aeeee096f0610186335690625ab48ebbf90b0"
+}

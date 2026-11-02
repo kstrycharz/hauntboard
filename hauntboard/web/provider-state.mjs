@@ -3,7 +3,8 @@
 export function providerState(row) {
   if(row?.state){
     if(!row.state.up?.substate || row.substate)throw Error('Substate is down or has conflicting representations.');
-    return {...row,substate:row.state.up.substate};
+    return {...row,substate:typeof row.state.up.substate==='string'?decodeSubstateValue(row.state.up.substate):row.state.up.substate};
   }
   return row;
 }
+import {decodeSubstateValue} from './vendor/wallet-sdk.mjs';

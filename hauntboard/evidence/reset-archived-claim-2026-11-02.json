@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-11-02T16:25:21.432Z",
+  "transactionId": "1b078427f91e9f5caf379c42faa80296a842b787d59bebd6046977728de7f804",
+  "status": "aborted",
+  "feesPaidMicrotari": "0",
+  "reason": {
+    "ExecutionFailure": {
+      "code": "NotYetValid",
+      "message": "At instruction #1: Burn claim proof names base layer state this epoch does not have: block header not found for hash 88ac053e5d9f57d48425a46fc01047293ede1688221480d1ecb1b558cc6e459f in an epoch before Epoch(12807). The claim may be invalid, or the burn may only be claimable in a later epoch."
+    }
+  }
+}

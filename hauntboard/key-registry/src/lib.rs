@@ -27,7 +27,7 @@ mod hauntboard_key_registry {
             assert!(!scope.is_empty() && scope.len() <= 512, "Scope capacity");
             assert!(board.parse::<ComponentAddress>().is_ok() && thread.parse::<ComponentAddress>().is_ok(), "Invalid room address");
             // The creator demonstrates possession, preventing a bogus admin key.
-            CallerContext::get_signer_proof_for_public_key(admin).drop();
+            CallerContext::assert_badge_in_scope(&NonFungibleAddress::from_public_key(admin));
             Self::valid(&envelopes);
             Component::new(Self { schema: 1, scope, board, thread, admin, generation: 0, revision: 0, generations: vec![envelopes] })
                 .with_access_rules(ComponentAccessRules::new()

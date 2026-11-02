@@ -1,0 +1,31 @@
+{
+  "status": "RESET_DEPLOYMENT_VERIFIED",
+  "checkedAt": "2026-11-02T19:12:38.206Z",
+  "board": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+  "template": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+  "keyRegistryTemplate": "1f0b4d6e32820fb5666098d5ba3aeeee096f0610186335690625ab48ebbf90b0",
+  "totalActualFeesMicrotari": "3918211",
+  "remainingBalanceMicrotari": "496081789",
+  "checks": [
+    {
+      "origin": "https://ootle-indexer-a.tari.com",
+      "boardVerified": true,
+      "templatesVerified": true,
+      "schema": 4,
+      "title": "Hauntboard Forums",
+      "remainingBalanceMicrotari": "496081789"
+    },
+    {
+      "origin": "https://ootle-indexer-b.tari.com",
+      "boardVerified": true,
+      "templatesVerified": true,
+      "schema": 4,
+      "title": "Hauntboard Forums",
+      "remainingBalanceMicrotari": "496081789"
+    }
+  ],
+  "limitations": [
+    "Provider-reported verified state; not independent consensus verification.",
+    "Contract deployment does not establish shipping browser compatibility or website migration."
+  ]
+}

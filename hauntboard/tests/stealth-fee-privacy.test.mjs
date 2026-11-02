@@ -5,6 +5,7 @@ import { readFile } from 'node:fs/promises';
 import { transactionMetadata } from '../web/transaction-identity.mjs';
 import * as sdk from '../web/vendor/wallet-sdk.mjs';
 import { prepareStealthFee, NATIVE } from '../web/stealth-fee.mjs';
+import {encodeSubstate} from '../web/indexer-codec.mjs';
 
 const board = `component_${'a'.repeat(64)}`;
 async function setup() {
@@ -35,6 +36,7 @@ async function setup() {
         },
       },
     });
+    rows.get(id).state={up:{substate:await encodeSubstate(rows.get(id).substate,()=>readFile('hauntboard/web/transaction-identity.wasm'))}};
     return id;
   };
   const provider = {
@@ -136,8 +138,10 @@ test('native fee preparation rejects unverified, foreign, nonnative and frozen o
   await assert.rejects(prepareStealthFee({ ...args, coinId: id }), /Unverified/);
   rows.get(id).verified = true;
   rows.get(id).substate.Utxo.is_frozen = true;
+  rows.get(id).state.up.substate=await encodeSubstate(rows.get(id).substate);
   await assert.rejects(prepareStealthFee({ ...args, coinId: id }), /owned/);
   rows.get(id).substate.Utxo.is_frozen = false;
+  rows.get(id).state.up.substate=await encodeSubstate(rows.get(id).substate);
   await assert.rejects(
     prepareStealthFee({ ...args, coinId: id, signer: sdk.SecretKeyWallet.randomWithViewKey(16) }),
     /owned/,

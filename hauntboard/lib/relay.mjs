@@ -2,6 +2,7 @@ import {mkdir,readFile,readdir,open,unlink} from 'node:fs/promises';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {atomicJson} from './chain.mjs';
+import {providerResult} from '../web/provider-results.mjs';
 // One durable single-host relay. Exclusive creation survives restarts; uncertain claims never expire.
 export class Relay {
   constructor(root,{concurrency=4,capacity=10000}={}){this.root=root;this.concurrency=concurrency;this.capacity=capacity;this.active=0;}
@@ -35,9 +36,9 @@ export class Relay {
   async reconcile(network,id,lookup){
     const current=await this.status(network,id);
     if(!current.tx||['accepted','rejected','not_submitted'].includes(current.status))return current;
-    const result=await lookup(current.tx),final=result?.result?.Finalized;
+    const result=providerResult(await lookup(current.tx)),final=result?.result?.Finalized;
     // Failed lookups, missing data and Pending never establish rejection.
-    if(!final||!['Commit','Abort'].includes(final.final_decision))return current;
+    if(!final||!(final.final_decision==='Commit'||final.final_decision==='Abort'||final.final_decision?.Abort))return current;
     const accepted=final.final_decision==='Commit'&&Boolean(final.execution_result?.finalize?.result?.Accept);
     const updated={...current,status:accepted?'accepted':'rejected',finalizedAt:new Date().toISOString()};
     await atomicJson(this.path(network,id),updated);return updated;

@@ -1,20 +1,18 @@
 {
   "network": "esmeralda",
   "networkByte": 38,
-  "resetIdentity": "esmeralda-release-2026-10-07",
-  "instance": "hauntboard-esmeralda-forums-2026-10-07",
-  "sdkVersion": "0.11.1",
-  "wasmVersion": "0.47.0",
-  "providerRuntimeVersion": "0.46.0",
+  "resetIdentity": "esmeralda-reset-2026-11-02",
+  "instance": "hauntboard-esmeralda-reset-2026-11-02",
+  "sdkVersion": "0.12.0",
+  "wasmVersion": "0.49.1",
+  "providerRuntimeVersion": "0.49.1",
   "compatibilityVerified": false,
   "schema": 4,
   "posterPrivacy": "stealth-fee-v1",
   "posterPrivacyVerified": false,
-  "board": "component_594f90d8cb8c2d0f70d941ba1c513769727feceeabd9d2137b5b6a130a6aa28e",
-  "template": "f6773b90f8919097266a73e6c68e343724e2a4bdaf248f01e11b463bbc4e0b2d",
-  "legacyBoards": [
-    "component_ff8fd992a498d7c9b32e96fb8cb557029d2f96dbb033ae61932b45cbf9187a4b"
-  ],
+  "board": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+  "template": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+  "legacyBoards": [],
   "legacyTemplates": [],
-  "keyRegistryTemplate": "9de14a5ca71a3c243c0c8a4a9f5896de6f89a5d60f2f42da0ad9351ca0c08527"
+  "keyRegistryTemplate": "1f0b4d6e32820fb5666098d5ba3aeeee096f0610186335690625ab48ebbf90b0"
 }

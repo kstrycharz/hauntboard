@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-11-02T19:47:04.960Z",
+  "browsers": {
+    "chromium": {
+      "schema4Board": true,
+      "newReset": true,
+      "nativeWalletCreated": true,
+      "recoveryVerified": true,
+      "pinUnlock": true,
+      "privateScanComplete": true
+    },
+    "firefox": {
+      "schema4Board": true,
+      "newReset": true,
+      "nativeWalletCreated": true,
+      "recoveryVerified": true,
+      "pinUnlock": true,
+      "privateScanComplete": true
+    }
+  },
+  "scope": "Live reset board reads, fresh browser wallet/PIN recovery, native private-output stream scan. No chain writes.",
+  "status": "PASSED"
+}

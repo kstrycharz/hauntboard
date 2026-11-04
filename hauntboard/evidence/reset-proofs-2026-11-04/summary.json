@@ -1,0 +1,221 @@
+{
+  "checkedAt": "2026-11-04T23:55:22.710Z",
+  "network": "esmeralda",
+  "resetIdentity": "esmeralda-reset-2026-11-02",
+  "independentConsensusVerification": false,
+  "providers": {
+    "a": {
+      "transactions": {
+        "publishRegistry": {
+          "id": "1b7a9004c15276ecad43581049342161884bf9880c333661453eae1cba06aad3",
+          "decision": "Commit",
+          "transactionAvailable": false,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "849328"
+        },
+        "preparePostingFunds": {
+          "id": "03215757cd9d44207956d564213264ecbd1f3f6c78550acc07ef68bc68c0c57c",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "56228"
+        },
+        "sealedOpeningPost": {
+          "id": "863e0ae8cc5622220ec688c90ec28b51ab6ac8a0c58a0c8574cc79fa4b1ff040",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "48497"
+        },
+        "createKeyRegistry": {
+          "id": "1f47dcdf0dd213d216fd7dd5a126e783b0b017a4f17a9205b2a5c8c0698ba341",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "20402"
+        },
+        "grantBobAccess": {
+          "id": "c6992fb9c65225b2baa8b8b067fd5bf3333a6a98be27b2f45feba33d055a2a32",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "23727"
+        },
+        "managedPostBeforeRemoval": {
+          "id": "b6b28fc669267a7538e343720ca28811474c78c90a033b85279aee95d458e1ec",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "78281"
+        },
+        "removeBobAndRotate": {
+          "id": "bad3e4a96f5444914944b42af0c92bd8cca6a4f565bc28370594a59b58db97f1",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "28674"
+        },
+        "managedPostAfterRemoval": {
+          "id": "12ba451abdde0c8782abdb1c1fbf2a9f786297d79d77596d668879df3435c47e",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "104146"
+        },
+        "publicOpeningPost": {
+          "id": "4157d9a6f0e2505d76e9cade1ed6db683c08d9d524b7db34856d5a73c5d9d912",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "22290"
+        },
+        "publicReply": {
+          "id": "ba61dead0397c5379416024b1fd11e8ff714beafe62f64757a605e391ce589da",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "22274"
+        }
+      },
+      "substates": {
+        "board": {
+          "address": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+          "version": 4,
+          "verified": true
+        },
+        "thread": {
+          "address": "component_148a0a8a85ba33b0937cbefa085ce03807b7c6d1a4dadbc838178c85ba4a0a74",
+          "version": 2,
+          "verified": true
+        },
+        "registry": {
+          "address": "component_d3045c124ab069e63f98a711f3652c3b4a809093533036b6caf61e36006f543a",
+          "version": 2,
+          "verified": true
+        },
+        "publicThread": {
+          "address": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+          "version": 1,
+          "verified": true
+        }
+      }
+    },
+    "b": {
+      "transactions": {
+        "publishRegistry": {
+          "id": "1b7a9004c15276ecad43581049342161884bf9880c333661453eae1cba06aad3",
+          "decision": "Commit",
+          "transactionAvailable": false,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "849328"
+        },
+        "preparePostingFunds": {
+          "id": "03215757cd9d44207956d564213264ecbd1f3f6c78550acc07ef68bc68c0c57c",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "56228"
+        },
+        "sealedOpeningPost": {
+          "id": "863e0ae8cc5622220ec688c90ec28b51ab6ac8a0c58a0c8574cc79fa4b1ff040",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "48497"
+        },
+        "createKeyRegistry": {
+          "id": "1f47dcdf0dd213d216fd7dd5a126e783b0b017a4f17a9205b2a5c8c0698ba341",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "20402"
+        },
+        "grantBobAccess": {
+          "id": "c6992fb9c65225b2baa8b8b067fd5bf3333a6a98be27b2f45feba33d055a2a32",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "23727"
+        },
+        "managedPostBeforeRemoval": {
+          "id": "b6b28fc669267a7538e343720ca28811474c78c90a033b85279aee95d458e1ec",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "78281"
+        },
+        "removeBobAndRotate": {
+          "id": "bad3e4a96f5444914944b42af0c92bd8cca6a4f565bc28370594a59b58db97f1",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "28674"
+        },
+        "managedPostAfterRemoval": {
+          "id": "12ba451abdde0c8782abdb1c1fbf2a9f786297d79d77596d668879df3435c47e",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "104146"
+        },
+        "publicOpeningPost": {
+          "id": "4157d9a6f0e2505d76e9cade1ed6db683c08d9d524b7db34856d5a73c5d9d912",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "22290"
+        },
+        "publicReply": {
+          "id": "ba61dead0397c5379416024b1fd11e8ff714beafe62f64757a605e391ce589da",
+          "decision": "Commit",
+          "transactionAvailable": true,
+          "receiptVerified": true,
+          "proofMaterialPresent": true,
+          "actualFeeMicrotari": "22274"
+        }
+      },
+      "substates": {
+        "board": {
+          "address": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+          "version": 4,
+          "verified": true
+        },
+        "thread": {
+          "address": "component_148a0a8a85ba33b0937cbefa085ce03807b7c6d1a4dadbc838178c85ba4a0a74",
+          "version": 2,
+          "verified": true
+        },
+        "registry": {
+          "address": "component_d3045c124ab069e63f98a711f3652c3b4a809093533036b6caf61e36006f543a",
+          "version": 2,
+          "verified": true
+        },
+        "publicThread": {
+          "address": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+          "version": 1,
+          "verified": true
+        }
+      }
+    }
+  },
+  "status": "BOTH_INDEXERS_MATCH_COMMIT"
+}

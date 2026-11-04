@@ -1,0 +1,84 @@
+{
+  "raw": {
+    "version": 1,
+    "state": {
+      "up": {
+        "substate": "ggCBgoVYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAggCAgqhmYXBwZW5kggCAbWNyZWF0ZV90aHJlYWSCAIBqZmluZF9yZXRyeYIAgGpnZXRfY291bnRzggCAcWdldF9maXJzdF9wYXlsb2FkggCAaGdldF9wb3N0ggCAaWdldF9zdGF0ZYIAgGtwYWdlX2FwcGVuZIIBgIIBgEEUggCAgYwE9HhKY29tcG9uZW50XzE0ZDZmNGZiOGU1YmI3NmY4MzMyMjAyODRlNTlmNmUwYWQ4NjZiZDM1Mzg1ZjMwZWRlZGRhZmEyODJjMzM5OWJ4OkhhdW50Ym9hcmQ6IHB1YmxpYyBjb252ZXJzYXRpb25zIGFmdGVyIHRoZSBFc21lcmFsZGEgcmVzZXQAkBjxGMMY9hhHGOUYdhj9GPUYGBipGOwYGRieChhPGCSAgIF4SmNvbXBvbmVudF8xNGEwYThjYjhjZTQ0MDIwZjY2OWI5MGYxYTgwY2QzMzk5MmU2NDM2MjNhMTFkNTMyMjA5ZWVmOGE0OGVhODRiAmAA"
+      }
+    },
+    "verified": true,
+    "proof": {
+      "anchor": {
+        "epoch": 12867,
+        "shard_group": {
+          "start": 1,
+          "end_inclusive": 256
+        },
+        "height": 78,
+        "block_id": "5ad5e93ace04c41bc7697dc34786f3aeabb4e96e6e4155c1b1346f7d33ba0cfc",
+        "state_merkle_root": "6b3c9e78356ba6c82c668a7c00267831bacbcd5cc9de43ba0610ebd1adc051f4"
+      },
+      "commit_proof": "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",
+      "value_proof": "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",
+      "value_hash_epoch": 12867
+    }
+  },
+  "decoded": {
+    "Component": {
+      "header": {
+        "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+        "owner_rule": "None",
+        "access_rules": {
+          "method_access": {
+            "append": "AllowAll",
+            "create_thread": "AllowAll",
+            "find_retry": "AllowAll",
+            "get_counts": "AllowAll",
+            "get_first_payload": "AllowAll",
+            "get_post": "AllowAll",
+            "get_state": "AllowAll",
+            "page_append": "DenyAll"
+          },
+          "default": "DenyAll"
+        },
+        "entity_id": "14",
+        "upgrade_rule": "Locked"
+      },
+      "body": {
+        "state": [
+          4,
+          false,
+          "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+          "Hauntboard: public conversations after the Esmeralda reset",
+          0,
+          [
+            241,
+            195,
+            246,
+            71,
+            229,
+            118,
+            253,
+            245,
+            24,
+            169,
+            236,
+            25,
+            158,
+            10,
+            79,
+            36
+          ],
+          [],
+          [],
+          [
+            "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b"
+          ],
+          2,
+          "",
+          0
+        ]
+      }
+    }
+  }
+}

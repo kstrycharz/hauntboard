@@ -1,0 +1,1224 @@
+{
+  "transaction": {
+    "transaction": {
+      "transaction_id": "1f47dcdf0dd213d216fd7dd5a126e783b0b017a4f17a9205b2a5c8c0698ba341",
+      "transaction": {
+        "V1": {
+          "body": {
+            "transaction": {
+              "network": 38,
+              "fee_instructions": [
+                {
+                  "StealthTransfer": {
+                    "resource_address_ref": {
+                      "Address": "resource_0101010101010101010101010101010101010101010101010101010101010101"
+                    },
+                    "statement": {
+                      "inputs_statement": {
+                        "inputs": [
+                          {
+                            "commitment": "eed362ad92585b87f537b32e25b6400b0440757eb3e1db6355607f097b43ad74",
+                            "witness": "KeyPath"
+                          }
+                        ],
+                        "revealed_amount": "0"
+                      },
+                      "outputs_statement": {
+                        "outputs": [
+                          {
+                            "output": {
+                              "commitment": "6e8f20eafa23477355862129965bae7cc46349accc32d564552ec5393a7be51d",
+                              "sender_public_nonce": "a0c3024933ea843b058e7dca43d25a43d2c098149a221eda159a062f9e1b1921",
+                              "encrypted_data": "47c2639a28ae0a56f680176b910d35af7142a3442f9f964cacf7f67b382137c05fbbcfc6f5ac909ddc35675280ffa528cf588cad57803596b53d40f40df68be5c5d659bc11144664ce22d24ab71f763d15ec415484598f3a214614e94cf87303f5dfe0e7d232084f403a612bf7daf5d7",
+                              "minimum_value_promise": 0,
+                              "viewable_balance_proof": null
+                            },
+                            "auth": {
+                              "Key": "8e1ea4c6778fa566dde99956bde842bef0d40b41e2aafb6731eb1c9916f28253"
+                            },
+                            "tag": 3245709356
+                          }
+                        ],
+                        "revealed_output": {
+                          "amount": "20402",
+                          "receiver": "b476f42adf1c7680e57f868f1d32bc5f8c89e6a093933f73892704bfe68f5e4c"
+                        },
+                        "agg_range_proof": "019dd3a8987a5e9e8c0288163be58c420924eca9637e543d6c52e24d929fbef10066e2afb65e1482a7bf8628266615ebc2353f67cc8529edb395887ae39cd7276af46afd4cd67087fc6353dd14d7db028f373d710cecdd34e949ffe826ff06f629ce5d6db75f9c840ee7e845430346fe762561acf4cd80baeeacd4927d922d3d27e61cc5bc859cc57d78b2f4883cb4fde3969b2277a2e66bc18e19b1049e503b054177df547120efecae3d9270ff20d5e5bcba703914edc00fb5087e9e86270a04ba2b088c070c623996f750729e7724f5f3fd5f57629c3a5bb38a192bc405e14a5416fbefebfd527741882d62f37f976db82aeb319d94accdaa0502ff2d5e565a307a1b8e5ac210ab4f7055e45f7379365b6b81d3c6b011098c3fd438f4bc8f6a4623076ac0826bbf40bca21ecf128c28ef3c23fa293496f57dfc04d048b1e54f20f5396b7aba4207e2f10c74f07dc09509316484680401beb44a44a51bc3df209a8fcece9856e33f72b7039e056fbc40994811460d74556fbd5a69cbb3cad612d6f2a5969d0d8059bf877685523ca807c642bde594280fa570c2bb2ef761175e56d9b63bc7f8dea5c28583936827e97598086c2dca27d7f5a82d65663dba73165e447ffa819aa0416de296f5459a332e749258187d0111c39d269de606880f3f528ded97f162bc0e4fbc9edaf7d35a3f109e1aadb6ad7e32c767556cdbb1984036fe804bca162a981e829ec8aec801b00a920d5b5cbd6bd3a9314ba8a4d8d044c28f074a4411ae5e7d36037f89a53bdbeb51be5f3ec0d5b2d906c490e31a0f13"
+                      },
+                      "balance_proof": {
+                        "public_nonce": "b897d48615182668127e18a09797a8e9c4f658a687af1c403bfb0311aad51f69",
+                        "signature": "62ea41559c95c8738079fbde5453c9d4112b9b94cf6d8d8b4e3c310dd64a750c"
+                      },
+                      "covenant_claims": []
+                    },
+                    "revealed_input_bucket": null
+                  }
+                },
+                {
+                  "PutLastInstructionOutputOnWorkspace": {
+                    "key": 0
+                  }
+                },
+                {
+                  "PayFeeFromBucket": {
+                    "bucket": {
+                      "id": 0,
+                      "offset": null
+                    }
+                  }
+                }
+              ],
+              "instructions": [
+                {
+                  "CallFunction": {
+                    "address": "1f0b4d6e32820fb5666098d5ba3aeeee096f0610186335690625ab48ebbf90b0",
+                    "function": "new",
+                    "args": [
+                      {
+                        "Literal": "78d85b226861756e74626f6172642d726f6f6d222c312c2265736d6572616c6461222c2265736d6572616c64612d72657365742d323032362d31312d3032222c22636f6d706f6e656e745f31346436663466623865356262373666383333323230323834653539663665306164383636626433353338356633306564656464616661323832633333393962222c22636f6d706f6e656e745f31343861306138613835626133336230393337636265666130383563653033383037623763366431613464616462633833383137386338356261346130613734225d"
+                      },
+                      {
+                        "Literal": "784a636f6d706f6e656e745f31346436663466623865356262373666383333323230323834653539663665306164383636626433353338356633306564656464616661323832633333393962"
+                      },
+                      {
+                        "Literal": "784a636f6d706f6e656e745f31343861306138613835626133336230393337636265666130383563653033383037623763366431613464616462633833383137386338356261346130613734"
+                      },
+                      {
+                        "Literal": "5820ae34e24b7cede89c115543504e4b0980e707b6f826007b88e1ae1873d140a210"
+                      },
+                      {
+                        "Literal": "81829820160218d7188018ba18311836185018ce1018d9121873186018cb183b0c182918d41840189f18f118f118a818581318e418481018dd0618759902e4187b182218761822183a1831182c18221872186518631869187018691865186e18741822183a182218461867184c18581867184c186f1878184e186c1844184f1845184e186b1853186318321844184c184f1877187718701831184518431866183818661847186f185718421850186b18531842184418641842186e18551822182c182218671865186e18651872186118741869186f186e1822183a1830182c18221865186e18631822183a1822184218481859186f1870185718741854186718361850187618631835187a1834185f185718681878186a18541850184f183618391879184a183518761837187918371848186c186718751879184618431836185918491842183818481864184c182d184a185418791849184e184a185218621845183618761874183518721879186d186e182d1866187018371854184c1847185918361859185018641872182d18771845185a1879187a1861186f1822182c1822186318741822183a18221849187a1847187a185618441834183718781839186b18771833187a18491843184618361879184818671854186a1834183218631875184518711862183618631854187018591871185718721854186f186118531873184518721871184718351837184318391843187a18471875183318691872184718711830186c184d186b1845186e18531875186a1872186d186e186d1835187018651834186e1846185018481847186b18651868187218791833183718381876186b182d1857185a186b1855184a184c18321863186e184a1831186b1862187a184c18781830184118741844186f1830184d184b18461852186c18571876186f187a1845183718481864186f186f185718491856183218441857185a185218361859183618481844186f1839185318571834185218681846184a184f1833185218641859184b1852186a1845185018791850186f1856186f18491851182d1835184a185718491857184c1845186c186718451878183318331857184e186418581855186c18541846183918631832184818341834185818561836187418321869184418581856187318671833182d186c186c18361848184518711876184c1852186e186d1859184a1866183918561871183018411871185f185f18681842183318631863186118481854187a18481878185918591856185f1846184b18501861184618391862184f1831187018711861186a183418561831186c183218461862185918611874186618301839183418441861184618451865184e18791837186b18371867186b1834187a187a186a1866186d186e186f186e184c18641847184b1838185018651872186b18591858186b183318741877183818481853185918331839185f1854184a185018621830186d185918551841186b184e1838182d18781854184f18501857186e183018321835185818411833185118341879187718491865186a1838183318321857185318761872186918681865184618341853186d186618321838186a18471847182d185618471863187a18381854184c18351857186c183918521869185818371859184618531873186f183518591864184e186e18511837186a186f1830184b1878184a183018531859185f185f1876186b184a184b1868184b187818731872187118531871184b186b186118341845186318411831186418791838187618561862186e186f1832182d1858184d1876184518321863186d185f1865185518551863184d187a1832186618351878184d18721873186818431848184e186a186f183518731850185118571865187418711855186c18441835185618381856185f18651850187118701879184918631839187418621833184b1862186f18541874186c18491853185018741868185f186918681857184d18581832184318651832185a187718641841183918781834186d18581839184d186418511856187518581842186818331846183318791831185318481869187918721831183718411845184e182d18471835187718541850186818661843186e1822187d"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "inputs": [
+                {
+                  "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_eed362ad92585b87f537b32e25b6400b0440757eb3e1db6355607f097b43ad74",
+                  "version": 0,
+                  "is_write": true
+                },
+                {
+                  "substate_id": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+                  "version": 3,
+                  "is_write": true
+                }
+              ],
+              "min_epoch": null,
+              "max_epoch": 12872,
+              "main_signer": "None",
+              "dry_run": false,
+              "blob_hashes": [],
+              "blob_sizes": [],
+              "nonce": 0
+            },
+            "signatures": [
+              {
+                "public_key": "54f5bb4ded53cee4289ee4ec1e5fa0a90a2bec7dbc596d06a1e4a11e770b641b",
+                "signature": "1ec7072caa05b3296c57fa05a77dfce10e3b3c4a0b910629b8c2e0bd1e13e95aa675d6cd8fdeeeb3c4a9b0ce8690c127ab50e5b850cdc4467cc2738976d28c8a"
+              },
+              {
+                "public_key": "b476f42adf1c7680e57f868f1d32bc5f8c89e6a093933f73892704bfe68f5e4c",
+                "signature": "c03ae02dd0ed1573bb58d812825f5064e8e47f95e279d47076fc14f7a39c0678b06c6ce6d88a5118291fa4574c8ef2a592b10d2a0934c83569ecdb4aed79708b"
+              },
+              {
+                "public_key": "ae34e24b7cede89c115543504e4b0980e707b6f826007b88e1ae1873d140a210",
+                "signature": "ca584c092ab066ca074e5876636f0d7a5b077c6b76a18a0294420e91b2f880706d9a5e86cbf984ef71b681aac21d632876660c744bdab15a5fd08ec9b2e2b78c"
+              }
+            ]
+          },
+          "seal_signature": {
+            "public_key": "2e830052def59e52c83ee563d93734d5af22e253dd68a8a17209a962276ef874",
+            "signature": "f8f9870ac65de04beb7905cf32af2124d888f599dbe7540c791d3d7879455c546d1861a98507d58408f2c8b5835e9b7854f003b65e1687cd4f836034feaf9487"
+          }
+        }
+      },
+      "created_at": "2026-11-04 23:52:44.0",
+      "summary": {
+        "outcome": "Commit",
+        "total_fees_paid": 20402,
+        "finalized_at": "2026-11-04 23:52:47.0"
+      },
+      "rejected_reason": null,
+      "source": "local"
+    }
+  },
+  "result": {
+    "result": {
+      "Finalized": {
+        "final_decision": "Commit",
+        "execution_result": "hYZYIB9H3N8N0hPSFv191aEm54OwsBek8XqSBbKlyMBpi6NBgYSCAIHYgFgg0wRcEkqwaeY/mKcR82UsO0qAkJNTMDa2yvYeNgBvVDpYIB8LTW4ygg+1ZmCY1bo67u4JbwYQGGM1aQYlq0jrv5CwdXN0ZC5jb21wb25lbnQuY3JlYXRlZNiBoICCAIGDg4KCCIHYjYLYg1ggAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQFYIG6PIOr6I0dzVYYhKZZbrnzEY0mszDLVZFUuxTk6e+UdgoIIgYKDg1ggoMMCSTPqhDsFjn3KQ9JaQ9LAmBSaIh7aFZoGL54bGSFYcEfCY5oorgpW9oAXa5ENNa9xQqNEL5+WTKz39ns4ITfAX7vPxvWskJ3cNWdSgP+lKM9YjK1XgDWWtT1A9A32i+XF1lm8ERRGZM4i0kq3H3Y9FexBVIRZjzohRhTpTPhzA/Xf4OfSMghPQDphK/fa9dcAggCBWCCOHqTGd4+lZt3pmVa96EK+8NQLQeKq+2cx6xyZFvKCUxrBdZgs9ACCggCB2IBYINMEXBJKsGnmP5inEfNlLDtKgJCTUzA2tsr2HjYAb1Q6goIAgYKFWCAfC01uMoIPtWZgmNW6Ou7uCW8GEBhjNWkGJatI67+QsIIAgIKjaWdldF9zdGF0ZYIAgGVncmFudIICgYIAgYIAgYIBgdiCgtiDWCABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIAgVggrjTiS3zt6JwRVUNQTksJgOcHtvgmAHuI4a4Yc9FAohBmcm90YXRlggKBggCBggCBggGB2IKC2INYIAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAggCBWCCuNOJLfO3onBFVQ1BOSwmA5we2+CYAe4jhrhhz0UCiEIIBgEHTggCAgYgBeNhbImhhdW50Ym9hcmQtcm9vbSIsMSwiZXNtZXJhbGRhIiwiZXNtZXJhbGRhLXJlc2V0LTIwMjYtMTEtMDIiLCJjb21wb25lbnRfMTRkNmY0ZmI4ZTViYjc2ZjgzMzIyMDI4NGU1OWY2ZTBhZDg2NmJkMzUzODVmMzBlZGVkZGFmYTI4MmMzMzk5YiIsImNvbXBvbmVudF8xNDhhMGE4YTg1YmEzM2IwOTM3Y2JlZmEwODVjZTAzODA3YjdjNmQxYTRkYWRiYzgzODE3OGM4NWJhNGEwYTc0Il14SmNvbXBvbmVudF8xNGQ2ZjRmYjhlNWJiNzZmODMzMjIwMjg0ZTU5ZjZlMGFkODY2YmQzNTM4NWYzMGVkZWRkYWZhMjgyYzMzOTlieEpjb21wb25lbnRfMTQ4YTBhOGE4NWJhMzNiMDkzN2NiZWZhMDg1Y2UwMzgwN2I3YzZkMWE0ZGFkYmM4MzgxNzhjODViYTRhMGE3NFggrjTiS3zt6JwRVUNQTksJgOcHtvgmAHuI4a4Yc9FAohAAAIGBgpggFgIY1xiAGLoYMRg2GFAYzhAY2RIYcxhgGMsYOwwYKRjUGEAYnxjxGPEYqBhYExjkGEgQGN0GGHWZAuQYexgiGHYYIhg6GDEYLBgiGHIYZRhjGGkYcBhpGGUYbhh0GCIYOhgiGEYYZxhMGFgYZxhMGG8YeBhOGGwYRBhPGEUYThhrGFMYYxgyGEQYTBhPGHcYdxhwGDEYRRhDGGYYOBhmGEcYbxhXGEIYUBhrGFMYQhhEGGQYQhhuGFUYIhgsGCIYZxhlGG4YZRhyGGEYdBhpGG8YbhgiGDoYMBgsGCIYZRhuGGMYIhg6GCIYQhhIGFkYbxhwGFcYdBhUGGcYNhhQGHYYYxg1GHoYNBhfGFcYaBh4GGoYVBhQGE8YNhg5GHkYShg1GHYYNxh5GDcYSBhsGGcYdRh5GEYYQxg2GFkYSRhCGDgYSBhkGEwYLRhKGFQYeRhJGE4YShhSGGIYRRg2GHYYdBg1GHIYeRhtGG4YLRhmGHAYNxhUGEwYRxhZGDYYWRhQGGQYchgtGHcYRRhaGHkYehhhGG8YIhgsGCIYYxh0GCIYOhgiGEkYehhHGHoYVhhEGDQYNxh4GDkYaxh3GDMYehhJGEMYRhg2GHkYSBhnGFQYahg0GDIYYxh1GEUYcRhiGDYYYxhUGHAYWRhxGFcYchhUGG8YYRhTGHMYRRhyGHEYRxg1GDcYQxg5GEMYehhHGHUYMxhpGHIYRxhxGDAYbBhNGGsYRRhuGFMYdRhqGHIYbRhuGG0YNRhwGGUYNBhuGEYYUBhIGEcYaxhlGGgYchh5GDMYNxg4GHYYaxgtGFcYWhhrGFUYShhMGDIYYxhuGEoYMRhrGGIYehhMGHgYMBhBGHQYRBhvGDAYTRhLGEYYUhhsGFcYdhhvGHoYRRg3GEgYZBhvGG8YVxhJGFYYMhhEGFcYWhhSGDYYWRg2GEgYRBhvGDkYUxhXGDQYUhhoGEYYShhPGDMYUhhkGFkYSxhSGGoYRRhQGHkYUBhvGFYYbxhJGFEYLRg1GEoYVxhJGFcYTBhFGGwYZxhFGHgYMxgzGFcYThhkGFgYVRhsGFQYRhg5GGMYMhhIGDQYNBhYGFYYNhh0GDIYaRhEGFgYVhhzGGcYMxgtGGwYbBg2GEgYRRhxGHYYTBhSGG4YbRhZGEoYZhg5GFYYcRgwGEEYcRhfGF8YaBhCGDMYYxhjGGEYSBhUGHoYSBh4GFkYWRhWGF8YRhhLGFAYYRhGGDkYYhhPGDEYcBhxGGEYahg0GFYYMRhsGDIYRhhiGFkYYRh0GGYYMBg5GDQYRBhhGEYYRRhlGE4YeRg3GGsYNxhnGGsYNBh6GHoYahhmGG0YbhhvGG4YTBhkGEcYSxg4GFAYZRhyGGsYWRhYGGsYMxh0GHcYOBhIGFMYWRgzGDkYXxhUGEoYUBhiGDAYbRhZGFUYQRhrGE4YOBgtGHgYVBhPGFAYVxhuGDAYMhg1GFgYQRgzGFEYNBh5GHcYSRhlGGoYOBgzGDIYVxhTGHYYchhpGGgYZRhGGDQYUxhtGGYYMhg4GGoYRxhHGC0YVhhHGGMYehg4GFQYTBg1GFcYbBg5GFIYaRhYGDcYWRhGGFMYcxhvGDUYWRhkGE4YbhhRGDcYahhvGDAYSxh4GEoYMBhTGFkYXxhfGHYYaxhKGEsYaBhLGHgYcxhyGHEYUxhxGEsYaxhhGDQYRRhjGEEYMRhkGHkYOBh2GFYYYhhuGG8YMhgtGFgYTRh2GEUYMhhjGG0YXxhlGFUYVRhjGE0YehgyGGYYNRh4GE0YchhzGGgYQxhIGE4YahhvGDUYcxhQGFEYVxhlGHQYcRhVGGwYRBg1GFYYOBhWGF8YZRhQGHEYcBh5GEkYYxg5GHQYYhgzGEsYYhhvGFQYdBhsGEkYUxhQGHQYaBhfGGkYaBhXGE0YWBgyGEMYZRgyGFoYdxhkGEEYORh4GDQYbRhYGDkYTRhkGFEYVhh1GFgYQhhoGDMYRhgzGHkYMRhTGEgYaRh5GHIYMRg3GEEYRRhOGC0YRxg1GHcYVBhQGGgYZhhDGG4YIhh9AIKCBYHYhlggH0fc3w3SE9IW/X3VoSbng7CwF6TxepIFsqXIwGmLo0GCggWBh4IAgIKCg4IIgdiNgtiDWCABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAVggbo8g6vojR3NVhiEplluufMRjSazMMtVkVS7FOTp75R0AWCBrSNOYewDnz8SMSqVwP6u/NVVhAVCALerIc3hXiwHFaYOCAIHYgFgg0wRcEkqwaeY/mKcR82UsO0qAkJNTMDa2yvYeNgBvVDoAWCA6VDUSFpuPp9HDkPuDvTlr7E1E2O4prnphdn8LBH7yIoGCggiB2I2C2INYIAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBWCDu02Ktklhbh/U3sy4ltkALBEB1frPh22NVYH8Je0OtdACAgYSCAIHYgFgg0wRcEkqwaeY/mKcR82UsO0qAkJNTMDa2yvYeNgBvVDpYIB8LTW4ygg+1ZmCY1bo67u4JbwYQGGM1aQYlq0jrv5CwdXN0ZC5jb21wb25lbnQuY3JlYXRlZNiBoIUZT7IZT7IZE8uBqIIBgAaCAoAZC8KCA4AZAx2CBIAZAV6CBYAZAu6CBoAZAqeCCIAZJgKCCYANGU+yGTJDWCBnihNs+nBjler5djSMU4uNX0iadyhs+QvVRha5s8eOggCBgoIIgdiNgtiDWCABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAVgg7tNirZJYW4f1N7MuJbZACwRAdX6z4dtjVWB/CXtDrXQAgIUZT7IZT7IZE8uBqIIBgAaCAoAZC8KCA4AZAx2CBIAZAV6CBYAZAu6CBoAZAqeCCIAZJgKCCYANGU+yGTvnomRzZWNzAGVuYW5vcxoAUxdfGTJDGgAKXT0aAJR5PA==",
+        "execution_time": {
+          "secs": 0,
+          "nanos": 5445000
+        },
+        "finalized_time": "2026-11-04 23:52:44.0",
+        "abort_details": null
+      }
+    }
+  },
+  "execution": {
+    "finalize": {
+      "transaction_hash": "1f47dcdf0dd213d216fd7dd5a126e783b0b017a4f17a9205b2a5c8c0698ba341",
+      "events": [
+        {
+          "substate_id": "component_d3045c124ab069e63f98a711f3652c3b4a809093533036b6caf61e36006f543a",
+          "template_address": "1f0b4d6e32820fb5666098d5ba3aeeee096f0610186335690625ab48ebbf90b0",
+          "topic": "std.component.created",
+          "payload": {}
+        }
+      ],
+      "logs": [],
+      "result": {
+        "Accept": {
+          "up_substates": [
+            [
+              "utxo_0101010101010101010101010101010101010101010101010101010101010101_6e8f20eafa23477355862129965bae7cc46349accc32d564552ec5393a7be51d",
+              {
+                "substate": {
+                  "Utxo": {
+                    "output": {
+                      "output": {
+                        "public_nonce": "a0c3024933ea843b058e7dca43d25a43d2c098149a221eda159a062f9e1b1921",
+                        "encrypted_data": "47c2639a28ae0a56f680176b910d35af7142a3442f9f964cacf7f67b382137c05fbbcfc6f5ac909ddc35675280ffa528cf588cad57803596b53d40f40df68be5c5d659bc11144664ce22d24ab71f763d15ec415484598f3a214614e94cf87303f5dfe0e7d232084f403a612bf7daf5d7",
+                        "minimum_value_promise": 0,
+                        "viewable_balance": null
+                      },
+                      "auth": {
+                        "Key": "8e1ea4c6778fa566dde99956bde842bef0d40b41e2aafb6731eb1c9916f28253"
+                      },
+                      "tag": 3245709356
+                    },
+                    "is_frozen": false
+                  }
+                },
+                "version": 0
+              }
+            ],
+            [
+              "component_d3045c124ab069e63f98a711f3652c3b4a809093533036b6caf61e36006f543a",
+              {
+                "substate": {
+                  "Component": {
+                    "header": {
+                      "template_address": "1f0b4d6e32820fb5666098d5ba3aeeee096f0610186335690625ab48ebbf90b0",
+                      "owner_rule": "None",
+                      "access_rules": {
+                        "method_access": {
+                          "get_state": "AllowAll",
+                          "grant": {
+                            "Restricted": {
+                              "Require": {
+                                "Require": {
+                                  "NonFungibleAddress": {
+                                    "resource_address": "resource_0100000000000000000000000000000000000000000000000000000000000000",
+                                    "id": {
+                                      "U256": "ae34e24b7cede89c115543504e4b0980e707b6f826007b88e1ae1873d140a210"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "rotate": {
+                            "Restricted": {
+                              "Require": {
+                                "Require": {
+                                  "NonFungibleAddress": {
+                                    "resource_address": "resource_0100000000000000000000000000000000000000000000000000000000000000",
+                                    "id": {
+                                      "U256": "ae34e24b7cede89c115543504e4b0980e707b6f826007b88e1ae1873d140a210"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "default": "DenyAll"
+                      },
+                      "entity_id": "d3",
+                      "upgrade_rule": "Locked"
+                    },
+                    "body": {
+                      "state": [
+                        1,
+                        "[\"hauntboard-room\",1,\"esmeralda\",\"esmeralda-reset-2026-11-02\",\"component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b\",\"component_148a0a8a85ba33b0937cbefa085ce03807b7c6d1a4dadbc838178c85ba4a0a74\"]",
+                        "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+                        "component_148a0a8a85ba33b0937cbefa085ce03807b7c6d1a4dadbc838178c85ba4a0a74",
+                        {
+                          "@cbor": "bytes",
+                          "hex": "ae34e24b7cede89c115543504e4b0980e707b6f826007b88e1ae1873d140a210"
+                        },
+                        0,
+                        0,
+                        [
+                          [
+                            [
+                              [
+                                22,
+                                2,
+                                215,
+                                128,
+                                186,
+                                49,
+                                54,
+                                80,
+                                206,
+                                16,
+                                217,
+                                18,
+                                115,
+                                96,
+                                203,
+                                59,
+                                12,
+                                41,
+                                212,
+                                64,
+                                159,
+                                241,
+                                241,
+                                168,
+                                88,
+                                19,
+                                228,
+                                72,
+                                16,
+                                221,
+                                6,
+                                117
+                              ],
+                              [
+                                123,
+                                34,
+                                118,
+                                34,
+                                58,
+                                49,
+                                44,
+                                34,
+                                114,
+                                101,
+                                99,
+                                105,
+                                112,
+                                105,
+                                101,
+                                110,
+                                116,
+                                34,
+                                58,
+                                34,
+                                70,
+                                103,
+                                76,
+                                88,
+                                103,
+                                76,
+                                111,
+                                120,
+                                78,
+                                108,
+                                68,
+                                79,
+                                69,
+                                78,
+                                107,
+                                83,
+                                99,
+                                50,
+                                68,
+                                76,
+                                79,
+                                119,
+                                119,
+                                112,
+                                49,
+                                69,
+                                67,
+                                102,
+                                56,
+                                102,
+                                71,
+                                111,
+                                87,
+                                66,
+                                80,
+                                107,
+                                83,
+                                66,
+                                68,
+                                100,
+                                66,
+                                110,
+                                85,
+                                34,
+                                44,
+                                34,
+                                103,
+                                101,
+                                110,
+                                101,
+                                114,
+                                97,
+                                116,
+                                105,
+                                111,
+                                110,
+                                34,
+                                58,
+                                48,
+                                44,
+                                34,
+                                101,
+                                110,
+                                99,
+                                34,
+                                58,
+                                34,
+                                66,
+                                72,
+                                89,
+                                111,
+                                112,
+                                87,
+                                116,
+                                84,
+                                103,
+                                54,
+                                80,
+                                118,
+                                99,
+                                53,
+                                122,
+                                52,
+                                95,
+                                87,
+                                104,
+                                120,
+                                106,
+                                84,
+                                80,
+                                79,
+                                54,
+                                57,
+                                121,
+                                74,
+                                53,
+                                118,
+                                55,
+                                121,
+                                55,
+                                72,
+                                108,
+                                103,
+                                117,
+                                121,
+                                70,
+                                67,
+                                54,
+                                89,
+                                73,
+                                66,
+                                56,
+                                72,
+                                100,
+                                76,
+                                45,
+                                74,
+                                84,
+                                121,
+                                73,
+                                78,
+                                74,
+                                82,
+                                98,
+                                69,
+                                54,
+                                118,
+                                116,
+                                53,
+                                114,
+                                121,
+                                109,
+                                110,
+                                45,
+                                102,
+                                112,
+                                55,
+                                84,
+                                76,
+                                71,
+                                89,
+                                54,
+                                89,
+                                80,
+                                100,
+                                114,
+                                45,
+                                119,
+                                69,
+                                90,
+                                121,
+                                122,
+                                97,
+                                111,
+                                34,
+                                44,
+                                34,
+                                99,
+                                116,
+                                34,
+                                58,
+                                34,
+                                73,
+                                122,
+                                71,
+                                122,
+                                86,
+                                68,
+                                52,
+                                55,
+                                120,
+                                57,
+                                107,
+                                119,
+                                51,
+                                122,
+                                73,
+                                67,
+                                70,
+                                54,
+                                121,
+                                72,
+                                103,
+                                84,
+                                106,
+                                52,
+                                50,
+                                99,
+                                117,
+                                69,
+                                113,
+                                98,
+                                54,
+                                99,
+                                84,
+                                112,
+                                89,
+                                113,
+                                87,
+                                114,
+                                84,
+                                111,
+                                97,
+                                83,
+                                115,
+                                69,
+                                114,
+                                113,
+                                71,
+                                53,
+                                55,
+                                67,
+                                57,
+                                67,
+                                122,
+                                71,
+                                117,
+                                51,
+                                105,
+                                114,
+                                71,
+                                113,
+                                48,
+                                108,
+                                77,
+                                107,
+                                69,
+                                110,
+                                83,
+                                117,
+                                106,
+                                114,
+                                109,
+                                110,
+                                109,
+                                53,
+                                112,
+                                101,
+                                52,
+                                110,
+                                70,
+                                80,
+                                72,
+                                71,
+                                107,
+                                101,
+                                104,
+                                114,
+                                121,
+                                51,
+                                55,
+                                56,
+                                118,
+                                107,
+                                45,
+                                87,
+                                90,
+                                107,
+                                85,
+                                74,
+                                76,
+                                50,
+                                99,
+                                110,
+                                74,
+                                49,
+                                107,
+                                98,
+                                122,
+                                76,
+                                120,
+                                48,
+                                65,
+                                116,
+                                68,
+                                111,
+                                48,
+                                77,
+                                75,
+                                70,
+                                82,
+                                108,
+                                87,
+                                118,
+                                111,
+                                122,
+                                69,
+                                55,
+                                72,
+                                100,
+                                111,
+                                111,
+                                87,
+                                73,
+                                86,
+                                50,
+                                68,
+                                87,
+                                90,
+                                82,
+                                54,
+                                89,
+                                54,
+                                72,
+                                68,
+                                111,
+                                57,
+                                83,
+                                87,
+                                52,
+                                82,
+                                104,
+                                70,
+                                74,
+                                79,
+                                51,
+                                82,
+                                100,
+                                89,
+                                75,
+                                82,
+                                106,
+                                69,
+                                80,
+                                121,
+                                80,
+                                111,
+                                86,
+                                111,
+                                73,
+                                81,
+                                45,
+                                53,
+                                74,
+                                87,
+                                73,
+                                87,
+                                76,
+                                69,
+                                108,
+                                103,
+                                69,
+                                120,
+                                51,
+                                51,
+                                87,
+                                78,
+                                100,
+                                88,
+                                85,
+                                108,
+                                84,
+                                70,
+                                57,
+                                99,
+                                50,
+                                72,
+                                52,
+                                52,
+                                88,
+                                86,
+                                54,
+                                116,
+                                50,
+                                105,
+                                68,
+                                88,
+                                86,
+                                115,
+                                103,
+                                51,
+                                45,
+                                108,
+                                108,
+                                54,
+                                72,
+                                69,
+                                113,
+                                118,
+                                76,
+                                82,
+                                110,
+                                109,
+                                89,
+                                74,
+                                102,
+                                57,
+                                86,
+                                113,
+                                48,
+                                65,
+                                113,
+                                95,
+                                95,
+                                104,
+                                66,
+                                51,
+                                99,
+                                99,
+                                97,
+                                72,
+                                84,
+                                122,
+                                72,
+                                120,
+                                89,
+                                89,
+                                86,
+                                95,
+                                70,
+                                75,
+                                80,
+                                97,
+                                70,
+                                57,
+                                98,
+                                79,
+                                49,
+                                112,
+                                113,
+                                97,
+                                106,
+                                52,
+                                86,
+                                49,
+                                108,
+                                50,
+                                70,
+                                98,
+                                89,
+                                97,
+                                116,
+                                102,
+                                48,
+                                57,
+                                52,
+                                68,
+                                97,
+                                70,
+                                69,
+                                101,
+                                78,
+                                121,
+                                55,
+                                107,
+                                55,
+                                103,
+                                107,
+                                52,
+                                122,
+                                122,
+                                106,
+                                102,
+                                109,
+                                110,
+                                111,
+                                110,
+                                76,
+                                100,
+                                71,
+                                75,
+                                56,
+                                80,
+                                101,
+                                114,
+                                107,
+                                89,
+                                88,
+                                107,
+                                51,
+                                116,
+                                119,
+                                56,
+                                72,
+                                83,
+                                89,
+                                51,
+                                57,
+                                95,
+                                84,
+                                74,
+                                80,
+                                98,
+                                48,
+                                109,
+                                89,
+                                85,
+                                65,
+                                107,
+                                78,
+                                56,
+                                45,
+                                120,
+                                84,
+                                79,
+                                80,
+                                87,
+                                110,
+                                48,
+                                50,
+                                53,
+                                88,
+                                65,
+                                51,
+                                81,
+                                52,
+                                121,
+                                119,
+                                73,
+                                101,
+                                106,
+                                56,
+                                51,
+                                50,
+                                87,
+                                83,
+                                118,
+                                114,
+                                105,
+                                104,
+                                101,
+                                70,
+                                52,
+                                83,
+                                109,
+                                102,
+                                50,
+                                56,
+                                106,
+                                71,
+                                71,
+                                45,
+                                86,
+                                71,
+                                99,
+                                122,
+                                56,
+                                84,
+                                76,
+                                53,
+                                87,
+                                108,
+                                57,
+                                82,
+                                105,
+                                88,
+                                55,
+                                89,
+                                70,
+                                83,
+                                115,
+                                111,
+                                53,
+                                89,
+                                100,
+                                78,
+                                110,
+                                81,
+                                55,
+                                106,
+                                111,
+                                48,
+                                75,
+                                120,
+                                74,
+                                48,
+                                83,
+                                89,
+                                95,
+                                95,
+                                118,
+                                107,
+                                74,
+                                75,
+                                104,
+                                75,
+                                120,
+                                115,
+                                114,
+                                113,
+                                83,
+                                113,
+                                75,
+                                107,
+                                97,
+                                52,
+                                69,
+                                99,
+                                65,
+                                49,
+                                100,
+                                121,
+                                56,
+                                118,
+                                86,
+                                98,
+                                110,
+                                111,
+                                50,
+                                45,
+                                88,
+                                77,
+                                118,
+                                69,
+                                50,
+                                99,
+                                109,
+                                95,
+                                101,
+                                85,
+                                85,
+                                99,
+                                77,
+                                122,
+                                50,
+                                102,
+                                53,
+                                120,
+                                77,
+                                114,
+                                115,
+                                104,
+                                67,
+                                72,
+                                78,
+                                106,
+                                111,
+                                53,
+                                115,
+                                80,
+                                81,
+                                87,
+                                101,
+                                116,
+                                113,
+                                85,
+                                108,
+                                68,
+                                53,
+                                86,
+                                56,
+                                86,
+                                95,
+                                101,
+                                80,
+                                113,
+                                112,
+                                121,
+                                73,
+                                99,
+                                57,
+                                116,
+                                98,
+                                51,
+                                75,
+                                98,
+                                111,
+                                84,
+                                116,
+                                108,
+                                73,
+                                83,
+                                80,
+                                116,
+                                104,
+                                95,
+                                105,
+                                104,
+                                87,
+                                77,
+                                88,
+                                50,
+                                67,
+                                101,
+                                50,
+                                90,
+                                119,
+                                100,
+                                65,
+                                57,
+                                120,
+                                52,
+                                109,
+                                88,
+                                57,
+                                77,
+                                100,
+                                81,
+                                86,
+                                117,
+                                88,
+                                66,
+                                104,
+                                51,
+                                70,
+                                51,
+                                121,
+                                49,
+                                83,
+                                72,
+                                105,
+                                121,
+                                114,
+                                49,
+                                55,
+                                65,
+                                69,
+                                78,
+                                45,
+                                71,
+                                53,
+                                119,
+                                84,
+                                80,
+                                104,
+                                102,
+                                67,
+                                110,
+                                34,
+                                125
+                              ]
+                            ]
+                          ]
+                        ]
+                      ]
+                    }
+                  }
+                },
+                "version": 0
+              }
+            ],
+            [
+              "txreceipt_1f47dcdf0dd213d216fd7dd5a126e783b0b017a4f17a9205b2a5c8c0698ba341",
+              {
+                "substate": {
+                  "TransactionReceipt": {
+                    "outcome": "Commit",
+                    "diff_summary": {
+                      "upped": [
+                        {
+                          "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_6e8f20eafa23477355862129965bae7cc46349accc32d564552ec5393a7be51d",
+                          "version": 0,
+                          "value_hash": "6b48d3987b00e7cfc48c4aa5703fabbf3555610150802deac87378578b01c569"
+                        },
+                        {
+                          "substate_id": "component_d3045c124ab069e63f98a711f3652c3b4a809093533036b6caf61e36006f543a",
+                          "version": 0,
+                          "value_hash": "3a543512169b8fa7d1c390fb83bd396bec4d44d8ee29ae7a61767f0b047ef222"
+                        }
+                      ],
+                      "downed": [
+                        {
+                          "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_eed362ad92585b87f537b32e25b6400b0440757eb3e1db6355607f097b43ad74",
+                          "version": 0
+                        }
+                      ]
+                    },
+                    "fee_withdrawals": [],
+                    "events": [
+                      {
+                        "substate_id": "component_d3045c124ab069e63f98a711f3652c3b4a809093533036b6caf61e36006f543a",
+                        "template_address": "1f0b4d6e32820fb5666098d5ba3aeeee096f0610186335690625ab48ebbf90b0",
+                        "topic": "std.component.created",
+                        "payload": {}
+                      }
+                    ],
+                    "fee_receipt": {
+                      "total_fee_payment": 20402,
+                      "total_fees_paid": 20402,
+                      "total_fee_overcharge": 5067,
+                      "cost_breakdown": {
+                        "breakdown": {
+                          "RuntimeCall": 6,
+                          "Storage": 3010,
+                          "TransactionWeight": 797,
+                          "TemplateLoad": 350,
+                          "SubstateCreate": 750,
+                          "WasmExecution": 679,
+                          "NativeExecution": 9730,
+                          "InputLoad": 13
+                        }
+                      },
+                      "exhaust_burn": 20402
+                    },
+                    "epoch": 12867,
+                    "intent_commitment": "678a136cfa706395eaf976348c538b8d5f489a77286cf90bd54616b9b3c78e82"
+                  }
+                },
+                "version": 0
+              }
+            ]
+          ],
+          "down_substates": [
+            [
+              "utxo_0101010101010101010101010101010101010101010101010101010101010101_eed362ad92585b87f537b32e25b6400b0440757eb3e1db6355607f097b43ad74",
+              0
+            ]
+          ],
+          "fee_withdrawals": []
+        }
+      },
+      "fee_receipt": {
+        "total_fee_payment": 20402,
+        "total_fees_paid": 20402,
+        "total_fee_overcharge": 5067,
+        "cost_breakdown": {
+          "breakdown": {
+            "RuntimeCall": 6,
+            "Storage": 3010,
+            "TransactionWeight": 797,
+            "TemplateLoad": 350,
+            "SubstateCreate": 750,
+            "WasmExecution": 679,
+            "NativeExecution": 9730,
+            "InputLoad": 13
+          }
+        },
+        "exhaust_burn": 20402
+      },
+      "total_fees_required": 15335
+    },
+    "execution_time": {
+      "secs": 0,
+      "nanos": 5445471
+    },
+    "execute_epoch": 12867,
+    "wasm_execution_points": 679229,
+    "native_execution_points": 9730364
+  },
+  "receipt": {
+    "receipt": "h4IAgIKCg4IIgdiNgtiDWCABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAVggbo8g6vojR3NVhiEplluufMRjSazMMtVkVS7FOTp75R0AWCBrSNOYewDnz8SMSqVwP6u/NVVhAVCALerIc3hXiwHFaYOCAIHYgFgg0wRcEkqwaeY/mKcR82UsO0qAkJNTMDa2yvYeNgBvVDoAWCA6VDUSFpuPp9HDkPuDvTlr7E1E2O4prnphdn8LBH7yIoGCggiB2I2C2INYIAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBWCDu02Ktklhbh/U3sy4ltkALBEB1frPh22NVYH8Je0OtdACAgYSCAIHYgFgg0wRcEkqwaeY/mKcR82UsO0qAkJNTMDa2yvYeNgBvVDpYIB8LTW4ygg+1ZmCY1bo67u4JbwYQGGM1aQYlq0jrv5CwdXN0ZC5jb21wb25lbnQuY3JlYXRlZNiBoIUZT7IZT7IZE8uBqIIBgAaCAoAZC8KCA4AZAx2CBIAZAV6CBYAZAu6CBoAZAqeCCIAZJgKCCYANGU+yGTJDWCBnihNs+nBjler5djSMU4uNX0iadyhs+QvVRha5s8eOgg=="
+  },
+  "proof": {
+    "version": 0,
+    "state": {
+      "up": {
+        "substate": "ggWBh4IAgIKCg4IIgdiNgtiDWCABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAVggbo8g6vojR3NVhiEplluufMRjSazMMtVkVS7FOTp75R0AWCBrSNOYewDnz8SMSqVwP6u/NVVhAVCALerIc3hXiwHFaYOCAIHYgFgg0wRcEkqwaeY/mKcR82UsO0qAkJNTMDa2yvYeNgBvVDoAWCA6VDUSFpuPp9HDkPuDvTlr7E1E2O4prnphdn8LBH7yIoGCggiB2I2C2INYIAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBWCDu02Ktklhbh/U3sy4ltkALBEB1frPh22NVYH8Je0OtdACAgYSCAIHYgFgg0wRcEkqwaeY/mKcR82UsO0qAkJNTMDa2yvYeNgBvVDpYIB8LTW4ygg+1ZmCY1bo67u4JbwYQGGM1aQYlq0jrv5CwdXN0ZC5jb21wb25lbnQuY3JlYXRlZNiBoIUZT7IZT7IZE8uBqIIBgAaCAoAZC8KCA4AZAx2CBIAZAV6CBYAZAu6CBoAZAqeCCIAZJgKCCYANGU+yGTJDWCBnihNs+nBjler5djSMU4uNX0iadyhs+QvVRha5s8eOgg=="
+      }
+    },
+    "verified": true,
+    "proof": {
+      "anchor": {
+        "epoch": 12867,
+        "shard_group": {
+          "start": 1,
+          "end_inclusive": 256
+        },
+        "height": 78,
+        "block_id": "5ad5e93ace04c41bc7697dc34786f3aeabb4e96e6e4155c1b1346f7d33ba0cfc",
+        "state_merkle_root": "6b3c9e78356ba6c82c668a7c00267831bacbcd5cc9de43ba0610ebd1adc051f4"
+      },
+      "commit_proof": "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",
+      "value_proof": "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",
+      "value_hash_epoch": 12867
+    }
+  },
+  "decodedReceipt": {
+    "TransactionReceipt": {
+      "outcome": "Commit",
+      "diff_summary": {
+        "upped": [
+          {
+            "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_6e8f20eafa23477355862129965bae7cc46349accc32d564552ec5393a7be51d",
+            "version": 0,
+            "value_hash": "6b48d3987b00e7cfc48c4aa5703fabbf3555610150802deac87378578b01c569"
+          },
+          {
+            "substate_id": "component_d3045c124ab069e63f98a711f3652c3b4a809093533036b6caf61e36006f543a",
+            "version": 0,
+            "value_hash": "3a543512169b8fa7d1c390fb83bd396bec4d44d8ee29ae7a61767f0b047ef222"
+          }
+        ],
+        "downed": [
+          {
+            "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_eed362ad92585b87f537b32e25b6400b0440757eb3e1db6355607f097b43ad74",
+            "version": 0
+          }
+        ]
+      },
+      "fee_withdrawals": [],
+      "events": [
+        {
+          "substate_id": "component_d3045c124ab069e63f98a711f3652c3b4a809093533036b6caf61e36006f543a",
+          "template_address": "1f0b4d6e32820fb5666098d5ba3aeeee096f0610186335690625ab48ebbf90b0",
+          "topic": "std.component.created",
+          "payload": {}
+        }
+      ],
+      "fee_receipt": {
+        "total_fee_payment": 20402,
+        "total_fees_paid": 20402,
+        "total_fee_overcharge": 5067,
+        "cost_breakdown": {
+          "breakdown": {
+            "RuntimeCall": 6,
+            "Storage": 3010,
+            "TransactionWeight": 797,
+            "TemplateLoad": 350,
+            "SubstateCreate": 750,
+            "WasmExecution": 679,
+            "NativeExecution": 9730,
+            "InputLoad": 13
+          }
+        },
+        "exhaust_burn": 20402
+      },
+      "epoch": 12867,
+      "intent_commitment": "678a136cfa706395eaf976348c538b8d5f489a77286cf90bd54616b9b3c78e82"
+    }
+  }
+}

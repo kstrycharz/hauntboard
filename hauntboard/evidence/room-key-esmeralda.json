@@ -1,65 +1,66 @@
 {
   "status": "PASSED",
   "network": "esmeralda",
-  "resetIdentity": "esmeralda-release-2026-10-07",
-  "template": "9de14a5ca71a3c243c0c8a4a9f5896de6f89a5d60f2f42da0ad9351ca0c08527",
-  "registry": "component_dd15b354b77523cb53cf8a6f64913926cf31062f8811102ca5804b8609b4681e",
-  "board": "component_594f90d8cb8c2d0f70d941ba1c513769727feceeabd9d2137b5b6a130a6aa28e",
-  "thread": "component_597cfcf6ec8b52a147cb1f29d3c5f5475f4587f3679f6b14116fbfb85ad3b31c",
-  "wasmSha256": "a54676baf3788ac27ef703459bac1a4606ea9b11fb195b8b119e272997504467",
+  "resetIdentity": "esmeralda-reset-2026-11-02",
+  "template": "1f0b4d6e32820fb5666098d5ba3aeeee096f0610186335690625ab48ebbf90b0",
+  "registry": "component_d3045c124ab069e63f98a711f3652c3b4a809093533036b6caf61e36006f543a",
+  "board": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+  "thread": "component_148a0a8a85ba33b0937cbefa085ce03807b7c6d1a4dadbc838178c85ba4a0a74",
+  "publicThread": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+  "wasmSha256": "6f394f421b11a90a19afd9e07fa9553911a125e6ba036124491297420ae07158",
   "stages": {
     "publishRegistry": {
-      "id": "a2ebf2a17314b09055e264fdc0d7ca00308798921ca1152c95a9a07f5f92b3a9",
+      "id": "1b7a9004c15276ecad43581049342161884bf9880c333661453eae1cba06aad3",
       "status": "confirmed",
-      "maxFee": "1031580",
-      "actualFee": "857984"
+      "maxFee": "1029193",
+      "actualFee": "849328"
     },
     "preparePostingFunds": {
-      "id": "1921b0b203c3c2612d5646695f417e4495859f0a3ca8d960d51ce58598185499",
+      "id": "03215757cd9d44207956d564213264ecbd1f3f6c78550acc07ef68bc68c0c57c",
       "status": "confirmed",
-      "maxFee": "51804",
-      "actualFee": "41504"
+      "maxFee": "69473",
+      "actualFee": "56228"
     },
     "sealedOpeningPost": {
-      "id": "43cb29626638e68e94ac89814256dc58727acb212ed05e07b7f00305bed3acc6",
+      "id": "863e0ae8cc5622220ec688c90ec28b51ab6ac8a0c58a0c8574cc79fa4b1ff040",
       "status": "confirmed",
-      "maxFee": "48317",
-      "actualFee": "48317"
+      "maxFee": "48497",
+      "actualFee": "48497"
     },
     "createKeyRegistry": {
-      "id": "b2f1d5aa37f2d3c33d4bd9a4de7f9cb00fceb5ba34f98cb4b89b6921a21aeb03",
+      "id": "1f47dcdf0dd213d216fd7dd5a126e783b0b017a4f17a9205b2a5c8c0698ba341",
       "status": "confirmed",
-      "maxFee": "19601",
-      "actualFee": "19601"
+      "maxFee": "20402",
+      "actualFee": "20402"
     },
     "grantBobAccess": {
-      "id": "48d270a0b6e7b000a768885a801215c890fc7b1b9f4de3e5a3a08295e47ffc95",
+      "id": "c6992fb9c65225b2baa8b8b067fd5bf3333a6a98be27b2f45feba33d055a2a32",
       "status": "confirmed",
-      "maxFee": "23166",
-      "actualFee": "23166"
+      "maxFee": "23727",
+      "actualFee": "23727"
     },
     "managedPostBeforeRemoval": {
-      "id": "efc653fa6eb9e20dc6d2fe93eb5ccb19945845e4505bf92435fbda5a55e016ac",
+      "id": "b6b28fc669267a7538e343720ca28811474c78c90a033b85279aee95d458e1ec",
       "status": "confirmed",
-      "maxFee": "77913",
-      "actualFee": "77913"
+      "maxFee": "78281",
+      "actualFee": "78281"
     },
     "removeBobAndRotate": {
-      "id": "90f6b630229ec2bd00f402b26a39474e556c41bb5b90908a58831cdc08ec2d12",
+      "id": "bad3e4a96f5444914944b42af0c92bd8cca6a4f565bc28370594a59b58db97f1",
       "status": "confirmed",
-      "maxFee": "28108",
-      "actualFee": "28108"
+      "maxFee": "28674",
+      "actualFee": "28674"
     },
     "managedPostAfterRemoval": {
-      "id": "fa06f94a6c72591c140d75f3a1500a4918ae49b0cffbb511996b9f14b44c9e91",
+      "id": "12ba451abdde0c8782abdb1c1fbf2a9f786297d79d77596d668879df3435c47e",
       "status": "confirmed",
-      "maxFee": "103773",
-      "actualFee": "103773"
+      "maxFee": "104146",
+      "actualFee": "104146"
     }
   },
   "authorizedFeeBudgetMicrotari": "20000000",
-  "reservedMaximumFeesMicrotari": "1384262",
-  "demonstrationFundingMicrotari": "6000006",
+  "reservedMaximumFeesMicrotari": "1446957",
+  "demonstrationFundingMicrotari": "8000008",
   "checks": {
     "recipientDelivery": true,
     "outsiderDenied": true,
@@ -67,8 +68,32 @@
     "historicalAccessRetained": true,
     "removedMemberCannotDecryptFuture": true,
     "remainingMemberCanDecrypt": true,
-    "finalizedChainExecution": true
+    "finalizedChainExecution": true,
+    "publicOpeningAndReplyPayloadsMatchChain": true,
+    "sealedPayloadsMatchChain": true
   },
   "limits": "Public metadata, administration linkage, funding ancestry, fees and timing remain observable. Existing board writes are permissionless. Historical keys and plaintext cannot be revoked.",
-  "checkedAt": "2026-10-21T03:04:39.638Z"
+  "checkedAt": "2026-11-04T23:55:01.643Z",
+  "publicConversation": {
+    "thread": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+    "stages": {
+      "publicOpeningPost": {
+        "id": "4157d9a6f0e2505d76e9cade1ed6db683c08d9d524b7db34856d5a73c5d9d912",
+        "status": "confirmed",
+        "maxFee": "22290",
+        "actualFee": "22290"
+      },
+      "publicReply": {
+        "id": "ba61dead0397c5379416024b1fd11e8ff714beafe62f64757a605e391ce589da",
+        "status": "confirmed",
+        "maxFee": "22274",
+        "actualFee": "22274"
+      }
+    }
+  },
+  "feeBudget": {
+    "authorizedTotalMicrotari": "20000000",
+    "cumulativeReservedMicrotari": "5252819",
+    "freshDemonstrationActualMicrotari": "404519"
+  }
 }

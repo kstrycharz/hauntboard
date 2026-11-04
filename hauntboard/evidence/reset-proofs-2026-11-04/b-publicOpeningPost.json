@@ -1,0 +1,1124 @@
+{
+  "transaction": {
+    "transaction": {
+      "transaction_id": "4157d9a6f0e2505d76e9cade1ed6db683c08d9d524b7db34856d5a73c5d9d912",
+      "transaction": {
+        "V1": {
+          "body": {
+            "transaction": {
+              "network": 38,
+              "fee_instructions": [
+                {
+                  "StealthTransfer": {
+                    "resource_address_ref": {
+                      "Address": "resource_0101010101010101010101010101010101010101010101010101010101010101"
+                    },
+                    "statement": {
+                      "inputs_statement": {
+                        "inputs": [
+                          {
+                            "commitment": "24116aba14154cc951b0c43bda2af5657784af3fa7af638fb1616f641512e56c",
+                            "witness": "KeyPath"
+                          }
+                        ],
+                        "revealed_amount": "0"
+                      },
+                      "outputs_statement": {
+                        "outputs": [
+                          {
+                            "output": {
+                              "commitment": "a03d0eb3b9fe39f378f9f04abb54364017f4d8f3f27ee17ed256c7635d1e1d36",
+                              "sender_public_nonce": "0eb3d84c0c4854d9628409bf154fd9a062b21dbf31a3c5082351d840df4f7343",
+                              "encrypted_data": "8581f83146e51d6de55d58bf9282f115ef247a97afa578e0ca76f01968c3b8d7d7835066f0fc8532902549e5be09985ca1f59488afcf85f8540a9bc063ec5b53946ce7eb14fb669a772c2328f2960682d268796e8bf94e976ad0c077e0066e635d135f6ce1df47b8f7c32d8adc90e2fa",
+                              "minimum_value_promise": 0,
+                              "viewable_balance_proof": null
+                            },
+                            "auth": {
+                              "Key": "18e32c2949b3585b5745b3bb3af8d2fb33b49e62daaea4b7e87c6cd796d2c15e"
+                            },
+                            "tag": 3167150487
+                          }
+                        ],
+                        "revealed_output": {
+                          "amount": "22290",
+                          "receiver": "263a3b31904a72b4ecb98ed12abe0d64e92714cee7e2c8566e07872f1918fc1e"
+                        },
+                        "agg_range_proof": "01547650420db36baa77a1d67966049e7e3510e4962571f7d3c5de5ed5d93f59002e1dea65b3ad4b11a2b726c8316a43bf4f27bb7e11b4ddd2e4c9c277c03591721210223cb2e4bf365b2ca024e0c08b2aed40adab47a4f90c0e9cdcd519e5dc4be0eca5093049d23ab1b7cf7d24b4c460b545b8ef653cf7c0384fe69696bd1b7ddb7924956ea0573b3cf53048bbc2e63ce047ea5c3fa219cb483d6d161376a3004b3b94d76affc72e8b169ee711ab18cf418ea3911fb307d276e4a6cea914dc063e9e20516482d602671cc8300e35e75358e4db3e79f3c0f3711e4605303173266c84cd0f05934ce6e700fa5b14b12782aaedf490b862de206ee33f84a6251859083fcb881e1595878233a59ad0dc4fdad0157b76cc190370bf76729c5384107e0ca67623c2f51ce1a17bcb3d615ceaa9fba9c933deafb3e56933b9da0e203c44e666e0da0491a60653c054d4ccdbefb1992fa92f88a0d54e543ffa84db18745cbe561823000f47cdbf8c00ac5b82b407e2a3b169e32eb628e1850f17a1696a40d26c16720938a81f6ae02e73f1046f224ad47dbb205522d875feb6a6d722b91e7e6ae6ff6104e9066a24c3ab2ccf599b272c220cd6ff6c878fed81e0f164160e841ddaa97231061e0cb04f7af9a689e6d2d585ac365e6ac8eb219a3d1a9480334a7df05cf7c4445baf54378df92d45c81e0cb8f5653a65f9806259072f6ae3354c55d5be9e6d9ded3e324d6a6dd3d3c7424dab2e5c1bf2b0c4e3f603591d3c7b169d3a49208d3d6054a119bd64bc5ea63ad4b52c77d24a7368357470dcdcaf65"
+                      },
+                      "balance_proof": {
+                        "public_nonce": "8450a95ba3f9d93ba4cd13f51c87d6e28eb893cd2862e16e75fe5f551253553a",
+                        "signature": "7bea8c0f792f8268a66129391431cb26136fbc5cba0cc9633af9c3c77f62c602"
+                      },
+                      "covenant_claims": []
+                    },
+                    "revealed_input_bucket": null
+                  }
+                },
+                {
+                  "PutLastInstructionOutputOnWorkspace": {
+                    "key": 0
+                  }
+                },
+                {
+                  "PayFeeFromBucket": {
+                    "bucket": {
+                      "id": 0,
+                      "offset": null
+                    }
+                  }
+                }
+              ],
+              "instructions": [
+                {
+                  "CallMethod": {
+                    "call": {
+                      "Address": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b"
+                    },
+                    "method": "create_thread",
+                    "args": [
+                      {
+                        "Literal": "783a4861756e74626f6172643a207075626c696320636f6e766572736174696f6e73206166746572207468652045736d6572616c6461207265736574"
+                      },
+                      {
+                        "Literal": "00"
+                      },
+                      {
+                        "Literal": "9018f118c318f6184718e5187618fd18f5181818a918ec1819189e0a184f1824"
+                      },
+                      {
+                        "Literal": "990178187b182218761822183a1831182c1822187418691874186c18651822183a1822184818611875186e18741862186f186118721864183a1820187018751862186c1869186318201863186f186e1876186518721873186118741869186f186e18731820186118661874186518721820187418681865182018451873186d186518721861186c186418611820187218651873186518741822182c182218631861187418651867186f187218791822183a182218741861187218691822182c1822186e1861186d18651822183a1822184818611875186e18741862186f1861187218641822182c18221862186f186418791822183a1822185018751862186c1869186318201863186f186e1876186518721873186118741869186f186e187318201861187218651820186218611863186b1820186f186e1820187418681865182018721865187318651874182018451873186d186518721861186c1864186118201874186518731874186e18651874182e18201854186818691873182018641865186d186f186e187318741872186118741869186f186e182018731874186f187218651873182018611820187218651861186418611862186c18651820186f18701865186e1869186e186718201870186f1873187418201861186e18641820187218651870186c187918201869186e1820186f186e182d1863186818611869186e18201863186f186e18741872186118631874182018731874186118741865182e1820185418681865182018731865187018611872186118741865182018531845184318521845185418201854184818521845184118441821182018641865186d186f186e18731874187218611874186518731820187318651861186c186518641820186d1865187318731861186718651873182c18201872186518631869187018691865186e187418201869186e187618691874186118741869186f186e187318201861186e186418201872186f186f186d182d186b1865187918201872186f1874186118741869186f186e182e1822187d"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "inputs": [
+                {
+                  "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_24116aba14154cc951b0c43bda2af5657784af3fa7af638fb1616f641512e56c",
+                  "version": 0,
+                  "is_write": true
+                },
+                {
+                  "substate_id": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+                  "version": 3,
+                  "is_write": true
+                }
+              ],
+              "min_epoch": null,
+              "max_epoch": 12872,
+              "main_signer": "None",
+              "dry_run": false,
+              "blob_hashes": [],
+              "blob_sizes": [],
+              "nonce": 0
+            },
+            "signatures": [
+              {
+                "public_key": "c48c83845389a46d723e6993fe708c6ae6c011aa2114b91641325a28f7d66e33",
+                "signature": "70c3e06a5e793575ff5a34bf0e851cdd5fe6b5cd4c000c7be193a658516b1216c82ecc5b1855aeb08ce276d697270b243987f418a22bac039e211e9bdbd11f81"
+              },
+              {
+                "public_key": "263a3b31904a72b4ecb98ed12abe0d64e92714cee7e2c8566e07872f1918fc1e",
+                "signature": "707a029814636bf07ad6b76be2af8d7cdee9b642eac09025d8b61bc9f8e0c361c3e90978ad8b46d35d46b7f8a333cb6b2acd081eead3f811ab090ae450434a8c"
+              }
+            ]
+          },
+          "seal_signature": {
+            "public_key": "fc7e6c5fc65cc8894bfe36928ac19b8a916b9442dfce0d750793a45cc8704e78",
+            "signature": "f6c004a0e4becff2db275a6abe5da0a42689aea641cc8a2e3440439685fc74328ce4356d79aa145c2b729bd572a7da9b74bcaafd42e8aaf6fcd47a8260b8ca80"
+          }
+        }
+      },
+      "created_at": "2026-11-04 23:52:58.0",
+      "summary": {
+        "outcome": "Commit",
+        "total_fees_paid": 22290,
+        "finalized_at": "2026-11-04 23:53:00.0"
+      },
+      "rejected_reason": null,
+      "source": "gossip"
+    }
+  },
+  "result": {
+    "result": {
+      "Finalized": {
+        "final_decision": "Commit",
+        "execution_result": "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GHQYYhhvGGEYchhkGCIYLBgiGGIYbxhkGHkYIhg6GCIYUBh1GGIYbBhpGGMYIBhjGG8Ybhh2GGUYchhzGGEYdBhpGG8YbhhzGCAYYRhyGGUYIBhiGGEYYxhrGCAYbxhuGCAYdBhoGGUYIBhyGGUYcxhlGHQYIBhFGHMYbRhlGHIYYRhsGGQYYRggGHQYZRhzGHQYbhhlGHQYLhggGFQYaBhpGHMYIBhkGGUYbRhvGG4Ycxh0GHIYYRh0GGkYbxhuGCAYcxh0GG8YchhlGHMYIBhhGCAYchhlGGEYZBhhGGIYbBhlGCAYbxhwGGUYbhhpGG4YZxggGHAYbxhzGHQYIBhhGG4YZBggGHIYZRhwGGwYeRggGGkYbhggGG8YbhgtGGMYaBhhGGkYbhggGGMYbxhuGHQYchhhGGMYdBggGHMYdBhhGHQYZRguGCAYVBhoGGUYIBhzGGUYcBhhGHIYYRh0GGUYIBhTGEUYQxhSGEUYVBggGFQYSBhSGEUYQRhEGCEYIBhkGGUYbRhvGG4Ycxh0GHIYYRh0GGUYcxggGHMYZRhhGGwYZRhkGCAYbRhlGHMYcxhhGGcYZRhzGCwYIBhyGGUYYxhpGHAYaRhlGG4YdBggGGkYbhh2GGkYdBhhGHQYaRhvGG4YcxggGGEYbhhkGCAYchhvGG8YbRgtGGsYZRh5GCAYchhvGHQYYRh0GGkYbxhuGC4YIhh9GTJDgAF4SmNvbXBvbmVudF8xNGIzNDk4OTVlYjgwYWRkMjgzOTJmOWNiZDRmMjU2ZmIwMzA1NTdmM2EyNjU5NGEyZTE1ZmIzZDFjY2U1ZGM0AACCggCB2IBYIBTW9PuOW7dvgzIgKE5Z9uCthmvTU4XzDt7dr6KCwzmbgoIAgYKFWCDcQeN5wMdaOJmbdjW9lJjRuhJQdRJItwyG9EZ4erZ1AIIAgIKoZmFwcGVuZIIAgG1jcmVhdGVfdGhyZWFkggCAamZpbmRfcmV0cnmCAIBqZ2V0X2NvdW50c4IAgHFnZXRfZmlyc3RfcGF5bG9hZIIAgGhnZXRfcG9zdIIAgGlnZXRfc3RhdGWCAIBrcGFnZV9hcHBlbmSCAYCCAYBBFIIAgIGMBPVgcUhhdW50Ym9hcmQgRm9ydW1zAICEhHhKY29tcG9uZW50XzE0YmExNjMwYWZlNjI3YTg3YWM2NDFiNTAxZmM3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",
+        "execution_time": {
+          "secs": 0,
+          "nanos": 5888000
+        },
+        "finalized_time": "2026-11-04 23:52:58.0",
+        "abort_details": null
+      }
+    }
+  },
+  "execution": {
+    "finalize": {
+      "transaction_hash": "4157d9a6f0e2505d76e9cade1ed6db683c08d9d524b7db34856d5a73c5d9d912",
+      "events": [
+        {
+          "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+          "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+          "topic": "std.component.created",
+          "payload": {}
+        },
+        {
+          "substate_id": "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+          "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+          "topic": "std.component.created",
+          "payload": {}
+        },
+        {
+          "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+          "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+          "topic": "std.component.updated",
+          "payload": {}
+        },
+        {
+          "substate_id": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+          "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+          "topic": "std.component.updated",
+          "payload": {}
+        }
+      ],
+      "logs": [],
+      "result": {
+        "Accept": {
+          "up_substates": [
+            [
+              "utxo_0101010101010101010101010101010101010101010101010101010101010101_a03d0eb3b9fe39f378f9f04abb54364017f4d8f3f27ee17ed256c7635d1e1d36",
+              {
+                "substate": {
+                  "Utxo": {
+                    "output": {
+                      "output": {
+                        "public_nonce": "0eb3d84c0c4854d9628409bf154fd9a062b21dbf31a3c5082351d840df4f7343",
+                        "encrypted_data": "8581f83146e51d6de55d58bf9282f115ef247a97afa578e0ca76f01968c3b8d7d7835066f0fc8532902549e5be09985ca1f59488afcf85f8540a9bc063ec5b53946ce7eb14fb669a772c2328f2960682d268796e8bf94e976ad0c077e0066e635d135f6ce1df47b8f7c32d8adc90e2fa",
+                        "minimum_value_promise": 0,
+                        "viewable_balance": null
+                      },
+                      "auth": {
+                        "Key": "18e32c2949b3585b5745b3bb3af8d2fb33b49e62daaea4b7e87c6cd796d2c15e"
+                      },
+                      "tag": 3167150487
+                    },
+                    "is_frozen": false
+                  }
+                },
+                "version": 0
+              }
+            ],
+            [
+              "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+              {
+                "substate": {
+                  "Component": {
+                    "header": {
+                      "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+                      "owner_rule": "None",
+                      "access_rules": {
+                        "method_access": {
+                          "append": "AllowAll",
+                          "create_thread": "AllowAll",
+                          "find_retry": "AllowAll",
+                          "get_counts": "AllowAll",
+                          "get_first_payload": "AllowAll",
+                          "get_post": "AllowAll",
+                          "get_state": "AllowAll",
+                          "page_append": "DenyAll"
+                        },
+                        "default": "DenyAll"
+                      },
+                      "entity_id": "14",
+                      "upgrade_rule": "Locked"
+                    },
+                    "body": {
+                      "state": [
+                        4,
+                        false,
+                        "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+                        "Hauntboard: public conversations after the Esmeralda reset",
+                        0,
+                        [
+                          241,
+                          195,
+                          246,
+                          71,
+                          229,
+                          118,
+                          253,
+                          245,
+                          24,
+                          169,
+                          236,
+                          25,
+                          158,
+                          10,
+                          79,
+                          36
+                        ],
+                        [],
+                        [],
+                        [
+                          "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b"
+                        ],
+                        1,
+                        "",
+                        0
+                      ]
+                    }
+                  }
+                },
+                "version": 0
+              }
+            ],
+            [
+              "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+              {
+                "substate": {
+                  "Component": {
+                    "header": {
+                      "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+                      "owner_rule": "None",
+                      "access_rules": {
+                        "method_access": {
+                          "append": "AllowAll",
+                          "create_thread": "AllowAll",
+                          "find_retry": "AllowAll",
+                          "get_counts": "AllowAll",
+                          "get_first_payload": "AllowAll",
+                          "get_post": "AllowAll",
+                          "get_state": "AllowAll",
+                          "page_append": {
+                            "Restricted": {
+                              "Require": {
+                                "Require": {
+                                  "CallerComponent": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "default": "DenyAll"
+                      },
+                      "entity_id": "14",
+                      "upgrade_rule": "Locked"
+                    },
+                    "body": {
+                      "state": [
+                        4,
+                        false,
+                        "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+                        "",
+                        0,
+                        [
+                          241,
+                          195,
+                          246,
+                          71,
+                          229,
+                          118,
+                          253,
+                          245,
+                          24,
+                          169,
+                          236,
+                          25,
+                          158,
+                          10,
+                          79,
+                          36
+                        ],
+                        [],
+                        [
+                          [
+                            [
+                              241,
+                              195,
+                              246,
+                              71,
+                              229,
+                              118,
+                              253,
+                              245,
+                              24,
+                              169,
+                              236,
+                              25,
+                              158,
+                              10,
+                              79,
+                              36
+                            ],
+                            -1,
+                            [
+                              123,
+                              34,
+                              118,
+                              34,
+                              58,
+                              49,
+                              44,
+                              34,
+                              116,
+                              105,
+                              116,
+                              108,
+                              101,
+                              34,
+                              58,
+                              34,
+                              72,
+                              97,
+                              117,
+                              110,
+                              116,
+                              98,
+                              111,
+                              97,
+                              114,
+                              100,
+                              58,
+                              32,
+                              112,
+                              117,
+                              98,
+                              108,
+                              105,
+                              99,
+                              32,
+                              99,
+                              111,
+                              110,
+                              118,
+                              101,
+                              114,
+                              115,
+                              97,
+                              116,
+                              105,
+                              111,
+                              110,
+                              115,
+                              32,
+                              97,
+                              102,
+                              116,
+                              101,
+                              114,
+                              32,
+                              116,
+                              104,
+                              101,
+                              32,
+                              69,
+                              115,
+                              109,
+                              101,
+                              114,
+                              97,
+                              108,
+                              100,
+                              97,
+                              32,
+                              114,
+                              101,
+                              115,
+                              101,
+                              116,
+                              34,
+                              44,
+                              34,
+                              99,
+                              97,
+                              116,
+                              101,
+                              103,
+                              111,
+                              114,
+                              121,
+                              34,
+                              58,
+                              34,
+                              116,
+                              97,
+                              114,
+                              105,
+                              34,
+                              44,
+                              34,
+                              110,
+                              97,
+                              109,
+                              101,
+                              34,
+                              58,
+                              34,
+                              72,
+                              97,
+                              117,
+                              110,
+                              116,
+                              98,
+                              111,
+                              97,
+                              114,
+                              100,
+                              34,
+                              44,
+                              34,
+                              98,
+                              111,
+                              100,
+                              121,
+                              34,
+                              58,
+                              34,
+                              80,
+                              117,
+                              98,
+                              108,
+                              105,
+                              99,
+                              32,
+                              99,
+                              111,
+                              110,
+                              118,
+                              101,
+                              114,
+                              115,
+                              97,
+                              116,
+                              105,
+                              111,
+                              110,
+                              115,
+                              32,
+                              97,
+                              114,
+                              101,
+                              32,
+                              98,
+                              97,
+                              99,
+                              107,
+                              32,
+                              111,
+                              110,
+                              32,
+                              116,
+                              104,
+                              101,
+                              32,
+                              114,
+                              101,
+                              115,
+                              101,
+                              116,
+                              32,
+                              69,
+                              115,
+                              109,
+                              101,
+                              114,
+                              97,
+                              108,
+                              100,
+                              97,
+                              32,
+                              116,
+                              101,
+                              115,
+                              116,
+                              110,
+                              101,
+                              116,
+                              46,
+                              32,
+                              84,
+                              104,
+                              105,
+                              115,
+                              32,
+                              100,
+                              101,
+                              109,
+                              111,
+                              110,
+                              115,
+                              116,
+                              114,
+                              97,
+                              116,
+                              105,
+                              111,
+                              110,
+                              32,
+                              115,
+                              116,
+                              111,
+                              114,
+                              101,
+                              115,
+                              32,
+                              97,
+                              32,
+                              114,
+                              101,
+                              97,
+                              100,
+                              97,
+                              98,
+                              108,
+                              101,
+                              32,
+                              111,
+                              112,
+                              101,
+                              110,
+                              105,
+                              110,
+                              103,
+                              32,
+                              112,
+                              111,
+                              115,
+                              116,
+                              32,
+                              97,
+                              110,
+                              100,
+                              32,
+                              114,
+                              101,
+                              112,
+                              108,
+                              121,
+                              32,
+                              105,
+                              110,
+                              32,
+                              111,
+                              110,
+                              45,
+                              99,
+                              104,
+                              97,
+                              105,
+                              110,
+                              32,
+                              99,
+                              111,
+                              110,
+                              116,
+                              114,
+                              97,
+                              99,
+                              116,
+                              32,
+                              115,
+                              116,
+                              97,
+                              116,
+                              101,
+                              46,
+                              32,
+                              84,
+                              104,
+                              101,
+                              32,
+                              115,
+                              101,
+                              112,
+                              97,
+                              114,
+                              97,
+                              116,
+                              101,
+                              32,
+                              83,
+                              69,
+                              67,
+                              82,
+                              69,
+                              84,
+                              32,
+                              84,
+                              72,
+                              82,
+                              69,
+                              65,
+                              68,
+                              33,
+                              32,
+                              100,
+                              101,
+                              109,
+                              111,
+                              110,
+                              115,
+                              116,
+                              114,
+                              97,
+                              116,
+                              101,
+                              115,
+                              32,
+                              115,
+                              101,
+                              97,
+                              108,
+                              101,
+                              100,
+                              32,
+                              109,
+                              101,
+                              115,
+                              115,
+                              97,
+                              103,
+                              101,
+                              115,
+                              44,
+                              32,
+                              114,
+                              101,
+                              99,
+                              105,
+                              112,
+                              105,
+                              101,
+                              110,
+                              116,
+                              32,
+                              105,
+                              110,
+                              118,
+                              105,
+                              116,
+                              97,
+                              116,
+                              105,
+                              111,
+                              110,
+                              115,
+                              32,
+                              97,
+                              110,
+                              100,
+                              32,
+                              114,
+                              111,
+                              111,
+                              109,
+                              45,
+                              107,
+                              101,
+                              121,
+                              32,
+                              114,
+                              111,
+                              116,
+                              97,
+                              116,
+                              105,
+                              111,
+                              110,
+                              46,
+                              34,
+                              125
+                            ],
+                            12867
+                          ]
+                        ],
+                        [],
+                        1,
+                        "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+                        0
+                      ]
+                    }
+                  }
+                },
+                "version": 0
+              }
+            ],
+            [
+              "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+              {
+                "substate": {
+                  "Component": {
+                    "header": {
+                      "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+                      "owner_rule": "None",
+                      "access_rules": {
+                        "method_access": {
+                          "append": "AllowAll",
+                          "create_thread": "AllowAll",
+                          "find_retry": "AllowAll",
+                          "get_counts": "AllowAll",
+                          "get_first_payload": "AllowAll",
+                          "get_post": "AllowAll",
+                          "get_state": "AllowAll",
+                          "page_append": "DenyAll"
+                        },
+                        "default": "DenyAll"
+                      },
+                      "entity_id": "14",
+                      "upgrade_rule": "Locked"
+                    },
+                    "body": {
+                      "state": [
+                        4,
+                        true,
+                        "",
+                        "Hauntboard Forums",
+                        0,
+                        [],
+                        [
+                          [
+                            "component_14ba1630afe627a87ac641b501fc74e5bbb6f505d0cc4148e2506a9eadcc58f0",
+                            "Esmeralda reset: why the forum started fresh",
+                            0,
+                            [
+                              233,
+                              57,
+                              143,
+                              8,
+                              110,
+                              232,
+                              115,
+                              254,
+                              188,
+                              51,
+                              235,
+                              173,
+                              11,
+                              1,
+                              3,
+                              204
+                            ]
+                          ],
+                          [
+                            "component_143417c55e3c52f929f64bd7def59d94f09d9b3c531655ecf1b393e2fa54f5c7",
+                            "aaarg i hate niggers",
+                            0,
+                            [
+                              197,
+                              148,
+                              241,
+                              158,
+                              93,
+                              162,
+                              241,
+                              232,
+                              250,
+                              91,
+                              103,
+                              31,
+                              221,
+                              33,
+                              121,
+                              37
+                            ]
+                          ],
+                          [
+                            "component_148a0a8a85ba33b0937cbefa085ce03807b7c6d1a4dadbc838178c85ba4a0a74",
+                            "SECRET THREAD!",
+                            0,
+                            [
+                              112,
+                              16,
+                              91,
+                              60,
+                              26,
+                              18,
+                              52,
+                              174,
+                              15,
+                              182,
+                              65,
+                              68,
+                              14,
+                              135,
+                              223,
+                              29
+                            ]
+                          ],
+                          [
+                            "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+                            "Hauntboard: public conversations after the Esmeralda reset",
+                            0,
+                            [
+                              241,
+                              195,
+                              246,
+                              71,
+                              229,
+                              118,
+                              253,
+                              245,
+                              24,
+                              169,
+                              236,
+                              25,
+                              158,
+                              10,
+                              79,
+                              36
+                            ]
+                          ]
+                        ],
+                        [],
+                        [],
+                        0,
+                        "",
+                        0
+                      ]
+                    }
+                  }
+                },
+                "version": 4
+              }
+            ],
+            [
+              "txreceipt_4157d9a6f0e2505d76e9cade1ed6db683c08d9d524b7db34856d5a73c5d9d912",
+              {
+                "substate": {
+                  "TransactionReceipt": {
+                    "outcome": "Commit",
+                    "diff_summary": {
+                      "upped": [
+                        {
+                          "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_a03d0eb3b9fe39f378f9f04abb54364017f4d8f3f27ee17ed256c7635d1e1d36",
+                          "version": 0,
+                          "value_hash": "b02e7af3c08801013a870c4a0bb2891111635035c52a562f427b1ed6a172945d"
+                        },
+                        {
+                          "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+                          "version": 0,
+                          "value_hash": "7c1a8081aa73de003cfa40c522bf565588ca15d67ade6fe318cb6bf72bfa531a"
+                        },
+                        {
+                          "substate_id": "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+                          "version": 0,
+                          "value_hash": "127cdb09e2ef52676fa89de6656158c8bb7c6c8601640497254e5951b70e39fe"
+                        },
+                        {
+                          "substate_id": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+                          "version": 4,
+                          "value_hash": "0dba996b82ed4e4dc2df9642290d4ccb5c8a94a52dd069a4d75c54c978524c17"
+                        }
+                      ],
+                      "downed": [
+                        {
+                          "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_24116aba14154cc951b0c43bda2af5657784af3fa7af638fb1616f641512e56c",
+                          "version": 0
+                        }
+                      ]
+                    },
+                    "fee_withdrawals": [],
+                    "events": [
+                      {
+                        "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+                        "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+                        "topic": "std.component.created",
+                        "payload": {}
+                      },
+                      {
+                        "substate_id": "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+                        "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+                        "topic": "std.component.created",
+                        "payload": {}
+                      },
+                      {
+                        "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+                        "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+                        "topic": "std.component.updated",
+                        "payload": {}
+                      },
+                      {
+                        "substate_id": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+                        "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+                        "topic": "std.component.updated",
+                        "payload": {}
+                      }
+                    ],
+                    "fee_receipt": {
+                      "total_fee_payment": 22290,
+                      "total_fees_paid": 22290,
+                      "total_fee_overcharge": 5380,
+                      "cost_breakdown": {
+                        "breakdown": {
+                          "RuntimeCall": 16,
+                          "Storage": 3665,
+                          "TransactionWeight": 425,
+                          "TemplateLoad": 470,
+                          "SubstateCreate": 1000,
+                          "WasmExecution": 744,
+                          "NativeExecution": 10577,
+                          "InputLoad": 13
+                        }
+                      },
+                      "exhaust_burn": 22290
+                    },
+                    "epoch": 12867,
+                    "intent_commitment": "a16c4b2bb793a89525912e34d5ee1fadcaf99ce743234a689f819ce749a298f0"
+                  }
+                },
+                "version": 0
+              }
+            ]
+          ],
+          "down_substates": [
+            [
+              "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+              3
+            ],
+            [
+              "utxo_0101010101010101010101010101010101010101010101010101010101010101_24116aba14154cc951b0c43bda2af5657784af3fa7af638fb1616f641512e56c",
+              0
+            ]
+          ],
+          "fee_withdrawals": []
+        }
+      },
+      "fee_receipt": {
+        "total_fee_payment": 22290,
+        "total_fees_paid": 22290,
+        "total_fee_overcharge": 5380,
+        "cost_breakdown": {
+          "breakdown": {
+            "RuntimeCall": 16,
+            "Storage": 3665,
+            "TransactionWeight": 425,
+            "TemplateLoad": 470,
+            "SubstateCreate": 1000,
+            "WasmExecution": 744,
+            "NativeExecution": 10577,
+            "InputLoad": 13
+          }
+        },
+        "exhaust_burn": 22290
+      },
+      "total_fees_required": 16910
+    },
+    "execution_time": {
+      "secs": 0,
+      "nanos": 5888733
+    },
+    "execute_epoch": 12867,
+    "wasm_execution_points": 744051,
+    "native_execution_points": 10577075
+  },
+  "receipt": {
+    "receipt": "h4IAgIKEg4IIgdiNgtiDWCABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAVggoD0Os7n+OfN4+fBKu1Q2QBf02PPyfuF+0lbHY10eHTYAWCCwLnrzwIgBATqHDEoLsokREWNQNcUqVi9Cex7WoXKUXYOCAIHYgFggFLNJiV64Ct0oOS+cvU8lb7AwVX86JllKLhX7PRzOXcQAWCB8GoCBqnPeADz6QMUiv1ZViMoV1nreb+MYy2v3K/pTGoOCAIHYgFggFKCoy4zkQCD2abkPGoDNM5kuZDYjoR1TIgnu+KSOqEsAWCASfNsJ4u9SZ2+oneZlYVjIu3xshgFkBJclTllRtw45/oOCAIHYgFggFNb0+45bt2+DMiAoTln24K2Ga9NThfMO3t2vooLDOZsEWCANuplrgu1OTcLflkIpDUzLXIqUpS3QaaTXXFTJeFJMF4GCggiB2I2C2INYIAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBWCAkEWq6FBVMyVGwxDvaKvVld4SvP6evY4+xYW9kFRLlbACAhISCAIHYgFggFLNJiV64Ct0oOS+cvU8lb7AwVX86JllKLhX7PRzOXcRYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQuY3JlYXRlZNiBoISCAIHYgFggFKCoy4zkQCD2abkPGoDNM5kuZDYjoR1TIgnu+KSOqEtYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQuY3JlYXRlZNiBoISCAIHYgFggFLNJiV64Ct0oOS+cvU8lb7AwVX86JllKLhX7PRzOXcRYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQudXBkYXRlZNiBoISCAIHYgFggFNb0+45bt2+DMiAoTln24K2Ga9NThfMO3t2vooLDOZtYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQudXBkYXRlZNiBoIUZVxIZVxIZFQSBqIIBgBCCAoAZDlGCA4AZAamCBIAZAdaCBYAZA+iCBoAZAuiCCIAZKVGCCYANGVcSGTJDWCChbEsrt5OolSWRLjTV7h+tyvmc50MjSmifgZznSaKY8A=="
+  },
+  "proof": {
+    "version": 0,
+    "state": {
+      "up": {
+        "substate": "ggWBh4IAgIKEg4IIgdiNgtiDWCABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAVggoD0Os7n+OfN4+fBKu1Q2QBf02PPyfuF+0lbHY10eHTYAWCCwLnrzwIgBATqHDEoLsokREWNQNcUqVi9Cex7WoXKUXYOCAIHYgFggFLNJiV64Ct0oOS+cvU8lb7AwVX86JllKLhX7PRzOXcQAWCB8GoCBqnPeADz6QMUiv1ZViMoV1nreb+MYy2v3K/pTGoOCAIHYgFggFKCoy4zkQCD2abkPGoDNM5kuZDYjoR1TIgnu+KSOqEsAWCASfNsJ4u9SZ2+oneZlYVjIu3xshgFkBJclTllRtw45/oOCAIHYgFggFNb0+45bt2+DMiAoTln24K2Ga9NThfMO3t2vooLDOZsEWCANuplrgu1OTcLflkIpDUzLXIqUpS3QaaTXXFTJeFJMF4GCggiB2I2C2INYIAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBWCAkEWq6FBVMyVGwxDvaKvVld4SvP6evY4+xYW9kFRLlbACAhISCAIHYgFggFLNJiV64Ct0oOS+cvU8lb7AwVX86JllKLhX7PRzOXcRYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQuY3JlYXRlZNiBoISCAIHYgFggFKCoy4zkQCD2abkPGoDNM5kuZDYjoR1TIgnu+KSOqEtYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQuY3JlYXRlZNiBoISCAIHYgFggFLNJiV64Ct0oOS+cvU8lb7AwVX86JllKLhX7PRzOXcRYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQudXBkYXRlZNiBoISCAIHYgFggFNb0+45bt2+DMiAoTln24K2Ga9NThfMO3t2vooLDOZtYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQudXBkYXRlZNiBoIUZVxIZVxIZFQSBqIIBgBCCAoAZDlGCA4AZAamCBIAZAdaCBYAZA+iCBoAZAuiCCIAZKVGCCYANGVcSGTJDWCChbEsrt5OolSWRLjTV7h+tyvmc50MjSmifgZznSaKY8A=="
+      }
+    },
+    "verified": true,
+    "proof": {
+      "anchor": {
+        "epoch": 12867,
+        "shard_group": {
+          "start": 1,
+          "end_inclusive": 256
+        },
+        "height": 79,
+        "block_id": "33efc6019fada4a925050d0822b7b8209d502b3eccfdf45ecb018da41237035a",
+        "state_merkle_root": "6b3c9e78356ba6c82c668a7c00267831bacbcd5cc9de43ba0610ebd1adc051f4"
+      },
+      "commit_proof": "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",
+      "value_proof": "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",
+      "value_hash_epoch": 12867
+    }
+  },
+  "decodedReceipt": {
+    "TransactionReceipt": {
+      "outcome": "Commit",
+      "diff_summary": {
+        "upped": [
+          {
+            "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_a03d0eb3b9fe39f378f9f04abb54364017f4d8f3f27ee17ed256c7635d1e1d36",
+            "version": 0,
+            "value_hash": "b02e7af3c08801013a870c4a0bb2891111635035c52a562f427b1ed6a172945d"
+          },
+          {
+            "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+            "version": 0,
+            "value_hash": "7c1a8081aa73de003cfa40c522bf565588ca15d67ade6fe318cb6bf72bfa531a"
+          },
+          {
+            "substate_id": "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+            "version": 0,
+            "value_hash": "127cdb09e2ef52676fa89de6656158c8bb7c6c8601640497254e5951b70e39fe"
+          },
+          {
+            "substate_id": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+            "version": 4,
+            "value_hash": "0dba996b82ed4e4dc2df9642290d4ccb5c8a94a52dd069a4d75c54c978524c17"
+          }
+        ],
+        "downed": [
+          {
+            "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_24116aba14154cc951b0c43bda2af5657784af3fa7af638fb1616f641512e56c",
+            "version": 0
+          }
+        ]
+      },
+      "fee_withdrawals": [],
+      "events": [
+        {
+          "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+          "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+          "topic": "std.component.created",
+          "payload": {}
+        },
+        {
+          "substate_id": "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+          "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+          "topic": "std.component.created",
+          "payload": {}
+        },
+        {
+          "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+          "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+          "topic": "std.component.updated",
+          "payload": {}
+        },
+        {
+          "substate_id": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+          "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+          "topic": "std.component.updated",
+          "payload": {}
+        }
+      ],
+      "fee_receipt": {
+        "total_fee_payment": 22290,
+        "total_fees_paid": 22290,
+        "total_fee_overcharge": 5380,
+        "cost_breakdown": {
+          "breakdown": {
+            "RuntimeCall": 16,
+            "Storage": 3665,
+            "TransactionWeight": 425,
+            "TemplateLoad": 470,
+            "SubstateCreate": 1000,
+            "WasmExecution": 744,
+            "NativeExecution": 10577,
+            "InputLoad": 13
+          }
+        },
+        "exhaust_burn": 22290
+      },
+      "epoch": 12867,
+      "intent_commitment": "a16c4b2bb793a89525912e34d5ee1fadcaf99ce743234a689f819ce749a298f0"
+    }
+  }
+}

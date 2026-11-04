@@ -1,0 +1,16 @@
+{
+  "status": "DEPLOYED_AND_VERIFIED",
+  "checkedAt": "2026-11-04T23:56:41.868Z",
+  "origin": "https://hauntboard.taritracker.com",
+  "scope": "Three proof assets overlaid on the existing reset application image",
+  "image": "sha256:3b8c9cecf2771a94b14a09d3b06d809a033332a167badd6d9a12b3bf7c290e9e",
+  "previousImage": "sha256:c7c422c6fcd2f2dc5864fb0219732865a3c3c81a392b72541e10715b84fd522f",
+  "rollbackDirectory": "/opt/hauntboard/proof-refresh-20261104",
+  "networkManifestPreserved": true,
+  "operationsVolumePreserved": true,
+  "faucetConfigurationPreserved": true,
+  "readiness": "healthy",
+  "browserAcceptance": "reset-proofs-live-2026-11-04.json",
+  "independentConsensusVerification": false,
+  "sapientFundedExtensionCheck": "not performed"
+}

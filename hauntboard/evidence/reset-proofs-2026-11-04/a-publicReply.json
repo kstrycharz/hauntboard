@@ -1,0 +1,1240 @@
+{
+  "transaction": {
+    "transaction": {
+      "transaction_id": "ba61dead0397c5379416024b1fd11e8ff714beafe62f64757a605e391ce589da",
+      "transaction": {
+        "V1": {
+          "body": {
+            "transaction": {
+              "network": 38,
+              "fee_instructions": [
+                {
+                  "StealthTransfer": {
+                    "resource_address_ref": {
+                      "Address": "resource_0101010101010101010101010101010101010101010101010101010101010101"
+                    },
+                    "statement": {
+                      "inputs_statement": {
+                        "inputs": [
+                          {
+                            "commitment": "701867746e97b601be21cb76589596058a458f8bc3cbe29ef78be306a4f4094a",
+                            "witness": "KeyPath"
+                          }
+                        ],
+                        "revealed_amount": "0"
+                      },
+                      "outputs_statement": {
+                        "outputs": [
+                          {
+                            "output": {
+                              "commitment": "9e9bc5d1ca969151357282ab90c3e08d114f004d84e829045bae3ec5428fd508",
+                              "sender_public_nonce": "788595c592b197a6cfd8f163c16c8e4cc82483f7937c5e7e08a5c35935361041",
+                              "encrypted_data": "4c7d33f622b7361c56c50bb3933701253606fd020e8d18c44d430d61749f2d6050f5877fefe17edfc82a646ed08e5e3ce4d0fd604af3c4f83ddd60b5fc766e15d11744c05a9140e4c51cfa12efd55377044ad165699141018a0666c2ba5fc42a72137de1200a8ffe9a355171cb750ade",
+                              "minimum_value_promise": 0,
+                              "viewable_balance_proof": null
+                            },
+                            "auth": {
+                              "Key": "8af3a92d2d44f2e5c15eb5f64f9eb1a817735f8dd9a723690496e569afb6c472"
+                            },
+                            "tag": 730279445
+                          }
+                        ],
+                        "revealed_output": {
+                          "amount": "22274",
+                          "receiver": "f8112508634227fdd17c47b2d0acdca10039d9c88293dcefbdb327de58a14161"
+                        },
+                        "agg_range_proof": "0133772567ab42f8cf84b1c32744a2aa9032bc763893c26d2ea2015c65af164a04be8ca5d5037dff6e7485eea6ac75ad02a1f9a560e0071e147be974877f78bc49f003d0583717346d1b7baa62360e4072088d55f1a0d53c923c2b5e9bc4c0c073b66d247344dab915c8758f1931dc1a8a708bfaf95f2836dbbb4199df0ee56f3792d2c9e3c1de592e5a348542dd5c98cbbd77e6126f4184dc414d1e986fb6430b6b801f874d9bc3e8993c56afeb0b765503c65180bd6fd50129f13c02fcac19025e4b2df0e84c88e82584a70ce920e6bf9e92c44d47337b4c1c3463bbef46aa150a8143bc021a343dfc5d11d64558e590f7dcf17d25fcbf3fb18673c654f4cf36de056941e059d26894cef6df8c090a83b791c445e406eef038b1a0cb6ac33640d4fc549046cc4dcd8bb5496c88fffb8b368d68ba9fb9f5f1657214e5abd40533104a4671e21629c192732f4d48c9982a6d63a2cfa0ab159fbf01f177e1e524735a963e910d84c37adbc09d9ddb7e437769fe64178a1e48d79ba22743de925e272625ab89d0e3c5a154e3401f129f0d0697d85f2964618b12d081f12c9c242d528a61ec842ba295829b5414a99677608a7d020fd157943b16d15c3d413efacb4e76c2d306b814c31015d645414849ec555ab62a65ae3c46cc3f3e3de853341b46b691f98654a2b067215cf886f868e8ce5f7ca60e40959473f6c91b0c4112e97ef499713bfd0fe398ed7213cb29b08135a347d360d251da8a47d9365d81fcd8157cffe016b866adfe7810e326e363189b27833b9ca869fbaca8d1399748eb7b53"
+                      },
+                      "balance_proof": {
+                        "public_nonce": "2c57c700f3ba20442295945b79c05d3a6a689a2d50e6f71b5100bda2998ab52b",
+                        "signature": "7d1313d9b9923b9c6b9f31b9b2272c53470edd50fae486f7f6fae2348bd3dc08"
+                      },
+                      "covenant_claims": []
+                    },
+                    "revealed_input_bucket": null
+                  }
+                },
+                {
+                  "PutLastInstructionOutputOnWorkspace": {
+                    "key": 0
+                  }
+                },
+                {
+                  "PayFeeFromBucket": {
+                    "bucket": {
+                      "id": 0,
+                      "offset": null
+                    }
+                  }
+                }
+              ],
+              "instructions": [
+                {
+                  "CallMethod": {
+                    "call": {
+                      "Address": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4"
+                    },
+                    "method": "append",
+                    "args": [
+                      {
+                        "Literal": "900000000018400200186b1853189b184018ff18ae18a518a5186f"
+                      },
+                      {
+                        "Literal": "00"
+                      },
+                      {
+                        "Literal": "99010e187b182218761822183a1831182c1822187418691874186c18651822183a18221822182c182218631861187418651867186f187218791822183a182218741861187218691822182c1822186e1861186d18651822183a1822184818611875186e18741862186f1861187218641822182c18221862186f186418791822183a182218541868186918731820187018751862186c186918631820187218651870186c187918201869187318201861186c1873186f182018731874186f1872186518641820186f186e182d1863186818611869186e182e18201841186e1879186f186e1865182018631861186e18201872186518611864182018741868186518201863186f186e1876186518721873186118741869186f186e18201877186918741868186f1875187418201861182018771861186c186c18651874182e1820185318651861186c18651864182d1872186f186f186d18201862186f1864186918651873182018611872186518201865186e18631872187918701874186518641820186218651866186f187218651820187018751862186c18691863186118741869186f186e183b1820187418691874186c18651873182c182018631861187418651867186f187218691865187318201861186e18641820187218651870186c1879182018721865186c186118741869186f186e18731868186918701873182018721865186d18611869186e1820187018751862186c18691863182e1822187d"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "inputs": [
+                {
+                  "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_701867746e97b601be21cb76589596058a458f8bc3cbe29ef78be306a4f4094a",
+                  "version": 0,
+                  "is_write": true
+                },
+                {
+                  "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+                  "version": 0,
+                  "is_write": true
+                },
+                {
+                  "substate_id": "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+                  "version": 0,
+                  "is_write": true
+                }
+              ],
+              "min_epoch": null,
+              "max_epoch": 12872,
+              "main_signer": "None",
+              "dry_run": false,
+              "blob_hashes": [],
+              "blob_sizes": [],
+              "nonce": 0
+            },
+            "signatures": [
+              {
+                "public_key": "688becb33ca06463cf67f0986b31e81f541ee44de5faceb0678d5ae183d26910",
+                "signature": "5a4f3ac28aa52146978f19117c7a26b54c228527c07ea48510b1aa702c4365635f249fd1c547c2abcb3a717693ee15355bb1e8c5c2b834773173373ae093888d"
+              },
+              {
+                "public_key": "f8112508634227fdd17c47b2d0acdca10039d9c88293dcefbdb327de58a14161",
+                "signature": "e0004bb8f57c92911a4dff900c5c587bcfe50c76684013aba393e4456ca23c015a16c57ada3d471817f0b402470c094e781903df218741190d53ea4d1d3a628d"
+              }
+            ]
+          },
+          "seal_signature": {
+            "public_key": "749ddd435191493ba034e64030f770041d67200059d10b448316b5602f9cbe50",
+            "signature": "62fc4beb9a2bc01372143f2fee0ccfc3557df48f3f2714ce6abe7ce049b93624eba9916ec7be9d85d8f98e983aceb82c0cf140bc05b9c548b19bcb6263cba08d"
+          }
+        }
+      },
+      "created_at": "2026-11-04 23:53:00.0",
+      "summary": {
+        "outcome": "Commit",
+        "total_fees_paid": 22274,
+        "finalized_at": "2026-11-04 23:53:09.0"
+      },
+      "rejected_reason": null,
+      "source": "local"
+    }
+  },
+  "result": {
+    "result": {
+      "Finalized": {
+        "final_decision": "Commit",
+        "execution_result": "hYZYILph3q0Dl8U3lBYCSx/RHo/3FL6v5i9kdXpgXjkc5YnagoSCAIHYgFggFKCoy4zkQCD2abkPGoDNM5kuZDYjoR1TIgnu+KSOqEtYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQudXBkYXRlZNiBoISCAIHYgFggFLNJiV64Ct0oOS+cvU8lb7AwVX86JllKLhX7PRzOXcRYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQudXBkYXRlZNiBoICCAIGDhIKCCIHYjYLYg1ggAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQFYIJ6bxdHKlpFRNXKCq5DD4I0RTwBNhOgpBFuuPsVCj9UIgoIIgYKDg1ggeIWVxZKxl6bP2PFjwWyOTMgkg/eTfF5+CKXDWTU2EEFYcEx9M/YitzYcVsULs5M3ASU2Bv0CDo0YxE1DDWF0ny1gUPWHf+/hft/IKmRu0I5ePOTQ/WBK88T4Pd1gtfx2bhXRF0TAWpFA5MUc+hLv1VN3BErRZWmRQQGKBmbCul/EKnITfeEgCo/+mjVRcct1Ct4AggCBWCCK86ktLUTy5cFetfZPnrGoF3NfjdmnI2kEluVpr7bEchorhy4V9ACCggCB2IBYIBSgqMuM5EAg9mm5DxqAzTOZLmQ2I6EdUyIJ7vikjqhLgoIAgYKFWCDcQeN5wMdaOJmbdjW9lJjRuhJQdRJItwyG9EZ4erZ1AIIAgIKoZmFwcGVuZIIAgG1jcmVhdGVfdGhyZWFkggCAamZpbmRfcmV0cnmCAIBqZ2V0X2NvdW50c4IAgHFnZXRfZmlyc3RfcGF5bG9hZIIAgGhnZXRfcG9zdIIAgGlnZXRfc3RhdGWCAIBrcGFnZV9hcHBlbmSCAoGCAIGCAIGCBIHYgFggFLNJiV64Ct0oOS+cvU8lb7AwVX86JllKLhX7PRzOXcSCAYBBFIIAgIGMBPR4SmNvbXBvbmVudF8xNGQ2ZjRmYjhlNWJiNzZmODMzMjIwMjg0ZTU5ZjZlMGFkODY2YmQzNTM4NWYzMGVkZWRkYWZhMjgyYzMzOTliYACQGPEYwxj2GEcY5Rh2GP0Y9RgYGKkY7BgZGJ4KGE8YJICChJAY8RjDGPYYRxjlGHYY/Rj1GBgYqRjsGBkYngoYTxgkIJkBeBh7GCIYdhgiGDoYMRgsGCIYdBhpGHQYbBhlGCIYOhgiGEgYYRh1GG4YdBhiGG8YYRhyGGQYOhggGHAYdRhiGGwYaRhjGCAYYxhvGG4YdhhlGHIYcxhhGHQYaRhvGG4YcxggGGEYZhh0GGUYchggGHQYaBhlGCAYRRhzGG0YZRhyGGEYbBhkGGEYIBhyGGUYcxhlGHQYIhgsGCIYYxhhGHQYZRhnGG8Ychh5GCIYOhgiGHQYYRhyGGkYIhgsGCIYbhhhGG0YZRgiGDoYIhhIGGEYdRhuGHQYYhhvGGEYchhkGCIYLBgiGGIYbxhkGHkYIhg6GCIYUBh1GGIYbBhpGGMYIBhjGG8Ybhh2GGUYchhzGGEYdBhpGG8YbhhzGCAYYRhyGGUYIBhiGGEYYxhrGCAYbxhuGCAYdBhoGGUYIBhyGGUYcxhlGHQYIBhFGHMYbRhlGHIYYRhsGGQYYRggGHQYZRhzGHQYbhhlGHQYLhggGFQYaBhpGHMYIBhkGGUYbRhvGG4Ycxh0GHIYYRh0GGkYbxhuGCAYcxh0GG8YchhlGHMYIBhhGCAYchhlGGEYZBhhGGIYbBhlGCAYbxhwGGUYbhhpGG4YZxggGHAYbxhzGHQYIBhhGG4YZBggGHIYZRhwGGwYeRggGGkYbhggGG8YbhgtGGMYaBhhGGkYbhggGGMYbxhuGHQYchhhGGMYdBggGHMYdBhhGHQYZRguGCAYVBhoGGUYIBhzGGUYcBhhGHIYYRh0GGUYIBhTGEUYQxhSGEUYVBggGFQYSBhSGEUYQRhEGCEYIBhkGGUYbRhvGG4Ycxh0GHIYYRh0GGUYcxggGHMYZRhhGGwYZRhkGCAYbRhlGHMYcxhhGGcYZRhzGCwYIBhyGGUYYxhpGHAYaRhlGG4YdBggGGkYbhh2GGkYdBhhGHQYaRhvGG4YcxggGGEYbhhkGCAYchhvGG8YbRgtGGsYZRh5GCAYchhvGHQYYRh0GGkYbxhuGC4YIhh9GTJDhJAAAAAAGEACABhrGFMYmxhAGP8YrhilGKUYbwCZAQ4YexgiGHYYIhg6GDEYLBgiGHQYaRh0GGwYZRgiGDoYIhgiGCwYIhhjGGEYdBhlGGcYbxhyGHkYIhg6GCIYdBhhGHIYaRgiGCwYIhhuGGEYbRhlGCIYOhgi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",
+        "execution_time": {
+          "secs": 0,
+          "nanos": 5543000
+        },
+        "finalized_time": "2026-11-04 23:53:00.0",
+        "abort_details": null
+      }
+    }
+  },
+  "execution": {
+    "finalize": {
+      "transaction_hash": "ba61dead0397c5379416024b1fd11e8ff714beafe62f64757a605e391ce589da",
+      "events": [
+        {
+          "substate_id": "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+          "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+          "topic": "std.component.updated",
+          "payload": {}
+        },
+        {
+          "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+          "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+          "topic": "std.component.updated",
+          "payload": {}
+        }
+      ],
+      "logs": [],
+      "result": {
+        "Accept": {
+          "up_substates": [
+            [
+              "utxo_0101010101010101010101010101010101010101010101010101010101010101_9e9bc5d1ca969151357282ab90c3e08d114f004d84e829045bae3ec5428fd508",
+              {
+                "substate": {
+                  "Utxo": {
+                    "output": {
+                      "output": {
+                        "public_nonce": "788595c592b197a6cfd8f163c16c8e4cc82483f7937c5e7e08a5c35935361041",
+                        "encrypted_data": "4c7d33f622b7361c56c50bb3933701253606fd020e8d18c44d430d61749f2d6050f5877fefe17edfc82a646ed08e5e3ce4d0fd604af3c4f83ddd60b5fc766e15d11744c05a9140e4c51cfa12efd55377044ad165699141018a0666c2ba5fc42a72137de1200a8ffe9a355171cb750ade",
+                        "minimum_value_promise": 0,
+                        "viewable_balance": null
+                      },
+                      "auth": {
+                        "Key": "8af3a92d2d44f2e5c15eb5f64f9eb1a817735f8dd9a723690496e569afb6c472"
+                      },
+                      "tag": 730279445
+                    },
+                    "is_frozen": false
+                  }
+                },
+                "version": 0
+              }
+            ],
+            [
+              "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+              {
+                "substate": {
+                  "Component": {
+                    "header": {
+                      "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+                      "owner_rule": "None",
+                      "access_rules": {
+                        "method_access": {
+                          "append": "AllowAll",
+                          "create_thread": "AllowAll",
+                          "find_retry": "AllowAll",
+                          "get_counts": "AllowAll",
+                          "get_first_payload": "AllowAll",
+                          "get_post": "AllowAll",
+                          "get_state": "AllowAll",
+                          "page_append": {
+                            "Restricted": {
+                              "Require": {
+                                "Require": {
+                                  "CallerComponent": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "default": "DenyAll"
+                      },
+                      "entity_id": "14",
+                      "upgrade_rule": "Locked"
+                    },
+                    "body": {
+                      "state": [
+                        4,
+                        false,
+                        "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+                        "",
+                        0,
+                        [
+                          241,
+                          195,
+                          246,
+                          71,
+                          229,
+                          118,
+                          253,
+                          245,
+                          24,
+                          169,
+                          236,
+                          25,
+                          158,
+                          10,
+                          79,
+                          36
+                        ],
+                        [],
+                        [
+                          [
+                            [
+                              241,
+                              195,
+                              246,
+                              71,
+                              229,
+                              118,
+                              253,
+                              245,
+                              24,
+                              169,
+                              236,
+                              25,
+                              158,
+                              10,
+                              79,
+                              36
+                            ],
+                            -1,
+                            [
+                              123,
+                              34,
+                              118,
+                              34,
+                              58,
+                              49,
+                              44,
+                              34,
+                              116,
+                              105,
+                              116,
+                              108,
+                              101,
+                              34,
+                              58,
+                              34,
+                              72,
+                              97,
+                              117,
+                              110,
+                              116,
+                              98,
+                              111,
+                              97,
+                              114,
+                              100,
+                              58,
+                              32,
+                              112,
+                              117,
+                              98,
+                              108,
+                              105,
+                              99,
+                              32,
+                              99,
+                              111,
+                              110,
+                              118,
+                              101,
+                              114,
+                              115,
+                              97,
+                              116,
+                              105,
+                              111,
+                              110,
+                              115,
+                              32,
+                              97,
+                              102,
+                              116,
+                              101,
+                              114,
+                              32,
+                              116,
+                              104,
+                              101,
+                              32,
+                              69,
+                              115,
+                              109,
+                              101,
+                              114,
+                              97,
+                              108,
+                              100,
+                              97,
+                              32,
+                              114,
+                              101,
+                              115,
+                              101,
+                              116,
+                              34,
+                              44,
+                              34,
+                              99,
+                              97,
+                              116,
+                              101,
+                              103,
+                              111,
+                              114,
+                              121,
+                              34,
+                              58,
+                              34,
+                              116,
+                              97,
+                              114,
+                              105,
+                              34,
+                              44,
+                              34,
+                              110,
+                              97,
+                              109,
+                              101,
+                              34,
+                              58,
+                              34,
+                              72,
+                              97,
+                              117,
+                              110,
+                              116,
+                              98,
+                              111,
+                              97,
+                              114,
+                              100,
+                              34,
+                              44,
+                              34,
+                              98,
+                              111,
+                              100,
+                              121,
+                              34,
+                              58,
+                              34,
+                              80,
+                              117,
+                              98,
+                              108,
+                              105,
+                              99,
+                              32,
+                              99,
+                              111,
+                              110,
+                              118,
+                              101,
+                              114,
+                              115,
+                              97,
+                              116,
+                              105,
+                              111,
+                              110,
+                              115,
+                              32,
+                              97,
+                              114,
+                              101,
+                              32,
+                              98,
+                              97,
+                              99,
+                              107,
+                              32,
+                              111,
+                              110,
+                              32,
+                              116,
+                              104,
+                              101,
+                              32,
+                              114,
+                              101,
+                              115,
+                              101,
+                              116,
+                              32,
+                              69,
+                              115,
+                              109,
+                              101,
+                              114,
+                              97,
+                              108,
+                              100,
+                              97,
+                              32,
+                              116,
+                              101,
+                              115,
+                              116,
+                              110,
+                              101,
+                              116,
+                              46,
+                              32,
+                              84,
+                              104,
+                              105,
+                              115,
+                              32,
+                              100,
+                              101,
+                              109,
+                              111,
+                              110,
+                              115,
+                              116,
+                              114,
+                              97,
+                              116,
+                              105,
+                              111,
+                              110,
+                              32,
+                              115,
+                              116,
+                              111,
+                              114,
+                              101,
+                              115,
+                              32,
+                              97,
+                              32,
+                              114,
+                              101,
+                              97,
+                              100,
+                              97,
+                              98,
+                              108,
+                              101,
+                              32,
+                              111,
+                              112,
+                              101,
+                              110,
+                              105,
+                              110,
+                              103,
+                              32,
+                              112,
+                              111,
+                              115,
+                              116,
+                              32,
+                              97,
+                              110,
+                              100,
+                              32,
+                              114,
+                              101,
+                              112,
+                              108,
+                              121,
+                              32,
+                              105,
+                              110,
+                              32,
+                              111,
+                              110,
+                              45,
+                              99,
+                              104,
+                              97,
+                              105,
+                              110,
+                              32,
+                              99,
+                              111,
+                              110,
+                              116,
+                              114,
+                              97,
+                              99,
+                              116,
+                              32,
+                              115,
+                              116,
+                              97,
+                              116,
+                              101,
+                              46,
+                              32,
+                              84,
+                              104,
+                              101,
+                              32,
+                              115,
+                              101,
+                              112,
+                              97,
+                              114,
+                              97,
+                              116,
+                              101,
+                              32,
+                              83,
+                              69,
+                              67,
+                              82,
+                              69,
+                              84,
+                              32,
+                              84,
+                              72,
+                              82,
+                              69,
+                              65,
+                              68,
+                              33,
+                              32,
+                              100,
+                              101,
+                              109,
+                              111,
+                              110,
+                              115,
+                              116,
+                              114,
+                              97,
+                              116,
+                              101,
+                              115,
+                              32,
+                              115,
+                              101,
+                              97,
+                              108,
+                              101,
+                              100,
+                              32,
+                              109,
+                              101,
+                              115,
+                              115,
+                              97,
+                              103,
+                              101,
+                              115,
+                              44,
+                              32,
+                              114,
+                              101,
+                              99,
+                              105,
+                              112,
+                              105,
+                              101,
+                              110,
+                              116,
+                              32,
+                              105,
+                              110,
+                              118,
+                              105,
+                              116,
+                              97,
+                              116,
+                              105,
+                              111,
+                              110,
+                              115,
+                              32,
+                              97,
+                              110,
+                              100,
+                              32,
+                              114,
+                              111,
+                              111,
+                              109,
+                              45,
+                              107,
+                              101,
+                              121,
+                              32,
+                              114,
+                              111,
+                              116,
+                              97,
+                              116,
+                              105,
+                              111,
+                              110,
+                              46,
+                              34,
+                              125
+                            ],
+                            12867
+                          ],
+                          [
+                            [
+                              0,
+                              0,
+                              0,
+                              0,
+                              64,
+                              2,
+                              0,
+                              107,
+                              83,
+                              155,
+                              64,
+                              255,
+                              174,
+                              165,
+                              165,
+                              111
+                            ],
+                            0,
+                            [
+                              123,
+                              34,
+                              118,
+                              34,
+                              58,
+                              49,
+                              44,
+                              34,
+                              116,
+                              105,
+                              116,
+                              108,
+                              101,
+                              34,
+                              58,
+                              34,
+                              34,
+                              44,
+                              34,
+                              99,
+                              97,
+                              116,
+                              101,
+                              103,
+                              111,
+                              114,
+                              121,
+                              34,
+                              58,
+                              34,
+                              116,
+                              97,
+                              114,
+                              105,
+                              34,
+                              44,
+                              34,
+                              110,
+                              97,
+                              109,
+                              101,
+                              34,
+                              58,
+                              34,
+                              72,
+                              97,
+                              117,
+                              110,
+                              116,
+                              98,
+                              111,
+                              97,
+                              114,
+                              100,
+                              34,
+                              44,
+                              34,
+                              98,
+                              111,
+                              100,
+                              121,
+                              34,
+                              58,
+                              34,
+                              84,
+                              104,
+                              105,
+                              115,
+                              32,
+                              112,
+                              117,
+                              98,
+                              108,
+                              105,
+                              99,
+                              32,
+                              114,
+                              101,
+                              112,
+                              108,
+                              121,
+                              32,
+                              105,
+                              115,
+                              32,
+                              97,
+                              108,
+                              115,
+                              111,
+                              32,
+                              115,
+                              116,
+                              111,
+                              114,
+                              101,
+                              100,
+                              32,
+                              111,
+                              110,
+                              45,
+                              99,
+                              104,
+                              97,
+                              105,
+                              110,
+                              46,
+                              32,
+                              65,
+                              110,
+                              121,
+                              111,
+                              110,
+                              101,
+                              32,
+                              99,
+                              97,
+                              110,
+                              32,
+                              114,
+                              101,
+                              97,
+                              100,
+                              32,
+                              116,
+                              104,
+                              101,
+                              32,
+                              99,
+                              111,
+                              110,
+                              118,
+                              101,
+                              114,
+                              115,
+                              97,
+                              116,
+                              105,
+                              111,
+                              110,
+                              32,
+                              119,
+                              105,
+                              116,
+                              104,
+                              111,
+                              117,
+                              116,
+                              32,
+                              97,
+                              32,
+                              119,
+                              97,
+                              108,
+                              108,
+                              101,
+                              116,
+                              46,
+                              32,
+                              83,
+                              101,
+                              97,
+                              108,
+                              101,
+                              100,
+                              45,
+                              114,
+                              111,
+                              111,
+                              109,
+                              32,
+                              98,
+                              111,
+                              100,
+                              105,
+                              101,
+                              115,
+                              32,
+                              97,
+                              114,
+                              101,
+                              32,
+                              101,
+                              110,
+                              99,
+                              114,
+                              121,
+                              112,
+                              116,
+                              101,
+                              100,
+                              32,
+                              98,
+                              101,
+                              102,
+                              111,
+                              114,
+                              101,
+                              32,
+                              112,
+                              117,
+                              98,
+                              108,
+                              105,
+                              99,
+                              97,
+                              116,
+                              105,
+                              111,
+                              110,
+                              59,
+                              32,
+                              116,
+                              105,
+                              116,
+                              108,
+                              101,
+                              115,
+                              44,
+                              32,
+                              99,
+                              97,
+                              116,
+                              101,
+                              103,
+                              111,
+                              114,
+                              105,
+                              101,
+                              115,
+                              32,
+                              97,
+                              110,
+                              100,
+                              32,
+                              114,
+                              101,
+                              112,
+                              108,
+                              121,
+                              32,
+                              114,
+                              101,
+                              108,
+                              97,
+                              116,
+                              105,
+                              111,
+                              110,
+                              115,
+                              104,
+                              105,
+                              112,
+                              115,
+                              32,
+                              114,
+                              101,
+                              109,
+                              97,
+                              105,
+                              110,
+                              32,
+                              112,
+                              117,
+                              98,
+                              108,
+                              105,
+                              99,
+                              46,
+                              34,
+                              125
+                            ],
+                            12867
+                          ]
+                        ],
+                        [],
+                        2,
+                        "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+                        0
+                      ]
+                    }
+                  }
+                },
+                "version": 1
+              }
+            ],
+            [
+              "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+              {
+                "substate": {
+                  "Component": {
+                    "header": {
+                      "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+                      "owner_rule": "None",
+                      "access_rules": {
+                        "method_access": {
+                          "append": "AllowAll",
+                          "create_thread": "AllowAll",
+                          "find_retry": "AllowAll",
+                          "get_counts": "AllowAll",
+                          "get_first_payload": "AllowAll",
+                          "get_post": "AllowAll",
+                          "get_state": "AllowAll",
+                          "page_append": "DenyAll"
+                        },
+                        "default": "DenyAll"
+                      },
+                      "entity_id": "14",
+                      "upgrade_rule": "Locked"
+                    },
+                    "body": {
+                      "state": [
+                        4,
+                        false,
+                        "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+                        "Hauntboard: public conversations after the Esmeralda reset",
+                        0,
+                        [
+                          241,
+                          195,
+                          246,
+                          71,
+                          229,
+                          118,
+                          253,
+                          245,
+                          24,
+                          169,
+                          236,
+                          25,
+                          158,
+                          10,
+                          79,
+                          36
+                        ],
+                        [],
+                        [],
+                        [
+                          "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b"
+                        ],
+                        2,
+                        "",
+                        0
+                      ]
+                    }
+                  }
+                },
+                "version": 1
+              }
+            ],
+            [
+              "txreceipt_ba61dead0397c5379416024b1fd11e8ff714beafe62f64757a605e391ce589da",
+              {
+                "substate": {
+                  "TransactionReceipt": {
+                    "outcome": "Commit",
+                    "diff_summary": {
+                      "upped": [
+                        {
+                          "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_9e9bc5d1ca969151357282ab90c3e08d114f004d84e829045bae3ec5428fd508",
+                          "version": 0,
+                          "value_hash": "5dd45f5c36df77fcd2312003a054f73eaf096b2819c7f39929c034faad14891e"
+                        },
+                        {
+                          "substate_id": "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+                          "version": 1,
+                          "value_hash": "99ef3c5c35b7961d50ab43d0b41b36e9e0685775b7243b25fd7d8791922b9dd1"
+                        },
+                        {
+                          "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+                          "version": 1,
+                          "value_hash": "87cfd5bb777a5dd2f96b686b652ed761b5c1d385ae06d6b85b6757ae12ec2ab2"
+                        }
+                      ],
+                      "downed": [
+                        {
+                          "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_701867746e97b601be21cb76589596058a458f8bc3cbe29ef78be306a4f4094a",
+                          "version": 0
+                        }
+                      ]
+                    },
+                    "fee_withdrawals": [],
+                    "events": [
+                      {
+                        "substate_id": "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+                        "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+                        "topic": "std.component.updated",
+                        "payload": {}
+                      },
+                      {
+                        "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+                        "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+                        "topic": "std.component.updated",
+                        "payload": {}
+                      }
+                    ],
+                    "fee_receipt": {
+                      "total_fee_payment": 22274,
+                      "total_fees_paid": 22274,
+                      "total_fee_overcharge": 5379,
+                      "cost_breakdown": {
+                        "breakdown": {
+                          "RuntimeCall": 15,
+                          "Storage": 3183,
+                          "TransactionWeight": 348,
+                          "TemplateLoad": 470,
+                          "SubstateCreate": 500,
+                          "WasmExecution": 658,
+                          "NativeExecution": 11692,
+                          "InputLoad": 29
+                        }
+                      },
+                      "exhaust_burn": 22274
+                    },
+                    "epoch": 12867,
+                    "intent_commitment": "7e567065ad861c147c25ebf8e1bf752b5576d613adcbbd9f753c1e77cc7af9b7"
+                  }
+                },
+                "version": 0
+              }
+            ]
+          ],
+          "down_substates": [
+            [
+              "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+              0
+            ],
+            [
+              "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+              0
+            ],
+            [
+              "utxo_0101010101010101010101010101010101010101010101010101010101010101_701867746e97b601be21cb76589596058a458f8bc3cbe29ef78be306a4f4094a",
+              0
+            ]
+          ],
+          "fee_withdrawals": []
+        }
+      },
+      "fee_receipt": {
+        "total_fee_payment": 22274,
+        "total_fees_paid": 22274,
+        "total_fee_overcharge": 5379,
+        "cost_breakdown": {
+          "breakdown": {
+            "RuntimeCall": 15,
+            "Storage": 3183,
+            "TransactionWeight": 348,
+            "TemplateLoad": 470,
+            "SubstateCreate": 500,
+            "WasmExecution": 658,
+            "NativeExecution": 11692,
+            "InputLoad": 29
+          }
+        },
+        "exhaust_burn": 22274
+      },
+      "total_fees_required": 16895
+    },
+    "execution_time": {
+      "secs": 0,
+      "nanos": 5543780
+    },
+    "execute_epoch": 12867,
+    "wasm_execution_points": 658508,
+    "native_execution_points": 11692503
+  },
+  "receipt": {
+    "receipt": "h4IAgIKDg4IIgdiNgtiDWCABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAVggnpvF0cqWkVE1coKrkMPgjRFPAE2E6CkEW64+xUKP1QgAWCBd1F9cNt93/NIxIAOgVPc+rwlrKBnH85kpwDT6rRSJHoOCAIHYgFggFKCoy4zkQCD2abkPGoDNM5kuZDYjoR1TIgnu+KSOqEsBWCCZ7zxcNbeWHVCrQ9C0Gzbp4GhXdbckOyX9fYeRkiud0YOCAIHYgFggFLNJiV64Ct0oOS+cvU8lb7AwVX86JllKLhX7PRzOXcQBWCCHz9W7d3pd0vlraGtlLtdhtcHTha4G1rhbZ1euEuwqsoGCggiB2I2C2INYIAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBWCBwGGd0bpe2Ab4hy3ZYlZYFikWPi8PL4p73i+MGpPQJSgCAgoSCAIHYgFggFKCoy4zkQCD2abkPGoDNM5kuZDYjoR1TIgnu+KSOqEtYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQudXBkYXRlZNiBoISCAIHYgFggFLNJiV64Ct0oOS+cvU8lb7AwVX86JllKLhX7PRzOXcRYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQudXBkYXRlZNiBoIUZVwIZVwIZFQOBqIIBgA+CAoAZDG+CA4AZAVyCBIAZAdaCBYAZAfSCBoAZApKCCIAZLayCCYAYHRlXAhkyQ1ggflZwZa2GHBR8Jev44b91K1V21hOty72fdTwed8x6+bc="
+  },
+  "proof": {
+    "version": 0,
+    "state": {
+      "up": {
+        "substate": "ggWBh4IAgIKDg4IIgdiNgtiDWCABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAVggnpvF0cqWkVE1coKrkMPgjRFPAE2E6CkEW64+xUKP1QgAWCBd1F9cNt93/NIxIAOgVPc+rwlrKBnH85kpwDT6rRSJHoOCAIHYgFggFKCoy4zkQCD2abkPGoDNM5kuZDYjoR1TIgnu+KSOqEsBWCCZ7zxcNbeWHVCrQ9C0Gzbp4GhXdbckOyX9fYeRkiud0YOCAIHYgFggFLNJiV64Ct0oOS+cvU8lb7AwVX86JllKLhX7PRzOXcQBWCCHz9W7d3pd0vlraGtlLtdhtcHTha4G1rhbZ1euEuwqsoGCggiB2I2C2INYIAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBWCBwGGd0bpe2Ab4hy3ZYlZYFikWPi8PL4p73i+MGpPQJSgCAgoSCAIHYgFggFKCoy4zkQCD2abkPGoDNM5kuZDYjoR1TIgnu+KSOqEtYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQudXBkYXRlZNiBoISCAIHYgFggFLNJiV64Ct0oOS+cvU8lb7AwVX86JllKLhX7PRzOXcRYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAdXN0ZC5jb21wb25lbnQudXBkYXRlZNiBoIUZVwIZVwIZFQOBqIIBgA+CAoAZDG+CA4AZAVyCBIAZAdaCBYAZAfSCBoAZApKCCIAZLayCCYAYHRlXAhkyQ1ggflZwZa2GHBR8Jev44b91K1V21hOty72fdTwed8x6+bc="
+      }
+    },
+    "verified": true,
+    "proof": {
+      "anchor": {
+        "epoch": 12867,
+        "shard_group": {
+          "start": 1,
+          "end_inclusive": 256
+        },
+        "height": 79,
+        "block_id": "33efc6019fada4a925050d0822b7b8209d502b3eccfdf45ecb018da41237035a",
+        "state_merkle_root": "6b3c9e78356ba6c82c668a7c00267831bacbcd5cc9de43ba0610ebd1adc051f4"
+      },
+      "commit_proof": "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",
+      "value_proof": "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",
+      "value_hash_epoch": 12867
+    }
+  },
+  "decodedReceipt": {
+    "TransactionReceipt": {
+      "outcome": "Commit",
+      "diff_summary": {
+        "upped": [
+          {
+            "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_9e9bc5d1ca969151357282ab90c3e08d114f004d84e829045bae3ec5428fd508",
+            "version": 0,
+            "value_hash": "5dd45f5c36df77fcd2312003a054f73eaf096b2819c7f39929c034faad14891e"
+          },
+          {
+            "substate_id": "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+            "version": 1,
+            "value_hash": "99ef3c5c35b7961d50ab43d0b41b36e9e0685775b7243b25fd7d8791922b9dd1"
+          },
+          {
+            "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+            "version": 1,
+            "value_hash": "87cfd5bb777a5dd2f96b686b652ed761b5c1d385ae06d6b85b6757ae12ec2ab2"
+          }
+        ],
+        "downed": [
+          {
+            "substate_id": "utxo_0101010101010101010101010101010101010101010101010101010101010101_701867746e97b601be21cb76589596058a458f8bc3cbe29ef78be306a4f4094a",
+            "version": 0
+          }
+        ]
+      },
+      "fee_withdrawals": [],
+      "events": [
+        {
+          "substate_id": "component_14a0a8cb8ce44020f669b90f1a80cd33992e643623a11d532209eef8a48ea84b",
+          "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+          "topic": "std.component.updated",
+          "payload": {}
+        },
+        {
+          "substate_id": "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+          "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+          "topic": "std.component.updated",
+          "payload": {}
+        }
+      ],
+      "fee_receipt": {
+        "total_fee_payment": 22274,
+        "total_fees_paid": 22274,
+        "total_fee_overcharge": 5379,
+        "cost_breakdown": {
+          "breakdown": {
+            "RuntimeCall": 15,
+            "Storage": 3183,
+            "TransactionWeight": 348,
+            "TemplateLoad": 470,
+            "SubstateCreate": 500,
+            "WasmExecution": 658,
+            "NativeExecution": 11692,
+            "InputLoad": 29
+          }
+        },
+        "exhaust_burn": 22274
+      },
+      "epoch": 12867,
+      "intent_commitment": "7e567065ad861c147c25ebf8e1bf752b5576d613adcbbd9f753c1e77cc7af9b7"
+    }
+  }
+}

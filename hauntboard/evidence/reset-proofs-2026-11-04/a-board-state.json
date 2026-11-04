@@ -1,0 +1,158 @@
+{
+  "raw": {
+    "version": 4,
+    "state": {
+      "up": {
+        "substate": "ggCBgoVYINxB43nAx1o4mZt2Nb2UmNG6ElB1Eki3DIb0Rnh6tnUAggCAgqhmYXBwZW5kggCAbWNyZWF0ZV90aHJlYWSCAIBqZmluZF9yZXRyeYIAgGpnZXRfY291bnRzggCAcWdldF9maXJzdF9wYXlsb2FkggCAaGdldF9wb3N0ggCAaWdldF9zdGF0ZYIAgGtwYWdlX2FwcGVuZIIBgIIBgEEUggCAgYwE9WBxSGF1bnRib2FyZCBGb3J1bXMAgISEeEpjb21wb25lbnRfMTRiYTE2MzBhZmU2MjdhODdhYzY0MWI1MDFmYzc0ZTViYmI2ZjUwNWQwY2M0MTQ4ZTI1MDZhOWVhZGNjNThmMHgsRXNtZXJhbGRhIHJlc2V0OiB3aHkgdGhlIGZvcnVtIHN0YXJ0ZWQgZnJlc2gAkBjpGDkYjwgYbhjoGHMY/hi8GDMY6xitCwEDGMyEeEpjb21wb25lbnRfMTQzNDE3YzU1ZTNjNTJmOTI5ZjY0YmQ3ZGVmNTlkOTRmMDlkOWIzYzUzMTY1NWVjZjFiMzkzZTJmYTU0ZjVjN3RhYWFyZyBpIGhhdGUgbmlnZ2VycwCQGMUYlBjxGJ4YXRiiGPEY6Bj6GFsYZxgfGN0YIRh5GCWEeEpjb21wb25lbnRfMTQ4YTBhOGE4NWJhMzNiMDkzN2NiZWZhMDg1Y2UwMzgwN2I3YzZkMWE0ZGFkYmM4MzgxNzhjODViYTRhMGE3NG5TRUNSRVQgVEhSRUFEIQCQGHAQGFsYPBgaEhg0GK4PGLYYQRhEDhiHGN8YHYR4SmNvbXBvbmVudF8xNGIzNDk4OTVlYjgwYWRkMjgzOTJmOWNiZDRmMjU2ZmIwMzA1NTdmM2EyNjU5NGEyZTE1ZmIzZDFjY2U1ZGM0eDpIYXVudGJvYXJkOiBwdWJsaWMgY29udmVyc2F0aW9ucyBhZnRlciB0aGUgRXNtZXJhbGRhIHJlc2V0AJAY8RjDGPYYRxjlGHYY/Rj1GBgYqRjsGBkYngoYTxgkgIAAYAA="
+      }
+    },
+    "verified": true,
+    "proof": {
+      "anchor": {
+        "epoch": 12867,
+        "shard_group": {
+          "start": 1,
+          "end_inclusive": 256
+        },
+        "height": 72,
+        "block_id": "098c7526918f99bf52b578ca62bbd87a2b504e6716a897d3ab93d8d9c90356be",
+        "state_merkle_root": "6b3c9e78356ba6c82c668a7c00267831bacbcd5cc9de43ba0610ebd1adc051f4"
+      },
+      "commit_proof": "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",
+      "value_proof": "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",
+      "value_hash_epoch": 12867
+    }
+  },
+  "decoded": {
+    "Component": {
+      "header": {
+        "template_address": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+        "owner_rule": "None",
+        "access_rules": {
+          "method_access": {
+            "append": "AllowAll",
+            "create_thread": "AllowAll",
+            "find_retry": "AllowAll",
+            "get_counts": "AllowAll",
+            "get_first_payload": "AllowAll",
+            "get_post": "AllowAll",
+            "get_state": "AllowAll",
+            "page_append": "DenyAll"
+          },
+          "default": "DenyAll"
+        },
+        "entity_id": "14",
+        "upgrade_rule": "Locked"
+      },
+      "body": {
+        "state": [
+          4,
+          true,
+          "",
+          "Hauntboard Forums",
+          0,
+          [],
+          [
+            [
+              "component_14ba1630afe627a87ac641b501fc74e5bbb6f505d0cc4148e2506a9eadcc58f0",
+              "Esmeralda reset: why the forum started fresh",
+              0,
+              [
+                233,
+                57,
+                143,
+                8,
+                110,
+                232,
+                115,
+                254,
+                188,
+                51,
+                235,
+                173,
+                11,
+                1,
+                3,
+                204
+              ]
+            ],
+            [
+              "component_143417c55e3c52f929f64bd7def59d94f09d9b3c531655ecf1b393e2fa54f5c7",
+              "aaarg i hate niggers",
+              0,
+              [
+                197,
+                148,
+                241,
+                158,
+                93,
+                162,
+                241,
+                232,
+                250,
+                91,
+                103,
+                31,
+                221,
+                33,
+                121,
+                37
+              ]
+            ],
+            [
+              "component_148a0a8a85ba33b0937cbefa085ce03807b7c6d1a4dadbc838178c85ba4a0a74",
+              "SECRET THREAD!",
+              0,
+              [
+                112,
+                16,
+                91,
+                60,
+                26,
+                18,
+                52,
+                174,
+                15,
+                182,
+                65,
+                68,
+                14,
+                135,
+                223,
+                29
+              ]
+            ],
+            [
+              "component_14b349895eb80add28392f9cbd4f256fb030557f3a26594a2e15fb3d1cce5dc4",
+              "Hauntboard: public conversations after the Esmeralda reset",
+              0,
+              [
+                241,
+                195,
+                246,
+                71,
+                229,
+                118,
+                253,
+                245,
+                24,
+                169,
+                236,
+                25,
+                158,
+                10,
+                79,
+                36
+              ]
+            ]
+          ],
+          [],
+          [],
+          0,
+          "",
+          0
+        ]
+      }
+    }
+  }
+}

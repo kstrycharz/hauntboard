@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-11-04T23:56:41.868Z",
+  "origin": "https://hauntboard.taritracker.com",
+  "chainWrites": 0,
+  "browsers": {
+    "chromium": {
+      "readiness": true,
+      "evidenceMatchesSource": true,
+      "eightUpdatedTransactionLinks": true,
+      "registryGeneration": 1,
+      "registryRevision": 2,
+      "publicPostsReadable": 2,
+      "sealedPostsPresent": 3,
+      "sealedBodiesHiddenFromOutsider": true,
+      "responsiveWidths": [
+        320,
+        390,
+        768,
+        1280
+      ],
+      "pageErrors": 0
+    },
+    "firefox": {
+      "readiness": true,
+      "evidenceMatchesSource": true,
+      "eightUpdatedTransactionLinks": true,
+      "registryGeneration": 1,
+      "registryRevision": 2,
+      "publicPostsReadable": 2,
+      "sealedPostsPresent": 3,
+      "sealedBodiesHiddenFromOutsider": true,
+      "responsiveWidths": [
+        320,
+        390,
+        768,
+        1280
+      ],
+      "pageErrors": 0
+    }
+  },
+  "status": "PASSED"
+}

@@ -1,0 +1,4 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+COPY --chown=node:node proof.html proof.mjs proof-evidence.json /app/hauntboard/web/
+USER node

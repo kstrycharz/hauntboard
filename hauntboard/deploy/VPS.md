@@ -1,5 +1,16 @@
 # VPS and GitHub deployment
 
+## November 4 proof evidence refresh
+
+The evidence-only image `hauntboard:proof-refresh-20261104` overlays the current
+reset application's three proof assets. The deployed image is
+`sha256:3b8c9cecf277` (full ID in the dated deployment record). The configured
+board, template, registry template, operations volume and faucet are preserved.
+Rollback files and the previous image pin remain in
+`/opt/hauntboard/proof-refresh-20261104`. Restore `env.before` to `.env` and
+recreate only the app service to restore the prior image. The chain demonstration
+and its receipts remain available independently of this website rollback.
+
 ## November 2 Esmeralda reset deployment
 
 The VPS now runs the fresh schema-4 board recorded in `network.public.json`,

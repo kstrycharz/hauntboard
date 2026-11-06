@@ -42,3 +42,18 @@ test('repeated expiration is surfaced after one retry',async()=>{
   await assert.rejects(api('/api/browser-submit',{signed:'same'}),/Session expired/);
   assert.equal(calls,3);
 });
+
+test('stalled reads and signed submissions time out, abort transport and never retry',async()=>{
+  for (const [path,body] of [['/api/board',undefined],['/api/browser-submit',{transaction:'exact-signed-envelope',operation:'same-operation'}]]) {
+    let calls=0, signal;
+    const api=createApiClient({getConfig:()=>({csrf:'same'}),timeoutMs:10,fetchImpl:async(_path,options)=>{calls++;signal=options.signal;return new Promise(()=>{});}});
+    await assert.rejects(api(path,body),{code:'REQUEST_TIMEOUT'});
+    assert.equal(calls,1);assert.equal(signal.aborted,true);
+    if(body)assert.equal(body.transaction,'exact-signed-envelope');
+  }
+});
+
+test('a stalled response body is bounded as well as initial headers',async()=>{
+  const api=createApiClient({getConfig:()=>({}),timeoutMs:10,fetchImpl:async()=>({json:()=>new Promise(()=>{})})});
+  await assert.rejects(api('/api/board'),{code:'REQUEST_TIMEOUT'});
+});

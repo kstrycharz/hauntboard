@@ -835,12 +835,15 @@ async function renderThread(thread) {
     if (!sealedThread(thread) || key) {
       footer.append(
         button("Reply", "text-button", () => {
+          invalidateReview();
           $("reply-form").dataset.parent = String(post.index);
           $("reply-context").textContent = `Replying to post ${post.index + 1}`;
           $("reply-target").hidden = false;
           $("reply-excerpt").textContent =
             content?.body.slice(0, 180) ?? "Sealed post";
           $("reply-body").focus();
+          showPostingHelp('reply', {code:'writing', message:`Write your reply to post ${post.index + 1} below, then press Reply to publish.`});
+          $('reply-form').scrollIntoView({block:'center'});
         }),
       );
     }
@@ -1320,16 +1323,21 @@ function showPostingHelp(kind, reason) {
   $(`${kind}-use-change`).hidden = reason.action !== 'policy';
   $(`${kind}-change-help`).hidden = reason.action !== 'policy';
   const setup = $(`${kind}-open-wallet`);
-  setup.hidden = !['wallet','prepare','fund'].includes(reason.action);
+  setup.hidden = !['wallet','prepare'].includes(reason.action);
   setup.textContent = reason.action === 'prepare' ? 'Prepare posting funds' : reason.action === 'fund' ? 'Get free test tokens' : 'Set up or unlock wallet';
   $(`${kind}-sync-posting`).hidden = reason.action !== 'sync';
   $(`${kind}-check-posting`).hidden = reason.action !== 'status';
   $(`${kind}-prepare-confirm`).hidden = reason.code !== 'preparation-review' && reason.code !== 'preparation-pending';
 }
+function revealPostingFeedback(kind) {
+  const status = $(`${kind}-posting-status`);
+  status.scrollIntoView({block:'nearest'});
+}
 function showPostingWallet(readiness) {
   const sapient = Boolean(walletOptions.adapter.connection);
   if (sapient) $('wallet-balance-button').hidden = true;
   for (const kind of ['compose', 'reply']) {
+    if (!sapient && ['preparation-review','preparation-pending'].includes($(`${kind}-posting-status`).dataset.state)) continue;
     if (sapient) {
       $(`${kind}-wallet-balance`).hidden = false;
       $(`${kind}-wallet-balance`).textContent = 'Posting with Sapient. Funds and the fee are checked in the extension; browser-wallet funds are separate.';
@@ -1348,12 +1356,17 @@ function postingIntent(kind, identity) {
   return intent;
 }
 async function runPostingIntent(kind, action) {
-  if (postIntentBusy || busy) return;
+  if (postIntentBusy || busy) { showPostingHelp(kind, {code:'checking', message:'Your previous click is still being processed. No additional submission was started.'}); revealPostingFeedback(kind); return; }
   if (transactionPending) { showPostingHelp(kind, {code:'pending-operation', message:'Your existing submission is still being checked. You do not need to post again.', action:'status'}); return; }
+  if (!$(kind === 'reply' ? 'reply-body' : 'thread-body').value.trim()) {
+    const message = kind === 'reply' ? 'Write a reply before pressing Reply.' : 'Write your opening post before posting.';
+    fieldError(kind, message); showPostingHelp(kind, {code:'invalid-draft', message}); revealPostingFeedback(kind); return;
+  }
   postIntentBusy = true;
   const buttons = [...document.querySelectorAll('#compose-form button[type=submit],#reply-form button[type=submit]')];
   buttons.forEach(button => { button.disabled = true; button.textContent = button.closest('#compose-form') ? 'Posting…' : 'Replying…'; });
   showPostingHelp(kind, {code:'checking', message:'Checking your post and network fee…'});
+  revealPostingFeedback(kind);
   try {
     await navigator.locks.request(`hauntboard-post:${config.network}:${config.resetIdentity}`, {ifAvailable:true}, async lock => {
       if (!lock) throw Object.assign(new Error('Another tab is checking a post. Wait for its result.'), {code:'pending-operation'});
@@ -1361,6 +1374,13 @@ async function runPostingIntent(kind, action) {
       if (existing) { transactionPending = existing; throw Object.assign(new Error('Your previous submission is still being checked. Use Check status before posting again.'), {code:'pending-operation'}); }
       publishContext = null;
       quote = null;
+      if (!walletOptions.adapter.connection && browserWallet.active() && !browserWallet.needsPhraseConfirmation() && lastWalletIdentity === browserWallet.active().address && lastWalletBalance && !lastWalletBalance.unavailable && Date.now() - lastWalletCheckedAt < 30000 && BigInt(lastWalletBalance.ready ?? 0) === 0n) {
+        let reason = fundsReadiness(lastWalletBalance, {incomplete:scanIncomplete});
+        if (BigInt(lastWalletBalance.total ?? 0) === 0n) reason = {code:'funding-needed', message:'No posting funds have been found yet. New wallets start with zero; add free test tokens or check for incoming funds.', action:'fund'};
+        showPostingHelp(kind, reason);
+        renderPostingFunding(); revealPostingFeedback(kind);
+        return;
+      }
       const revision = postingRevision;
       await action(revision);
       if (publishContext?.inline === kind && publishContext.revision === postingRevision && quote) {
@@ -1376,10 +1396,12 @@ async function runPostingIntent(kind, action) {
     else if (error.code === 'funding-needed' || error.code === 'insufficient-eligible-funds') reason.action = 'fund';
     else if (error.code === 'pending-operation') reason.action = 'status';
     showPostingHelp(kind, reason);
+    revealPostingFeedback(kind);
     operationError(error);
   } finally {
     postIntentBusy = false;
     buttons.forEach(button => { button.disabled = false; button.textContent = button.closest('#compose-form') ? 'Post' : 'Reply'; });
+    renderFaucet();
   }
 }
 for (const kind of ['compose','reply']) {
@@ -1422,11 +1444,26 @@ for (const kind of ['compose','reply']) {
     try { await browserWallet.setPostingPolicy('standard'); invalidateReview(); await walletView(); showPostingWallet(); }
     catch (error) { showPostingHelp(kind, {code:'provider-unavailable', message:error.message, action:'sync'}); }
   });
-  $(`${kind}-sync-posting`).addEventListener('click', async () => {
+  const syncPostingFunds = async () => {
+    const button = $(`${kind}-check-funds`);
+    if (button.disabled || postIntentBusy || transactionPending) return;
+    button.disabled = true;
     showPostingHelp(kind, {code:'checking', message:'Checking for incoming funds…'});
     try { const result = await browserWallet.syncPrivateFunds(); scanIncomplete = result.complete === false; await walletView(); showPostingWallet(); }
     catch { showPostingHelp(kind, {code:'provider-unavailable', message:'Funds could not be checked. Your existing tokens and draft are preserved.', action:'sync'}); }
-  });
+    finally { button.disabled = false; }
+  };
+  $(`${kind}-sync-posting`).addEventListener('click', syncPostingFunds);
+  $(`${kind}-check-funds`).addEventListener('click', syncPostingFunds);
+  $(`${kind}-get-funds`).addEventListener('click', () => refreshFaucet(true));
+  $(`${kind}-form`).addEventListener('invalid', event => {
+    const message = event.target.validity.valueMissing ? kind === 'reply' ? 'Write a reply before pressing Reply.' : event.target.id === 'thread-title' ? 'Give your thread a title before posting.' : 'Write your opening post before posting.' : event.target.validationMessage;
+    $(`${kind}-error`).hidden = false;
+    $(`${kind}-error`).textContent = message;
+    event.target.setAttribute('aria-invalid','true');
+    showPostingHelp(kind, {code:'invalid-draft', message});
+    revealPostingFeedback(kind);
+  }, true);
 }
 // Drafts are held in this tab. Secret draft persistence is intentionally avoided before encryption.
 $("compose-form").addEventListener("input", () => {
@@ -1817,10 +1854,11 @@ $("copy-address").addEventListener("click", () =>
     .catch(() => $("receive-address").select()),
 );
 let walletBalanceVersion = 0;
+let lastWalletCheckedAt = 0;
 let walletWorking = false;
 let faucetWorking = false;
 let faucetUiError = null;
-function renderFaucet() {
+function renderWalletFaucet() {
   const address = browserWallet.active()?.address;
   const enabled = Boolean(config?.faucetEnabled && address && !browserWallet.needsPhraseConfirmation());
   $("wallet-faucet").hidden = !enabled;
@@ -1840,6 +1878,21 @@ function renderFaucet() {
     $("wallet-faucet-status").textContent = error.message;
   }
 }
+function renderPostingFunding() {
+  const address = browserWallet.active()?.address;
+  const browserSelected = Boolean(address && address === lastWalletIdentity && lastWalletBalance?.total !== undefined && !walletOptions.adapter.connection && !browserWallet.needsPhraseConfirmation() && !transactionPending);
+  for (const kind of ['compose','reply']) {
+    const visible = browserSelected && (BigInt(lastWalletBalance.total) === 0n || $(`${kind}-posting-status`).dataset.state === 'insufficient-eligible-funds');
+    $(`${kind}-funding`).hidden = !visible;
+    const enabled = Boolean(config?.faucetEnabled);
+    $(`${kind}-get-funds`).hidden = !enabled;
+    $(`${kind}-get-funds`).disabled = $('wallet-faucet').disabled || postIntentBusy || busy;
+    $(`${kind}-get-funds`).textContent = $('wallet-faucet').textContent;
+    $(`${kind}-funding-link`).hidden = enabled;
+    $(`${kind}-funding-status`).textContent = $('wallet-faucet-status').textContent;
+  }
+}
+function renderFaucet() { renderWalletFaucet(); renderPostingFunding(); }
 async function refreshFaucet(request = false) {
   const address = browserWallet.active()?.address;
   if (faucetWorking || walletWorking || !config?.faucetEnabled || !address || browserWallet.needsPhraseConfirmation() || (!request && document.hidden)) return;
@@ -1867,7 +1920,7 @@ function showWalletBalance(balance, version = ++walletBalanceVersion) {
   if (version !== walletBalanceVersion) return;
   const identity = browserWallet.active()?.address ?? null;
   if (identity !== lastWalletIdentity) { lastWalletBalance = null; lastWalletIdentity = identity; }
-  if (balance && !balance.unavailable && balance.total !== undefined) lastWalletBalance = balance;
+  if (balance && !balance.unavailable && balance.total !== undefined) { lastWalletBalance = balance; lastWalletCheckedAt = Date.now(); }
   if (balance?.unavailable && lastWalletBalance) balance = { ...lastWalletBalance, unavailable: true };
   if (!browserWallet.active()) lastWalletBalance = null;
   const unlocked = Boolean(browserWallet.active()),
@@ -1911,13 +1964,15 @@ function showWalletBalance(balance, version = ++walletBalanceVersion) {
   }
   const readiness = fundsReadiness(balance, {incomplete:scanIncomplete});
   $('wallet-readiness').textContent = readiness.message + (!balance?.unavailable && scanIncomplete && readiness.code === 'ready' ? ' Incoming-fund discovery is incomplete; known usable funds are verified.' : '');
-  for (const kind of ['compose','reply']) showPostingHelp(kind, readiness);
-  showPostingWallet(readiness);
+  if (!postIntentBusy && !busy) {
+    showPostingWallet(readiness);
+  }
+  renderPostingFunding();
 }
 let refreshingIncoming = false;
 let lastIncomingBalanceCheck = 0;
 async function refreshIncomingFunds() {
-  if (refreshingIncoming || document.hidden || walletWorking || transactionPending || !config?.posterPrivacy || !browserWallet.active()) return;
+  if (refreshingIncoming || document.hidden || walletWorking || postIntentBusy || busy || transactionPending || !config?.posterPrivacy || !browserWallet.active()) return;
   const address = browserWallet.active().address;
   refreshingIncoming = true;
   try {

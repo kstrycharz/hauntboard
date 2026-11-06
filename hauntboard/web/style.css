@@ -34,6 +34,18 @@
 [hidden] {
   display: none !important;
 }
+.posting-funding {
+  margin: var(--space-4) 0;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.posting-funding button {
+  margin: var(--space-1) 0;
+  max-width: 100%;
+  white-space: normal;
+}
 body {
   margin: 0;
   background: var(--bg);

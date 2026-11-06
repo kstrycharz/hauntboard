@@ -205,6 +205,15 @@
               <button id="reply-prepare-confirm" class="subtle" type="button" hidden>Confirm preparation</button>
               <button id="reply-sync-posting" class="subtle" type="button" hidden>Check funds again</button>
               <button id="reply-check-posting" class="subtle" type="button" hidden>Check status</button>
+              <div id="reply-funding" class="posting-funding" hidden>
+                <h3>Add free posting funds</h3>
+                <p class="small">New wallets start with 0 test TARI. Creating another wallet does not move your existing tokens. Get free test tokens for this wallet, or check for a payment you already received.</p>
+                <p class="small">Requesting 100 test TARI shares this wallet's receive address with Hauntboard and the TariTracker faucet. Test tokens have no monetary value. Request limits apply.</p>
+                <p id="reply-funding-status" class="small" role="status" aria-live="polite"></p>
+                <button id="reply-get-funds" class="subtle" type="button">Get 100 free test TARI</button>
+                <a id="reply-funding-link" href="https://testnet-faucet.taritracker.com/" target="_blank" rel="noopener noreferrer" hidden>Open TariTracker faucet</a>
+                <button id="reply-check-funds" class="subtle" type="button">Check incoming funds</button>
+              </div>
             </section>
             <div class="compose-footer">
               <span id="reply-context">Replying to the thread</span
@@ -293,6 +302,15 @@
           <button id="compose-prepare-confirm" class="subtle" type="button" hidden>Confirm preparation</button>
           <button id="compose-sync-posting" class="subtle" type="button" hidden>Check funds again</button>
           <button id="compose-check-posting" class="subtle" type="button" hidden>Check status</button>
+          <div id="compose-funding" class="posting-funding" hidden>
+            <h3>Add free posting funds</h3>
+            <p class="small">New wallets start with 0 test TARI. Creating another wallet does not move your existing tokens. Get free test tokens for this wallet, or check for a payment you already received.</p>
+            <p class="small">Requesting 100 test TARI shares this wallet's receive address with Hauntboard and the TariTracker faucet. Test tokens have no monetary value. Request limits apply.</p>
+            <p id="compose-funding-status" class="small" role="status" aria-live="polite"></p>
+            <button id="compose-get-funds" class="subtle" type="button">Get 100 free test TARI</button>
+            <a id="compose-funding-link" href="https://testnet-faucet.taritracker.com/" target="_blank" rel="noopener noreferrer" hidden>Open TariTracker faucet</a>
+            <button id="compose-check-funds" class="subtle" type="button">Check incoming funds</button>
+          </div>
         </section>
         <div id="discard-secret" class="caution" hidden>
           <p>This sealed draft is not saved. Keep writing or discard it?</p>

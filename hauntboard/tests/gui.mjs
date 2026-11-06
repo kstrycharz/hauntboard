@@ -68,7 +68,7 @@ export async function unlockMethod(){return 'pin';}
 export async function changePin(){}
 export async function deleteWallet(){wallet=null;sessionStorage.removeItem('gui-fixture-wallet');}
 export function needsPhraseConfirmation(){return Boolean(wallet)&&!confirmed;}
-export async function create(){sessionStorage.setItem('gui-fixture-wallet','saved');wallet={address:'fixture-address',account:null};confirmed=false;return {...wallet,phrase:${JSON.stringify(phrase)}};}
+export async function create(){sessionStorage.setItem('gui-fixture-wallet','saved');wallet={address:'fixture-address',account:null};window.fixtureFunds='empty';confirmed=false;return {...wallet,phrase:${JSON.stringify(phrase)}};}
 export async function unlock(){wallet={address:'fixture-address',account:null};return wallet;}
 export async function recover(){sessionStorage.setItem('gui-fixture-wallet','saved');wallet={address:'fixture-address',account:null};scanComplete=false;return {...wallet,scan:{complete:false}};}
 export async function inspectRecovery(){return {address:'fixture-address'};}
@@ -81,7 +81,7 @@ export function fundScanStatus(){return {complete:scanComplete};}
 export function privateFunds(){return {ready:1,quarantined:2,reserved:0};}
 export function getPostingPolicy(){return policy;}
 export async function setPostingPolicy(value){policy=value;}
-export async function privateBalance(){if(window.fixtureFunds==='held')return {ready:policy==='standard'?'99000000':'0',quarantined:'99000000',reserved:'0',revealed:'0',total:'99000000',postingPolicy:policy};if(window.fixtureFunds==='account')return {ready:'0',quarantined:'0',reserved:'0',revealed:'99000000',total:'99000000',postingPolicy:policy};return {ready:'1000000',quarantined:'2000000',reserved:'0',revealed:'0',total:'3000000',postingPolicy:policy};}
+export async function privateBalance(){if(window.fixtureFunds==='empty')return {ready:'0',quarantined:'0',reserved:'0',revealed:'0',total:'0',postingPolicy:policy};if(window.fixtureFunds==='held')return {ready:policy==='standard'?'99000000':'0',quarantined:'99000000',reserved:'0',revealed:'0',total:'99000000',postingPolicy:policy};if(window.fixtureFunds==='account')return {ready:'0',quarantined:'0',reserved:'0',revealed:'99000000',total:'99000000',postingPolicy:policy};return {ready:'1000000',quarantined:'2000000',reserved:'0',revealed:'0',total:'3000000',postingPolicy:policy};}
 export async function reviewPostingPreparation(){return {amount:'10000000',fee:'35000',outputs:4};}
 export async function confirmPostingPreparation(){window.fixturePreparations=(window.fixturePreparations??0)+1;window.fixtureFunds='ready';return {prepared:true};}
 export async function balance(){return '1000000';}
@@ -394,6 +394,40 @@ try {
     const browser = await engine.launch();
     const checks = [];
     try {
+      let empty = await fixture(browser,{saved:true,faucet:true,funds:'empty'});
+      await ready(empty.page); await unlock(empty.page);
+      await empty.page.locator('.thread-link').click();
+      await empty.page.locator('#reply-form button[type=submit]').click();
+      await expect(empty.page.locator('#reply-error')).toContainText('Write a reply');
+      await empty.page.locator('#reply-body').fill('Keep this reply while I get test tokens.');
+      await empty.page.locator('#reply-form button[type=submit]').click();
+      await expect(empty.page.locator('#reply-posting-status')).toContainText('No posting funds');
+      assert.equal(empty.state.submits,0);
+      assert.equal(empty.state.quotes,0,'A known unfunded wallet must get a funding action before fee preparation.');
+      await expect(empty.page.locator('#reply-funding')).toBeVisible();
+      await expect(empty.page.locator('#reply-funding')).toContainText('New wallets start');
+      await empty.page.setViewportSize({width:390,height:844});
+      assert(await empty.page.evaluate(() => document.documentElement.scrollWidth <= innerWidth+1));
+      await empty.page.locator('#reply-funding').scrollIntoViewIfNeeded();
+      await empty.page.screenshot({path:`hauntboard/evidence/reply-empty-${name}.png`});
+      await empty.page.locator('#reply-get-funds').click();
+      await expect(empty.page.locator('#reply-funding-status')).toContainText('queued');
+      await expect(empty.page.locator('#browser-wallet-dialog')).not.toBeVisible();
+      assert.equal(empty.state.faucetClaims,1);
+      await empty.page.locator('#reply-body').fill('Keep this edited reply during the saved funding request.');
+      await empty.page.locator('#reply-form button[type=submit]').click();
+      assert.equal(empty.state.faucetClaims,1);
+      await expect(empty.page.locator('#reply-body')).toHaveValue('Keep this edited reply during the saved funding request.');
+      empty.state.faucetStatus = 'confirmed';
+      await empty.page.evaluate(() => { window.fixtureFunds='ready'; });
+      await empty.page.locator('#reply-check-funds').click();
+      await expect(empty.page.locator('#reply-funding')).toBeHidden();
+      assert.equal(empty.state.submits,0,'Funding and discovery must not automatically publish.');
+      await empty.page.locator('#reply-form button[type=submit]').click();
+      await expect(empty.page.locator('#operation-panel')).toHaveAttribute('data-state','confirmed');
+      assert.equal(empty.state.submits,1); assert.equal(empty.state.faucetClaims,1);
+      assert.deepEqual(empty.errors,[]); await empty.context.close();
+      checks.push('Empty reply has inline validation; zero-balance wallet gets inline receipt-based funding without posting or another wallet popup');
       let release;
       const configGate = new Promise((r) => (release = r));
       let f = await fixture(browser, { configGate });
@@ -536,6 +570,12 @@ try {
         "Exact reviewed body 🕯",
       );
       assert.equal(f.state.submits, 0, 'Completing setup must not publish the preserved draft.');
+      await expect(f.page.locator('#compose-funding')).toBeVisible();
+      await expect(f.page.locator('#compose-funding-link')).toBeVisible();
+      await expect(f.page.locator('#compose-get-funds')).toBeHidden();
+      await f.page.evaluate(() => { window.fixtureFunds='ready'; });
+      await f.page.locator('#compose-check-funds').click();
+      await expect(f.page.locator('#compose-funding')).toBeHidden();
       await f.page.locator("#thread-body").fill("Edited body");
       await f.page.locator("#compose-form button[type=submit]").click();
       await expect.poll(() => f.state.submits).toBe(1);
@@ -626,7 +666,9 @@ try {
           await expect(f.page.locator('#wallet-posting-policy')).toHaveValue('standard');
         } else {
           await f.page.locator('#compose-open-wallet').click();
+          await f.page.evaluate(async () => { await new Promise(resolve => setTimeout(resolve,2200)); });
           await expect(f.page.locator('#compose-posting-status')).toContainText('0.035 test TARI');
+          await expect(f.page.locator('#compose-prepare-confirm')).toBeVisible();
           await expect(f.page.locator('#browser-wallet-dialog')).not.toBeVisible();
           await f.page.locator('#compose-prepare-confirm').click();
           await expect(f.page.locator('#compose-posting-status')).toContainText('Posting funds are ready');
@@ -649,6 +691,9 @@ try {
       });
       await expect(f.page.locator('#reply-form button[type=submit]')).toBeDisabled();
       await expect.poll(() => f.state.quotes).toBe(1);
+      await f.page.evaluate(async () => { await new Promise(resolve => setTimeout(resolve,2200)); });
+      await expect(f.page.locator('#reply-posting-status')).toHaveAttribute('data-state','checking');
+      await expect(f.page.locator('#reply-posting-status')).not.toContainText('Funds are available');
       releaseQuote();
       await expect(f.page.locator('#operation-panel')).toHaveAttribute('data-state','confirmed');
       assert.equal(f.state.submits,1);

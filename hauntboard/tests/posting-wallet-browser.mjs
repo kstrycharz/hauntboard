@@ -52,6 +52,7 @@ try {
         wallet.configure({network:'localnet',networkByte:16,resetIdentity:'posting-regression',posterPrivacy:'stealth-fee-v1'},api);
         const created = await wallet.create('604281');
         await wallet.confirmPhrase();
+        if ((await wallet.privateBalance()).total !== '0') throw Error('A new wallet must start empty rather than invent posting funds');
         const output = async (amount, change = false) => {
           const generated = await native.generateOutputsStatement([sdk.createOutput({destination:created.address,amount,resourceAddress:NATIVE,...(change ? {memo:{Message:'hauntboard:posting-change:v1'}} : {})})],null);
           const entry = JSON.parse(generated.statement.statementJson).outputs[0];
@@ -93,7 +94,7 @@ try {
         let stillHeld = false;
         try { await wallet.review({...body,uid:Array(16).fill(4)}); } catch (error) { stillHeld = error.code === 'change-held'; }
         if (!stillHeld) throw Error('A rejected spend discarded change provenance');
-        return {firstPost:true,remainingFundsUsable:true,explicitIsolationExplained:true,policySurvivesUnlock:true,secondPostUsesChange:true,pendingInputProtected:true,identityPersistedBeforeDispatch:true,rejectionRetainsChangeProvenance:true};
+        return {newWalletStartsEmpty:true,firstPost:true,remainingFundsUsable:true,explicitIsolationExplained:true,policySurvivesUnlock:true,secondPostUsesChange:true,pendingInputProtected:true,identityPersistedBeforeDispatch:true,rejectionRetainsChangeProvenance:true};
       });
       assert(Object.values(checks).every(Boolean)); report.browsers[name] = checks;
       console.log(`${name}: two-post change lifecycle and pending-input regression passed (synthetic execution)`);

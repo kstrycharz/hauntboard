@@ -16,7 +16,7 @@ import { setupWalletOptions } from './wallet-options.mjs';
 import {fundsReadiness, POSTING_FEE_LIMIT} from './posting-readiness.mjs';
 import { PinEntry } from "./pin-entry.mjs";
 import { createApiClient } from "./api-client.mjs";
-import { FaucetClient, faucetMessage } from "./faucet-client.mjs";
+import { FaucetClient, FaucetCredit, faucetMessage } from "./faucet-client.mjs";
 import {createRoomManager} from './room-manager.mjs';
 import { chainStateLink, postProof } from "./post-proof.mjs";
 import {
@@ -159,6 +159,7 @@ function clearFlash() {
 }
 const api = createApiClient({getConfig: () => config});
 const faucetClient = new FaucetClient({api});
+const faucetCredit = new FaucetCredit();
 const walletOptions = setupWalletOptions({
   document, getConfig: () => config, pending: () => Boolean(transactionPending),
   selectionChanged: connection => { invalidateReview(); if (connection) { $('identity').textContent = 'Sapient connected'; showPostingWallet(); } else if (config) walletView().catch(() => {}); },
@@ -1873,6 +1874,7 @@ function renderWalletFaucet() {
     $("wallet-faucet").disabled = walletWorking || faucetWorking || Boolean(waiting) || Boolean(cooldown);
     $("wallet-faucet").textContent = faucetWorking ? "Checking funding request…" : cooldown ? `Next request in ${Math.ceil((record.createdAt + 3600000 - Date.now()) / 60000)} min` : !record || ["confirmed", "failed", "rejected"].includes(record.status) ? "Get 100 test TARI" : record.status === "unknown" ? "Retry saved funding request" : "Check funding request";
     $("wallet-faucet-status").textContent = faucetUiError?.address === address ? faucetUiError.message : faucetMessage(record) + (record?.error && waiting ? ` Try again in ${Math.ceil((record.retryAt - Date.now()) / 1000)} seconds.` : "");
+    if (record?.status === 'confirmed' && faucetCredit.state?.address === address && faucetCredit.state.transactionId === record.transactionId) $('wallet-faucet-status').textContent += ` ${faucetCredit.state.note}`;
   } catch (error) {
     $("wallet-faucet").disabled = true;
     $("wallet-faucet-status").textContent = error.message;
@@ -1903,6 +1905,10 @@ async function refreshFaucet(request = false) {
     const record = await faucetClient.run(config, address, request);
     if (request || record) faucetUiError = null;
     if (browserWallet.active()?.address !== address) return;
+    if (record?.status === 'confirmed' && !postIntentBusy && !busy && !transactionPending) {
+      const credited=await faucetCredit.reconcile({scope:`${config.network}:${config.resetIdentity}`,address,record,needed:previous?.status !== 'confirmed' || BigInt(lastWalletBalance?.total ?? 0) === 0n,importIncoming:id=>browserWallet.importIncoming(id)});
+      if (credited?.complete && credited.checkedNow && browserWallet.active()?.address === address) await walletView();
+    }
     if (record?.status === "confirmed" && previous?.status !== "confirmed") {
       lastIncomingBalanceCheck = 0;
       await refreshIncomingFunds();

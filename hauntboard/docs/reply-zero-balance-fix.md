@@ -14,6 +14,8 @@ Background incoming-fund checks could replace a posting-progress message with ge
 
 The Firefox regression also caught a balance-polling race that replaced an inline account-preparation quote with the generic preparation-needed state, hiding its confirmation button. The fix preserves both preparation-review and preparation-pending states across background balance refreshes.
 
+A read-only inspection of the running faucet confirmed that its discovery capsules use `esmeralda-release-2026-10-07`, while Hauntboard uses `esmeralda-reset-2026-11-02`. The client correctly rejects that mismatch. A confirmed payout can therefore remain undiscovered if the general output scan also misses it. The faucet's journal/reset configuration is not changed by this repair.
+
 ## Changes
 
 - Empty and whitespace-only replies show an inline explanation. Custom byte-limit validation is also surfaced beside the draft.
@@ -24,6 +26,7 @@ The Firefox regression also caught a balance-polling race that replaced an inlin
 - Self-hosted clients without an enabled in-app faucet retain the external faucet link.
 - Background balance updates no longer replace active posting progress. Repeated attempts receive visible feedback while the existing check runs.
 - API requests, session refreshes and response-body reads have a 25-second client deadline. Timed-out writes retain their original operation/receipt and are not automatically retried or replaced.
+- Confirmed faucet payments are also discovered through the saved transaction ID. The native wallet checks finalized acceptance, current verified substates and output ownership before importing any funds. An unfunded wallet can repeat this read-only verification after reload or a provider failure without requesting another payout. Failed verification never sets a synthetic balance. The strict network/reset check on encrypted discovery hints remains intact.
 
 Existing wallet keys, change-isolation choices, board/template pins and pending-operation records are preserved. No server-held participant wallet or automatic token grant is introduced.
 

@@ -81,7 +81,7 @@ export function fundScanStatus(){return {complete:scanComplete};}
 export function privateFunds(){return {ready:1,quarantined:2,reserved:0};}
 export function getPostingPolicy(){return policy;}
 export async function setPostingPolicy(value){policy=value;}
-export async function privateBalance(){if(window.fixtureFunds==='empty')return {ready:'0',quarantined:'0',reserved:'0',revealed:'0',total:'0',postingPolicy:policy};if(window.fixtureFunds==='held')return {ready:policy==='standard'?'99000000':'0',quarantined:'99000000',reserved:'0',revealed:'0',total:'99000000',postingPolicy:policy};if(window.fixtureFunds==='account')return {ready:'0',quarantined:'0',reserved:'0',revealed:'99000000',total:'99000000',postingPolicy:policy};return {ready:'1000000',quarantined:'2000000',reserved:'0',revealed:'0',total:'3000000',postingPolicy:policy};}
+export async function privateBalance(){if(window.fixtureFunds==='receipt-funded')return {ready:'100000000',quarantined:'0',reserved:'0',revealed:'0',total:'100000000',postingPolicy:policy};if(window.fixtureFunds==='empty')return {ready:'0',quarantined:'0',reserved:'0',revealed:'0',total:'0',postingPolicy:policy};if(window.fixtureFunds==='held')return {ready:policy==='standard'?'99000000':'0',quarantined:'99000000',reserved:'0',revealed:'0',total:'99000000',postingPolicy:policy};if(window.fixtureFunds==='account')return {ready:'0',quarantined:'0',reserved:'0',revealed:'99000000',total:'99000000',postingPolicy:policy};return {ready:'1000000',quarantined:'2000000',reserved:'0',revealed:'0',total:'3000000',postingPolicy:policy};}
 export async function reviewPostingPreparation(){return {amount:'10000000',fee:'35000',outputs:4};}
 export async function confirmPostingPreparation(){window.fixturePreparations=(window.fixturePreparations??0)+1;window.fixtureFunds='ready';return {prepared:true};}
 export async function balance(){return '1000000';}
@@ -91,7 +91,7 @@ export async function review(body){return {...await call('/api/quote',body),brow
 export async function submit(quote){return call('/api/browser-submit',{operation:quote.operation});}
 export async function transaction(id){return call('/api/transaction?id='+id);}
 export async function fund(){return {};}
-export async function importIncoming(){return {};}
+export async function importIncoming(id){if(window.fixtureReceiptCredit){window.fixtureReceiptImports=(window.fixtureReceiptImports??0)+1;window.fixtureFunds='receipt-funded';return {found:1,ready:1};}return {found:0,ready:0};}
 `;
 const server = createServer(async (req, res) => {
   try {
@@ -255,7 +255,7 @@ async function fixture(browser, options = {}) {
     }
     if (path === "/api/faucet-status") {
       assert.equal(r.request().postDataJSON().receipt, state.faucetReceipt);
-      return json({receipt: state.faucetReceipt, status: state.faucetStatus ?? "queued", transactionId: null});
+      return json({receipt: state.faucetReceipt, status: state.faucetStatus ?? "queued", transactionId: state.faucetStatus === 'confirmed' ? '1'.repeat(64) : null});
     }
     if (path === "/api/board") {
       if (state.failFeed)
@@ -419,15 +419,28 @@ try {
       assert.equal(empty.state.faucetClaims,1);
       await expect(empty.page.locator('#reply-body')).toHaveValue('Keep this edited reply during the saved funding request.');
       empty.state.faucetStatus = 'confirmed';
-      await empty.page.evaluate(() => { window.fixtureFunds='ready'; });
-      await empty.page.locator('#reply-check-funds').click();
-      await expect(empty.page.locator('#reply-funding')).toBeHidden();
+      await empty.page.evaluate(() => { window.fixtureReceiptCredit=true; });
+      await expect(empty.page.locator('#reply-funding')).toBeHidden({timeout:20000});
+      await expect(empty.page.locator('#reply-wallet-balance')).toContainText('Available for posting: 100 test TARI');
+      assert.equal(await empty.page.evaluate(() => window.fixtureReceiptImports),1);
       assert.equal(empty.state.submits,0,'Funding and discovery must not automatically publish.');
+      await empty.context.addInitScript(() => { window.fixtureReceiptCredit=true; });
+      await empty.page.reload(); await ready(empty.page);
+      await expect(empty.page.locator('#reply-form')).toBeVisible();
+      await expect(empty.page.locator('#reply-body')).toHaveValue('Keep this edited reply during the saved funding request.');
+      await empty.page.locator('#browser-wallet-button').click();
+      await expect(empty.page.locator('#browser-wallet-dialog')).toBeVisible();
+      await enterWalletCredential(empty.page,'604281');
+      await expect(empty.page.locator('#wallet-ready-panel')).toBeVisible();
+      await empty.page.locator('[data-close="browser-wallet-dialog"]').click();
+      await expect(empty.page.locator('#reply-wallet-balance')).toContainText('Available for posting: 100 test TARI',{timeout:20000});
+      assert.equal(empty.state.faucetClaims,1,'A reload must rediscover the saved payment without another faucet claim.');
+      await expect(empty.page.locator('#reply-body')).toHaveValue('Keep this edited reply during the saved funding request.');
       await empty.page.locator('#reply-form button[type=submit]').click();
       await expect(empty.page.locator('#operation-panel')).toHaveAttribute('data-state','confirmed');
       assert.equal(empty.state.submits,1); assert.equal(empty.state.faucetClaims,1);
       assert.deepEqual(empty.errors,[]); await empty.context.close();
-      checks.push('Empty reply has inline validation; zero-balance wallet gets inline receipt-based funding without posting or another wallet popup');
+      checks.push('Empty reply has inline validation; zero-balance wallet gets inline funding and verified receipt credit across reload without another claim or implicit posting');
       let release;
       const configGate = new Promise((r) => (release = r));
       let f = await fixture(browser, { configGate });

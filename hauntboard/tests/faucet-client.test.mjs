@@ -1,9 +1,28 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {FaucetClient, faucetMessage} from '../web/faucet-client.mjs';
+import {FaucetClient, FaucetCredit, faucetMessage} from '../web/faucet-client.mjs';
 const config = {network: 'esmeralda', resetIdentity: 'fixture', faucetEnabled: true};
 const address = 'otl_esm_synthetic';
 const receipt = '6cf1df90-7645-44d2-8ed5-a00121aa8001';
+test('confirmed funding credits through native receipt verification without a general listing or another claim', async () => {
+  const tracker=new FaucetCredit(), ids=[],record={status:'confirmed',transactionId:'a'.repeat(64)};
+  const args={scope:'current-reset',address,record,needed:true,importIncoming:async id=>{ids.push(id);return {found:1,ready:1};}};
+  const result=await tracker.reconcile(args);assert.equal(result.complete,true);assert.equal(result.checkedNow,true);
+  assert.equal((await tracker.reconcile(args)).checkedNow,false);assert.deepEqual(ids,[record.transactionId]);
+  await new FaucetCredit().reconcile(args);assert.deepEqual(ids,[record.transactionId,record.transactionId],'Reload checks the same confirmed identity, not a replacement payment.');
+  await tracker.reconcile({...args,scope:'another-reset'});assert.equal(ids.length,3,'A reset cannot reuse the completed credit status from another scope.');
+});
+
+test('receipt discovery preserves failures, backs off, and never invents an available balance', async () => {
+  let now=0,calls=0;
+  const tracker=new FaucetCredit({now:()=>now}),record={status:'confirmed',transactionId:'b'.repeat(64)};
+  const args={scope:'current-reset',address,record,needed:true,importIncoming:async()=>{calls++;throw Error('Provider unavailable');}};
+  assert.equal((await tracker.reconcile(args)).complete,false);await tracker.reconcile(args);assert.equal(calls,1);
+  now=30000;await tracker.reconcile(args);assert.equal(calls,2);assert.equal(record.transactionId,'b'.repeat(64));
+  now=60000;assert.equal((await tracker.reconcile({...args,importIncoming:async()=>({found:0,ready:0})})).complete,false);
+  for (const status of ['queued','pending','uncertain']) assert.equal(await tracker.reconcile({...args,record:{...record,status}}),null);
+  assert.equal(await tracker.reconcile({...args,record:{status:'confirmed',transactionId:null}}),null);
+});
 function fixture(api) {
   const data = new Map();
   const storage = {getItem: key => data.get(key) ?? null, setItem: (key, value) => data.set(key, value)};

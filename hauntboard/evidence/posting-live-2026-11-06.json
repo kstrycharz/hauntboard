@@ -1,0 +1,70 @@
+{
+  "checkedAt": "2026-11-06T18:23:06.89Z",
+  "sourceCommit": "b17bcd5ca2c8f731cfa87bfdaf4fa2655211a8d6",
+  "origin": "https://hauntboard.taritracker.com",
+  "scope": "Read-only public readiness, asset hashes and fresh-browser UI. All non-GET/HEAD API requests blocked; no wallet creation, funding or public posting.",
+  "assets": {
+    "app.mjs": "f19cc5dc912e7aae254f75933a45a98c8a05aae8e820d3b251dab1c07d7061bb",
+    "browser-wallet.mjs": "d0326a101fc60d1ec562e7d018875d0a03bbc03d8956daa104843f4e28cb80c4",
+    "posting-readiness.mjs": "72693b41652f699ad232b43185d1a03411e401f09156c2f352b00bd71eecc3c7",
+    "index.html": "3ee8158d9e6b973716df082eb3e13f7124c80a91ea0591d426b2ae3ee46c2e89",
+    "about.mjs": "0b9eb4ad26f88ca70f50d1774c27ab029c49fafae1ebbb0044aa9f421036ff7f",
+    "faucet-client.mjs": "e2c1a3e1c01df6edad6922571e4f3919ee9e59b2ec066e3a0b5fcf8af5a8af1b"
+  },
+  "browsers": {
+    "chromium": {
+      "postButton": true,
+      "feeLimitVisible": true,
+      "inlineWalletGuidance": true,
+      "noWalletPopup": true,
+      "noReviewPopup": true,
+      "draftPreserved": true,
+      "narrowLayout": true,
+      "blockedWrites": 0,
+      "pageErrors": []
+    },
+    "firefox": {
+      "postButton": true,
+      "feeLimitVisible": true,
+      "inlineWalletGuidance": true,
+      "noWalletPopup": true,
+      "noReviewPopup": true,
+      "draftPreserved": true,
+      "narrowLayout": true,
+      "blockedWrites": 0,
+      "pageErrors": []
+    }
+  },
+  "readiness": {
+    "status": "ready"
+  },
+  "board": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+  "template": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+  "resetIdentity": "esmeralda-reset-2026-11-02",
+  "status": "PASSED",
+  "deployment": {
+    "release": "release-b17bcd5ca2c8f731cfa87bfdaf4fa2655211a8d6",
+    "image": "sha256:82b896e915c3456c036678615288d21a26e538b3c56bc120341e4116c4a3860a",
+    "previousImage": "sha256:1417f4d9879869c3010ceffd944607ba8552e1409a4126738373fedaabc6fcfb",
+    "manifestSha256": "fa4c2a8bec8c7caa41a8f9fff9f634ee0d7c03803434755e3785a297d0fa0ec8",
+    "manifestPreserved": true,
+    "operationsVolume": "hauntboard_operations",
+    "operationsVolumeRetained": true,
+    "rollbackImageRetained": true,
+    "health": "healthy",
+    "chainWritesPerformed": false
+  },
+  "validation": {
+    "targetedNodeTests": 35,
+    "guiScenariosPerBrowser": 16,
+    "guiBrowsers": [
+      "chromium",
+      "firefox"
+    ],
+    "nativeWalletLifecycle": "passed with synthetic execution in Chromium and Firefox",
+    "releaseWorkflow": "https://github.com/kstrycharz/hauntboard/actions/runs/42269510460",
+    "releaseConclusion": "success",
+    "privacyWorkflow": "https://github.com/kstrycharz/hauntboard/actions/runs/42269510166",
+    "privacyConclusion": "success"
+  }
+}

@@ -2,6 +2,8 @@
 
 Date: November 6, 2026
 
+Deployment: [release b17bcd5](https://github.com/kstrycharz/hauntboard/releases/tag/release-b17bcd5ca2c8f731cfa87bfdaf4fa2655211a8d6), verified live at https://hauntboard.taritracker.com. See [deployment evidence](../evidence/posting-live-2026-11-06.json) and the [server record](../deploy/VPS.md).
+
 This release addresses the immediate posting and funding failures in the [remediation plan](posting-experience-remediation-plan.md). It retains the published schema-4 board, contract, network/reset identity and server operation volume.
 
 ## User-visible behavior
@@ -33,6 +35,8 @@ The release gates include targeted Node tests, Chromium/Firefox GUI scenarios, n
 These browser fixtures use simulated provider execution. They do not establish new funded public-chain execution, independent consensus verification, mobile-device compatibility or anonymity. The deployment verification is read-only and must not request test funds or publish a validation post.
 
 The release pipeline runs the new readiness and wallet-lifecycle regressions for future runtime releases. Sanitized deployment evidence is recorded separately after the actual server update.
+
+The deployed release passed 35 targeted Node tests, 16 GUI scenarios per browser in Chromium and Firefox, the native wallet lifecycle regressions, and the GitHub release/privacy gates. Live verification checked public readiness, six matching asset hashes and the fresh-browser posting UI in both browsers with all API writes blocked. The original manifest hash, operation-volume identity and previous rollback image were verified on the server.
 
 ## Remaining plan items
 

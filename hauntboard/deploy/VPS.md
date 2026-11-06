@@ -1,5 +1,29 @@
 # VPS and GitHub deployment
 
+## November 6 posting experience release
+
+The guarded updater deployed `release-b17bcd5ca2c8f731cfa87bfdaf4fa2655211a8d6`.
+The running immutable image is
+`sha256:82b896e915c3456c036678615288d21a26e538b3c56bc120341e4116c4a3860a`.
+Public readiness and read-only Chromium/Firefox checks passed, including six
+served asset hashes, the Post button, the disclosed fee limit and inline wallet
+guidance without an automatic wallet/review popup. No test funds were requested
+and no chain transaction was submitted during deployment verification.
+
+The network manifest hash remains
+`fa4c2a8bec8c7caa41a8f9fff9f634ee0d7c03803434755e3785a297d0fa0ec8`.
+The existing `hauntboard_operations` volume and board/template/reset pins are
+retained. The previous image
+`sha256:1417f4d9879869c3010ceffd944607ba8552e1409a4126738373fedaabc6fcfb`
+is retained for rollback, with the updater's `.env.previous` on the server.
+Restore that saved environment and recreate the app through the existing
+Compose configuration if rollback is required; preserve the operation volume.
+
+See the [implementation record](../docs/posting-experience-implementation.md)
+and [sanitized live evidence](../evidence/posting-live-2026-11-06.json).
+Existing browser wallets keep their change-isolation setting until the user
+explicitly chooses Standard posting. App-paid fees are not enabled.
+
 ## November 4 proof evidence refresh
 
 The evidence-only image `hauntboard:proof-refresh-20261104` overlays the current

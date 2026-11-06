@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-11-06T18:17:10.789Z",
+  "scope": "Real SDK/WASM and encrypted browser wallet; synthetic owned outputs, execution and receipts. No public writes or claims of funded-chain execution.",
+  "browsers": {
+    "chromium": {
+      "firstPost": true,
+      "remainingFundsUsable": true,
+      "explicitIsolationExplained": true,
+      "policySurvivesUnlock": true,
+      "secondPostUsesChange": true,
+      "pendingInputProtected": true,
+      "identityPersistedBeforeDispatch": true,
+      "rejectionRetainsChangeProvenance": true
+    },
+    "firefox": {
+      "firstPost": true,
+      "remainingFundsUsable": true,
+      "explicitIsolationExplained": true,
+      "policySurvivesUnlock": true,
+      "secondPostUsesChange": true,
+      "pendingInputProtected": true,
+      "identityPersistedBeforeDispatch": true,
+      "rejectionRetainsChangeProvenance": true
+    }
+  },
+  "status": "PASSED"
+}

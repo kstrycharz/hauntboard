@@ -46,7 +46,7 @@ export class FaucetClient {
 }
 
 export function faucetMessage(record) {
-  if (!record) return 'Request 100 test tXTR for this wallet. One withdrawal per wallet owner per hour; shared faucet limits apply.';
+  if (!record) return 'Request 100 test TARI for this wallet. One withdrawal per wallet owner per hour; shared faucet limits apply.';
   if (record.error) return `${record.error} Your receipt is saved. Check this request before starting another withdrawal.`;
   return {
     unknown: 'Payment is not confirmed. Retry this saved request using the same receipt.',
@@ -54,7 +54,7 @@ export function faucetMessage(record) {
     prepared: 'Payment is prepared. Waiting for chain confirmation…',
     pending: 'Payment was submitted. Waiting for chain confirmation…',
     uncertain: 'The faucet is reconciling the original payment. Keep checking; do not create a replacement request.',
-    confirmed: '100 test tXTR confirmed. Checking for incoming funds; your wallet must scan the output before the balance updates.',
+    confirmed: '100 test TARI confirmed. Checking for incoming funds; your wallet must scan the output before the balance updates.',
     rejected: 'The payment was rejected. No replacement was sent automatically. Check incoming funds before trying again.',
     failed: 'The request failed before payment preparation. No replacement was sent automatically.',
   }[record.status];

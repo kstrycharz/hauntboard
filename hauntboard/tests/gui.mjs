@@ -60,7 +60,7 @@ const ref = (address) => ({
   uid: Array(16).fill(1),
 });
 const walletStub = `
-let wallet=null,call,confirmed=true,scanComplete=true;
+let wallet=null,call,confirmed=true,scanComplete=true,policy='isolated';
 export function configure(c,api){call=api;}
 export function active(){return wallet;}
 export async function exists(){return sessionStorage.getItem('gui-fixture-wallet')==='saved';}
@@ -79,9 +79,14 @@ export async function verifyCredential(){}
 export function lock(){wallet=null;}
 export function fundScanStatus(){return {complete:scanComplete};}
 export function privateFunds(){return {ready:1,quarantined:2,reserved:0};}
-export async function privateBalance(){return {ready:'1000000',quarantined:'2000000',reserved:'0',revealed:'0',total:'3000000'};}
+export function getPostingPolicy(){return policy;}
+export async function setPostingPolicy(value){policy=value;}
+export async function privateBalance(){if(window.fixtureFunds==='held')return {ready:policy==='standard'?'99000000':'0',quarantined:'99000000',reserved:'0',revealed:'0',total:'99000000',postingPolicy:policy};if(window.fixtureFunds==='account')return {ready:'0',quarantined:'0',reserved:'0',revealed:'99000000',total:'99000000',postingPolicy:policy};return {ready:'1000000',quarantined:'2000000',reserved:'0',revealed:'0',total:'3000000',postingPolicy:policy};}
+export async function reviewPostingPreparation(){return {amount:'10000000',fee:'35000',outputs:4};}
+export async function confirmPostingPreparation(){window.fixturePreparations=(window.fixturePreparations??0)+1;window.fixtureFunds='ready';return {prepared:true};}
 export async function balance(){return '1000000';}
 export async function syncPrivateFunds(){scanComplete=true;return {complete:true};}
+export async function syncFaucetFunds(){return {found:0};}
 export async function review(body){return {...await call('/api/quote',body),browser:true,privateFee:true};}
 export async function submit(quote){return call('/api/browser-submit',{operation:quote.operation});}
 export async function transaction(id){return call('/api/transaction?id='+id);}
@@ -98,6 +103,7 @@ const server = createServer(async (req, res) => {
         "app.mjs",
         "sapient-wallet.mjs",
         "wallet-options.mjs",
+        "posting-readiness.mjs",
         "network-profile.mjs",
         "vendor/wallet-sdk.mjs",
         "api-client.mjs",
@@ -165,6 +171,7 @@ async function fixture(browser, options = {}) {
     await context.addInitScript(() =>
       sessionStorage.setItem("gui-fixture-wallet", "saved"),
     );
+  if (options.funds) await context.addInitScript(value => { window.fixtureFunds=value; }, options.funds);
   if (options.tari) await context.addInitScript(({ network, reject }) => {
     window.fixtureTariCalls = [];
     const listeners = new Map();
@@ -315,6 +322,7 @@ async function fixture(browser, options = {}) {
     if (path === "/api/quote") {
       state.quotes++;
       state.body = r.request().postDataJSON();
+      if (state.quoteGate) await state.quoteGate;
       return json({
         operation: operationId,
         id: "fixture-quote",
@@ -366,7 +374,7 @@ async function unlock(page) {
   await enterWalletCredential(page, "604281");
   await expect(page.locator("#wallet-ready-panel")).toBeVisible();
   if (!(await page.evaluate(() => document.querySelector('#wallet-faucet').hidden)))
-    await expect(page.locator("#wallet-faucet")).toHaveText("Get 100 test tXTR");
+    await expect(page.locator("#wallet-faucet")).toHaveText("Get 100 test TARI");
   const tokenLink = page.getByRole("link", { name: "TariTracker.com faucet" });
   await expect(tokenLink).toHaveAttribute(
     "href",
@@ -454,19 +462,21 @@ try {
         await f.context.close();
       }
       checks.push('Wrong-network and rejected external connections preserve the browser-wallet path without spending');
-      f = await fixture(browser, {tari: {network: 'esmeralda'}});
+      f = await fixture(browser, {saved:true, tari: {network: 'esmeralda'}});
       await ready(f.page);
+      await unlock(f.page);
       await f.page.evaluate(() => window.fixtureInstallTari());
       await f.page.locator('#browser-wallet-button').click();
+      await f.page.locator('#sapient-options > summary').click();
       await expect(f.page.locator('#sapient-options')).toHaveAttribute('open');
       await f.page.locator('#sapient-connect').click();
       await expect(f.page.locator('#browser-wallet-dialog')).not.toBeVisible();
       await f.page.locator('.thread-link').click();
       await f.page.locator('#reply-body').fill('Stock Sapient fixture reply');
       await f.page.locator('#reply-form button[type=submit]').click();
-      await expect(f.page.locator('#review-wallet')).toHaveText('Sapient wallet');
-      await expect(f.page.locator('#review-signing')).toContainText('Approve in Sapient');
-      await f.page.locator('#confirm-publish').click();
+      await expect(f.page.locator('#review-dialog')).not.toBeVisible();
+      await expect(f.page.locator('#reply-wallet-balance')).toContainText('Posting with Sapient');
+      await expect(f.page.locator('#wallet-balance-button')).toBeHidden();
       await expect.poll(() => f.page.evaluate(() => JSON.parse(localStorage.getItem('hauntboard-pending'))?.id)).toBe(transactionId);
       const request = await f.page.evaluate(() => window.fixtureTariRequest);
       assert.equal(request.kind, 'instructions');
@@ -492,7 +502,7 @@ try {
       f.state.faucetStatus = 'uncertain';
       await expect(f.page.locator('#wallet-faucet-status')).toContainText('reconciling', {timeout: 15000});
       f.state.faucetStatus = 'confirmed';
-      await expect(f.page.locator('#wallet-faucet-status')).toContainText('100 test tXTR confirmed', {timeout: 15000});
+      await expect(f.page.locator('#wallet-faucet-status')).toContainText('100 test TARI confirmed', {timeout: 15000});
       assert.equal(f.state.faucetClaims, 1, 'Reload and uncertain reconciliation must not create another payment.');
       await f.page.setViewportSize({width: 390, height: 844});
       await f.page.locator('.wallet-faucet').scrollIntoViewIfNeeded();
@@ -503,6 +513,9 @@ try {
       f = await fixture(browser);
       await ready(f.page);
       await compose(f.page);
+      await expect(f.page.locator('#browser-wallet-dialog')).not.toBeVisible();
+      await expect(f.page.locator('#compose-posting-status')).toContainText('Set up or unlock');
+      await f.page.locator('#compose-open-wallet').click();
       await expect(f.page.locator('#sapient-options')).toHaveAttribute('open');
       await expect(f.page.locator('#wallet-entry')).not.toBeVisible();
       await f.page.locator('#sapient-use-browser').click();
@@ -522,24 +535,16 @@ try {
       await expect(f.page.locator("#thread-body")).toHaveValue(
         "Exact reviewed body 🕯",
       );
-      await f.page.locator("#compose-form button[type=submit]").click();
-      await expect(f.page.locator("#review-content-body")).toHaveText(
-        "Exact reviewed body 🕯",
-      );
-      await expect(f.page.locator("#review-fee-label")).toHaveText(
-        "Network fee · paid in full",
-      );
-      await f.page.locator("#review-edit").click();
+      assert.equal(f.state.submits, 0, 'Completing setup must not publish the preserved draft.');
       await f.page.locator("#thread-body").fill("Edited body");
       await f.page.locator("#compose-form button[type=submit]").click();
-      await expect(f.page.locator("#review-content-body")).toHaveText(
-        "Edited body",
-      );
-      assert.equal(f.state.quotes, 2);
-      assert.equal(f.state.submits, 0);
+      await expect.poll(() => f.state.submits).toBe(1);
+      await expect(f.page.locator('#review-dialog')).not.toBeVisible();
+      assert.equal(JSON.parse(new TextDecoder().decode(new Uint8Array(f.state.body.payload))).body, 'Edited body');
+      assert.equal(f.state.quotes, 1);
       await f.context.close();
       checks.push(
-        "Wallet onboarding returns draft; word check; exact review; editing requotes",
+        "Inline setup guidance; wallet onboarding preserves draft without publishing; one Post checks and submits edited content without review popup",
       );
       f = await fixture(browser, { saved: true });
       await ready(f.page);
@@ -552,9 +557,8 @@ try {
       await f.page
         .locator("#reply-body")
         .fill("Reply under lost acknowledgement");
-      await f.page.locator("#reply-form button[type=submit]").click();
       f.state.unknown = true;
-      await f.page.locator("#confirm-publish").click();
+      await f.page.locator("#reply-form button[type=submit]").click();
       await expect(f.page.locator("#operation-panel")).toHaveAttribute(
         "data-state",
         "unknown",
@@ -594,9 +598,8 @@ try {
       await unlock(f.page);
       await f.page.locator(".thread-link").click();
       await f.page.locator("#reply-body").fill("Rejected fixture reply");
-      await f.page.locator("#reply-form button[type=submit]").click();
       f.state.reject = true;
-      await f.page.locator("#confirm-publish").click();
+      await f.page.locator("#reply-form button[type=submit]").click();
       await expect(f.page.locator("#operation-panel")).toHaveAttribute(
         "data-state",
         "rejected",
@@ -610,6 +613,54 @@ try {
       );
       await f.context.close();
       checks.push("Rejected submission retains draft");
+      for (const funds of ['held','account']) {
+        f = await fixture(browser,{saved:true,funds});
+        await ready(f.page); await unlock(f.page);
+        await f.page.locator('#new-thread').click();
+        await f.page.locator('#thread-title').fill('A funded draft');
+        await f.page.locator('#thread-body').fill('Keep this draft during funding recovery.');
+        if (funds === 'held') {
+          await expect(f.page.locator('#compose-posting-status')).toContainText('still own');
+          await f.page.locator('#compose-use-change').click();
+          await expect(f.page.locator('#compose-wallet-balance')).toContainText('Available for posting: 99 test TARI');
+          await expect(f.page.locator('#wallet-posting-policy')).toHaveValue('standard');
+        } else {
+          await f.page.locator('#compose-open-wallet').click();
+          await expect(f.page.locator('#compose-posting-status')).toContainText('0.035 test TARI');
+          await expect(f.page.locator('#browser-wallet-dialog')).not.toBeVisible();
+          await f.page.locator('#compose-prepare-confirm').click();
+          await expect(f.page.locator('#compose-posting-status')).toContainText('Posting funds are ready');
+          assert.equal(await f.page.evaluate(() => window.fixturePreparations),1);
+        }
+        assert.equal(f.state.submits,0,'A funding action must not publish the draft.');
+        await expect(f.page.locator('#thread-body')).toHaveValue('Keep this draft during funding recovery.');
+        assert.deepEqual(f.errors,[]); await f.context.close();
+      }
+      checks.push('Held 99-token balance has explicit policy recovery; account preparation reviews its own fee inline and preserves the unsubmitted draft');
+      let releaseQuote;
+      f = await fixture(browser, {saved:true});
+      await ready(f.page); await unlock(f.page);
+      await f.page.locator('.thread-link').click();
+      await f.page.locator('#reply-body').fill('One intent under repeated clicks');
+      f.state.quoteGate = new Promise(resolve => { releaseQuote = resolve; });
+      await f.page.evaluate(() => {
+        const form = document.getElementById('reply-form');
+        for (let i=0; i<20; i++) form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+      });
+      await expect(f.page.locator('#reply-form button[type=submit]')).toBeDisabled();
+      await expect.poll(() => f.state.quotes).toBe(1);
+      releaseQuote();
+      await expect(f.page.locator('#operation-panel')).toHaveAttribute('data-state','confirmed');
+      assert.equal(f.state.submits,1);
+      assert.equal(f.state.quotes,1);
+      await expect(f.page.locator('#review-dialog')).not.toBeVisible();
+      await f.page.locator('#reply-body').fill('Second ordinary post');
+      await f.page.locator('#reply-form button[type=submit]').click();
+      await expect.poll(() => f.state.submits).toBe(2);
+      await expect(f.page.locator('#operation-panel')).toHaveAttribute('data-state','confirmed');
+      assert.deepEqual(f.errors,[]);
+      await f.context.close();
+      checks.push('Twenty rapid submits create one posting intent; two direct replies succeed without a review popup');
       let releaseSlow;
       const slowGate = new Promise((r) => (releaseSlow = r));
       f = await fixture(browser, { slow: true, slowGate });
@@ -804,18 +855,15 @@ try {
         ),
         null,
       );
+      f.state.unknown = true;
       await f.page.locator("#compose-form button[type=submit]").click();
-      await expect(f.page.locator("#review-copy")).toContainText(
-        "title, category",
-      );
-      assert.equal(f.state.submits, 0, "Review never submits a transaction.");
+      await expect.poll(() => f.state.submits).toBe(1);
+      await expect(f.page.locator('#review-dialog')).not.toBeVisible();
       assert.equal(
         f.state.body.mode,
         0,
         "Sealed envelopes use the unchanged schema-4 byte payload ABI.",
       );
-      f.state.unknown = true;
-      await f.page.locator("#confirm-publish").click();
       await expect(f.page.locator("#operation-panel")).toHaveAttribute(
         "data-state",
         "unknown",
@@ -855,8 +903,7 @@ try {
         null,
       );
       await f.page.locator("#reply-form button[type=submit]").click();
-      await expect(f.page.locator("#review-dialog")).toBeVisible();
-      await f.page.locator("#confirm-publish").click();
+      await expect(f.page.locator("#review-dialog")).not.toBeVisible();
       await expect(f.page.locator("#posts .post-body")).toHaveCount(2);
       assert(
         !sentBodies.some(

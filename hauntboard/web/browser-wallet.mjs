@@ -10,6 +10,7 @@ import { scanOutputLedger } from "./output-ledger.mjs";
 import { decryptFaucetDiscovery, discoverFaucetOutputs } from "./faucet-discovery.mjs";
 import { envelopeEntries } from './key-registry.mjs';
 import {providerState} from './provider-state.mjs';
+import {postingPolicy, eligibleCoin, fundsReadiness, postingFee, POSTING_FEE_LIMIT} from './posting-readiness.mjs';
 import {
   newPhrase,
   keysFromPhrase,
@@ -265,6 +266,7 @@ async function refreshPrivateMaterial() {
     material.scanCursor = latest.scanCursor ?? null;
     material.scanComplete = latest.scanComplete ?? false;
     material.faucetClaimed = latest.faucetClaimed ?? false;
+    material.postingPolicy = postingPolicy(latest);
   } finally {
     plain.fill(0);
   }
@@ -340,6 +342,7 @@ export async function create(password) {
         "A wallet already exists in this browser. Unlock or recover it.",
       );
     const value = await phraseMaterial(await newPhrase(), { format: "native" });
+    value.postingPolicy = 'standard';
     await stored(await encrypt(value, password));
     activate(value);
     await enablePersistence(password);
@@ -408,6 +411,7 @@ export async function recover(phrase, password, options = {}) {
         value.account = existing.account;
         value.coins = existing.coins ?? [];
         value.faucetClaimed = existing.faucetClaimed ?? false;
+        value.postingPolicy = postingPolicy(existing);
       }
     }
     value.recoveryConfirmed = true;
@@ -555,6 +559,7 @@ export async function restore(value, password) {
           merged.set(coin.id, coin);
       }
       recovered.coins = [...merged.values()];
+      recovered.postingPolicy = postingPolicy(existing);
     }
     await validateAccount(recovered);
     await stored(await encrypt(recovered, password));
@@ -565,6 +570,7 @@ export async function restore(value, password) {
   });
 }
 function validateMaterial(value) {
+  if (value.postingPolicy !== undefined && !['standard', 'isolated'].includes(value.postingPolicy)) throw new Error('Invalid posting privacy setting.');
   if (
     value.coins !== undefined &&
     (!Array.isArray(value.coins) ||
@@ -717,6 +723,18 @@ export function privateFunds() {
       .length,
   };
 }
+export function getPostingPolicy() { return postingPolicy(material); }
+export async function setPostingPolicy(policy) {
+  if (!['standard', 'isolated'].includes(policy)) throw new Error('Choose a supported posting setting.');
+  return coordinated(async () => {
+    requireSigner();
+    await refreshPrivateMaterial();
+    if (localStorage.getItem(privatePendingKey()) || localStorage.getItem('hauntboard-pending')) throw new Error('Check your existing submission before changing this setting.');
+    material.postingPolicy = policy;
+    await persistMaterial();
+    return policy;
+  });
+}
 export async function privateBalance() {
   return coordinated(async () => {
   requireSigner();
@@ -752,10 +770,11 @@ export async function privateBalance() {
   return { ...Object.fromEntries(
     Object.entries({
       ...totals,
+      ready: totals.ready + (postingPolicy(material) === 'standard' ? totals.quarantined : 0n),
       revealed,
       total: totals.ready + totals.quarantined + totals.reserved + revealed,
     }).map(([key, value]) => [key, value.toString()]),
-  ), discoveryUnavailable: discovery.unavailable === true, discoveryCapacityReached: discovery.capacityReached === true, discoveryHistoryIncomplete: discovery.historyComplete === false };
+  ), postingPolicy: postingPolicy(material), discoveryUnavailable: discovery.unavailable === true, discoveryCapacityReached: discovery.capacityReached === true, discoveryHistoryIncomplete: discovery.historyComplete === false };
   });
 }
 async function discoverExistingAccount() {
@@ -937,6 +956,13 @@ async function privateReview(body, registrySigner) {
   if (needsPhraseConfirmation())
     throw new Error("Save and confirm your recovery phrase before posting.");
   await refreshPrivateMaterial();
+  // Fund discovery shares the wallet lock with selection. A stale receipt feed
+  // must not prevent use of an already verified eligible input.
+  let discoveryUnavailable = false;
+  try { await discoverFaucetFunds(); } catch { discoveryUnavailable = true; }
+  if (!(material.coins ?? []).some(c => eligibleCoin(c, postingPolicy(material)))) {
+    try { await scanOwnedOutputs(); } catch { discoveryUnavailable = true; }
+  }
   if (body.kind === "tip" || body.mode === 1)
     throw new Error("Use schema-4 byte payloads and native posting fees for this board.");
   const target = body.kind==='registry' ? (body.registry ?? body.board) : body.board ?? body.thread,
@@ -956,14 +982,12 @@ async function privateReview(body, registrySigner) {
     throw new Error(
       "Reconcile the previous private fee submission before posting again.",
     );
-  if ((material.coins ?? []).length >= 32)
-    throw new Error(
-      "This wallet reached its tracked-output limit. Keep its recovery phrase and use a separate browser profile with a fresh wallet.",
-    );
-  let coin;
+  material.coins = (material.coins ?? []).filter(c => c.state !== 'used');
+  let coin, coinValue = 0n;
+  const policy = postingPolicy(material);
   const native = new sdk.WasmStealthCrypto(config.networkByte);
   for (const candidate of material.coins ?? []) {
-    if (candidate.state !== "ready") continue;
+    if (!eligibleCoin(candidate, policy)) continue;
     let row;
     try {
       row = await provider.getSubstate(candidate.id);
@@ -988,15 +1012,15 @@ async function privateReview(body, registrySigner) {
     );
     if (!owned)
       throw new Error("Ready fee output does not belong to this wallet.");
-    if (owned.value > 1000000n) {
+    if (owned.value > coinValue) {
       coin = candidate;
-      break;
+      coinValue = owned.value;
     }
   }
-  if (!coin)
-    throw new Error(
-      "Receive a native stealth output larger than 1 test TARI for fee simulation. Change is held separately to avoid linking your next post.",
-    );
+  if (!coin) {
+    const reason = fundsReadiness({ready:'0', quarantined: material.coins.some(c => c.state === 'quarantined') ? '1' : '0', reserved: material.coins.some(c => c.state === 'reserved') ? '1' : '0', revealed: await balance(), postingPolicy:policy, discoveryUnavailable}, {incomplete: !material.scanComplete});
+    throw Object.assign(new Error(reason.message), {code: reason.code});
+  }
   const builder = new sdk.TransactionBuilder(config.networkByte, 0),
     extra = [];
   if (body.kind === 'registry') {
@@ -1050,7 +1074,7 @@ async function privateReview(body, registrySigner) {
     path: "transactions/dry-run",
     body: {
       transaction: (
-        await prepareStealthFee({ ...args, maxFee: 1000000n, dryRun: true })
+        await prepareStealthFee({ ...args, maxFee: coinValue > POSTING_FEE_LIMIT ? POSTING_FEE_LIMIT : coinValue - 1n, dryRun: true })
       ).envelope,
     },
   });
@@ -1062,7 +1086,7 @@ async function privateReview(body, registrySigner) {
     paid =
       BigInt(receipt.total_fees_paid) -
       BigInt(receipt.total_fee_overcharge ?? "0"),
-    maximum = paid + (paid + 4n) / 5n + 1000n;
+    maximum = postingFee(simulated.result.finalize.total_fees_required ?? paid, coinValue);
   const checked = await api("/api/indexer", {
     method: "POST",
     path: "transactions/dry-run",
@@ -1088,11 +1112,12 @@ async function privateReview(body, registrySigner) {
     maxFee: maximum.toString(),
     operation: hex(crypto.getRandomValues(new Uint8Array(32))),
     coinId: coin.id,
+    postingPolicy: policy,
     envelope: ready.envelope,
     args,
   };
 }
-async function privateSubmit(quote) {
+async function privateSubmit(quote, persistPrepared) {
   await refreshPrivateMaterial();
   if (
     quote.args.signer !== signer ||
@@ -1102,7 +1127,7 @@ async function privateSubmit(quote) {
   )
     throw new Error("Wallet, network or fee review changed. Review again.");
   const coin = material.coins.find((c) => c.id === quote.coinId);
-  if (coin?.state !== "ready" || localStorage.getItem(privatePendingKey()))
+  if (!coin || !eligibleCoin(coin, postingPolicy(material)) || quote.postingPolicy !== postingPolicy(material) || localStorage.getItem(privatePendingKey()))
     throw new Error("This fee output is already reserved. Reconcile it first.");
   const check = await api("/api/indexer", {
     method: "POST",
@@ -1125,6 +1150,7 @@ async function privateSubmit(quote) {
   const pending = {
     operation: quote.operation,
     coinId: quote.coinId,
+    coinState: coin.state,
     envelope: quote.envelope,
     id: identity.id,
     maxEpoch: identity.maxEpoch,
@@ -1132,6 +1158,7 @@ async function privateSubmit(quote) {
   localStorage.setItem(privatePendingKey(), JSON.stringify(pending));
   coin.state = "reserved";
   await persistMaterial();
+  await persistPrepared({id: pending.id});
   const sent = await api("/api/browser-submit", {
     transaction: pending.envelope,
     operation: pending.operation,
@@ -1230,7 +1257,7 @@ export async function confirmPostingPreparation() {
 export async function review(body) {
   requireSigner();
   await requireNetwork();
-  if (privateMode()) return privateReview(body);
+  if (privateMode()) return coordinated(() => privateReview(body));
   if (!material.account)
     throw new Error("Fund your browser wallet before posting.");
   if (body.kind === "tip")
@@ -1349,7 +1376,7 @@ export async function reviewRegistry(body, admin) {
   if(!privateMode() || body.kind!=='registry') throw Error('Registry changes require native stealth fees.');
   const owner=unhex(admin.owner), view=unhex(admin.view);
   const registrySigner=sdk.SecretKeyWallet.fromSecretKey(new Uint8Array(owner),config.networkByte,new Uint8Array(view));
-  try { return await privateReview(body,registrySigner); }
+  try { return await coordinated(() => privateReview(body,registrySigner)); }
   finally { owner.fill(0);view.fill(0); }
 }
 export function newRoomAdmin() {
@@ -1360,11 +1387,17 @@ export function newRoomAdmin() {
     finally {pub.free();}
   } finally {keys.free();}
 }
-export async function submit(quote) {
+export async function submit(quote, persistPrepared = () => {}) {
   return coordinated(async () => {
     requireSigner();
     await requireNetwork();
-    if (quote.privateFee) return privateSubmit(quote);
+    if (quote.privateFee) {
+      try { return await privateSubmit(quote, persistPrepared); }
+      catch (error) {
+        if (!localStorage.getItem(privatePendingKey())) error.notSubmitted = true;
+        throw error;
+      }
+    }
     if (
       quote.account !== material.account ||
       quote.publicKey !== material.publicKey ||
@@ -1419,7 +1452,8 @@ async function transactionResult(id) {
         feeOnly = final.execution_result?.finalize?.result?.AcceptFeeRejectRest;
       const diff = accepted ?? feeOnly?.[0];
       const coin = material.coins.find((c) => c.id === pending.coinId);
-      if (coin) coin.state = diff ? "used" : "ready";
+      if (coin) coin.state = diff ? "used" : pending.coinState === 'quarantined' ? 'quarantined' : 'ready';
+      material.coins = material.coins.filter(c => c.state !== 'used');
       for (const [out] of diff?.up_substates ?? []) {
         if (
           !out.startsWith(`utxo_${NATIVE.slice(9)}_`) ||

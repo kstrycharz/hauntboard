@@ -42,6 +42,7 @@ knownFiles.set('/vendor/wallet-recovery-glue.mjs','vendor/wallet-recovery-glue.m
 knownFiles.set('/browser-wallet.mjs','browser-wallet.mjs');
 knownFiles.set('/sapient-wallet.mjs','sapient-wallet.mjs');
 knownFiles.set('/wallet-options.mjs','wallet-options.mjs');
+knownFiles.set('/posting-readiness.mjs','posting-readiness.mjs');
 knownFiles.set('/sapient-logo.svg','sapient-logo.svg');
 knownFiles.set('/sapient-logo.LICENSE.txt','sapient-logo.LICENSE.txt');
 knownFiles.set('/pin-entry.mjs','pin-entry.mjs');

@@ -13,6 +13,7 @@ import {
 } from "./crypto.mjs";
 import * as browserWallet from "./browser-wallet.mjs";
 import { setupWalletOptions } from './wallet-options.mjs';
+import {fundsReadiness, POSTING_FEE_LIMIT} from './posting-readiness.mjs';
 import { PinEntry } from "./pin-entry.mjs";
 import { createApiClient } from "./api-client.mjs";
 import { FaucetClient, faucetMessage } from "./faucet-client.mjs";
@@ -37,6 +38,8 @@ let config,
   quote,
   publishContext,
   busy = false;
+let postIntentBusy = false, postingRevision = 0;
+const postingIntents = new Map();
 let threadRows = [];
 let threadRenderGeneration=0;
 const categories = {
@@ -158,7 +161,7 @@ const api = createApiClient({getConfig: () => config});
 const faucetClient = new FaucetClient({api});
 const walletOptions = setupWalletOptions({
   document, getConfig: () => config, pending: () => Boolean(transactionPending),
-  selectionChanged: connection => { if (connection) $('identity').textContent = 'Sapient connected'; else if (config) walletView().catch(() => {}); },
+  selectionChanged: connection => { invalidateReview(); if (connection) { $('identity').textContent = 'Sapient connected'; showPostingWallet(); } else if (config) walletView().catch(() => {}); },
   connected: () => { $('browser-wallet-dialog').close(); if (walletReturn) resumeWalletTask(); else flash('Sapient connected. You can now create a post or reply.'); },
   useBrowserWallet: () => {
     $("sapient-options").open = false;
@@ -928,6 +931,10 @@ async function review(body, context) {
       !browserWallet.active()) ||
     browserWallet.needsPhraseConfirmation())
   ) {
+    if (context.inline) {
+      showPostingHelp(context.inline, {code:'wallet-required', message: browserWallet.needsPhraseConfirmation() ? 'Finish saving your recovery phrase before posting. Your draft is still here.' : 'Set up or unlock a wallet to post. Your draft is still here.', action:'wallet'});
+      return;
+    }
     walletReturn = body.kind === "thread" ? "compose" : "reply";
     document.querySelectorAll("dialog[open]").forEach((d) => d.close());
     await openWallet();
@@ -954,6 +961,12 @@ async function review(body, context) {
         ? body.kind==='registry' ? await browserWallet.reviewRegistry(body,context.admin) : await browserWallet.review(body)
         : await api("/api/quote", body);
     publishContext = { ...context, body, quote };
+    if (context.inline) {
+      if (context.revision !== postingRevision) throw Object.assign(new Error('Your draft or wallet changed during the check. Press Post when you are ready.'), {notSubmitted:true});
+      if (BigInt(quote.maxFee) <= 0n || BigInt(quote.maxFee) > POSTING_FEE_LIMIT) throw Object.assign(new Error('The fee exceeds the 1 test TARI limit. Nothing was submitted.'), {notSubmitted:true});
+      showPostingHelp(context.inline, {code: 'ready', message: quote.sapient ? 'Approve this post and its fee in Sapient. Your extension will open.' : `Network fee: ${units(quote.maxFee)}${quote.privateFee ? ', paid in full' : ' maximum'}. Posting…`});
+      return {ready:true};
+    }
     document.querySelectorAll("dialog[open]").forEach((d) => d.close());
     $("review-title").textContent =
       body.kind === "tip"
@@ -1016,7 +1029,7 @@ async function review(body, context) {
     dialog("review-dialog");
   } finally {
     busy = false;
-    buttons.forEach((b) => (b.disabled = false));
+    buttons.forEach((b) => (b.disabled = postIntentBusy));
   }
 }
 async function pollTransaction(id, isBrowser = false, isSapient = false) {
@@ -1077,7 +1090,7 @@ async function finishTransaction(pending) {
     localStorage.removeItem("hauntboard-pending");
     transactionPending = null;
     throw new Error(
-      `The chain rejected this transaction (${tx.status}). Your draft remains available in this session.`,
+      `The network did not publish this message (${tx.status}).${BigInt(tx.fee ?? 0) > 0n ? ` It charged a network fee of ${units(tx.fee)}.` : ''} Your draft remains available in this session.`,
     );
   }
   // Acceptance and provider visibility are separate. Retain the operation until its view resolves.
@@ -1133,6 +1146,7 @@ async function finishTransaction(pending) {
   transactionPending = null;
   publishContext = null;
   quote = null;
+  postingIntents.clear();
   operationState(
     "confirmed",
     pending.kind === 'registry' ? 'Room access updated. Download a fresh access backup from Room access.' : pending.kind === "tip"
@@ -1183,14 +1197,15 @@ async function publish() {
     transactionPending = pending;
     operationState(
       "submitted",
-      "Authorizing your reviewed submission. Do not publish it again.",
+      context.quote.sapient ? 'Approve your post in Sapient. Check the existing request if approval is interrupted.' : 'Posting your message. You do not need to press Post again.',
     );
     const sent = context.quote.sapient ? await walletOptions.adapter.submit(context.quote, pending, () => localStorage.setItem('hauntboard-pending', JSON.stringify(pending))) : context.quote.browser
-      ? await browserWallet.submit(context.quote)
+      ? await browserWallet.submit(context.quote, prepared => { pending.id = prepared.id; localStorage.setItem('hauntboard-pending', JSON.stringify(pending)); })
       : await api("/api/submit", { quoteId: context.quote.id });
     pending.id = sent.transactionId;
     localStorage.setItem("hauntboard-pending", JSON.stringify(pending));
     $("review-dialog").close();
+    if (context.inline === 'compose') $('compose-dialog').close();
     operationState(
       "submitted",
       "Your post was submitted. Waiting for confirmation…",
@@ -1198,10 +1213,11 @@ async function publish() {
     const completed = { ...pending, key: context.key };
     await finishTransaction(completed);
   } catch (error) {
-    if (error.notSubmitted && transactionPending?.sapient && !transactionPending.sapientAttempted) {
+    if (error.notSubmitted && transactionPending && (!transactionPending.sapient || !transactionPending.sapientAttempted)) {
       localStorage.removeItem('hauntboard-pending'); transactionPending = null;
     }
     $("review-dialog").close();
+    if (publishContext?.inline) showPostingHelp(publishContext.inline, {code:transactionPending ? 'pending-operation' : 'rejected', message:transactionPending ? 'Your submission is still being checked. You do not need to post again.' : error.message, action:transactionPending ? 'status' : 'sync'});
     operationError(error);
   } finally {
     busy = false;
@@ -1291,10 +1307,126 @@ function fieldError(kind, message) {
   field.focus();
 }
 function invalidateReview() {
+  postingRevision++;
   if (transactionPending) return;
   quote = null;
   if (publishContext?.body) publishContext = null;
   $("confirm-publish").disabled = true;
+}
+function showPostingHelp(kind, reason) {
+  const status = $(`${kind}-posting-status`);
+  status.textContent = reason.message;
+  status.dataset.state = reason.code ?? 'checking';
+  $(`${kind}-use-change`).hidden = reason.action !== 'policy';
+  $(`${kind}-change-help`).hidden = reason.action !== 'policy';
+  const setup = $(`${kind}-open-wallet`);
+  setup.hidden = !['wallet','prepare','fund'].includes(reason.action);
+  setup.textContent = reason.action === 'prepare' ? 'Prepare posting funds' : reason.action === 'fund' ? 'Get free test tokens' : 'Set up or unlock wallet';
+  $(`${kind}-sync-posting`).hidden = reason.action !== 'sync';
+  $(`${kind}-check-posting`).hidden = reason.action !== 'status';
+  $(`${kind}-prepare-confirm`).hidden = reason.code !== 'preparation-review' && reason.code !== 'preparation-pending';
+}
+function showPostingWallet(readiness) {
+  const sapient = Boolean(walletOptions.adapter.connection);
+  if (sapient) $('wallet-balance-button').hidden = true;
+  for (const kind of ['compose', 'reply']) {
+    if (sapient) {
+      $(`${kind}-wallet-balance`).hidden = false;
+      $(`${kind}-wallet-balance`).textContent = 'Posting with Sapient. Funds and the fee are checked in the extension; browser-wallet funds are separate.';
+      showPostingHelp(kind, {code:'approval-required', message:'Sapient will open for approval when you post.'});
+    } else if (readiness) showPostingHelp(kind, readiness);
+    else if (lastWalletBalance && browserWallet.active()) showPostingHelp(kind, fundsReadiness(lastWalletBalance, {incomplete:scanIncomplete}));
+  }
+}
+function postingIntent(kind, identity) {
+  const fingerprint = JSON.stringify(identity);
+  let intent = postingIntents.get(kind);
+  if (!intent || intent.fingerprint !== fingerprint) {
+    intent = {fingerprint, id:randomId(), key:kind === 'compose' && identity.mode ? newThreadKey() : null};
+    postingIntents.set(kind, intent);
+  }
+  return intent;
+}
+async function runPostingIntent(kind, action) {
+  if (postIntentBusy || busy) return;
+  if (transactionPending) { showPostingHelp(kind, {code:'pending-operation', message:'Your existing submission is still being checked. You do not need to post again.', action:'status'}); return; }
+  postIntentBusy = true;
+  const buttons = [...document.querySelectorAll('#compose-form button[type=submit],#reply-form button[type=submit]')];
+  buttons.forEach(button => { button.disabled = true; button.textContent = button.closest('#compose-form') ? 'Posting…' : 'Replying…'; });
+  showPostingHelp(kind, {code:'checking', message:'Checking your post and network fee…'});
+  try {
+    await navigator.locks.request(`hauntboard-post:${config.network}:${config.resetIdentity}`, {ifAvailable:true}, async lock => {
+      if (!lock) throw Object.assign(new Error('Another tab is checking a post. Wait for its result.'), {code:'pending-operation'});
+      const existing = readStorage(localStorage, 'hauntboard-pending', null);
+      if (existing) { transactionPending = existing; throw Object.assign(new Error('Your previous submission is still being checked. Use Check status before posting again.'), {code:'pending-operation'}); }
+      publishContext = null;
+      quote = null;
+      const revision = postingRevision;
+      await action(revision);
+      if (publishContext?.inline === kind && publishContext.revision === postingRevision && quote) {
+        await publish();
+        if (transactionPending) showPostingHelp(kind, {code:'pending-operation', message:'Your post is still being checked. Use Check status; you do not need to post it again.', action:'status'});
+        else if (!publishContext) showPostingHelp(kind, {code:'confirmed', message:'Your message is published.'});
+      }
+    });
+  } catch (error) {
+    let reason = {code:error.code ?? 'provider-unavailable', message:error.message, action:'sync'};
+    if (error.code === 'change-held') reason.action = 'policy';
+    else if (error.code === 'preparation-needed') reason.action = 'prepare';
+    else if (error.code === 'funding-needed' || error.code === 'insufficient-eligible-funds') reason.action = 'fund';
+    else if (error.code === 'pending-operation') reason.action = 'status';
+    showPostingHelp(kind, reason);
+    operationError(error);
+  } finally {
+    postIntentBusy = false;
+    buttons.forEach(button => { button.disabled = false; button.textContent = button.closest('#compose-form') ? 'Post' : 'Reply'; });
+  }
+}
+for (const kind of ['compose','reply']) {
+  $(`${kind}-check-posting`).addEventListener('click', async () => { transactionPending ??= readStorage(localStorage, 'hauntboard-pending', null); if (kind === 'compose') $('compose-dialog').close(); await reconcilePending(); });
+  $(`${kind}-open-wallet`).addEventListener('click', async () => {
+    if ($(`${kind}-posting-status`).dataset.state === 'preparation-needed' && browserWallet.active()) {
+      const button = $(`${kind}-open-wallet`);
+      button.disabled = true;
+      try {
+        const preparation = await browserWallet.reviewPostingPreparation();
+        showPostingHelp(kind, {code:preparation.pending ? 'preparation-pending' : 'preparation-review', message:preparation.pending ? 'Your preparation is still being checked. Check the saved request; no new transfer will be created.' : `Move ${units(preparation.amount)} within your wallet to prepare posting funds. This separate transaction costs up to ${units(preparation.fee)}. The rest stays in your account. Confirming does not publish your draft.`});
+        $(`${kind}-prepare-confirm`).textContent = preparation.pending ? 'Check preparation status' : 'Confirm preparation';
+      } catch (error) { showPostingHelp(kind, {code:'preparation-needed', message:error.message, action:'prepare'}); }
+      finally { button.disabled = false; }
+      return;
+    }
+    walletReturn = kind;
+    if (kind === 'compose') $('compose-dialog').close();
+    await openWallet();
+    if (browserWallet.active()) {
+      $('browser-wallet-fallback').open = true;
+      $('wallet-ready-panel').scrollIntoView({block:'start'});
+    }
+  });
+  $(`${kind}-prepare-confirm`).addEventListener('click', async () => {
+    const button = $(`${kind}-prepare-confirm`);
+    if (button.disabled || postIntentBusy || transactionPending) return;
+    button.disabled = true;
+    try {
+      await browserWallet.confirmPostingPreparation();
+      invalidateReview(); await walletView();
+      showPostingHelp(kind, {code:'ready', message:'Posting funds are ready. Your draft is preserved; press Post or Reply when ready.'});
+    } catch (error) {
+      const pending = browserWallet.postingPreparationStatus().pending;
+      showPostingHelp(kind, {code:pending ? 'preparation-pending' : 'preparation-needed', message:error.message, action:pending ? null : 'prepare'});
+      button.textContent = 'Check preparation status';
+    } finally { button.disabled = false; }
+  });
+  $(`${kind}-use-change`).addEventListener('click', async () => {
+    try { await browserWallet.setPostingPolicy('standard'); invalidateReview(); await walletView(); showPostingWallet(); }
+    catch (error) { showPostingHelp(kind, {code:'provider-unavailable', message:error.message, action:'sync'}); }
+  });
+  $(`${kind}-sync-posting`).addEventListener('click', async () => {
+    showPostingHelp(kind, {code:'checking', message:'Checking for incoming funds…'});
+    try { const result = await browserWallet.syncPrivateFunds(); scanIncomplete = result.complete === false; await walletView(); showPostingWallet(); }
+    catch { showPostingHelp(kind, {code:'provider-unavailable', message:'Funds could not be checked. Your existing tokens and draft are preserved.', action:'sync'}); }
+  });
 }
 // Drafts are held in this tab. Secret draft persistence is intentionally avoided before encryption.
 $("compose-form").addEventListener("input", () => {
@@ -1327,18 +1459,13 @@ $("reply-body").addEventListener("input", () => {
 });
 $("compose-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (busy || transactionPending)
-    return flash(
-      "Finish the pending transaction before posting another message.",
-      true,
-    );
-  try {
+  await runPostingIntent('compose', async revision => {
     const mode = Number(
         document.querySelector("input[name=mode]:checked").value,
-      ),
-      uid = randomId(),
-      key = mode ? newThreadKey() : null;
+      );
     const content = composeContent();
+    const intent = postingIntent('compose', {board:boardAddress, mode, content});
+    const uid = intent.id, key = intent.key;
     if ($("include-address").checked) {
       const destination =
         browserWallet.active()?.address ?? config.receiveAddress;
@@ -1367,19 +1494,15 @@ $("compose-form").addEventListener("submit", async (e) => {
         uid,
         payload,
       },
-      { key, content },
+      { key, content, inline:'compose', revision },
     );
-  } catch (e) {
-    fieldError("compose", e.message);
-    operationError(e);
-  }
+  });
 });
 $("reply-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (busy || transactionPending)
-    return flash("Finish the pending transaction first.", true);
-  try {
-    const nonce = randomId(),
+  await runPostingIntent('reply', async revision => {
+    const intent = postingIntent('reply', {thread:currentThread.address, body:$('reply-body').value, parent:$('reply-form').dataset.parent});
+    const nonce = intent.id,
       parent = Number($("reply-form").dataset.parent ?? 0);
     if (currentThread.schema >= 3) {
       const view = new DataView(new Uint8Array(nonce).buffer);
@@ -1407,12 +1530,9 @@ $("reply-form").addEventListener("submit", async (e) => {
         : await encodePost(content, currentThread.mode, key, context);
     await review(
       { kind: "reply", thread: currentThread.address, nonce, parent, payload },
-      { content, managed },
+      { content, managed, inline:'reply', revision },
     );
-  } catch (e) {
-    fieldError("reply", e.message);
-    operationError(e);
-  }
+  });
 });
 $("tip-form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -1713,7 +1833,7 @@ function renderFaucet() {
     const waiting = record?.retryAt > Date.now();
     const cooldown = record && ["confirmed", "failed", "rejected"].includes(record.status) && record.createdAt + 3600000 > Date.now();
     $("wallet-faucet").disabled = walletWorking || faucetWorking || Boolean(waiting) || Boolean(cooldown);
-    $("wallet-faucet").textContent = faucetWorking ? "Checking funding request…" : cooldown ? `Next request in ${Math.ceil((record.createdAt + 3600000 - Date.now()) / 60000)} min` : !record || ["confirmed", "failed", "rejected"].includes(record.status) ? "Get 100 test tXTR" : record.status === "unknown" ? "Retry saved funding request" : "Check funding request";
+    $("wallet-faucet").textContent = faucetWorking ? "Checking funding request…" : cooldown ? `Next request in ${Math.ceil((record.createdAt + 3600000 - Date.now()) / 60000)} min` : !record || ["confirmed", "failed", "rejected"].includes(record.status) ? "Get 100 test TARI" : record.status === "unknown" ? "Retry saved funding request" : "Check funding request";
     $("wallet-faucet-status").textContent = faucetUiError?.address === address ? faucetUiError.message : faucetMessage(record) + (record?.error && waiting ? ` Try again in ${Math.ceil((record.retryAt - Date.now()) / 1000)} seconds.` : "");
   } catch (error) {
     $("wallet-faucet").disabled = true;
@@ -1773,13 +1893,14 @@ function showWalletBalance(balance, version = ++walletBalanceVersion) {
     $(id).hidden = !visible;
     $(id).textContent = visible ? `Wallet balance: ${totalValue} · Available for posting: ${value}` : "";
   }
+  $('wallet-posting-policy').value = balance?.postingPolicy ?? browserWallet.getPostingPolicy?.() ?? 'isolated';
   const details = $("wallet-balance-details");
   details.replaceChildren();
   for (const [label, key] of [
     ["Total discovered", "total"],
     ["Available for posting", "ready"],
     ["Reserved for pending operations", "reserved"],
-    ["Change held separately", "quarantined"],
+    [balance?.postingPolicy === 'standard' ? "Remaining change (included in available funds)" : "Change held separately", "quarantined"],
     ["Revealed account balance", "revealed"],
   ]) {
     if (balance?.[key] !== undefined)
@@ -1788,23 +1909,10 @@ function showWalletBalance(balance, version = ++walletBalanceVersion) {
         node("dd", "", units(balance[key])),
       );
   }
-  $("wallet-readiness").textContent = balance?.unavailable
-    ? "Funds could not be checked. Any displayed amounts are from the last successful check. Retry syncing before posting."
-    : balance?.discoveryUnavailable
-      ? "Known funds are verified. Incoming faucet funds could not be checked; retrying automatically."
-    : balance?.discoveryCapacityReached
-      ? "Known funds are verified. The wallet output limit prevents importing more incoming funds."
-    : balance?.discoveryHistoryIncomplete
-      ? "Available funds are verified. Some older faucet receipts are unavailable; older incoming funds may be missing."
-    : scanIncomplete
-      ? "Wallet recovered. Still checking for funds; this balance may be incomplete."
-      : available === undefined
-        ? "Checking available funds…"
-        : BigInt(available) > 0n
-          ? "Funds are available. Review a post to check its exact fee."
-          : BigInt(balance?.revealed ?? 0) > 0n
-            ? "Your funds are in a standard Tari account. Choose Convert to posting funds to make 10 test TARI available for posting."
-            : "No funds are available for posting. Request test tokens below or check for incoming funds.";
+  const readiness = fundsReadiness(balance, {incomplete:scanIncomplete});
+  $('wallet-readiness').textContent = readiness.message + (!balance?.unavailable && scanIncomplete && readiness.code === 'ready' ? ' Incoming-fund discovery is incomplete; known usable funds are verified.' : '');
+  for (const kind of ['compose','reply']) showPostingHelp(kind, readiness);
+  showPostingWallet(readiness);
 }
 let refreshingIncoming = false;
 let lastIncomingBalanceCheck = 0;
@@ -1973,7 +2081,7 @@ async function walletView() {
     : has
       ? walletUnlockMethod === "password"
         ? "Unlock with your original password. You can switch to a PIN in Wallet settings."
-        : "Your PIN unlocks this browser. Publishing always has a separate review."
+        : "Your PIN unlocks this browser. Post authorizes the network-fee limit shown beside your message."
       : "Create a wallet or recover with your Tari L2 seed phrase.";
   $("wallet-lock").hidden = !wallet;
   $("wallet-show-seed").textContent = wallet && browserWallet.needsPhraseConfirmation() ? "Finish recovery backup" : "Show recovery phrase";
@@ -2238,6 +2346,11 @@ walletAction("wallet-prepare-confirm", async () => {
   $("wallet-prepare-review").textContent = "Posting funds confirmed on Tari.";
   return result;
 }, "Converting to posting funds on Tari…");
+$('wallet-posting-policy').addEventListener('change', async () => {
+  const policy = $('wallet-posting-policy').value;
+  try { await browserWallet.setPostingPolicy(policy); invalidateReview(); await walletView(); }
+  catch (error) { $('wallet-posting-policy').value = browserWallet.getPostingPolicy(); flash(error.message, true); }
+});
 walletAction(
   "wallet-find-funds",
   () => browserWallet.importIncoming($("incoming-transaction").value.trim()),
@@ -2453,7 +2566,7 @@ $("privacy-button").addEventListener("click", () => {
       "Classic sealed invitations contain a shared key in the URL fragment. Send them through a trusted private channel. Room access adds recipient-specific encrypted invitations, a separate recovery vault and rotation for future messages. Old keys and plaintext cannot be revoked. Wallet recovery words do not restore either kind of room key; keep the appropriate encrypted backup and its recovery credential. Messages do not authenticate individual authors.",
       "Your browser signs posting fees with native one-time stealth spend keys. Your persistent owner signature and named account are omitted.",
       "Fees, spent-output graph, timing, public message clues and network connections remain visible. This does not prove complete anonymity.",
-      "Each separately received output funds one post. Change stays held separately to avoid linking another post. Your recovery phrase restores wallet keys; keep it private.",
+      "Standard posting can reuse remaining tokens, so the output graph may link posts. Reduce links between posts holds change aside instead. Existing wallets keep that setting until you change it. Your recovery phrase restores wallet keys; keep it private.",
     ]);
     return;
   }

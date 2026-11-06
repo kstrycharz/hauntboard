@@ -196,9 +196,19 @@
             ></textarea>
             <p id="reply-space" class="small"></p>
             <p id="reply-error" class="field-error" hidden></p>
+            <section class="posting-help" aria-label="Reply funding">
+              <p class="small">Posting saves your message on the Tari test network. By pressing Reply, you allow a network fee up to 1 test TARI. Test tokens have no monetary value. Posts cannot be edited or deleted.</p>
+              <p id="reply-posting-status" class="small" role="status" aria-live="polite"></p>
+              <p id="reply-change-help" class="small" hidden>Using remaining tokens lets network activity link your posts. This changes your browser wallet to Standard posting.</p>
+              <button id="reply-use-change" class="subtle" type="button" hidden>Use remaining tokens</button>
+              <button id="reply-open-wallet" class="subtle" type="button" hidden>Set up or unlock wallet</button>
+              <button id="reply-prepare-confirm" class="subtle" type="button" hidden>Confirm preparation</button>
+              <button id="reply-sync-posting" class="subtle" type="button" hidden>Check funds again</button>
+              <button id="reply-check-posting" class="subtle" type="button" hidden>Check status</button>
+            </section>
             <div class="compose-footer">
               <span id="reply-context">Replying to the thread</span
-              ><button type="submit" class="primary">Review reply</button>
+              ><button type="submit" class="primary">Reply</button>
             </div>
           </form>
         </section>
@@ -213,7 +223,7 @@
     <dialog id="compose-dialog" aria-labelledby="compose-title">
       <form id="compose-form">
         <div class="dialog-top">
-          <span class="eyebrow">WRITE → REVIEW → PUBLISH</span
+          <span class="eyebrow">JOIN THE CONVERSATION</span
           ><button
             type="button"
             data-close="compose-dialog"
@@ -274,6 +284,16 @@
           ></label
         >
         <p id="draft-status" class="small"></p>
+        <section class="posting-help" aria-label="Post funding">
+          <p class="small">Posting saves your message on the Tari test network. By pressing Post, you allow a network fee up to 1 test TARI. Test tokens have no monetary value. Posts cannot be edited or deleted.</p>
+          <p id="compose-posting-status" class="small" role="status" aria-live="polite"></p>
+          <p id="compose-change-help" class="small" hidden>Using remaining tokens lets network activity link your posts. This changes your browser wallet to Standard posting.</p>
+          <button id="compose-use-change" class="subtle" type="button" hidden>Use remaining tokens</button>
+          <button id="compose-open-wallet" class="subtle" type="button" hidden>Set up or unlock wallet</button>
+          <button id="compose-prepare-confirm" class="subtle" type="button" hidden>Confirm preparation</button>
+          <button id="compose-sync-posting" class="subtle" type="button" hidden>Check funds again</button>
+          <button id="compose-check-posting" class="subtle" type="button" hidden>Check status</button>
+        </section>
         <div id="discard-secret" class="caution" hidden>
           <p>This sealed draft is not saved. Keep writing or discard it?</p>
           <button id="keep-draft" type="button" class="subtle">
@@ -284,7 +304,7 @@
         </div>
         <div class="compose-footer">
           <span id="compose-hint">Public text is visible on chain.</span
-          ><button type="submit" class="primary">Review post</button>
+          ><button type="submit" class="primary">Post</button>
         </div>
       </form>
     </dialog>
@@ -473,6 +493,7 @@
       </div>
       <div id="wallet-controls">
         <div id="wallet-entry">
+          <p class="small">New browser wallets use Standard posting, which lets remaining tokens pay for later posts. Network activity may link those posts. You can choose to hold change aside in Posting setting.</p>
           <button id="wallet-create-choice" class="primary full">
             Create wallet</button
           ><button id="wallet-recover-choice" class="subtle full">
@@ -635,12 +656,15 @@
         <section id="wallet-ready-panel" hidden aria-label="Wallet funds">
           <div class="balance-grid"><div><span>Total wallet balance</span><strong id="wallet-ready-value"></strong></div><div><span>Available for posting</span><strong id="wallet-ready-posting"></strong></div></div>
           <p id="wallet-readiness" class="small"></p>
+          <label for="wallet-posting-policy">Posting setting</label>
+          <select id="wallet-posting-policy"><option value="standard">Standard — use remaining tokens again</option><option value="isolated">Reduce links between posts — hold change aside</option></select>
+          <p class="small">Standard posting uses your remaining tokens for later posts. Network activity may link those posts. Holding change aside reduces one source of links; neither setting guarantees anonymity. Existing wallets keep their previous setting.</p>
           <div id="wallet-prepare-panel" hidden>
             <h3>Convert to posting funds</h3>
             <p class="small">Move 10 test TARI from your account into funds this app can use for posting. It stays native test TARI in your wallet. Your total balance changes only by the network fee.</p>
             <details>
               <summary>How this conversion works</summary>
-              <p class="small">Tari creates four private outputs of 2.5 test TARI each, controlled by your wallet's one-time keys. Hauntboard uses one output per post so the posting transaction can omit your persistent wallet key and named account. Unspent change from a post is held separately.</p>
+              <p class="small">Tari creates four private outputs of 2.5 test TARI each, controlled by your wallet's one-time keys. A post uses one output and returns the remainder to your wallet. Standard posting can use that remainder again; Reduce links between posts holds it aside.</p>
               <p class="small">For example, a 500 test TARI account becomes 10 available for posting and approximately 490 left in the account, minus the conversion fee. The 10 is not a charge; posting fees are charged later when you publish.</p>
               <p class="small">Conversion exposes the funding account, amount and shared output origin on-chain. Later posts can still be linked through that history. This does not guarantee anonymity. Review the fee before confirming.</p>
               <a href="/about#posting-funds">Read about account and posting balances</a>
@@ -654,15 +678,15 @@
             <dl id="wallet-balance-details" class="review-details"></dl>
             <p id="wallet-output-status" class="small"></p>
             <p class="small">
-              Reserved funds belong to pending operations. Change is held
-              separately to avoid linking another post; it is not available for
-              posting.
+              Reserved funds belong to pending operations. Change remains owned
+              by your wallet. Standard posting can use it again; Reduce links
+              between posts holds it aside.
             </p>
           </details>
           <section class="wallet-faucet" aria-labelledby="wallet-faucet-title">
             <h3 id="wallet-faucet-title">Need test tokens?</h3>
             <p id="wallet-faucet-status" class="small" role="status" aria-live="polite">Open the faucet to fund your Esmeralda wallet.</p>
-            <button id="wallet-faucet" class="primary full" hidden>Get 100 test tXTR</button>
+            <button id="wallet-faucet" class="primary full" hidden>Get 100 test TARI</button>
             <p class="small">Powered by <a href="https://testnet-faucet.taritracker.com/" target="_blank" rel="noopener noreferrer">TariTracker.com faucet</a></p>
             <p class="small">Test currency only. Requesting funds shares your receive address with Hauntboard and the faucet.</p>
           </section>

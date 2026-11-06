@@ -2,6 +2,8 @@
 
 Date: November 6, 2026
 
+Deployment: [release 09c6ac4](https://github.com/kstrycharz/hauntboard/releases/tag/release-09c6ac40cb07c3783188ca411c54e89bbf188d0b), live at https://hauntboard.taritracker.com. See the [sanitized live checks](../evidence/reply-live-2026-11-06.json), [browser regressions](../evidence/reply-gui-2026-11-06.json) and [native wallet regression](../evidence/reply-wallet-browser-2026-11-06.json).
+
 The user reported that Reply appeared to do nothing and that a newly created wallet had zero available posting funds. This repair builds on release `b17bcd5`; the reporter's browser secrets and exact wallet state were not accessed.
 
 ## Reproduction and findings
@@ -35,3 +37,5 @@ Existing wallet keys, change-isolation choices, board/template pins and pending-
 The new browser regression covers: empty reply feedback; zero funds with no quote or submission; inline funding without another wallet popup; reuse of one saved faucet receipt; preservation of an edited draft; discovering simulated incoming funds; and a subsequent explicit successful Reply. New-wallet fixtures now start empty, including the real SDK/WASM wallet lifecycle test.
 
 Additional checks cover response/header timeouts, aborting stalled transport, no retry of a signed submission, and progress that remains visible across background polling. Provider execution and faucet payments in these fixtures are simulated; no public tokens are requested or spent by these tests. Public deployment verification remains read-only.
+
+The final release passed 15 focused Node tests, 17 GUI scenarios in each of Chromium and Firefox, the native wallet regression, and both GitHub release/privacy gates. Public verification created separate unfunded native browser wallets in both browsers, checked zero-balance reply feedback and inline funding, and compared six served asset hashes. API writes were blocked: no faucet payment or public post was requested. The board manifest hash and the `hauntboard_operations` volume were retained, with the previous image available for rollback.

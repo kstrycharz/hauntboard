@@ -1,0 +1,79 @@
+{
+  "checkedAt": "2026-11-06T19:20:13.319Z",
+  "sourceCommit": "09c6ac40cb07c3783188ca411c54e89bbf188d0b",
+  "origin": "https://hauntboard.taritracker.com",
+  "scope": "Live fresh unfunded browser wallets and read-only provider calls. Wallet secrets remain in ephemeral browser contexts and are destroyed. Faucet claims, transaction submission and all other API writes are blocked. No tokens requested or spent.",
+  "assets": {
+    "app.mjs": "40257ed1457127b008eb62de85b187b915cf803751315379af8b70f469b6299a",
+    "api-client.mjs": "1861f755576921d238a1f82618821e53bf134a0719822e230d2e98fc66abb31f",
+    "index.html": "fddde86db2ecfe56ec47981089ef48010e15ea57abcd8c76dea8969f56137183",
+    "style.css": "0ed6ffc186dc43a4ec5cdf0fcccc8e0e2b17f536ec26b3b3ccb861984698337f",
+    "posting-readiness.mjs": "72693b41652f699ad232b43185d1a03411e401f09156c2f352b00bd71eecc3c7",
+    "faucet-client.mjs": "2de4dee5c7f5de589b72c99e2438f47b766e205375e50599854b4b3881c6de47"
+  },
+  "browsers": {
+    "chromium": {
+      "nativeWalletCreated": true,
+      "zeroPostingBalance": true,
+      "emptyReplyExplained": true,
+      "inlineFundingVisible": true,
+      "draftPreserved": true,
+      "noWalletPopup": true,
+      "narrowLayout": true,
+      "blockedWrites": 0,
+      "pageErrors": []
+    },
+    "firefox": {
+      "nativeWalletCreated": true,
+      "zeroPostingBalance": true,
+      "emptyReplyExplained": true,
+      "inlineFundingVisible": true,
+      "draftPreserved": true,
+      "noWalletPopup": true,
+      "narrowLayout": true,
+      "blockedWrites": 0,
+      "pageErrors": []
+    }
+  },
+  "readiness": {
+    "status": "ready"
+  },
+  "board": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+  "template": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+  "resetIdentity": "esmeralda-reset-2026-11-02",
+  "status": "PASSED",
+  "deployment": {
+    "release": "release-09c6ac40cb07c3783188ca411c54e89bbf188d0b",
+    "image": "sha256:47b932301530ce85ad6d66c15ca365225cc6fac9a226acdf4480c1deaffb5163",
+    "previousImage": "sha256:d680373bffece86a420359fc2e2e0729db0d5ee9fc31442cdbf0baf28eb27ae8",
+    "health": "healthy",
+    "manifestSha256": "fa4c2a8bec8c7caa41a8f9fff9f634ee0d7c03803434755e3785a297d0fa0ec8",
+    "manifestPreserved": true,
+    "operationsVolume": "hauntboard_operations",
+    "operationsVolumeRetained": true,
+    "rollbackImageRetained": true,
+    "fundingRequestsPerformed": 0,
+    "chainTransactionsSubmitted": 0
+  },
+  "validation": {
+    "targetedNodeTests": 15,
+    "guiScenariosPerBrowser": 17,
+    "guiBrowsers": [
+      "chromium",
+      "firefox"
+    ],
+    "nativeWalletLifecycle": "passed with synthetic outputs and execution receipts",
+    "receiptRecovery": "simulated confirmed payment credited across reload with one original claim",
+    "releaseWorkflow": "https://github.com/kstrycharz/hauntboard/actions/runs/42277959782",
+    "releaseConclusion": "success",
+    "privacyWorkflow": "https://github.com/kstrycharz/hauntboard/actions/runs/42277960083",
+    "privacyConclusion": "success"
+  },
+  "faucetDiscovery": {
+    "observedFaucetReset": "esmeralda-release-2026-10-07",
+    "clientReset": "esmeralda-reset-2026-11-02",
+    "mismatchedHintsRejected": true,
+    "verifiedReceiptFallback": true,
+    "faucetServiceConfigurationChanged": false
+  }
+}

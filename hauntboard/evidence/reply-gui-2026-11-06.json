@@ -1,0 +1,62 @@
+{
+  "scope": "Simulated providers/wallet/submissions; actual frontend assets; no public writes or funds",
+  "checks": [],
+  "browsers": {
+    "chromium": {
+      "checks": [
+        "Empty reply has inline validation; zero-balance wallet gets inline funding and verified receipt credit across reload without another claim or implicit posting",
+        "No unsupported features before configuration",
+        "Configuration failure closes posting",
+        "Late injected wallet discovery, deduplication, capability check without private access/spending, account-change invalidation and current-wallet fallback",
+        "Wrong-network and rejected external connections preserve the browser-wallet path without spending",
+        "Stock Sapient connects and approves a native SDK-built reply without a browser wallet; pending request and transaction identity persist",
+        "Faucet claim, reload, uncertain reconciliation and confirmation use one receipt; mobile attribution is linked",
+        "Inline setup guidance; wallet onboarding preserves draft without publishing; one Post checks and submits edited content without review popup",
+        "Lost acknowledgement survives reload; accepted/indexing distinct; no duplicate sends",
+        "Rejected submission retains draft",
+        "Held 99-token balance has explicit policy recovery; account preparation reviews its own fee inline and preserves the unsubmitted draft",
+        "Twenty rapid submits create one posting intent; two direct replies succeed without a review popup",
+        "Progressive feed and retained stale rows",
+        "History/filter restoration, parent focus, reply cancel, local hide undo, Unicode limit, sealed dismissal",
+        "Advanced recovery collapsed; incomplete sync differentiated",
+        "Responsive widths, mobile menu keyboard and accurate privacy help copy",
+        "Sealed creation/reply; actual encryption; no plaintext/key requests or drafts; lost acknowledgement; fresh reader locked; invitation decrypts and survives reload"
+      ],
+      "status": "PASSED"
+    },
+    "firefox": {
+      "checks": [
+        "Empty reply has inline validation; zero-balance wallet gets inline funding and verified receipt credit across reload without another claim or implicit posting",
+        "No unsupported features before configuration",
+        "Configuration failure closes posting",
+        "Late injected wallet discovery, deduplication, capability check without private access/spending, account-change invalidation and current-wallet fallback",
+        "Wrong-network and rejected external connections preserve the browser-wallet path without spending",
+        "Stock Sapient connects and approves a native SDK-built reply without a browser wallet; pending request and transaction identity persist",
+        "Faucet claim, reload, uncertain reconciliation and confirmation use one receipt; mobile attribution is linked",
+        "Inline setup guidance; wallet onboarding preserves draft without publishing; one Post checks and submits edited content without review popup",
+        "Lost acknowledgement survives reload; accepted/indexing distinct; no duplicate sends",
+        "Rejected submission retains draft",
+        "Held 99-token balance has explicit policy recovery; account preparation reviews its own fee inline and preserves the unsubmitted draft",
+        "Twenty rapid submits create one posting intent; two direct replies succeed without a review popup",
+        "Progressive feed and retained stale rows",
+        "History/filter restoration, parent focus, reply cancel, local hide undo, Unicode limit, sealed dismissal",
+        "Advanced recovery collapsed; incomplete sync differentiated",
+        "Responsive widths, mobile menu keyboard and accurate privacy help copy",
+        "Sealed creation/reply; actual encryption; no plaintext/key requests or drafts; lost acknowledgement; fresh reader locked; invitation decrypts and survives reload"
+      ],
+      "status": "PASSED"
+    }
+  },
+  "status": "GUI_FIXTURE_REGRESSIONS_PASSED",
+  "checkedAt": "2026-11-06T19:18:17.061Z",
+  "sourceHashes": {
+    "hauntboard/web/app.mjs": "40257ed1457127b008eb62de85b187b915cf803751315379af8b70f469b6299a",
+    "hauntboard/web/sapient-wallet.mjs": "62c9ff3f6796b373afdabe4f4dec6492a3c9849b84d0c30161800f1bf215d1cd",
+    "hauntboard/web/wallet-options.mjs": "d84e5ce3b6ffcda559f662901109052a6fc44ef14512a17c600e549c7c7225a3",
+    "hauntboard/web/sealed-posts.mjs": "f7274524b6bfc1242d5b5eb6652047112abc7d50fb25a2d3d12774c281341cb8",
+    "hauntboard/web/crypto.mjs": "744acc3fedfd049d747ebc230b7882ea2be262cb99d0c7e326c1968ac2518e96",
+    "hauntboard/web/about.mjs": "0b9eb4ad26f88ca70f50d1774c27ab029c49fafae1ebbb0044aa9f421036ff7f",
+    "hauntboard/web/forums.html": "fdffef2d1416f576192bb74e9c47dd9512c1ddd87a2847aecaf84dc8d2ff920b",
+    "hauntboard/tests/gui.mjs": "51b6e801b1ced8e4cedc7e958c86c1579ca3a35c0554a7391a8279eb3564cc48"
+  }
+}

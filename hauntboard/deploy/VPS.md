@@ -1,5 +1,28 @@
 # VPS and GitHub deployment
 
+## November 6 Reply and empty-wallet repair
+
+The current release is `release-09c6ac40cb07c3783188ca411c54e89bbf188d0b`,
+running image
+`sha256:47b932301530ce85ad6d66c15ca365225cc6fac9a226acdf4480c1deaffb5163`.
+It adds inline reply validation and funding, preserves preparation confirmation
+across balance polling, bounds client request waits, and verifies confirmed
+in-app faucet payments through their original transaction receipts. The faucet
+still advertises its October discovery reset; mismatched capsules remain
+rejected and this release does not change the faucet's configuration or journals.
+
+The UI repair was first deployed as `d5dd903`; that intermediate image
+`sha256:d680373bffece86a420359fc2e2e0729db0d5ee9fc31442cdbf0baf28eb27ae8`
+is the current rollback image, retained with `.env.previous` by the guarded
+updater. The original manifest hash
+`fa4c2a8bec8c7caa41a8f9fff9f634ee0d7c03803434755e3785a297d0fa0ec8`
+and `hauntboard_operations` volume are unchanged.
+
+Read the [repair record](../docs/reply-zero-balance-fix.md) and
+[live verification evidence](../evidence/reply-live-2026-11-06.json).
+Both public browser checks created fresh unfunded wallets and blocked funding
+and transaction writes; no test currency was spent or public content published.
+
 ## November 6 posting experience release
 
 The guarded updater deployed `release-b17bcd5ca2c8f731cfa87bfdaf4fa2655211a8d6`.

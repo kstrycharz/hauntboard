@@ -23,6 +23,17 @@ test('receipt discovery preserves failures, backs off, and never invents an avai
   for (const status of ['queued','pending','uncertain']) assert.equal(await tracker.reconcile({...args,record:{...record,status}}),null);
   assert.equal(await tracker.reconcile({...args,record:{status:'confirmed',transactionId:null}}),null);
 });
+
+test('manual receipt verification retries a failed check immediately and shares one in-flight read',async()=>{
+  const tracker=new FaucetCredit(),record={status:'confirmed',transactionId:'c'.repeat(64)};
+  let calls=0,release;
+  const args={scope:'current-reset',address,record,needed:true,importIncoming:async()=>{calls++;throw Error('Temporary outage');}};
+  await tracker.reconcile(args);
+  const gate=new Promise(resolve=>{release=resolve;});
+  const retry={...args,force:true,importIncoming:async()=>{calls++;await gate;return {found:1,ready:1};}};
+  const one=tracker.reconcile(retry),two=tracker.reconcile(retry);release();
+  assert((await one).complete);assert((await two).complete);assert.equal(calls,2);
+});
 function fixture(api) {
   const data = new Map();
   const storage = {getItem: key => data.get(key) ?? null, setItem: (key, value) => data.set(key, value)};

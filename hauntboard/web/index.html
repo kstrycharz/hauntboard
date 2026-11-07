@@ -64,7 +64,7 @@
             ><span id="beta-label" class="tag" hidden></span>
           </div>
           <div class="wallet-topbar">
-            <button class="subtle wallet-nav" id="browser-wallet-button" aria-label="Wallet" disabled><img src="/sapient-logo.svg" alt="" width="22" height="22" />Wallet</button>
+            <button class="subtle wallet-nav" id="browser-wallet-button" aria-label="Posting setup and funds" disabled>Posting setup</button>
             <button
               id="wallet-balance-button"
               class="wallet-balance"
@@ -197,22 +197,22 @@
             <p id="reply-space" class="small"></p>
             <p id="reply-error" class="field-error" hidden></p>
             <section class="posting-help" aria-label="Reply funding">
-              <p class="small">Posting saves your message on the Tari test network. By pressing Reply, you allow a network fee up to 1 test TARI. Test tokens have no monetary value. Posts cannot be edited or deleted.</p>
+              <p class="small">Uses free test tokens · fee up to 1 test TARI. Published messages cannot be edited or deleted.</p>
               <p id="reply-posting-status" class="small" role="status" aria-live="polite"></p>
               <p id="reply-change-help" class="small" hidden>Use remaining tokens and reply enables Standard posting and publishes this reply. Reusing tokens can link your posts through network activity. No new wallet or faucet payment is needed.</p>
               <button id="reply-use-change" class="subtle" type="button" hidden>Enable remaining tokens without replying</button>
-              <button id="reply-open-wallet" class="subtle" type="button" hidden>Set up or unlock wallet</button>
+              <button id="reply-open-wallet" class="subtle" type="button" hidden>Set up posting on this device</button>
               <button id="reply-prepare-confirm" class="subtle" type="button" hidden>Confirm preparation</button>
-              <button id="reply-sync-posting" class="subtle" type="button" hidden>Check funds again</button>
+              <button id="reply-sync-posting" class="subtle" type="button" hidden>Check posting funds</button>
               <button id="reply-check-posting" class="subtle" type="button" hidden>Check status</button>
               <div id="reply-funding" class="posting-funding" hidden>
                 <h3>Add free posting funds</h3>
-                <p class="small">New wallets start with 0 test TARI. Creating another wallet does not move your existing tokens. Get free test tokens for this wallet, or check for a payment you already received.</p>
-                <p class="small">Requesting 100 test TARI shares this wallet's receive address with Hauntboard and the TariTracker faucet. Test tokens have no monetary value. Request limits apply.</p>
+                <p class="small">Add free test tokens to post from this device. No purchase is needed. Already received some? Check posting funds below.</p>
+                <details><summary>About free test tokens</summary><p class="small">Requesting 100 test TARI shares this wallet's receive address with Hauntboard and the TariTracker faucet. Test tokens have no monetary value. Request limits apply. Creating another wallet does not move your existing tokens.</p></details>
                 <p id="reply-funding-status" class="small" role="status" aria-live="polite"></p>
                 <button id="reply-get-funds" class="subtle" type="button">Get 100 free test TARI</button>
                 <a id="reply-funding-link" href="https://testnet-faucet.taritracker.com/" target="_blank" rel="noopener noreferrer" hidden>Open TariTracker faucet</a>
-                <button id="reply-check-funds" class="subtle" type="button">Check incoming funds</button>
+                <button id="reply-check-funds" class="subtle" type="button">Check posting funds</button>
               </div>
             </section>
             <div class="compose-footer">
@@ -245,6 +245,7 @@
         <h2 id="compose-title">Start a thread</h2>
         <p id="compose-wallet-balance" class="form-wallet-balance" hidden></p>
         <p id="compose-copy" class="muted">Write a public conversation.</p>
+        <details id="compose-visibility"><summary id="compose-visibility-label">Public message · change visibility</summary>
         <div class="mode-picker" hidden>
           <label
             ><input type="radio" name="mode" value="0" checked /><span
@@ -252,12 +253,13 @@
             ></label
           ><label
             ><input type="radio" name="mode" value="1" /><span
-              >Sealed thread<small
+              >Encrypted messages<small
                 >Public title and category. Encrypted messages. Share the key privately.</small
               ></span
             ></label
           >
         </div>
+        </details>
         <label for="thread-category">Category</label>
         <select id="thread-category" name="category"><option value="general">/general/ · General</option><option value="tari">/tari/ · Tari</option><option value="pol">/pol/ · Politics</option></select>
         <label for="thread-title">Thread title</label
@@ -265,7 +267,7 @@
           id="thread-title"
           required
           maxlength="80"
-          placeholder="What happened after midnight?"
+          placeholder="What would you like to discuss?"
           aria-describedby="compose-error"
         /><label for="post-name" hidden
           >Display name <span class="optional">optional</span></label
@@ -280,7 +282,7 @@
           required
           maxlength="2400"
           rows="6"
-          placeholder="Tell us what you saw…"
+          placeholder="Start the conversation…"
           aria-describedby="compose-space compose-error"
         ></textarea>
         <p id="compose-space" class="small"></p>
@@ -294,22 +296,22 @@
         >
         <p id="draft-status" class="small"></p>
         <section class="posting-help" aria-label="Post funding">
-          <p class="small">Posting saves your message on the Tari test network. By pressing Post, you allow a network fee up to 1 test TARI. Test tokens have no monetary value. Posts cannot be edited or deleted.</p>
+          <p class="small">Uses free test tokens · fee up to 1 test TARI. Published messages cannot be edited or deleted.</p>
           <p id="compose-posting-status" class="small" role="status" aria-live="polite"></p>
           <p id="compose-change-help" class="small" hidden>Use remaining tokens and post enables Standard posting and publishes this draft. Reusing tokens can link your posts through network activity. No new wallet or faucet payment is needed.</p>
           <button id="compose-use-change" class="subtle" type="button" hidden>Enable remaining tokens without posting</button>
-          <button id="compose-open-wallet" class="subtle" type="button" hidden>Set up or unlock wallet</button>
+          <button id="compose-open-wallet" class="subtle" type="button" hidden>Set up posting on this device</button>
           <button id="compose-prepare-confirm" class="subtle" type="button" hidden>Confirm preparation</button>
-          <button id="compose-sync-posting" class="subtle" type="button" hidden>Check funds again</button>
+          <button id="compose-sync-posting" class="subtle" type="button" hidden>Check posting funds</button>
           <button id="compose-check-posting" class="subtle" type="button" hidden>Check status</button>
           <div id="compose-funding" class="posting-funding" hidden>
             <h3>Add free posting funds</h3>
-            <p class="small">New wallets start with 0 test TARI. Creating another wallet does not move your existing tokens. Get free test tokens for this wallet, or check for a payment you already received.</p>
-            <p class="small">Requesting 100 test TARI shares this wallet's receive address with Hauntboard and the TariTracker faucet. Test tokens have no monetary value. Request limits apply.</p>
+            <p class="small">Add free test tokens to post from this device. No purchase is needed. Already received some? Check posting funds below.</p>
+            <details><summary>About free test tokens</summary><p class="small">Requesting 100 test TARI shares this wallet's receive address with Hauntboard and the TariTracker faucet. Test tokens have no monetary value. Request limits apply. Creating another wallet does not move your existing tokens.</p></details>
             <p id="compose-funding-status" class="small" role="status" aria-live="polite"></p>
             <button id="compose-get-funds" class="subtle" type="button">Get 100 free test TARI</button>
             <a id="compose-funding-link" href="https://testnet-faucet.taritracker.com/" target="_blank" rel="noopener noreferrer" hidden>Open TariTracker faucet</a>
-            <button id="compose-check-funds" class="subtle" type="button">Check incoming funds</button>
+            <button id="compose-check-funds" class="subtle" type="button">Check posting funds</button>
           </div>
         </section>
         <div id="discard-secret" class="caution" hidden>
@@ -321,7 +323,7 @@
           </button>
         </div>
         <div class="compose-footer">
-          <span id="compose-hint">Public text is visible on chain.</span
+          <span id="compose-hint">Public · permanent · fee up to 1 test TARI</span
           ><button type="submit" class="primary">Post</button>
         </div>
       </form>
@@ -485,8 +487,8 @@
         </button>
       </div>
       <h2 id="browser-wallet-title" tabindex="-1">Your wallet</h2>
-      <details id="sapient-options" class="wallet-options" open>
-        <summary class="sapient-brand"><img src="/sapient-logo.svg" alt="" width="56" height="56" /><span><strong>Sapient</strong><span class="small">Your wallet. Your posts.</span></span><span class="wallet-recommended">Default</span></summary>
+      <details id="sapient-options" class="wallet-options">
+        <summary class="sapient-brand"><img src="/sapient-logo.svg" alt="" width="56" height="56" /><span><strong>Already use Sapient?</strong><span class="small">Optional · connect an existing wallet</span></span></summary>
         <p class="sapient-lead">Connect once. Join the conversation.</p>
         <p class="muted small">Keep your keys in Sapient and approve posts in your wallet.</p>
         <div id="sapient-provider-picker"><label for="sapient-provider">Choose your Tari wallet</label>
@@ -500,10 +502,10 @@
         <p class="small muted sapient-reassurance">No recovery phrase. No funds moved when connecting.</p>
         <details class="sapient-information"><summary>Fees &amp; privacy</summary><ul id="sapient-gates"></ul><p class="small">Posts require private-fee funds in Sapient, with a maximum requested fee of 1 test TARI. Wallet signatures and change may link posts. Check interrupted submissions before retrying. Room administration uses the browser wallet.</p></details>
       </details>
-      <button id="sapient-use-browser" type="button" class="text-button full wallet-alternative">Use browser wallet instead <span aria-hidden="true">→</span></button>
-      <details id="browser-wallet-fallback" class="browser-wallet-fallback">
-      <summary>Browser wallet &amp; recovery</summary>
-      <p id="wallet-introduction" class="muted">Your PIN unlocks this browser. Keep your recovery phrase separately.</p>
+      <button id="sapient-use-browser" type="button" class="primary full wallet-alternative">Use this device to post <span aria-hidden="true">→</span></button>
+      <details id="browser-wallet-fallback" class="browser-wallet-fallback" open>
+      <summary>Posting on this device</summary>
+      <p id="wallet-introduction" class="muted">No extension or purchase needed. Your PIN unlocks posting here. Your recovery words restore access on another device.</p>
       <p id="browser-wallet-status" role="status"></p>
       <div id="wallet-secure-context" class="caution" hidden>
         Wallets need HTTPS or localhost. You can read the board here; open a
@@ -511,11 +513,11 @@
       </div>
       <div id="wallet-controls">
         <div id="wallet-entry">
-          <p class="small">New browser wallets use Standard posting, which lets remaining tokens pay for later posts. Network activity may link those posts. You can choose to hold change aside in Posting setting.</p>
+          <p class="small">Set up this device once, save your recovery words, then add free test tokens. Your draft stays here. Reusing those tokens can link your posts through network activity.</p>
           <button id="wallet-create-choice" class="primary full">
-            Create wallet</button
+            Set up this device</button
           ><button id="wallet-recover-choice" class="subtle full">
-            Recover with seed phrase
+            Restore with recovery words
           </button>
           <button id="wallet-forgot-pin" class="text-button full" hidden>Forgot PIN?</button>
         </div>
@@ -567,7 +569,7 @@
             Save PIN
           </button>
           <button id="wallet-create" class="primary full" hidden>
-            Create wallet</button
+            Set up this device</button
           ><button id="wallet-unlock" class="primary full" hidden>
             Unlock wallet
           </button>
@@ -642,15 +644,16 @@
         <section id="wallet-forgot-panel" hidden aria-labelledby="wallet-forgot-title">
           <h3 id="wallet-forgot-title">Restore access to your wallet</h3>
           <p>Your PIN protects the saved wallet on this browser. Recover with your 24-word Tari L2 phrase to set a new PIN. Your phrase restores your wallet; it does not reveal your old PIN.</p>
-          <button id="wallet-forgot-recover" class="primary full">Recover with seed phrase</button>
+          <button id="wallet-forgot-recover" class="primary full">Restore with recovery words</button>
           <p class="small">Deleting the saved copy does not recover access or remove funds from Tari. Keep your recovery phrase before deleting.</p>
           <button id="wallet-forgot-delete" class="danger full">Delete saved wallet</button>
         </section>
         <div id="wallet-seed-panel" hidden>
-          <h3>Save your recovery phrase</h3>
+          <h3>Save your recovery words</h3>
           <p>
-            Write these 24 words down in order. Anyone with them can control
-            this wallet. Keep them private.
+            Write these 24 words down in order. They restore this wallet if you
+            lose this browser or change devices. Your PIN only unlocks this device.
+            Anyone with these words can control the wallet. Keep them private.
           </p>
           <ol
             id="wallet-seed-words"
@@ -668,15 +671,22 @@
             ><input id="wallet-seed-saved" type="checkbox" /> I have saved my
             recovery phrase somewhere private.</label
           ><button id="wallet-confirm-seed" class="primary full" disabled>
-            Finish wallet setup
+            Finish posting setup
           </button>
         </div>
         <section id="wallet-ready-panel" hidden aria-label="Wallet funds">
-          <div class="balance-grid"><div><span>Total wallet balance</span><strong id="wallet-ready-value"></strong></div><div><span>Available for posting</span><strong id="wallet-ready-posting"></strong></div></div>
+          <h3 id="wallet-funds-title">Checking posting funds</h3>
           <p id="wallet-readiness" class="small"></p>
+          <button id="wallet-enable-posting" class="primary full" type="button" hidden>Use my remaining tokens for posting</button>
+          <p id="wallet-enable-help" class="small" hidden>This enables Standard posting. Reusing tokens can link your posts through network activity. It does not publish your draft.</p>
+          <button id="wallet-sync-funds" class="subtle full" type="button">Check posting funds</button>
+          <p id="wallet-funds-check-status" class="small" role="status" aria-live="polite"></p>
+          <details id="wallet-posting-details"><summary>Balances and advanced posting settings</summary>
+          <div class="balance-grid"><div><span>Total wallet balance</span><strong id="wallet-ready-value"></strong></div><div><span>Available for posting</span><strong id="wallet-ready-posting"></strong></div></div>
           <label for="wallet-posting-policy">Posting setting</label>
           <select id="wallet-posting-policy"><option value="standard">Standard — use remaining tokens again</option><option value="isolated">Reduce links between posts — hold change aside</option></select>
           <p class="small">Standard posting uses your remaining tokens for later posts. Network activity may link those posts. Holding change aside reduces one source of links; neither setting guarantees anonymity. Existing wallets keep their previous setting.</p>
+          </details>
           <div id="wallet-prepare-panel" hidden>
             <h3>Convert to posting funds</h3>
             <p class="small">Move 10 test TARI from your account into funds this app can use for posting. It stays native test TARI in your wallet. Your total balance changes only by the network fee.</p>
@@ -709,9 +719,6 @@
             <p class="small">Test currency only. Requesting funds shares your receive address with Hauntboard and the faucet.</p>
           </section>
           <div id="incoming-funds" hidden>
-            <button id="wallet-sync-funds" class="subtle full">
-              Check for incoming funds
-            </button>
             <details>
               <summary>Receive address and advanced tools</summary>
               <label for="private-receive-address"

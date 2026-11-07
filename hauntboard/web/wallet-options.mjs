@@ -3,10 +3,19 @@ import { SapientWallet, discoverTariProviders, postingReadiness, providerLabel }
 export function setupWalletOptions({ surface = window, document, getConfig, useBrowserWallet, pending, connected = () => {}, selectionChanged = () => {} }) {
   const $ = id => document.getElementById(id);
   const select = $('sapient-provider');
+  const local=$('browser-wallet-fallback'),external=$('sapient-options'),alternative=$('sapient-use-browser');
+  // Device setup is the ordinary path; installing an extension is optional.
+  local.parentNode.insertBefore(local,external);
+  local.parentNode.insertBefore(alternative,local);
+  local.open=true;external.open=false;
   let providers = [], busy = false, notice = '';
   const adapter = new SapientWallet({ changed: () => { render(); selectionChanged(adapter.connection); } });
   function present() {
-    if (!$('browser-wallet-fallback').open) {
+    alternative.hidden=local.open;
+    if (local.open) {
+      const step=$('browser-wallet-dialog').dataset.step;
+      $('browser-wallet-title').textContent=step==='unlock'?'Unlock posting on this device':step==='ready'?'Your posting funds':'Set up posting on this device';
+    } else {
       $('browser-wallet-title').textContent = adapter.connection ? 'Ready to post' : 'Connect your wallet';
       $('wallet-step').textContent = adapter.connection ? 'CONNECTED TO HAUNTBOARD' : 'JOIN THE CONVERSATION';
     }
@@ -14,6 +23,7 @@ export function setupWalletOptions({ surface = window, document, getConfig, useB
 
   function render() {
     const connection = adapter.connection;
+    if(connection){local.open=false;external.open=true;}
     $('sapient-provider-picker').hidden = providers.length < 2;
     $('sapient-connect').hidden = Boolean(connection) || !providers.length;
     $('sapient-connect').textContent = busy ? 'Connecting…' : 'Connect Sapient';
@@ -30,7 +40,7 @@ export function setupWalletOptions({ surface = window, document, getConfig, useB
     $('sapient-status').textContent = notice || (connection
       ? `Posts will use Sapient. Approve each transaction in the extension.`
       : providers.length ? 'Sapient is ready. Connect to start posting.'
-      : 'Sapient isn’t detected. Install it in your desktop browser to get started.');
+      : 'Sapient is optional. You can post using this device without installing an extension.');
     const config = getConfig();
     const list = $('sapient-gates');
     list.replaceChildren();
@@ -77,7 +87,8 @@ export function setupWalletOptions({ surface = window, document, getConfig, useB
     $('browser-wallet-fallback').open = true;
     render(); useBrowserWallet();
   });
-  $('browser-wallet-fallback').addEventListener('toggle', () => { if ($('browser-wallet-fallback').open) $('browser-wallet-title').textContent = 'Your browser wallet'; else present(); });
+  local.addEventListener('toggle',present);
+  external.querySelector('summary').addEventListener('click',()=>{if(!external.open){local.open=false;present();}});
   // Re-enumerate the actual registry; an event detail is not trusted as a provider.
   surface.addEventListener('tari:announceProvider', refresh);
   surface.addEventListener('tari#initialized', refresh);

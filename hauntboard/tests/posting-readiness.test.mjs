@@ -24,6 +24,7 @@ test('outages and unfinished discovery are distinct from verified insufficient f
   assert.equal(fundsReadiness({ready:'0'}).code, 'funding-needed');
   assert.equal(fundsReadiness({ready:'0',revealed:'99000000'}).code, 'preparation-needed');
   assert.equal(fundsReadiness({ready:'0',reserved:'99000000'}).code, 'pending-operation');
+  assert.equal(fundsReadiness({ready:'99000000',pendingOperation:true}).code,'pending-operation');
 });
 
 test('a usable input smaller than one token can fund its actual simulated fee; limits remain enforced', () => {

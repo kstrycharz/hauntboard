@@ -4,13 +4,14 @@ export const postingPolicy = material => material?.postingPolicy === 'standard' 
 export const eligibleCoin = (coin, policy) => coin.state === 'ready' || (policy === 'standard' && coin.state === 'quarantined');
 
 export function fundsReadiness(balance, { incomplete = false } = {}) {
-  if (!balance || balance.unavailable) return {code: 'provider-unavailable', message: 'We could not check your funds right now. Displayed amounts are from the last successful check.', action: 'sync'};
-  if (BigInt(balance.ready ?? 0) > 0n) return {code: 'ready', message: 'Funds are available. Post will check the exact network fee before submitting.', action: null};
+  if (!balance || balance.unavailable) return {code: 'provider-unavailable', message: 'The balance check could not finish. Your last verified funds and draft are kept. Try Check posting funds again.', action: 'sync'};
+  if (balance.pendingOperation) return {code:'pending-operation',message:'Your saved submission is still being checked. Your tokens may be reserved for it. Check its status; you do not need to post again.',action:'status'};
+  if (BigInt(balance.ready ?? 0) > 0n) return {code: 'ready', message: 'Ready to post using your test tokens. Post or Reply checks the fee and submits your message.', action: null};
   if (BigInt(balance.reserved ?? 0) > 0n) return {code: 'pending-operation', message: 'Your funds belong to a submission that is still being checked. Check its status before posting again.', action: 'status'};
   if (BigInt(balance.quarantined ?? 0) > 0n && balance.postingPolicy !== 'standard') return {code: 'change-held', message: 'You still own these tokens. Your posting setting holds them aside after a post. Enable remaining tokens to use them for replies and later posts.', action: 'policy'};
   if (BigInt(balance.revealed ?? 0) > 0n) return {code: 'preparation-needed', message: 'Your tokens are in a standard account. Prepare posting funds to use them here; you will see the preparation fee before confirming.', action: 'prepare'};
   if (balance.discoveryCapacityReached) return {code: 'capacity-reached', message: 'Your wallet has reached its tracked-funds limit. Existing operations must be checked before more funds can be imported.', action: 'wallet'};
-  if (incomplete || balance.discoveryUnavailable || balance.discoveryHistoryIncomplete) return {code: 'checking', message: 'Still checking for incoming funds. The amount found so far may be incomplete.', action: 'sync'};
+  if (incomplete || balance.discoveryUnavailable || balance.discoveryHistoryIncomplete) return {code: 'checking', message: 'Still checking for received tokens. Your draft is kept; the check will continue automatically.', action: 'sync'};
   return {code: 'funding-needed', message: 'No usable test tokens have been found in this wallet. Get free test tokens or check for incoming funds.', action: 'fund'};
 }
 

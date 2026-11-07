@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-11-07T04:16:51.1871472Z",
+  "status": "PASSED",
+  "command": "node --test --test-concurrency=1 hauntboard/tests/*.test.mjs",
+  "runtimeImage": "node:22.21.1-bookworm-slim",
+  "tests": 94,
+  "passed": 93,
+  "failed": 0,
+  "skipped": 1,
+  "skipReason": "Optional live transaction identity check was not selected.",
+  "scope": "Container unit/adversarial tests. No public funding or transaction submission."
+}

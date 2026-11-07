@@ -48,14 +48,15 @@ export class FaucetClient {
 // A receipt locates outputs; only the wallet's native verification can credit them.
 export class FaucetCredit {
   constructor({now = Date.now, retryMs = 30000} = {}) { this.now=now; this.retryMs=retryMs; this.state=null; }
-  async reconcile({scope,address,record,needed,importIncoming}) {
+  async reconcile({scope,address,record,needed,importIncoming,force=false}) {
     if (!needed || record?.status !== 'confirmed' || !/^[a-f0-9]{64}$/.test(record.transactionId ?? '')) return null;
     const key=`${scope}:${address}:${record.transactionId}`;
+    if(this.pending?.key===key)return this.pending.promise;
     if (this.state?.key !== key) this.state={key,address,transactionId:record.transactionId,complete:false,checkedAt:null,note:''};
     const state=this.state;
-    if (state.complete || (state.checkedAt !== null && this.now()-state.checkedAt < this.retryMs)) return {...state,checkedNow:false};
+    if (!force && (state.complete || (state.checkedAt !== null && this.now()-state.checkedAt < this.retryMs))) return {...state,checkedNow:false};
     state.checkedAt=this.now();
-    try {
+    const promise=(async()=>{try {
       const result=await importIncoming(record.transactionId);
       state.complete=Boolean(result.found > 0 || result.ready > 0);
       state.note=state.complete ? 'Your received test tokens are verified in this wallet.' : 'The payment is confirmed. No usable output from this receipt has been verified yet; your original receipt is preserved.';
@@ -63,6 +64,9 @@ export class FaucetCredit {
       state.note='The payment is confirmed, but its incoming output could not be verified yet. Check incoming funds; your original receipt is preserved.';
     }
     return {...state,checkedNow:true};
+    })();
+    this.pending={key,promise};
+    try{return await promise;}finally{if(this.pending?.promise===promise)this.pending=null;}
   }
 }
 

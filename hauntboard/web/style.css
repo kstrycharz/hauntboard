@@ -293,6 +293,8 @@ main {
 .identity {
   color: var(--text);
   overflow-wrap: anywhere;
+  border: 0;
+  padding-inline: 0;
 }
 .wallet-balance {
   background: var(--panel);
@@ -859,6 +861,29 @@ pre {
 .browser-wallet-fallback { border-top: 1px solid var(--line); padding-top: 16px; }
 .browser-wallet-fallback:not([open]) { display: none; }
 .browser-wallet-fallback > summary { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+.browser-wallet-fallback { border-top: 0; padding-top: 0; }
+.browser-wallet-fallback > summary { font-size: 15px; }
+.wallet-alternative { color: var(--bg); font-size: 16px; }
+.wallet-options .sapient-brand strong { font-size: 19px; }
+#wallet-funds-title { margin-bottom: 8px; }
+#wallet-posting-details { margin: 20px 0; padding: 12px 0; border-top: 1px solid var(--line); }
+#wallet-funds-check-status { min-height: 1.5em; }
+.posting-help .small { margin: 8px 0; line-height: 1.5; }
+.posting-help details { margin: 10px 0; }
+.posting-help button { max-width: 100%; white-space: normal; }
+#compose-visibility { margin: 12px 0; font-size: 14px; }
+.mode-picker label { margin: 0; padding: 10px; }
+.mode-picker small { line-height: 1.4; }
+#compose-dialog .compose-footer, .reply-box .compose-footer {
+  position: sticky; bottom: 0; z-index: 3;
+  background: var(--panel); border-top: 1px solid var(--line); padding: 12px 0;
+}
+@media (max-width: 600px) {
+  #compose-dialog { padding: 20px; }
+  #compose-dialog .compose-footer { bottom: -20px; padding-bottom: 20px; }
+  .compose-footer > button { flex: 1 0 100%; }
+  .reply-box { scroll-margin-bottom: 100px; }
+}
 @media (max-width: 480px) { .wallet-options { padding: 18px; } .sapient-brand { gap: 10px; } .sapient-brand img { width: 44px; height: 44px; } .sapient-brand strong { font-size: 23px; } .wallet-recommended { padding: 3px 8px; } }
 .wallet-faucet .small { overflow-wrap: anywhere; }
 

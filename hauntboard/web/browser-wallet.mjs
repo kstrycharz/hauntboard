@@ -9,7 +9,7 @@ import {
 import { scanOutputLedger } from "./output-ledger.mjs";
 import { decryptFaucetDiscovery, discoverFaucetOutputs } from "./faucet-discovery.mjs";
 import { envelopeEntries } from './key-registry.mjs';
-import {providerState} from './provider-state.mjs';
+import {providerState,spentOutput} from './provider-state.mjs';
 import {postingPolicy, eligibleCoin, fundsReadiness, postingFee, POSTING_FEE_LIMIT} from './posting-readiness.mjs';
 import {
   newPhrase,
@@ -265,6 +265,7 @@ async function refreshPrivateMaterial() {
     material.coins = latest.coins ?? [];
     material.scanCursor = latest.scanCursor ?? null;
     material.scanComplete = latest.scanComplete ?? false;
+    material.scanCheckedAt = latest.scanCheckedAt ?? null;
     material.faucetClaimed = latest.faucetClaimed ?? false;
     material.postingPolicy = postingPolicy(latest);
   } finally {
@@ -627,7 +628,7 @@ const provider = {
     (await api("/api/indexer", { method: "GET", path: "epoch-manager/stats" }))
       .current_epoch,
   getSubstate: async (id) =>
-    providerState(await api("/api/indexer", { method: "GET", path: `substates/${id}` })),
+    providerState(await api("/api/indexer", { method: "GET", path: `substates/${id}` }),id),
   getStealthUtxo: async (resource, commitment) =>
     provider.getSubstate(sdk.stealthUtxoSubstateId(resource, commitment)),
   resolveInputs: async (inputs) =>
@@ -703,15 +704,14 @@ async function reconcilePrivatePending() {
   );
   if (!pending) return;
   try {
-    const operation = await api(`/api/operation?id=${pending.operation}`),
-      id = pending.id ?? operation.transactionId;
+    const id = pending.id ?? (await api(`/api/operation?id=${pending.operation}`)).transactionId;
     if (id) await transactionResult(id);
   } catch {
     /* Preserve the exact pending intent during an outage; unlocking remains possible. */
   }
 }
 export function fundScanStatus() {
-  return { complete: material?.scanComplete === true };
+  return { complete: material?.scanComplete === true, checkedAt:material?.scanCheckedAt??null };
 }
 export function privateFunds() {
   return {
@@ -740,20 +740,24 @@ export async function privateBalance() {
   requireSigner();
   await refreshPrivateMaterial();
   await requireNetwork();
+  await reconcilePrivatePending();
   await discoverExistingAccount();
   let discovery;
   try { discovery = await discoverFaucetFunds(); }
   catch { discovery = { unavailable: true }; }
   const native = new sdk.WasmStealthCrypto(config.networkByte),
     totals = { ready: 0n, quarantined: 0n, reserved: 0n };
+  const retired = new Set();
   for (const coin of material.coins ?? []) {
     if (!Object.hasOwn(totals, coin.state)) continue;
     let row;
     try {
       row = await provider.getSubstate(coin.id);
     } catch (e) {
-      if (String(e.message) === `Input substate ${coin.id} (v0) is down`)
+      if (spentOutput(e,coin.id)) {
+        if (coin.state !== 'reserved') retired.add(coin.id);
         continue;
+      }
       throw e;
     }
     if (row.verified !== true)
@@ -766,7 +770,12 @@ export async function privateBalance() {
     );
     if (owned) totals[coin.state] += owned.value;
   }
+  if (retired.size) {
+    material.coins = material.coins.filter(c => !retired.has(c.id));
+    await persistMaterial();
+  }
   const revealed = BigInt(await balance());
+  const scannedRecently = material.scanComplete===true && Number.isFinite(material.scanCheckedAt) && Date.now()-material.scanCheckedAt<60000;
   return { ...Object.fromEntries(
     Object.entries({
       ...totals,
@@ -774,7 +783,7 @@ export async function privateBalance() {
       revealed,
       total: totals.ready + totals.quarantined + totals.reserved + revealed,
     }).map(([key, value]) => [key, value.toString()]),
-  ), postingPolicy: postingPolicy(material), discoveryUnavailable: discovery.unavailable === true, discoveryCapacityReached: discovery.capacityReached === true, discoveryHistoryIncomplete: discovery.historyComplete === false };
+  ), pendingOperation:Boolean(localStorage.getItem(privatePendingKey())), postingPolicy: postingPolicy(material), discoveryCheckedAt:material.scanCheckedAt??null, discoveryUnavailable: discovery.unavailable === true && !scannedRecently, discoveryCapacityReached: discovery.capacityReached === true, discoveryHistoryIncomplete: discovery.historyComplete === false && !scannedRecently };
   });
 }
 async function discoverExistingAccount() {
@@ -797,8 +806,8 @@ const isPostingChange = (owned) => {
     return false;
   }
 };
-export async function syncPrivateFunds() {
-  return coordinated(() => scanOwnedOutputs());
+export async function syncPrivateFunds({maxPages=1}={}) {
+  return coordinated(() => scanOwnedOutputs({maxPages}));
 }
 let fallbackDiscovery={key:null,at:0};
 export async function syncFaucetFunds() {
@@ -809,11 +818,11 @@ export async function syncFaucetFunds() {
     try{return await discoverFaucetFunds();}catch{
       const key=`${networkKey(config)}:${material.address}`;
       if(fallbackDiscovery.key===key&&Date.now()-fallbackDiscovery.at<30000)return {found:0,discoveryUnavailable:true};
-      fallbackDiscovery={key,at:Date.now()};return scanOwnedOutputs();
+      fallbackDiscovery={key,at:Date.now()};return scanOwnedOutputs({maxPages:1});
     }
   });
 }
-async function scanOwnedOutputs() {
+async function scanOwnedOutputs({maxPages=10}={}) {
   requireSigner();
   if (!privateMode())
     throw new Error(
@@ -821,12 +830,14 @@ async function scanOwnedOutputs() {
     );
   await refreshPrivateMaterial();
   await requireNetwork();
+  await reconcilePrivatePending();
   await discoverExistingAccount();
   // Faucet discovery is an optional shortcut; a stale/reset faucet cannot block
   // the native stream scan, which independently verifies every owned output.
   const faucet = await discoverFaucetFunds().catch(() => ({found:0,historyComplete:false}));
   const native = new sdk.WasmStealthCrypto(config.networkByte);
   const result = await scanOutputLedger({
+    maxPages,
     coins: material.coins ?? [],
     cursor: material.scanComplete ? null : (material.scanCursor ?? null),
     readPage: (cursor) => api('/api/utxo-scan',{cursor}),
@@ -844,7 +855,7 @@ async function scanOwnedOutputs() {
       try {
         row = await provider.getSubstate(id);
       } catch (error) {
-        if (String(error.message) === "Input substate " + id + " (v0) is down")
+        if (spentOutput(error,id))
           return null;
         throw error;
       }
@@ -869,6 +880,7 @@ async function scanOwnedOutputs() {
       material.coins = state.coins;
       material.scanCursor = state.cursor;
       material.scanComplete = state.complete;
+      if(state.complete)material.scanCheckedAt=Date.now();
       await persistMaterial();
     },
   });
@@ -888,7 +900,7 @@ async function discoverFaucetFunds() {
     verifyOwned: async id => {
       let row;
       try { row = await provider.getSubstate(id); }
-      catch (error) { if (String(error.message) === `Input substate ${id} (v0) is down`) return null; throw error; }
+      catch (error) { if (spentOutput(error,id)) return null; throw error; }
       if (row.verified !== true) throw new Error('Incoming faucet output is not verified.');
       const owned = await sdk.decryptOwnedUtxo(native, await signer.getViewSecret(), row, id);
       return owned ? { change: isPostingChange(owned) } : null;
@@ -929,7 +941,9 @@ export async function importIncoming(transactionId) {
         coins.some((c) => c.id === id)
       )
         continue;
-      const row = await provider.getSubstate(id);
+      let row;
+      try { row = await provider.getSubstate(id); }
+      catch(error) { if(spentOutput(error,id)) continue; throw error; }
       if (row.verified !== true)
         throw new Error("Incoming output is not verified.");
       const owned = await sdk.decryptOwnedUtxo(
@@ -992,10 +1006,7 @@ async function privateReview(body, registrySigner) {
     try {
       row = await provider.getSubstate(candidate.id);
     } catch (e) {
-      if (
-        String(e.message) ===
-        "Input substate " + candidate.id + " (v0) is down"
-      ) {
+      if (spentOutput(e,candidate.id)) {
         candidate.state = "used";
         await persistMaterial();
         continue;
@@ -1451,13 +1462,14 @@ async function transactionResult(id) {
       const accepted = final.execution_result?.finalize?.result?.Accept,
         feeOnly = final.execution_result?.finalize?.result?.AcceptFeeRejectRest;
       const diff = accepted ?? feeOnly?.[0];
-      const coin = material.coins.find((c) => c.id === pending.coinId);
+      const coins=material.coins.map(c=>({...c}));
+      const coin = coins.find((c) => c.id === pending.coinId);
       if (coin) coin.state = diff ? "used" : pending.coinState === 'quarantined' ? 'quarantined' : 'ready';
-      material.coins = material.coins.filter(c => c.state !== 'used');
+      const nextCoins=coins.filter(c => c.state !== 'used');
       for (const [out] of diff?.up_substates ?? []) {
         if (
           !out.startsWith(`utxo_${NATIVE.slice(9)}_`) ||
-          material.coins.some((c) => c.id === out)
+          nextCoins.some((c) => c.id === out)
         )
           continue;
         const state = await provider.getSubstate(out);
@@ -1470,8 +1482,9 @@ async function transactionResult(id) {
             out,
           ))
         )
-          material.coins.push({ id: out, state: "quarantined" });
+          nextCoins.push({ id: out, state: "quarantined" });
       }
+      material.coins=nextCoins;
       await persistMaterial();
       localStorage.removeItem(privatePendingKey());
     }

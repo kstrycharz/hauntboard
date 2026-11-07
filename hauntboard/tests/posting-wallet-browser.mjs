@@ -76,9 +76,21 @@ try {
           return addOutput(JSON.parse(generated.statement.statementJson).outputs[0]);
         };
         const receipt = (id, up, down = []) => results.set(id,{result:{Finalized:{final_decision:'Commit',execution_result:{finalize:{result:{Accept:{up_substates:up.map(id => [id,{}]),down_substates:down.map(id => [id,0])}},fee_receipt:{total_fees_paid:'13000'}}}}}});
-        const incomingId = '1'.repeat(64), initial = await output(100000000n);
+        const incomingId = '1'.repeat(64);
+        let initial = await output(100000000n);
         receipt(incomingId,[initial]);
         await wallet.importIncoming(incomingId);
+        const initialRow = rows.get(initial);
+        rows.set(initial,{verified:false,version:0,state:{down:{}}});
+        let unverifiable=false;
+        try { await wallet.privateBalance(); } catch { unverifiable=true; }
+        if (!unverifiable || wallet.privateFunds().ready!==1) throw Error('Unverified spent state discarded wallet funds');
+        rows.set(initial,{verified:true,version:0,state:{down:{}}});
+        if ((await wallet.privateBalance()).total!=='0' || wallet.privateFunds().ready!==0) throw Error('Verified spent input broke balance refresh');
+        await wallet.importIncoming(incomingId);
+        if(wallet.privateFunds().ready!==0)throw Error('An old spent faucet receipt was reactivated');
+        initial = await output(100000000n);
+        receipt('2'.repeat(64),[initial]);await wallet.importIncoming('2'.repeat(64));
         if ((await wallet.privateBalance()).ready !== '100000000') throw Error('Initial funds unavailable');
         const body = {kind:'thread',board,title:'Synthetic post',mode:0,uid:Array(16).fill(1),payload:[1]};
         const first = await wallet.review(body);
@@ -87,8 +99,13 @@ try {
         if (!atob(first.envelope).includes(commitmentBytes)) throw Error('Test change was not in the signed thread envelope');
         const firstSent = await wallet.submit(first, ({id}) => {if (!id) throw Error('Missing identity'); preparedBeforeSend = true;});
         const change = addOutput(firstChange);
-        rows.delete(initial); receipt(firstSent.transactionId,[change],[initial]);
-        await wallet.transaction(firstSent.transactionId);
+        rows.set(initial,{verified:true,version:0,state:{down:{}}}); receipt(firstSent.transactionId,[change],[initial]);
+        const changeRow=rows.get(change);rows.delete(change);
+        const waiting=await wallet.privateBalance();
+        if(!waiting.pendingOperation || wallet.privateFunds().reserved!==1 || sends!==1)throw Error('A delayed change lookup lost the original reserved submission');
+        rows.set(change,changeRow);
+        // Refresh must reconcile the saved native identity even when the relay
+        // operation endpoint is unavailable; it is not a fresh submission.
         const remaining = await wallet.privateBalance();
         if (remaining.ready !== remaining.total || BigInt(remaining.ready) !== 100000000n-BigInt(first.maxFee)) throw Error('Actual signed change was stranded after the first thread');
         const reply = {kind:'reply',thread,parent:0,nonce:Array(16).fill(0),payload:[2]};
@@ -114,7 +131,7 @@ try {
         let stillHeld = false;
         try { await wallet.review({...body,uid:Array(16).fill(4)}); } catch (error) { stillHeld = error.code === 'change-held'; }
         if (!stillHeld) throw Error('A rejected spend discarded change provenance');
-        return {newWalletStartsEmpty:true,firstThread:true,actualSignedChangeOwned:true,remainingFundsUsable:true,heldBalanceReproducesZeroForReplies:true,explicitIsolationExplained:true,policySurvivesUnlock:true,replyUsesActualThreadChange:true,pendingInputProtected:true,identityPersistedBeforeDispatch:true,rejectionRetainsChangeProvenance:true};
+        return {newWalletStartsEmpty:true,verifiedSpentInputRetiredOnRefresh:true,unverifiedInputPreserved:true,spentFaucetReceiptNotReactivated:true,refreshReconcilesOriginalSignedPost:true,firstThread:true,actualSignedChangeOwned:true,remainingFundsUsable:true,heldBalanceReproducesZeroForReplies:true,explicitIsolationExplained:true,policySurvivesUnlock:true,replyUsesActualThreadChange:true,pendingInputProtected:true,identityPersistedBeforeDispatch:true,rejectionRetainsChangeProvenance:true};
       });
       assert(Object.values(checks).every(Boolean)); report.browsers[name] = checks;
       console.log(`${name}: signed thread-change-to-reply and pending-input regression passed (synthetic execution)`);

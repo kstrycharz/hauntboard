@@ -36,8 +36,10 @@ try{for(const[name,engine]of[['chromium',chromium],['firefox',firefox]]){
     await bob.evaluate(()=>vault.lockRoomVault());await tab.waitForFunction(()=>!v.roomVaultActive());
     // Simultaneous creation in an empty origin: exactly one write may succeed.
     const raceContext=await browser.newContext(),r1=await raceContext.newPage(),r2=await raceContext.newPage();await Promise.all([r1.goto(origin),r2.goto(origin)]);
-    const result=await Promise.all([r1,r2].map(page=>page.evaluate(async()=>{const v=await import('/room-vault.mjs');try{await v.createRoomVault({network:'esmeralda',resetIdentity:'race'});return true;}catch{return false;}})));
-    assert.equal(result.filter(Boolean).length,1);
+    for(let attempt=0;attempt<20;attempt++){
+      const result=await Promise.all([r1,r2].map(page=>page.evaluate(async attempt=>{const v=await import('/room-vault.mjs');try{await v.createRoomVault({network:'esmeralda',resetIdentity:'race-'+attempt});return true;}catch{return false;}},attempt)));
+      assert.equal(result.filter(Boolean).length,1);
+    }
     // Exercise the actual management controls and durable staged-action promotion.
     await alice.evaluate(async()=>{
       const {createRoomManager}=await import('/room-manager.mjs');

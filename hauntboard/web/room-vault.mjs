@@ -19,6 +19,9 @@ async function persist(profile, target, value, stillCurrent) {
     const encrypted=JSON.stringify(await sealVault(value,target.secret,target.scope));
     // Locking while WebCrypto runs must not write or reopen a closed session.
     if(!stillCurrent()) throw Error('Room access was locked or changed. Unlock it and try again.');
+    // Other tabs can update their storage snapshot while WebCrypto yields.
+    // Check the exact persisted version again immediately before writing.
+    if(localStorage.getItem(locator(profile))!==target.persisted) throw Error('Room vault changed in another tab. Lock and unlock it again.');
     localStorage.setItem(locator(profile),encrypted);
     target.persisted=encrypted;target.value=value;
   });

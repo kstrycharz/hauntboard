@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-11-07T04:21:06.707Z",
+  "scope": "Real browser cryptography, encrypted recovery and Web Locks; no network spends.",
+  "browsers": {
+    "chromium": {
+      "recipientDelivery": true,
+      "outsiderDenied": true,
+      "cleanBrowserRecovery": true,
+      "removedRecipientDenied": true,
+      "crossTabLock": true,
+      "concurrentCreationSafe": true,
+      "managementUiCreateGrantAndRotate": true,
+      "namedMembers": true,
+      "opaqueRequestCodes": true,
+      "recoverySetupRequiresBackupAndAcknowledgement": true,
+      "restoreUiKeepsRecipientIdentity": true,
+      "clipboardFallback": true
+    },
+    "firefox": {
+      "recipientDelivery": true,
+      "outsiderDenied": true,
+      "cleanBrowserRecovery": true,
+      "removedRecipientDenied": true,
+      "crossTabLock": true,
+      "concurrentCreationSafe": true,
+      "managementUiCreateGrantAndRotate": true,
+      "namedMembers": true,
+      "opaqueRequestCodes": true,
+      "recoverySetupRequiresBackupAndAcknowledgement": true,
+      "restoreUiKeepsRecipientIdentity": true,
+      "clipboardFallback": true
+    }
+  },
+  "status": "PASSED"
+}

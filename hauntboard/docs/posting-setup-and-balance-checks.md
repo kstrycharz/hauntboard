@@ -33,4 +33,8 @@ Native browser regressions use released SDK/WASM crypto, actual signed fee chang
 
 GUI regressions cover a stalled check, repeated clicks, discovery, provider failure retaining the last amount, immediate retry, a prominent setting-only recovery action preserving a reply, and a cached zero followed by newly received tokens. Existing preparation, unknown-submission, direct posting and recovery scenarios remain release gates.
 
+The local container unit run passed 93 tests, with one optional live transaction check skipped. All 21 application GUI scenarios passed in Chromium and Firefox. See the [unit report](../evidence/posting-ux-unit-2026-11-06.json), [GUI report](../evidence/posting-ux-gui-2026-11-06.json) and [native-wallet report](../evidence/posting-ux-wallet-2026-11-06.json).
+
+The GitHub checks also exposed an existing room-vault initialization race in Firefox. Vault saves now recheck the persisted version after asynchronous encryption and immediately before writing. Twenty concurrent initialization attempts per browser and nine vault persistence scenarios passed, including a forced storage change during encryption that must not be overwritten. See the [room report](../evidence/posting-ux-room-2026-11-06.json) and [vault report](../evidence/posting-ux-vault-2026-11-06.json).
+
 The affected person's private wallet was not accessed. The current public provider still supports the older spent-input error as well; the typed down-state regression establishes support for the alternate response shape, not an account-specific diagnosis. Deployment and read-only public checks are recorded after the release is verified.

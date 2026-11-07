@@ -35,6 +35,11 @@ try {
         expect(v.roomRecord(p,a).keys[0]==='saved A'&&v.roomRecord(p,b).keys[0]==='saved B','Concurrent saves must preserve both rooms');
         const saved=localStorage.getItem(storageKey),backup=v.exportRoomVault(p);
         const originalEncrypt=crypto.subtle.encrypt;
+        const changed=JSON.stringify({...backup,changed:true});
+        crypto.subtle.encrypt=async function(...args){const result=await originalEncrypt.apply(this,args);localStorage.setItem(storageKey,changed);return result;};
+        try{await rejects(()=>v.setRoomRecord(p,a,{keys:['stale write']}));}finally{crypto.subtle.encrypt=originalEncrypt;}
+        expect(v.roomRecord(p,a).keys[0]==='saved A'&&localStorage.getItem(storageKey)===changed,'A change during encryption must not be overwritten or activated');
+        localStorage.setItem(storageKey,saved);
         crypto.subtle.encrypt=async function(...args){const result=await originalEncrypt.apply(this,args);v.lockRoomVault(false);return result;};
         try{await rejects(()=>v.setRoomRecord(p,a,{keys:['after lock']}));}finally{crypto.subtle.encrypt=originalEncrypt;}
         expect(!v.roomVaultActive()&&localStorage.getItem(storageKey)===saved,'In-flight encryption must respect locking');
@@ -54,9 +59,9 @@ try {
         Storage.prototype.setItem=function(key,value){if(key===qKey)throw Error('Synthetic create failure');return originalSet.call(this,key,value);};
         try{await rejects(()=>v.createRoomVault(q));}finally{Storage.prototype.setItem=originalSet;}
         expect(!v.roomVaultActive()&&!localStorage.getItem(qKey),'Failed creation must not activate an unsaved vault');
-        return {detachedRecords:true,failedWriteRollback:true,serializedWrites:true,lockDuringSave:true,lockDuringUnlock:true,failedRestoreRollback:true,staleExportRejected:true,failedCreationRollback:true};
+        return {detachedRecords:true,failedWriteRollback:true,serializedWrites:true,changeDuringEncryptionRejected:true,lockDuringSave:true,lockDuringUnlock:true,failedRestoreRollback:true,staleExportRejected:true,failedCreationRollback:true};
       });
-      assert.equal(Object.keys(checks).length,8);report.browsers[name]=checks;console.log(`${name}: 8 vault persistence regressions passed`);
+      assert.equal(Object.keys(checks).length,9);report.browsers[name]=checks;console.log(`${name}: 9 vault persistence regressions passed`);
     }finally{await browser.close();}
   }
   report.status='PASSED';await writeFile('hauntboard/evidence/vault-browser.json',JSON.stringify(report,null,2)+'\n');

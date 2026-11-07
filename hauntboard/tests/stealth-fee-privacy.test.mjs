@@ -70,6 +70,21 @@ async function setup() {
   };
 }
 
+test('the actual signed posting fee returns decryptable reusable change to the same wallet', async () => {
+  const {signer,output,args}=await setup();
+  const ready=await prepareStealthFee({...args,coinId:await output()});
+  const outputs=ready.feeStatement.outputs_statement.outputs;
+  assert.equal(outputs.length,1);
+  const entry=outputs[0], {sender_public_nonce,...body}=entry.output;
+  const id=`utxo_${NATIVE.slice(9)}_${entry.output.commitment}`;
+  const row={verified:true,version:0,substate:{Utxo:{is_frozen:false,output:{...entry,output:{...body,public_nonce:sender_public_nonce ?? body.public_nonce}}}}};
+  row.state={up:{substate:await encodeSubstate(row.substate,()=>readFile('hauntboard/web/transaction-identity.wasm'))}};
+  const owned=await sdk.decryptOwnedUtxo(new sdk.WasmStealthCrypto(16),await signer.getViewSecret(),row,id);
+  assert(owned,'The posting transaction must return change controlled by its original wallet.');
+  assert.equal(owned.value,2900000n);
+  assert.equal(JSON.parse(owned.memo).Message,'hauntboard:posting-change:v1');
+});
+
 test('one wallet authorizes multiple independent outputs with fresh one-time keys and no persistent owner/account bytes', async () => {
   const { signer, output, args } = await setup();
   const owner = Buffer.from(await signer.getPublicKey());

@@ -4,6 +4,8 @@ Date: November 6, 2026
 
 Status: initial self-funded improvements implemented; app-paid posting and additional work remain planned. See the [implementation record](posting-experience-implementation.md).
 
+The clarified **100 faucet tokens → main thread → zero available for replies** case is addressed separately in the [thread-to-reply change repair](thread-reply-change-fix.md).
+
 Scope: new threads, replies, wallet readiness, posting fees and recovery from interrupted submissions
 
 ## Intended outcome

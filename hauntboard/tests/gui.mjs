@@ -81,15 +81,15 @@ export function fundScanStatus(){return {complete:scanComplete};}
 export function privateFunds(){return {ready:1,quarantined:2,reserved:0};}
 export function getPostingPolicy(){return policy;}
 export async function setPostingPolicy(value){policy=value;}
-export async function privateBalance(){if(window.fixtureFunds==='receipt-funded')return {ready:'100000000',quarantined:'0',reserved:'0',revealed:'0',total:'100000000',postingPolicy:policy};if(window.fixtureFunds==='empty')return {ready:'0',quarantined:'0',reserved:'0',revealed:'0',total:'0',postingPolicy:policy};if(window.fixtureFunds==='held')return {ready:policy==='standard'?'99000000':'0',quarantined:'99000000',reserved:'0',revealed:'0',total:'99000000',postingPolicy:policy};if(window.fixtureFunds==='account')return {ready:'0',quarantined:'0',reserved:'0',revealed:'99000000',total:'99000000',postingPolicy:policy};return {ready:'1000000',quarantined:'2000000',reserved:'0',revealed:'0',total:'3000000',postingPolicy:policy};}
+export async function privateBalance(){if(['receipt-funded','thread-lifecycle'].includes(window.fixtureFunds))return {ready:'100000000',quarantined:'0',reserved:'0',revealed:'0',total:'100000000',postingPolicy:policy};if(window.fixtureFunds==='empty')return {ready:'0',quarantined:'0',reserved:'0',revealed:'0',total:'0',postingPolicy:policy};if(window.fixtureFunds==='held')return {ready:policy==='standard'?'99000000':'0',quarantined:'99000000',reserved:'0',revealed:'0',total:'99000000',postingPolicy:policy};if(window.fixtureFunds==='account')return {ready:'0',quarantined:'0',reserved:'0',revealed:'99000000',total:'99000000',postingPolicy:policy};return {ready:'1000000',quarantined:'2000000',reserved:'0',revealed:'0',total:'3000000',postingPolicy:policy};}
 export async function reviewPostingPreparation(){return {amount:'10000000',fee:'35000',outputs:4};}
 export async function confirmPostingPreparation(){window.fixturePreparations=(window.fixturePreparations??0)+1;window.fixtureFunds='ready';return {prepared:true};}
 export async function balance(){return '1000000';}
 export async function syncPrivateFunds(){scanComplete=true;return {complete:true};}
 export async function syncFaucetFunds(){return {found:0};}
-export async function review(body){return {...await call('/api/quote',body),browser:true,privateFee:true};}
+export async function review(body){window.fixtureLastKind=body.kind;return {...await call('/api/quote',body),browser:true,privateFee:true};}
 export async function submit(quote){return call('/api/browser-submit',{operation:quote.operation});}
-export async function transaction(id){return call('/api/transaction?id='+id);}
+export async function transaction(id){const result=await call('/api/transaction?id='+id);if(result.status==='Accepted'&&window.fixtureFunds==='thread-lifecycle'&&window.fixtureLastKind==='thread')window.fixtureFunds='held';return result;}
 export async function fund(){return {};}
 export async function importIncoming(id){if(window.fixtureReceiptCredit){window.fixtureReceiptImports=(window.fixtureReceiptImports??0)+1;window.fixtureFunds='receipt-funded';return {found:1,ready:1};}return {found:0,ready:0};}
 `;
@@ -334,9 +334,9 @@ async function fixture(browser, options = {}) {
     }
     if (path === "/api/browser-submit" || path === "/api/submit") {
       state.submits++;
-      if (options.sealed && state.body.kind === "thread")
+      if ((options.sealed || options.threadLifecycle) && state.body.kind === "thread")
         state.sealedOpening = structuredClone(state.body);
-      if (options.sealed && state.body.kind === "reply")
+      if ((options.sealed || options.threadLifecycle) && state.body.kind === "reply")
         state.sealedReply = {
           index: 1,
           epoch: 2,
@@ -692,6 +692,30 @@ try {
         assert.deepEqual(f.errors,[]); await f.context.close();
       }
       checks.push('Held 99-token balance has explicit policy recovery; account preparation reviews its own fee inline and preserves the unsubmitted draft');
+      f = await fixture(browser,{saved:true,funds:'thread-lifecycle',threadLifecycle:true});
+      await ready(f.page); await unlock(f.page);
+      await expect(f.page.locator('#wallet-posting-value')).toContainText('100 test TARI');
+      await compose(f.page);
+      await expect(f.page.locator('#operation-panel')).toHaveAttribute('data-state','confirmed');
+      assert.equal(f.state.submits,1);
+      await expect(f.page.locator('#reply-wallet-balance')).toContainText('99 test TARI remaining');
+      await expect(f.page.locator('#reply-wallet-balance')).not.toContainText('Available for posting: 0');
+      await expect(f.page.locator('#reply-posting-status')).toContainText('99 test TARI remaining');
+      await expect(f.page.locator('#reply-change-help')).toContainText('link your posts');
+      await expect(f.page.locator('#wallet-posting-policy')).toHaveValue('isolated');
+      await expect(f.page.locator('#reply-funding')).toBeHidden();
+      await f.page.locator('#reply-body').fill('Reply with the remaining tokens from my first thread.');
+      await expect(f.page.locator('#reply-form button[type=submit]')).toHaveText('Use remaining tokens and reply');
+      await f.page.locator('#reply-form button[type=submit]').click();
+      await expect(f.page.locator('#operation-panel')).toHaveAttribute('data-state','confirmed');
+      await expect.poll(()=>f.state.submits).toBe(2);
+      await expect(f.page.locator('#wallet-posting-policy')).toHaveValue('standard');
+      await expect(f.page.locator('#review-dialog')).not.toBeVisible();
+      await expect(f.page.locator('#browser-wallet-dialog')).not.toBeVisible();
+      await expect(f.page.locator('#reply-form button[type=submit]')).toHaveText('Reply');
+      assert.equal(f.state.quotes,2); assert.equal(f.state.faucetClaims??0,0);
+      assert.deepEqual(f.errors,[]); await f.context.close();
+      checks.push('100 faucet tokens to main thread to held 99 tokens: explicit remaining-token Reply switches policy and publishes once without a wallet popup or another faucet claim');
       let releaseQuote;
       f = await fixture(browser, {saved:true});
       await ready(f.page); await unlock(f.page);

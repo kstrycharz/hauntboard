@@ -1,0 +1,71 @@
+{
+  "checkedAt": "2026-11-07T04:33:58.572Z",
+  "sourceCommit": "d4d7835b20160e6bad85d6ad36986f2031c66ba8",
+  "origin": "https://hauntboard.taritracker.com",
+  "scope": "Live fresh unfunded native wallets, device setup, one manual balance check and mobile composer. Recovery words remain in ephemeral browser contexts and are never logged. Only read-only API operations are allowed; no faucet payment or public post is requested. Funded lifecycle acceptance is simulated separately.",
+  "assets": {
+    "app.mjs": "c692a9e332d273c10412a15435f1e9cf1866a6edd48f762bb4aa6fab57794413",
+    "index.html": "6c798e18d576700aced3db99cba12556c84c55e66c22fd5ac2a75fdd7fba6e89",
+    "posting-readiness.mjs": "1fb866f950c8aa14325f18aff8d278f4de5ff6113a688cef7d236872710e47fb",
+    "browser-wallet.mjs": "c3925a70c4567caca0b35f174f5273eca29e3a78e87a0191985b097e70982ca7",
+    "provider-state.mjs": "eb3c9b04b44f5bd1286d6048a0a0357e96a8543740c48830715326ed7ad18f05",
+    "wallet-options.mjs": "b4436abd6548198718ee5494e8d044d15fed46de9c952df3cdcd8c12634a2545",
+    "room-vault.mjs": "4a0e5e06cf7114edbed513184ae3b055a54d2d69aeb7a6e59160938dc6656834",
+    "about.html": "4ef70c7c89afe3880cfe17fd219db9a4101647d53e5ad4e3c8481c90a6c8e307",
+    "forums.html": "8b24eb462224dd35b71b6d8ebc91249fd42cebd76d97cfa588437f027476d890",
+    "style.css": "b3a80e1e179b2d407f4526b99152923b735a29fc5478d4e512303a99137a30d8",
+    "faucet-client.mjs": "be23d5ae86a4b0c5ebb8cee54d88c634a580f4716466df5b249b4f2bfd6007b7"
+  },
+  "browsers": {
+    "chromium": {
+      "deviceSetupFirst": true,
+      "optionalSapientCollapsed": true,
+      "nativeWalletCreatedLocally": true,
+      "recoveryConfirmationRetained": true,
+      "balancesCollapsed": true,
+      "emptyWalletVerified": true,
+      "manualBalanceCheckCompleted": true,
+      "scanReads": 1,
+      "primaryPostVisibleOnMobile": true,
+      "feeLimitVisibleBesidePost": true,
+      "visibilityCollapsed": true,
+      "draftUnsubmitted": true,
+      "blockedWrites": 0,
+      "pageErrors": []
+    },
+    "firefox": {
+      "deviceSetupFirst": true,
+      "optionalSapientCollapsed": true,
+      "nativeWalletCreatedLocally": true,
+      "recoveryConfirmationRetained": true,
+      "balancesCollapsed": true,
+      "emptyWalletVerified": true,
+      "manualBalanceCheckCompleted": true,
+      "scanReads": 1,
+      "primaryPostVisibleOnMobile": true,
+      "feeLimitVisibleBesidePost": true,
+      "visibilityCollapsed": true,
+      "draftUnsubmitted": true,
+      "blockedWrites": 0,
+      "pageErrors": []
+    }
+  },
+  "readiness": {
+    "status": "ready"
+  },
+  "board": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+  "template": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+  "resetIdentity": "esmeralda-reset-2026-11-02",
+  "network": "esmeralda",
+  "status": "PASSED",
+  "deployment": {
+    "release": "release-d4d7835b20160e6bad85d6ad36986f2031c66ba8",
+    "image": "sha256:6cfe29a74001813031e15ca435c0e8209aed8b325a2332aedea1ac64d55fb4ee",
+    "previousImage": "sha256:cf32cb4d03733334f813e7d7b99a6e5bf45cd2183c498a81b23e4d5a912006fb",
+    "manifestSha256": "fa4c2a8bec8c7caa41a8f9fff9f634ee0d7c03803434755e3785a297d0fa0ec8",
+    "operationsVolume": "hauntboard_operations",
+    "applicationHealth": "healthy",
+    "releaseWorkflow": "https://github.com/kstrycharz/hauntboard/actions/runs/42338646236",
+    "privacyWorkflow": "https://github.com/kstrycharz/hauntboard/actions/runs/42338646261"
+  }
+}

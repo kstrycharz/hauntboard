@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-07T04:21:53.246Z",
+  "checkedAt": "2026-11-07T04:31:59.325Z",
   "scope": "Real browser storage, Web Locks and WebCrypto; no chain writes.",
   "browsers": {
     "chromium": {
@@ -25,5 +25,7 @@
       "failedCreationRollback": true
     }
   },
-  "status": "PASSED"
+  "status": "PASSED",
+  "sourceCommit": "d4d7835b20160e6bad85d6ad36986f2031c66ba8",
+  "workflowRun": "https://github.com/kstrycharz/hauntboard/actions/runs/42338646261"
 }

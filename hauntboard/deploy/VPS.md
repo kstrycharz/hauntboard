@@ -1,8 +1,31 @@
 # VPS and GitHub deployment
 
+## November 6 posting setup and balance refresh repair
+
+The current release is `release-d4d7835b20160e6bad85d6ad36986f2031c66ba8`,
+running healthy image
+`sha256:6cfe29a74001813031e15ca435c0e8209aed8b325a2332aedea1ac64d55fb4ee`.
+It repairs spent-input and delayed-change balance recovery, gives one visible
+funds check with progress and retry, and makes device setup the ordinary path.
+The mobile composer, held-token recovery and getting-started help are simplified.
+See the [implementation record](../docs/posting-setup-and-balance-checks.md).
+
+Both GitHub workflows passed for the deployed source. The guarded updater
+verified release checksums, the image configuration, the byte-identical network
+manifest and candidate readiness. The manifest hash remains
+`fa4c2a8bec8c7caa41a8f9fff9f634ee0d7c03803434755e3785a297d0fa0ec8`,
+and `hauntboard_operations` remains mounted at `/companion`.
+
+The initial UX image from `2289e39`,
+`sha256:cf32cb4d03733334f813e7d7b99a6e5bf45cd2183c498a81b23e4d5a912006fb`,
+is retained as the current rollback image in `.env.previous`.
+The [live checks](../evidence/posting-ux-live-2026-11-06.json) passed in
+Chromium and Firefox, including a real read-only manual balance check and 11
+matching served asset hashes. No faucet payment or public post was requested.
+
 ## November 6 main-thread-to-reply repair
 
-The current release is `release-f9ac47fde4bc2777a5cf6c8b6301e1c3dddb8a89`,
+The preceding repair deployed `release-f9ac47fde4bc2777a5cf6c8b6301e1c3dddb8a89`,
 running healthy image
 `sha256:fa7fabdc27597d618b07d03ee4096c36f410e7cfa91273bff1734afb0737b943`.
 It immediately refreshes reply funding guidance after a confirmed thread,
@@ -23,7 +46,7 @@ passed in Chromium and Firefox, including six matching served asset hashes.
 
 The preceding `09c6ac4` image
 `sha256:47b932301530ce85ad6d66c15ca365225cc6fac9a226acdf4480c1deaffb5163`
-is retained as the current rollback image in `.env.previous`. No new contract
+was retained as its rollback image in `.env.previous` at that time. No new contract
 was published, faucet payment requested or public post submitted by this repair.
 
 ## November 6 Reply and empty-wallet repair

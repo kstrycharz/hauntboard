@@ -2,6 +2,8 @@
 
 Date: November 6, 2026 (local)
 
+Deployment: [release d4d7835](https://github.com/kstrycharz/hauntboard/releases/tag/release-d4d7835b20160e6bad85d6ad36986f2031c66ba8), live at https://hauntboard.taritracker.com. The [release workflow](https://github.com/kstrycharz/hauntboard/actions/runs/42338646236) and [privacy workflow](https://github.com/kstrycharz/hauntboard/actions/runs/42338646261) both passed. The application is healthy; the original board, manifest hash and operations volume were preserved.
+
 This repair follows the report that checking and refreshing funds still did not help a person unfamiliar with crypto. It builds on the [thread-to-reply repair](thread-reply-change-fix.md), with changes to balance recovery, feedback, onboarding and mobile publishing.
 
 ## Balance behavior
@@ -21,6 +23,7 @@ This repair follows the report that checking and refreshing funds still did not 
 - The main display says **Ready to post**, **Enable your remaining tokens**, **Checking your saved post** or **Balance check unavailable**. Detailed balances and posting settings are available under an expandable section.
 - **Use my remaining tokens for posting** is a prominent explicit action for held change. It discloses the Standard posting/linkability consequence, enables the tokens and preserves the unsubmitted draft. The existing direct remaining-token Post/Reply action remains available in the composer.
 - **Check posting funds** is one shared action across setup and composers. It shows progress, disables duplicate checks, reports a check time and gives an actionable result. Failure keeps the last verified amounts and allows retry.
+- A check during an active or saved submission explains that the post is already being checked and points to its status; it never silently returns or creates an extra submission.
 - A held balance explicitly explains that another refresh is unnecessary; the user must enable the already-owned tokens instead.
 - The composer uses a short fee/permanence disclosure, hides routine byte counts, and keeps publishing actions within reach on narrow screens. Public titles for encrypted messages remain explicit.
 - Initial loading does not show an empty forum. Failed loading has its own retry state. Public testnet and privacy-verification limits remain visible in simpler language.
@@ -37,4 +40,6 @@ The local container unit run passed 93 tests, with one optional live transaction
 
 The GitHub checks also exposed an existing room-vault initialization race in Firefox. Vault saves now recheck the persisted version after asynchronous encryption and immediately before writing. Twenty concurrent initialization attempts per browser and nine vault persistence scenarios passed, including a forced storage change during encryption that must not be overwritten. See the [room report](../evidence/posting-ux-room-2026-11-06.json) and [vault report](../evidence/posting-ux-vault-2026-11-06.json).
 
-The affected person's private wallet was not accessed. The current public provider still supports the older spent-input error as well; the typed down-state regression establishes support for the alternate response shape, not an account-specific diagnosis. Deployment and read-only public checks are recorded after the release is verified.
+The affected person's private wallet was not accessed. The current public provider still supports the older spent-input error as well; the typed down-state regression establishes support for the alternate response shape, not an account-specific diagnosis.
+
+The [live deployment checks](../evidence/posting-ux-live-2026-11-06.json) passed in Chromium and Firefox. Each browser created a fresh unfunded native wallet locally, retained recovery confirmation, completed a manual funds check that read a real network scan page, and checked the mobile publishing control and fee disclosure. Eleven served assets, including the getting-started help, matched the release source. Funding and posting writes were blocked; none were attempted. These read-only checks do not claim a new funded public-chain post.

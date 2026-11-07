@@ -2035,7 +2035,12 @@ function fundsCheckFeedback(message) {
 }
 async function checkPostingFunds({manual=false}={}) {
   const address=browserWallet.active()?.address;
-  if(!address || walletOptions.adapter.connection || postIntentBusy || busy || transactionPending) return;
+  if(!address || walletOptions.adapter.connection)return;
+  if(postIntentBusy || busy || transactionPending){
+    const message='Your post is still being checked. Use Check status beside your draft; no extra submission or balance check was started.';
+    $('wallet-funds-check-status').textContent=message;
+    flash(message);return;
+  }
   if(fundsCheck) return fundsCheck.promise;
   const entry={address,promise:null};fundsCheck=entry;
   const buttons=['wallet-sync-funds','compose-sync-posting','reply-sync-posting','compose-check-funds','reply-check-funds'].map($);

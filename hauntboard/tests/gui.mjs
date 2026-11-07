@@ -624,6 +624,9 @@ try {
       );
       await f.page.locator("#browser-wallet-button").click();
       await expect(f.page.locator("#operation-panel")).toBeAttached();
+      await f.page.locator('#wallet-sync-funds').click();
+      await expect(f.page.locator('#wallet-funds-check-status')).toContainText('Your post is still being checked');
+      assert.equal(f.state.submits,1,'Checking funds during an unknown submission must not resubmit it.');
       await f.page.locator('[data-close="browser-wallet-dialog"]').click();
       await f.page.reload();
       await expect(f.page.locator("#operation-panel")).toHaveAttribute(

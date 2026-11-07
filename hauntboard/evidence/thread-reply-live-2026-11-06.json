@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-11-07T02:14:56.507Z",
+  "sourceCommit": "f9ac47fde4bc2777a5cf6c8b6301e1c3dddb8a89",
+  "origin": "https://hauntboard.taritracker.com",
+  "scope": "Read-only public readiness, asset identity and browser smoke checks. No wallet is funded, no faucet payment is requested, and no post is submitted. Funded thread-to-reply execution is covered separately with simulated provider receipts.",
+  "assets": {
+    "app.mjs": "cb58e6f3f2d1dc9bb961754e593d18e181034ca4d9d2ac707a185789286f58e9",
+    "index.html": "624f859037d5a9e11d9206467c6f6f3e4d224ab4da301fff6db9c8183457e229",
+    "posting-readiness.mjs": "110545e6483e446cf6aa5562bd8bf21aae3d42acf43f15db1146de622d27368b",
+    "browser-wallet.mjs": "d0326a101fc60d1ec562e7d018875d0a03bbc03d8956daa104843f4e28cb80c4",
+    "style.css": "0ed6ffc186dc43a4ec5cdf0fcccc8e0e2b17f536ec26b3b3ccb861984698337f",
+    "faucet-client.mjs": "2de4dee5c7f5de589b72c99e2438f47b766e205375e50599854b4b3881c6de47"
+  },
+  "browsers": {
+    "chromium": {
+      "publicThreadLoaded": true,
+      "ordinaryReplyVisible": true,
+      "explicitStandardPostingDisclosureServed": true,
+      "separateNonPublishingActionServed": true,
+      "draftPreserved": true,
+      "noWalletPopup": true,
+      "narrowLayout": true,
+      "blockedWrites": 0,
+      "pageErrors": []
+    },
+    "firefox": {
+      "publicThreadLoaded": true,
+      "ordinaryReplyVisible": true,
+      "explicitStandardPostingDisclosureServed": true,
+      "separateNonPublishingActionServed": true,
+      "draftPreserved": true,
+      "noWalletPopup": true,
+      "narrowLayout": true,
+      "blockedWrites": 0,
+      "pageErrors": []
+    }
+  },
+  "readiness": {
+    "status": "ready"
+  },
+  "board": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+  "template": "dc41e379c0c75a38999b7635bd9498d1ba1250751248b70c86f446787ab67500",
+  "resetIdentity": "esmeralda-reset-2026-11-02",
+  "network": "esmeralda",
+  "status": "PASSED",
+  "deployment": {
+    "release": "release-f9ac47fde4bc2777a5cf6c8b6301e1c3dddb8a89",
+    "image": "sha256:fa7fabdc27597d618b07d03ee4096c36f410e7cfa91273bff1734afb0737b943",
+    "previousImage": "sha256:47b932301530ce85ad6d66c15ca365225cc6fac9a226acdf4480c1deaffb5163",
+    "manifestSha256": "fa4c2a8bec8c7caa41a8f9fff9f634ee0d7c03803434755e3785a297d0fa0ec8",
+    "operationsVolume": "hauntboard_operations",
+    "applicationHealth": "healthy",
+    "releaseWorkflow": "https://github.com/kstrycharz/hauntboard/actions/runs/42327846253",
+    "privacyWorkflow": "https://github.com/kstrycharz/hauntboard/actions/runs/42327846344"
+  }
+}

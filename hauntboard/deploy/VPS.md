@@ -1,9 +1,35 @@
 # VPS and GitHub deployment
 
+## November 6 main-thread-to-reply repair
+
+The current release is `release-f9ac47fde4bc2777a5cf6c8b6301e1c3dddb8a89`,
+running healthy image
+`sha256:fa7fabdc27597d618b07d03ee4096c36f410e7cfa91273bff1734afb0737b943`.
+It immediately refreshes reply funding guidance after a confirmed thread,
+shows held remaining tokens, and provides an explicit **Use remaining tokens
+and reply** action that enables Standard posting and submits once. Existing
+isolation is preserved until the user selects that disclosed action. See the
+[repair and test record](../docs/thread-reply-change-fix.md).
+
+Both GitHub release and privacy workflows passed for source `f9ac47f`. The
+guarded updater verified the downloaded image and byte-identical network
+manifest, checked candidate readiness, then switched production. The original
+manifest hash remains
+`fa4c2a8bec8c7caa41a8f9fff9f634ee0d7c03803434755e3785a297d0fa0ec8`,
+and `hauntboard_operations` remains mounted at `/companion`.
+
+The [read-only live checks](../evidence/thread-reply-live-2026-11-06.json)
+passed in Chromium and Firefox, including six matching served asset hashes.
+
+The preceding `09c6ac4` image
+`sha256:47b932301530ce85ad6d66c15ca365225cc6fac9a226acdf4480c1deaffb5163`
+is retained as the current rollback image in `.env.previous`. No new contract
+was published, faucet payment requested or public post submitted by this repair.
+
 ## November 6 Reply and empty-wallet repair
 
-The current release is `release-09c6ac40cb07c3783188ca411c54e89bbf188d0b`,
-running image
+The preceding repair deployed `release-09c6ac40cb07c3783188ca411c54e89bbf188d0b`,
+with image
 `sha256:47b932301530ce85ad6d66c15ca365225cc6fac9a226acdf4480c1deaffb5163`.
 It adds inline reply validation and funding, preserves preparation confirmation
 across balance polling, bounds client request waits, and verifies confirmed
@@ -13,8 +39,8 @@ rejected and this release does not change the faucet's configuration or journals
 
 The UI repair was first deployed as `d5dd903`; that intermediate image
 `sha256:d680373bffece86a420359fc2e2e0729db0d5ee9fc31442cdbf0baf28eb27ae8`
-is the current rollback image, retained with `.env.previous` by the guarded
-updater. The original manifest hash
+was its rollback image, retained with `.env.previous` by the guarded
+updater at that time. The original manifest hash
 `fa4c2a8bec8c7caa41a8f9fff9f634ee0d7c03803434755e3785a297d0fa0ec8`
 and `hauntboard_operations` volume are unchanged.
 

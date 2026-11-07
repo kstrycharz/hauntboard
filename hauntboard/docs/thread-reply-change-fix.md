@@ -2,6 +2,8 @@
 
 Date: November 6, 2026
 
+Deployment: [release f9ac47f](https://github.com/kstrycharz/hauntboard/releases/tag/release-f9ac47fde4bc2777a5cf6c8b6301e1c3dddb8a89), live at https://hauntboard.taritracker.com. The guarded updater verified the release checksums, image configuration, unchanged network manifest and candidate readiness before switching the server. Both application and proxy passed health checks.
+
 The clarified report is **receive 100 test TARI, publish a main thread, then see zero available when replying**. It is different from the fresh-wallet funding and faucet-receipt issues covered in the [earlier repair](reply-zero-balance-fix.md).
 
 ## Reproduced cause
@@ -38,4 +40,6 @@ Provider acceptance, faucet funding and receipts are simulated in these regressi
 
 Before release, all nine focused Node tests passed, as did 18 GUI scenarios per browser and the native wallet regression in both Chromium and Firefox. Release artifact checksums, bundled WASM and the published board identity also passed verification. See the dated [GUI report](../evidence/thread-reply-gui-2026-11-06.json) and [native-wallet report](../evidence/thread-reply-wallet-browser-2026-11-06.json).
 
-Deployment identity and dated verification results are recorded after release in [VPS.md](../deploy/VPS.md) and `hauntboard/evidence/`.
+After deployment, the [read-only live checks](../evidence/thread-reply-live-2026-11-06.json) passed in Chromium and Firefox. Six served asset hashes matched the deployed source. Both browsers loaded a public thread, checked the new disclosure and separate nonpublishing action, preserved an unsubmitted draft and passed the narrow-layout check. No API writes occurred. The original board, network manifest hash and operations-volume identity were verified; the preceding image remains available for rollback.
+
+Deployment identity and dated verification results are recorded in [VPS.md](../deploy/VPS.md) and `hauntboard/evidence/`. The [release workflow](https://github.com/kstrycharz/hauntboard/actions/runs/42327846253) and [privacy workflow](https://github.com/kstrycharz/hauntboard/actions/runs/42327846344) both passed for the deployed source.

@@ -19,6 +19,7 @@ import { createApiClient } from "./api-client.mjs";
 import { FaucetClient, FaucetCredit, faucetMessage } from "./faucet-client.mjs";
 import {createRoomManager} from './room-manager.mjs';
 import { chainStateLink, postProof } from "./post-proof.mjs";
+import { isNsfw, readNsfwPreference, saveNsfwPreference } from './content-filter.mjs';
 import {
   isSealedPayload,
   sealedMetadata,
@@ -85,6 +86,8 @@ function readStorage(storage, key, fallback) {
   }
 }
 const hidden = new Set(readStorage(localStorage, "hauntboard-hidden", []));
+let showNsfw = readNsfwPreference(localStorage);
+$('show-nsfw').checked = showNsfw;
 const savedLocators = new Set(
   readStorage(localStorage, "hauntboard-secret-locators", []),
 );
@@ -510,6 +513,7 @@ function renderRows() {
   const rows = threadRows.filter(
     ({ ref, content, thread }) =>
       categoryOf(content) === category &&
+      (showNsfw || !isNsfw(content, ref.title)) &&
       (showHidden || !hidden.has(ref.address)) &&
       (filter === "all" ||
         (filter === "public" ? !sealedThread(thread) : sealedThread(thread))),
@@ -543,7 +547,7 @@ function renderRows() {
         loading
           ? "Retrieving conversations from the provider."
           : hasForumThreads
-            ? "Try showing hidden threads or changing the filter."
+            ? "Try changing the filters above. NSFW posts are hidden unless you enable Show NSFW posts."
             : `Start a conversation in ${categories[category].title}. Public posts are stored on Tari.`,
       ),
     );
@@ -704,6 +708,7 @@ async function openThread(address, { navigate = true, focus = true } = {}) {
   currentThread = thread;
   boardAddress = thread.board;
   if (changed) {
+    $('reply-nsfw').checked = false;
     $("reply-body").value = !sealedThread(thread)
       ? readStorage(sessionStorage, `hauntboard-reply-${thread.address}`, "")
       : "";
@@ -719,6 +724,9 @@ async function openThread(address, { navigate = true, focus = true } = {}) {
 }
 async function renderThread(thread) {
   const generation=++threadRenderGeneration;
+  // Clear revealed content immediately, before any asynchronous key/decode work.
+  $('thread-heading').replaceChildren();
+  $('posts').replaceChildren();
   boardAddress = thread.board;
   const key = await roomManager.key(config,thread,thread.posts[0]).catch(()=>null) ?? await keyFor(thread.address);
   if(generation!==threadRenderGeneration)return;
@@ -728,8 +736,10 @@ async function renderThread(thread) {
   const heading = $("thread-heading");
   heading.replaceChildren();
   let title = thread.title;
+  let openingContent;
   try {
     const opening = await contentFor(thread, thread.posts[0]);
+    openingContent = opening;
     title = opening.title;
     selectCategory(categoryOf(opening));
   } catch {
@@ -738,6 +748,8 @@ async function renderThread(thread) {
     }
   }
   if(generation!==threadRenderGeneration)return;
+  const blockedOpening = !showNsfw && isNsfw(openingContent, thread.title);
+  if (blockedOpening) title = 'NSFW thread';
   heading.append(
     node(
       "span",
@@ -768,6 +780,13 @@ async function renderThread(thread) {
   heading.append(threadDetails);
   const posts = $("posts");
   posts.replaceChildren();
+  if (blockedOpening) {
+    posts.append(node('p', 'empty', 'This conversation is hidden by your NSFW filter. Enable Show NSFW posts above to read it.'));
+    $('reply-form').hidden = true;
+    $('invite-button').hidden = true;
+    $('room-access-button').hidden = true;
+    return;
+  }
   const direction = $("reply-order").value === "newest" ? -1 : 1;
   for (const post of [
     thread.posts[0],
@@ -788,6 +807,11 @@ async function renderThread(thread) {
       article.append(node("p", "locked-copy", e.message));
     }
     if(generation!==threadRenderGeneration)return;
+    if (!showNsfw && isNsfw(content)) {
+      article.append(node('p', 'muted', `Post ${post.index + 1} is hidden by your NSFW filter. Enable Show NSFW posts above to read it.`));
+      posts.append(article);
+      continue;
+    }
     const header = node("div", "post-header");
     if (!config.posterPrivacy)
       header.append(node("strong", "", content?.name || "Ghost"));
@@ -1154,6 +1178,7 @@ async function finishTransaction(pending) {
         "Your reply was accepted; waiting for this provider to return it. Check its existing submission again.",
       );
     $("reply-body").value = "";
+    $('reply-nsfw').checked = false;
     sessionStorage.removeItem(`hauntboard-reply-${pending.thread}`);
     resetReplyTarget();
     updateSpace("reply");
@@ -1258,6 +1283,7 @@ function preserveDraft() {
         category: $("thread-category").value,
         name: $("post-name").value,
         body: $("thread-body").value,
+        nsfw: $('thread-nsfw').checked,
         mode: document.querySelector("input[name=mode]:checked").value,
       }),
     );
@@ -1273,6 +1299,7 @@ function composeContent() {
     title: $("thread-title").value.trim(),
     name: $("post-name").value.trim() || "Ghost",
     body: $("thread-body").value.trim(),
+    nsfw: $('thread-nsfw').checked,
   };
   if ($("include-address").checked) {
     const recipient = browserWallet.active()?.address ?? config?.receiveAddress;
@@ -1292,6 +1319,7 @@ function updateSpace(kind) {
         title: "",
         name: config?.posterPrivacy ? "Ghost" : (config?.label ?? "Ghost"),
         body: $("reply-body").value.trim(),
+        nsfw: $('reply-nsfw').checked,
       }
     : composeContent();
   const space =
@@ -1518,6 +1546,10 @@ $("compose-form").addEventListener("input", () => {
       "Sealed draft is not saved. Keep this tab open.";
   }
 });
+$('reply-nsfw').addEventListener('change', () => {
+  invalidateReview();
+  updateSpace('reply');
+});
 $("reply-body").addEventListener("input", () => {
   invalidateReview();
   $("reply-error").hidden = true;
@@ -1588,6 +1620,7 @@ $("reply-form").addEventListener("submit", async (e) => {
       title: "",
       name: config.posterPrivacy ? "Ghost" : config.label,
       body: $("reply-body").value.trim(),
+      nsfw: $('reply-nsfw').checked,
     };
     if (!content.body) throw new Error("Write a reply first.");
     const context = [currentThread.board, currentThread.uid, nonce, parent];
@@ -1647,6 +1680,7 @@ function openCompose(restore = true) {
     ? readStorage(sessionStorage, "hauntboard-compose-draft", null)
     : null;
   $("thread-category").value = draft ? categoryOf(draft) : category;
+  $('thread-nsfw').checked = draft?.nsfw === true;
   if (draft) {
     $("thread-title").value = draft.title;
     $("post-name").value = draft.name;
@@ -1759,6 +1793,14 @@ $("show-hidden").addEventListener("click", () => {
     ? "Hide filtered threads"
     : "Show hidden threads";
   renderRows();
+});
+$('show-nsfw').addEventListener('change', () => {
+  showNsfw = $('show-nsfw').checked;
+  saveNsfwPreference(localStorage, showNsfw);
+  resetReplyTarget();
+  renderRows();
+  if (currentThread && !$('thread-view').hidden)
+    renderThread(currentThread).catch(e => flash(e.message, true));
 });
 $("reply-order").addEventListener("change", () =>
   renderThread(currentThread).catch((e) => flash(e.message, true)),

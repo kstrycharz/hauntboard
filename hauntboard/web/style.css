@@ -909,3 +909,9 @@ h1, h2, h3 { letter-spacing: .3px; }
 #room-controls .room-share-code { font:13px/1.5 var(--mono,monospace); word-break:break-all; }
 #room-controls .room-member, #room-controls .room-request-result { border:1px solid var(--purple); border-radius:8px; padding:12px; margin:12px 0; }
 #room-recovery-code { font:16px/1.6 var(--mono,monospace); word-break:break-all; }
+.content-filter { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1rem; margin: .5rem 0; }
+.content-filter label { display: flex; align-items: center; gap: .65rem; cursor: pointer; }
+.content-filter input { width: auto; margin: 0; }
+.content-filter p { margin: .5rem 0 0; }
+.content-filter details[open] { flex-basis: 100%; }
+.content-filter summary { cursor: pointer; }

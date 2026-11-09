@@ -109,6 +109,7 @@ const server = createServer(async (req, res) => {
         "api-client.mjs",
         "faucet-client.mjs",
         "post-proof.mjs",
+        "content-filter.mjs",
         "pin-entry.mjs",
         "crypto.mjs",
         "sealed-posts.mjs",
@@ -286,6 +287,10 @@ async function fixture(browser, options = {}) {
       if (state.indexing)
         return json({ error: "Fixture indexer catching up" }, 503);
       const view = thread();
+      if (options.nsfw) {
+        view.posts[1].payload = payload('A fuck-filled fixture reply');
+        if (state.flagOpening) view.posts[0].payload = payload('A fuck-filled opening');
+      }
       if (state.sealedOpening) {
         Object.assign(view, {
           title: state.sealedOpening.title,
@@ -394,6 +399,45 @@ try {
     const browser = await engine.launch();
     const checks = [];
     try {
+      {
+        const f = await fixture(browser, {nsfw:true});
+        await ready(f.page);
+        await expect(f.page.locator('#show-nsfw')).not.toBeChecked();
+        await f.page.locator('.thread-link').click();
+        await expect(f.page.locator('#post-1')).toContainText('hidden by your NSFW filter');
+        await expect(f.page.locator('#posts')).not.toContainText('fuck-filled');
+        await f.page.locator('#show-nsfw').check();
+        await expect(f.page.locator('#post-1')).toContainText('fuck-filled');
+        await f.page.reload();
+        await ready(f.page);
+        await expect(f.page.locator('#show-nsfw')).toBeChecked();
+        await expect(f.page.locator('#post-1')).toContainText('fuck-filled');
+        await f.page.locator('#post-1 .post-footer button').filter({hasText:'Reply'}).click();
+        await expect(f.page.locator('#reply-excerpt')).toContainText('fuck-filled');
+        await f.page.locator('#show-nsfw').uncheck();
+        await expect(f.page.locator('#posts')).not.toContainText('fuck-filled');
+        await expect(f.page.locator('#reply-target')).toBeHidden();
+        f.state.flagOpening = true;
+        await f.page.locator('#refresh-thread').click();
+        await expect(f.page.locator('#conversation-title')).toHaveText('NSFW thread');
+        await expect(f.page.locator('#posts')).not.toContainText('fuck-filled');
+        await expect(f.page.locator('#reply-form')).toBeHidden();
+        await f.page.reload();
+        await expect(f.page.locator('body')).toHaveAttribute('data-ready', 'true');
+        await expect(f.page.locator('#conversation-title')).toHaveText('NSFW thread');
+        await f.page.locator('#back').click();
+        await expect(f.page.locator('.thread-link')).toHaveCount(0);
+        await f.page.locator('#show-nsfw').check();
+        await expect(f.page.locator('.thread-link')).toHaveCount(1);
+        await f.page.setViewportSize({width:390,height:844});
+        assert(await f.page.evaluate(() => document.documentElement.scrollWidth <= innerWidth+1));
+        await f.page.locator('#show-nsfw').uncheck();
+        await f.page.screenshot({path:`hauntboard/evidence/nsfw-filter-${name}.png`, fullPage:true});
+        report.browsers[name] = {status:'PASSED', checks:['Default hidden', 'Explicit reveal', 'Saved preference', 'Reply filtering', 'Reply excerpt cleared', 'Direct link filtered', 'Feed filtered', 'Mobile layout']};
+        await f.context.close();
+        console.log(`${name}: NSFW default, reveal, persistence, replies, direct links, feed and mobile passed`);
+        if (process.env.NSFW_ONLY === '1') continue;
+      }
       let empty = await fixture(browser,{saved:true,faucet:true,funds:'empty'});
       await ready(empty.page); await unlock(empty.page);
       await empty.page.locator('.thread-link').click();
@@ -1124,12 +1168,15 @@ try {
       await browser.close();
     }
   }
-  report.status = "GUI_FIXTURE_REGRESSIONS_PASSED";
+  report.status = process.env.NSFW_ONLY === '1' ? 'NSFW_FIXTURE_REGRESSIONS_PASSED' : "GUI_FIXTURE_REGRESSIONS_PASSED";
   report.checkedAt = new Date().toISOString();
   report.sourceHashes = Object.fromEntries(
     await Promise.all(
       [
         "hauntboard/web/app.mjs",
+        "hauntboard/web/content-filter.mjs",
+        "hauntboard/web/index.html",
+        "hauntboard/web/style.css",
         "hauntboard/web/sapient-wallet.mjs",
         "hauntboard/web/wallet-options.mjs",
         "hauntboard/web/sealed-posts.mjs",
@@ -1146,7 +1193,7 @@ try {
     ),
   );
   await writeFile(
-    "hauntboard/evidence/gui-regression.json",
+    process.env.NSFW_ONLY === '1' ? 'hauntboard/evidence/nsfw-filter.json' : "hauntboard/evidence/gui-regression.json",
     JSON.stringify(report, null, 2) + "\n",
   );
 } finally {

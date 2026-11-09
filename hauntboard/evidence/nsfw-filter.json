@@ -1,0 +1,47 @@
+{
+  "scope": "Simulated providers/wallet/submissions; actual frontend assets; no public writes or funds",
+  "checks": [],
+  "browsers": {
+    "chromium": {
+      "status": "PASSED",
+      "checks": [
+        "Default hidden",
+        "Explicit reveal",
+        "Saved preference",
+        "Reply filtering",
+        "Reply excerpt cleared",
+        "Direct link filtered",
+        "Feed filtered",
+        "Mobile layout"
+      ]
+    },
+    "firefox": {
+      "status": "PASSED",
+      "checks": [
+        "Default hidden",
+        "Explicit reveal",
+        "Saved preference",
+        "Reply filtering",
+        "Reply excerpt cleared",
+        "Direct link filtered",
+        "Feed filtered",
+        "Mobile layout"
+      ]
+    }
+  },
+  "status": "NSFW_FIXTURE_REGRESSIONS_PASSED",
+  "checkedAt": "2026-11-09T18:06:13.743Z",
+  "sourceHashes": {
+    "hauntboard/web/app.mjs": "88ee5c18ffbcba251431646156bdc1ad9722d8dd255e10e0ad9b69154611de79",
+    "hauntboard/web/content-filter.mjs": "21244e7955799209983e7828a9fd1cb38997255bd12c82b0f91850e8bbf6c2ea",
+    "hauntboard/web/index.html": "9be8de6c59632d689aab85114c3f4f41070212716f94abab53c32d5a27a4ac34",
+    "hauntboard/web/style.css": "44cfb4ea847da77d6bc7d96815decce3a0a83bbf0fefa434944b9f5ddac33288",
+    "hauntboard/web/sapient-wallet.mjs": "62c9ff3f6796b373afdabe4f4dec6492a3c9849b84d0c30161800f1bf215d1cd",
+    "hauntboard/web/wallet-options.mjs": "b4436abd6548198718ee5494e8d044d15fed46de9c952df3cdcd8c12634a2545",
+    "hauntboard/web/sealed-posts.mjs": "f7274524b6bfc1242d5b5eb6652047112abc7d50fb25a2d3d12774c281341cb8",
+    "hauntboard/web/crypto.mjs": "744acc3fedfd049d747ebc230b7882ea2be262cb99d0c7e326c1968ac2518e96",
+    "hauntboard/web/about.mjs": "0b9eb4ad26f88ca70f50d1774c27ab029c49fafae1ebbb0044aa9f421036ff7f",
+    "hauntboard/web/forums.html": "8b24eb462224dd35b71b6d8ebc91249fd42cebd76d97cfa588437f027476d890",
+    "hauntboard/tests/gui.mjs": "0b397058c06c6bccde064afa4ba874b4c2b14e2c773903d9f3e72d2fb3b49ff6"
+  }
+}

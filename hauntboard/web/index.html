@@ -113,6 +113,10 @@
           aria-live="polite"
           hidden
         ></div>
+        <div class="content-filter">
+          <label><input type="checkbox" id="show-nsfw" aria-describedby="nsfw-help" /> Show NSFW posts</label>
+          <details><summary class="small">About this filter</summary><p id="nsfw-help" class="small">Off by default. Filters flagged content and some explicit or abusive language on this device. Posts remain on chain. Automatic filtering can miss content or flag it incorrectly.</p></details>
+        </div>
         <section id="board-view" aria-label="Threads">
           <div class="feed-toolbar">
             <div class="tabs" aria-label="Filter threads">
@@ -195,6 +199,7 @@
               placeholder="Something to add to the story…"
             ></textarea>
             <p id="reply-space" class="small"></p>
+            <label class="check"><input id="reply-nsfw" type="checkbox" /> Mark this reply NSFW</label>
             <p id="reply-error" class="field-error" hidden></p>
             <section class="posting-help" aria-label="Reply funding">
               <p class="small">Uses free test tokens · fee up to 1 test TARI. Published messages cannot be edited or deleted.</p>
@@ -286,6 +291,7 @@
           aria-describedby="compose-space compose-error"
         ></textarea>
         <p id="compose-space" class="small"></p>
+        <label class="check"><input id="thread-nsfw" type="checkbox" /> Mark this thread NSFW</label>
         <p id="compose-error" class="field-error" hidden></p>
         <label class="check" hidden
           ><input id="include-address" type="checkbox" /> Include my receive

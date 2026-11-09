@@ -51,6 +51,8 @@ The faucet allows one withdrawal per wallet owner per hour across its website an
 
 ## Check posts on chain
 
+The website hides NSFW threads and replies by default. Select **Show NSFW posts** above the feed to reveal them; the choice is saved on this browser. Authors can mark new threads or replies NSFW. A basic English language filter also checks existing titles, display names and message bodies for some slurs, profanity and explicit terms. It can miss abusive content and produce false positives; it is not a comprehensive content classifier. Sealed bodies are checked locally after decryption. Filtering changes the reader's view, not publishing permissions or on-chain data, and other clients may display content differently.
+
 Each forum row has **View thread on chain**, and each post has **View on chain**. These links open the relevant component directly at the configured Tari indexer. Expand **Post details** to see the page address and entry containing that post. Public post payloads are stored as byte arrays in the component state. This is an indexer-reported chain-state check, not proof of authorship or independent consensus verification.
 
 ## Contract and reproducible builds

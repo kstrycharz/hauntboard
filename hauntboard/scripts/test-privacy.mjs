@@ -15,6 +15,7 @@ const suites = [
   'delivery.test.mjs',
   'relay-reconciliation.test.mjs',
   'post-proof.test.mjs',
+  'content-filter.test.mjs',
   'component-provider.mjs',
 ].map((name) => `hauntboard/tests/${name}`);
 const run = spawnSync(process.execPath, ['--test', '--test-reporter=tap', ...suites], {
@@ -26,6 +27,7 @@ const metric = (name) => Number(new RegExp(`^# ${name} (\\d+)$`, 'm').exec(outpu
 const sourceFiles = [
   ...suites,
   'hauntboard/web/sealed-posts.mjs',
+  'hauntboard/web/content-filter.mjs',
   'hauntboard/web/stealth-fee.mjs',
   'hauntboard/web/room-vault.mjs',
   'hauntboard/web/room-keys.mjs',

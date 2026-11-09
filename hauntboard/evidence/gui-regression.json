@@ -4,12 +4,22 @@
   "browsers": {
     "chromium": {
       "checks": [
+        "Empty reply has inline validation; zero-balance wallet gets inline funding and verified receipt credit across reload without another claim or implicit posting",
         "No unsupported features before configuration",
         "Configuration failure closes posting",
+        "Late injected wallet discovery, deduplication, capability check without private access/spending, account-change invalidation and current-wallet fallback",
+        "Wrong-network and rejected external connections preserve the browser-wallet path without spending",
+        "Stock Sapient connects and approves a native SDK-built reply without a browser wallet; pending request and transaction identity persist",
         "Faucet claim, reload, uncertain reconciliation and confirmation use one receipt; mobile attribution is linked",
-        "Wallet onboarding returns draft; word check; exact review; editing requotes",
+        "Inline setup guidance; wallet onboarding preserves draft without publishing; one Post checks and submits edited content without review popup",
         "Lost acknowledgement survives reload; accepted/indexing distinct; no duplicate sends",
         "Rejected submission retains draft",
+        "One visible posting-funds check deduplicates repeated clicks, discovers received tokens, retains the last verified balance during failure and recovers on retry without spending",
+        "Held tokens have a prominent nonpublishing recovery action; refresh explains why enabling is needed and preserves the reply",
+        "A fresh Reply rechecks a cached zero and publishes once after funds arrive without requiring manual balance refresh",
+        "Held 99-token balance has explicit policy recovery; account preparation reviews its own fee inline and preserves the unsubmitted draft",
+        "100 faucet tokens to main thread to held 99 tokens: explicit remaining-token Reply switches policy and publishes once without a wallet popup or another faucet claim",
+        "Twenty rapid submits create one posting intent; two direct replies succeed without a review popup",
         "Progressive feed and retained stale rows",
         "History/filter restoration, parent focus, reply cancel, local hide undo, Unicode limit, sealed dismissal",
         "Advanced recovery collapsed; incomplete sync differentiated",
@@ -20,12 +30,22 @@
     },
     "firefox": {
       "checks": [
+        "Empty reply has inline validation; zero-balance wallet gets inline funding and verified receipt credit across reload without another claim or implicit posting",
         "No unsupported features before configuration",
         "Configuration failure closes posting",
+        "Late injected wallet discovery, deduplication, capability check without private access/spending, account-change invalidation and current-wallet fallback",
+        "Wrong-network and rejected external connections preserve the browser-wallet path without spending",
+        "Stock Sapient connects and approves a native SDK-built reply without a browser wallet; pending request and transaction identity persist",
         "Faucet claim, reload, uncertain reconciliation and confirmation use one receipt; mobile attribution is linked",
-        "Wallet onboarding returns draft; word check; exact review; editing requotes",
+        "Inline setup guidance; wallet onboarding preserves draft without publishing; one Post checks and submits edited content without review popup",
         "Lost acknowledgement survives reload; accepted/indexing distinct; no duplicate sends",
         "Rejected submission retains draft",
+        "One visible posting-funds check deduplicates repeated clicks, discovers received tokens, retains the last verified balance during failure and recovers on retry without spending",
+        "Held tokens have a prominent nonpublishing recovery action; refresh explains why enabling is needed and preserves the reply",
+        "A fresh Reply rechecks a cached zero and publishes once after funds arrive without requiring manual balance refresh",
+        "Held 99-token balance has explicit policy recovery; account preparation reviews its own fee inline and preserves the unsubmitted draft",
+        "100 faucet tokens to main thread to held 99 tokens: explicit remaining-token Reply switches policy and publishes once without a wallet popup or another faucet claim",
+        "Twenty rapid submits create one posting intent; two direct replies succeed without a review popup",
         "Progressive feed and retained stale rows",
         "History/filter restoration, parent focus, reply cancel, local hide undo, Unicode limit, sealed dismissal",
         "Advanced recovery collapsed; incomplete sync differentiated",
@@ -36,13 +56,18 @@
     }
   },
   "status": "GUI_FIXTURE_REGRESSIONS_PASSED",
-  "checkedAt": "2026-10-28T04:11:23.566Z",
+  "checkedAt": "2026-11-09T18:06:01.045Z",
   "sourceHashes": {
-    "hauntboard/web/app.mjs": "d914d714e8d616a7472cce3237a031dcd47993cbabbe96d512311f3cdd5e4de8",
+    "hauntboard/web/app.mjs": "88ee5c18ffbcba251431646156bdc1ad9722d8dd255e10e0ad9b69154611de79",
+    "hauntboard/web/content-filter.mjs": "21244e7955799209983e7828a9fd1cb38997255bd12c82b0f91850e8bbf6c2ea",
+    "hauntboard/web/index.html": "9be8de6c59632d689aab85114c3f4f41070212716f94abab53c32d5a27a4ac34",
+    "hauntboard/web/style.css": "44cfb4ea847da77d6bc7d96815decce3a0a83bbf0fefa434944b9f5ddac33288",
+    "hauntboard/web/sapient-wallet.mjs": "62c9ff3f6796b373afdabe4f4dec6492a3c9849b84d0c30161800f1bf215d1cd",
+    "hauntboard/web/wallet-options.mjs": "b4436abd6548198718ee5494e8d044d15fed46de9c952df3cdcd8c12634a2545",
     "hauntboard/web/sealed-posts.mjs": "f7274524b6bfc1242d5b5eb6652047112abc7d50fb25a2d3d12774c281341cb8",
     "hauntboard/web/crypto.mjs": "744acc3fedfd049d747ebc230b7882ea2be262cb99d0c7e326c1968ac2518e96",
-    "hauntboard/web/about.mjs": "a2acb20eb86fe7b228e08f2cc64c2e558319237c5a644bc8dbba06a63ec75d67",
-    "hauntboard/web/forums.html": "72f37056e32f1152b4bcdae7cf0a90d22b6dee268da31e2b0b440066b7f056d7",
-    "hauntboard/tests/gui.mjs": "9e270bd89543ed63a2e2063dbf43697d84d00ee53905b65a9f50db9a34276b8e"
+    "hauntboard/web/about.mjs": "0b9eb4ad26f88ca70f50d1774c27ab029c49fafae1ebbb0044aa9f421036ff7f",
+    "hauntboard/web/forums.html": "8b24eb462224dd35b71b6d8ebc91249fd42cebd76d97cfa588437f027476d890",
+    "hauntboard/tests/gui.mjs": "0b397058c06c6bccde064afa4ba874b4c2b14e2c773903d9f3e72d2fb3b49ff6"
   }
 }

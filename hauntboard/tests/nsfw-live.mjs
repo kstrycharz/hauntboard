@@ -32,10 +32,25 @@ for (const [name, engine] of Object.entries({chromium, firefox})) {
     await expect(page.locator('body')).toHaveAttribute('data-ready','true',{timeout:60000});
     await expect(page.locator('#thread-list')).toHaveAttribute('aria-busy','false',{timeout:60000});
     await expect(page.locator('#show-nsfw')).not.toBeChecked();
-    const filteredCount = await page.locator('.thread-row').count();
+    const categories = {};
+    let flaggedLink;
+    for (const category of ['general','tari','pol']) {
+      // On mobile these navigation buttons remain accessible in the menu.
+      await page.evaluate(category => document.querySelector(`[data-category="${category}"]`).click(), category);
+      const filteredAddresses = await page.locator('.thread-row').evaluateAll(rows => rows.map(row => row.dataset.address));
+      await page.locator('#show-nsfw').check();
+      const revealed = await page.locator('.thread-row').evaluateAll(rows => rows.map(row => ({address:row.dataset.address, href:row.querySelector('.thread-link').href})));
+      assert(revealed.length >= filteredAddresses.length);
+      flaggedLink ??= revealed.find(row => !filteredAddresses.includes(row.address))?.href;
+      categories[category] = {filteredCount:filteredAddresses.length, revealedCount:revealed.length};
+      await page.locator('#show-nsfw').uncheck();
+    }
+    if (flaggedLink) {
+      await page.goto(flaggedLink);
+      await expect(page.locator('#conversation-title')).toHaveText('NSFW thread', {timeout:60000});
+      await expect(page.locator('#posts')).toContainText('hidden by your NSFW filter');
+    }
     await page.locator('#show-nsfw').check();
-    const revealedCount = await page.locator('.thread-row').count();
-    assert(revealedCount >= filteredCount);
     await page.reload();
     await expect(page.locator('body')).toHaveAttribute('data-ready','true',{timeout:60000});
     await expect(page.locator('#show-nsfw')).toBeChecked();
@@ -43,7 +58,7 @@ for (const [name, engine] of Object.entries({chromium, firefox})) {
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth+1));
     assert.deepEqual(errors, []);
     assert.equal(blockedWrites, 0);
-    report.browsers[name] = {status:'PASSED', filteredCount, revealedCount, preferenceSaved:true, mobileLayout:true, pageErrors:0, blockedWrites};
+    report.browsers[name] = {status:'PASSED', categories, flaggedDirectLinkChecked:Boolean(flaggedLink), preferenceSaved:true, mobileLayout:true, pageErrors:0, blockedWrites};
     await context.close();
   } finally { await browser.close(); }
 }

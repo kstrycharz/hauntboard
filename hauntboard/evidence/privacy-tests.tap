@@ -2,292 +2,346 @@ TAP version 13
 # Subtest: an explicitly unaccepted expired session refreshes once and preserves exact signed bytes
 ok 1 - an explicitly unaccepted expired session refreshes once and preserves exact signed bytes
   ---
-  duration_ms: 1.549007
+  duration_ms: 2.559668
   type: 'test'
   ...
 # Subtest: origin failures, provider failures and uncertain transport are never retried
 ok 2 - origin failures, provider failures and uncertain transport are never retried
   ---
-  duration_ms: 0.48293
+  duration_ms: 1.533143
   type: 'test'
   ...
 # Subtest: a changed board or reset stops before retrying the signed operation
 ok 3 - a changed board or reset stops before retrying the signed operation
   ---
-  duration_ms: 0.777691
+  duration_ms: 0.930246
   type: 'test'
   ...
 # Subtest: repeated expiration is surfaced after one retry
 ok 4 - repeated expiration is surfaced after one retry
   ---
-  duration_ms: 0.164335
+  duration_ms: 0.463694
+  type: 'test'
+  ...
+# Subtest: stalled reads and signed submissions time out, abort transport and never retry
+ok 5 - stalled reads and signed submissions time out, abort transport and never retry
+  ---
+  duration_ms: 20.427156
+  type: 'test'
+  ...
+# Subtest: a stalled response body is bounded as well as initial headers
+ok 6 - a stalled response body is bounded as well as initial headers
+  ---
+  duration_ms: 10.297142
   type: 'test'
   ...
 # {"status":"VERIFIED_COMPONENT_FALLBACK_PASSED","checks":["unverified-primary","primary-outage","both-unverified-rejected","wrong-template-rejected","non-component-rejected","localnet-isolated"]}
 # Subtest: hauntboard/tests/component-provider.mjs
 ok 2 - hauntboard/tests/component-provider.mjs
   ---
-  duration_ms: 42.213897
+  duration_ms: 106.26077
+  type: 'test'
+  ...
+# Subtest: filters existing explicit language across titles, names and bodies
+ok 8 - filters existing explicit language across titles, names and bodies
+  ---
+  duration_ms: 2.461963
+  type: 'test'
+  ...
+# Subtest: ordinary conversations and substrings are not flagged
+ok 9 - ordinary conversations and substrings are not flagged
+  ---
+  duration_ms: 0.258821
+  type: 'test'
+  ...
+# Subtest: author labels survive the existing payload format
+ok 10 - author labels survive the existing payload format
+  ---
+  duration_ms: 0.410163
+  type: 'test'
+  ...
+# Subtest: reader preference defaults off, persists, and handles unavailable storage
+ok 11 - reader preference defaults off, persists, and handles unavailable storage
+  ---
+  duration_ms: 1.218392
   type: 'test'
   ...
 # Subtest: live Esmeralda witness rejects localnet, changed runtime, disabled proofs and empty validators
-ok 6 - live Esmeralda witness rejects localnet, changed runtime, disabled proofs and empty validators
+ok 12 - live Esmeralda witness rejects localnet, changed runtime, disabled proofs and empty validators
   ---
-  duration_ms: 1.046701
+  duration_ms: 0.967736
   type: 'test'
   ...
 # Subtest: public and client profiles require explicitly approved Tari-hosted Esmeralda providers
-ok 7 - public and client profiles require explicitly approved Tari-hosted Esmeralda providers
+ok 13 - public and client profiles require explicitly approved Tari-hosted Esmeralda providers
   ---
-  duration_ms: 0.637823
+  duration_ms: 0.70176
   type: 'test'
   ...
 # Subtest: wallet network/reset identity is explicit and mainnet is rejected
-ok 8 - wallet network/reset identity is explicit and mainnet is rejected
+ok 14 - wallet network/reset identity is explicit and mainnet is rejected
   ---
-  duration_ms: 0.244652
+  duration_ms: 0.193933
   type: 'test'
   ...
 # Subtest: relay survives restart, blocks changed bytes and preserves uncertain claims
-ok 9 - relay survives restart, blocks changed bytes and preserves uncertain claims
+ok 15 - relay survives restart, blocks changed bytes and preserves uncertain claims
   ---
-  duration_ms: 15.427479
+  duration_ms: 24.094543
   type: 'test'
   ...
 # Subtest: concurrent duplicate operation is claimed once and overload is bounded
-ok 10 - concurrent duplicate operation is claimed once and overload is bounded
+ok 16 - concurrent duplicate operation is claimed once and overload is bounded
   ---
-  duration_ms: 7.481327
+  duration_ms: 13.41903
   type: 'test'
   ...
 # Subtest: mapped local browser port admits only loopback hosts and rejects invalid configuration
-ok 11 - mapped local browser port admits only loopback hosts and rejects invalid configuration
+ok 17 - mapped local browser port admits only loopback hosts and rejects invalid configuration
   ---
-  duration_ms: 0.331944
+  duration_ms: 0.255311
   type: 'test'
   ...
 # Subtest: local LAN opt-in accepts only named private IPv4 hosts on the browser port
-ok 12 - local LAN opt-in accepts only named private IPv4 hosts on the browser port
+ok 18 - local LAN opt-in accepts only named private IPv4 hosts on the browser port
   ---
-  duration_ms: 0.396635
+  duration_ms: 0.235926
+  type: 'test'
+  ...
+# Subtest: native shard scans deduplicate repeated locator matches across progressing pages
+ok 19 - native shard scans deduplicate repeated locator matches across progressing pages
+  ---
+  duration_ms: 1.358087
   type: 'test'
   ...
 # Subtest: recovery resumes beyond 1,000 outputs, preserves reserved coins and quarantines change
-ok 13 - recovery resumes beyond 1,000 outputs, preserves reserved coins and quarantines change
+ok 20 - recovery resumes beyond 1,000 outputs, preserves reserved coins and quarantines change
   ---
-  duration_ms: 10.361927
+  duration_ms: 12.006765
   type: 'test'
   ...
 # Subtest: capacity checkpoints retain discovered funds and resume at the unrecorded output
-ok 14 - capacity checkpoints retain discovered funds and resume at the unrecorded output
+ok 21 - capacity checkpoints retain discovered funds and resume at the unrecorded output
   ---
-  duration_ms: 0.370668
+  duration_ms: 0.432106
   type: 'test'
   ...
 # Subtest: unverified ownership and repeating cursors cannot activate outputs
-ok 15 - unverified ownership and repeating cursors cannot activate outputs
+ok 22 - unverified ownership and repeating cursors cannot activate outputs
   ---
-  duration_ms: 0.386312
+  duration_ms: 0.609833
   type: 'test'
   ...
 # Subtest: opaque insertion-order cursors resume through decreasing commitments
-ok 16 - opaque insertion-order cursors resume through decreasing commitments
+ok 23 - opaque insertion-order cursors resume through decreasing commitments
   ---
-  duration_ms: 1.255162
+  duration_ms: 1.098159
   type: 'test'
   ...
 # Subtest: cursor replay and multi-page cycles fail before activating repeated outputs
-ok 17 - cursor replay and multi-page cycles fail before activating repeated outputs
+ok 24 - cursor replay and multi-page cycles fail before activating repeated outputs
   ---
-  duration_ms: 0.89628
+  duration_ms: 0.767454
   type: 'test'
   ...
 # Subtest: opening, rollover and older replies point to their actual storage page
-ok 18 - opening, rollover and older replies point to their actual storage page
+ok 25 - opening, rollover and older replies point to their actual storage page
   ---
-  duration_ms: 0.513997
+  duration_ms: 0.848827
   type: 'test'
   ...
 # Subtest: legacy posts link to their thread component and local clients use the raw-state route
-ok 19 - legacy posts link to their thread component and local clients use the raw-state route
+ok 26 - legacy posts link to their thread component and local clients use the raw-state route
   ---
-  duration_ms: 0.142358
+  duration_ms: 0.154333
   type: 'test'
   ...
 # Subtest: invalid post positions, missing pages and unexpected provider URLs do not produce proof links
-ok 20 - invalid post positions, missing pages and unexpected provider URLs do not produce proof links
+ok 27 - invalid post positions, missing pages and unexpected provider URLs do not produce proof links
   ---
-  duration_ms: 0.218943
+  duration_ms: 0.500263
   type: 'test'
   ...
 # Subtest: two distinct signers without known graph links produce limited evidence, never an unlinkability claim
-ok 21 - two distinct signers without known graph links produce limited evidence, never an unlinkability claim
+ok 28 - two distinct signers without known graph links produce limited evidence, never an unlinkability claim
   ---
-  duration_ms: 0.949134
+  duration_ms: 1.957813
   type: 'test'
   ...
 # Subtest: a conventional persistent signer and fee account are detected as a failing control
-ok 22 - a conventional persistent signer and fee account are detected as a failing control
+ok 29 - a conventional persistent signer and fee account are detected as a failing control
   ---
-  duration_ms: 0.752033
+  duration_ms: 0.974076
   type: 'test'
   ...
 # Subtest: different signers cannot conceal direct posting-change ancestry or common funding
-ok 23 - different signers cannot conceal direct posting-change ancestry or common funding
+ok 30 - different signers cannot conceal direct posting-change ancestry or common funding
   ---
-  duration_ms: 0.940487
+  duration_ms: 1.571983
   type: 'test'
   ...
 # Subtest: revealed fees, wrong network, nonposting methods, and rejection fail the checks
-ok 24 - revealed fees, wrong network, nonposting methods, and rejection fail the checks
+ok 31 - revealed fees, wrong network, nonposting methods, and rejection fail the checks
   ---
-  duration_ms: 0.457312
+  duration_ms: 0.569699
   type: 'test'
   ...
 # Subtest: missing owner reference stays unknown; missing signatures, unknown encoding and duplicate receipts fail closed
-ok 25 - missing owner reference stays unknown; missing signatures, unknown encoding and duplicate receipts fail closed
+ok 32 - missing owner reference stays unknown; missing signatures, unknown encoding and duplicate receipts fail closed
   ---
-  duration_ms: 0.266544
+  duration_ms: 0.426827
   type: 'test'
   ...
 # Subtest: old and current up-state responses preserve verification and version
-ok 26 - old and current up-state responses preserve verification and version
+ok 33 - old and current up-state responses preserve verification and version
   ---
-  duration_ms: 0.551457
+  duration_ms: 0.56908
   type: 'test'
   ...
 # Subtest: down and conflicting provider state cannot be used as current state
-ok 27 - down and conflicting provider state cannot be used as current state
+ok 34 - down and conflicting provider state cannot be used as current state
   ---
-  duration_ms: 0.184523
+  duration_ms: 0.314628
+  type: 'test'
+  ...
+# Subtest: only a matching verified down state can retire a spent wallet input
+ok 35 - only a matching verified down state can retire a spent wallet input
+  ---
+  duration_ms: 1.013615
   type: 'test'
   ...
 # Subtest: lost acknowledgement retains native identity, reconciles after restart and never resends
-ok 28 - lost acknowledgement retains native identity, reconciles after restart and never resends
+ok 36 - lost acknowledgement retains native identity, reconciles after restart and never resends
   ---
-  duration_ms: 12.701977
+  duration_ms: 25.689613
   type: 'test'
   ...
 # Subtest: mismatched acknowledgement preserves original identity and retention keeps uncertain operations
-ok 29 - mismatched acknowledgement preserves original identity and retention keeps uncertain operations
+ok 37 - mismatched acknowledgement preserves original identity and retention keeps uncertain operations
   ---
-  duration_ms: 11.554623
+  duration_ms: 20.929826
   type: 'test'
   ...
 # Subtest: copyable access requests preserve recipient context and Unicode names; older JSON requests still work
-ok 30 - copyable access requests preserve recipient context and Unicode names; older JSON requests still work
+ok 38 - copyable access requests preserve recipient context and Unicode names; older JSON requests still work
   ---
-  duration_ms: 1.390467
+  duration_ms: 1.97714
   type: 'test'
   ...
 # Subtest: incomplete or inappropriate input gives an actionable error
-ok 31 - incomplete or inappropriate input gives an actionable error
+ok 39 - incomplete or inappropriate input gives an actionable error
   ---
-  duration_ms: 0.427967
+  duration_ms: 0.384216
   type: 'test'
   ...
 # Subtest: HPKE delivery is recipient-specific and bound to room, network, generation and ciphertext
-ok 32 - HPKE delivery is recipient-specific and bound to room, network, generation and ciphertext
+ok 40 - HPKE delivery is recipient-specific and bound to room, network, generation and ciphertext
   ---
-  duration_ms: 16.411386
+  duration_ms: 23.230027
   type: 'test'
   ...
 # Subtest: recovery authenticates the complete manifest and wrong secrets cannot restore it
-ok 33 - recovery authenticates the complete manifest and wrong secrets cannot restore it
+ok 41 - recovery authenticates the complete manifest and wrong secrets cannot restore it
   ---
-  duration_ms: 2.668084
+  duration_ms: 4.318269
   type: 'test'
   ...
 # Subtest: removal blocks future content while retained historical keys still work
-ok 34 - removal blocks future content while retained historical keys still work
+ok 42 - removal blocks future content while retained historical keys still work
   ---
-  duration_ms: 8.385033
+  duration_ms: 12.150797
   type: 'test'
   ...
 # Subtest: recipient substitution, duplicate membership and generation exhaustion are rejected
-ok 35 - recipient substitution, duplicate membership and generation exhaustion are rejected
+ok 43 - recipient substitution, duplicate membership and generation exhaustion are rejected
   ---
-  duration_ms: 1.652668
+  duration_ms: 2.685643
   type: 'test'
   ...
 # Subtest: sealed payload round-trips with public metadata, no plaintext body or key, and unchanged contract mode
-ok 36 - sealed payload round-trips with public metadata, no plaintext body or key, and unchanged contract mode
+ok 44 - sealed payload round-trips with public metadata, no plaintext body or key, and unchanged contract mode
   ---
-  duration_ms: 9.085408
+  duration_ms: 13.469177
   type: 'test'
   ...
 # Subtest: fresh IVs randomize equal content; padding hides serialized body length within the public metadata
-ok 37 - fresh IVs randomize equal content; padding hides serialized body length within the public metadata
+ok 45 - fresh IVs randomize equal content; padding hides serialized body length within the public metadata
   ---
-  duration_ms: 2.681325
+  duration_ms: 4.611704
   type: 'test'
   ...
 # Subtest: tampered ciphertext, IV, public title and category fail authentication
-ok 38 - tampered ciphertext, IV, public title and category fail authentication
+ok 46 - tampered ciphertext, IV, public title and category fail authentication
   ---
-  duration_ms: 3.975402
+  duration_ms: 6.230984
   type: 'test'
   ...
 # Subtest: network reset, board, thread ID, post nonce, parent and expected title prevent transplanting ciphertext
-ok 39 - network reset, board, thread ID, post nonce, parent and expected title prevent transplanting ciphertext
+ok 47 - network reset, board, thread ID, post nonce, parent and expected title prevent transplanting ciphertext
   ---
-  duration_ms: 3.945295
+  duration_ms: 5.344891
   type: 'test'
   ...
 # Subtest: serialized Unicode bounds and malformed envelopes are rejected before publication or decryption
-ok 40 - serialized Unicode bounds and malformed envelopes are rejected before publication or decryption
+ok 48 - serialized Unicode bounds and malformed envelopes are rejected before publication or decryption
   ---
-  duration_ms: 0.78017
+  duration_ms: 0.923468
   type: 'test'
   ...
 # Subtest: invitation keys stay entirely in the fragment and insecure remote invitations are rejected
-ok 41 - invitation keys stay entirely in the fragment and insecure remote invitations are rejected
+ok 49 - invitation keys stay entirely in the fragment and insecure remote invitations are rejected
   ---
-  duration_ms: 0.396325
+  duration_ms: 0.465345
   type: 'test'
   ...
 # Subtest: chain decoding rejects hostile page roles, counts, parents, bounds and provider metadata
-ok 42 - chain decoding rejects hostile page roles, counts, parents, bounds and provider metadata
+ok 50 - chain decoding rejects hostile page roles, counts, parents, bounds and provider metadata
   ---
-  duration_ms: 1.213946
+  duration_ms: 1.05586
   type: 'test'
   ...
 # Subtest: thread metadata must reference distinct pages and board entries have distinct identities
-ok 43 - thread metadata must reference distinct pages and board entries have distinct identities
+ok 51 - thread metadata must reference distinct pages and board entries have distinct identities
   ---
-  duration_ms: 0.47002
+  duration_ms: 0.355824
+  type: 'test'
+  ...
+# Subtest: the actual signed posting fee returns decryptable reusable change to the same wallet
+ok 52 - the actual signed posting fee returns decryptable reusable change to the same wallet
+  ---
+  duration_ms: 120.09765
   type: 'test'
   ...
 # Subtest: one wallet authorizes multiple independent outputs with fresh one-time keys and no persistent owner/account bytes
-ok 44 - one wallet authorizes multiple independent outputs with fresh one-time keys and no persistent owner/account bytes
+ok 53 - one wallet authorizes multiple independent outputs with fresh one-time keys and no persistent owner/account bytes
   ---
-  duration_ms: 147.056934
+  duration_ms: 82.77258
   type: 'test'
   ...
 # Subtest: authorization is bound to the owned verified row and rejects missing or invalid versions
-ok 45 - authorization is bound to the owned verified row and rejects missing or invalid versions
+ok 54 - authorization is bound to the owned verified row and rejects missing or invalid versions
   ---
-  duration_ms: 35.555077
+  duration_ms: 37.349249
   type: 'test'
   ...
 # Subtest: registry changes carry their separate admin signer while the funding wallet key stays absent
-ok 46 - registry changes carry their separate admin signer while the funding wallet key stays absent
+ok 55 - registry changes carry their separate admin signer while the funding wallet key stays absent
   ---
-  duration_ms: 35.440066
+  duration_ms: 35.857538
   type: 'test'
   ...
 # Subtest: native fee preparation rejects unverified, foreign, nonnative and frozen outputs without signing
-ok 47 - native fee preparation rejects unverified, foreign, nonnative and frozen outputs without signing
+ok 56 - native fee preparation rejects unverified, foreign, nonnative and frozen outputs without signing
   ---
-  duration_ms: 16.386881
+  duration_ms: 16.838086
   type: 'test'
   ...
-1..47
-# tests 47
+1..56
+# tests 56
 # suites 0
-# pass 47
+# pass 56
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 350.013882
+# duration_ms 495.336174

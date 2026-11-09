@@ -1,0 +1,59 @@
+{
+  "checkedAt": "2026-11-09T18:22:26.344Z",
+  "origin": "https://hauntboard.taritracker.com",
+  "assets": {
+    "index.html": "9be8de6c59632d689aab85114c3f4f41070212716f94abab53c32d5a27a4ac34",
+    "app.mjs": "88ee5c18ffbcba251431646156bdc1ad9722d8dd255e10e0ad9b69154611de79",
+    "content-filter.mjs": "21244e7955799209983e7828a9fd1cb38997255bd12c82b0f91850e8bbf6c2ea",
+    "style.css": "44cfb4ea847da77d6bc7d96815decce3a0a83bbf0fefa434944b9f5ddac33288"
+  },
+  "browsers": {
+    "chromium": {
+      "status": "PASSED",
+      "categories": {
+        "general": {
+          "filteredCount": 2,
+          "revealedCount": 3
+        },
+        "tari": {
+          "filteredCount": 2,
+          "revealedCount": 2
+        },
+        "pol": {
+          "filteredCount": 1,
+          "revealedCount": 1
+        }
+      },
+      "flaggedDirectLinkChecked": true,
+      "preferenceSaved": true,
+      "mobileLayout": true,
+      "pageErrors": 0,
+      "blockedWrites": 0
+    },
+    "firefox": {
+      "status": "PASSED",
+      "categories": {
+        "general": {
+          "filteredCount": 2,
+          "revealedCount": 3
+        },
+        "tari": {
+          "filteredCount": 2,
+          "revealedCount": 2
+        },
+        "pol": {
+          "filteredCount": 1,
+          "revealedCount": 1
+        }
+      },
+      "flaggedDirectLinkChecked": true,
+      "preferenceSaved": true,
+      "mobileLayout": true,
+      "pageErrors": 0,
+      "blockedWrites": 0
+    }
+  },
+  "chainWrites": 0,
+  "board": "component_14d6f4fb8e5bb76f833220284e59f6e0ad866bd35385f30ededdafa282c3399b",
+  "status": "PASSED"
+}

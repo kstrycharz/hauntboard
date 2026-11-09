@@ -1,8 +1,37 @@
 # VPS and GitHub deployment
 
+## November 9 reader-controlled NSFW filter
+
+The current release is `release-dfba507db6d5ef7fad2b0686c3cd98330ac8f12a`,
+running healthy image
+`sha256:28411ad1feb9fa812000d8123afe67874965fe0255db8185b53ba51a9a2b447b`.
+The site hides author-labeled NSFW content and some explicit or abusive language
+by default. Readers can enable **Show NSFW posts**; the preference is saved on
+their device. Filtering affects the website view, not on-chain publication.
+The basic language matcher is incomplete and can produce false positives.
+
+The [release workflow](https://github.com/kstrycharz/hauntboard/actions/runs/42672233722),
+[privacy workflow](https://github.com/kstrycharz/hauntboard/actions/runs/42672233783)
+and private deployment workflow `42673180426` passed. Both source workflows
+initially failed before starting jobs with a GitHub internal server error;
+their second attempts passed. The guarded updater checked release checksums,
+image identity, the unchanged manifest and candidate readiness before switching.
+
+The manifest hash remains
+`fa4c2a8bec8c7caa41a8f9fff9f634ee0d7c03803434755e3785a297d0fa0ec8`,
+and `hauntboard_operations` remains mounted at `/companion`. The previous image
+`sha256:6cfe29a74001813031e15ca435c0e8209aed8b325a2332aedea1ac64d55fb4ee`
+is retained and referenced by `.env.previous` for rollback.
+
+[Read-only live checks](../evidence/nsfw-live-2026-11-09.json) passed in Chromium
+and Firefox with four matching served asset hashes, all three category views,
+saved preferences, mobile layout and a filtered direct link. In the observed
+General feed, two threads were visible by default and three after opting in.
+No faucet request or chain transaction was submitted.
+
 ## November 6 posting setup and balance refresh repair
 
-The current release is `release-d4d7835b20160e6bad85d6ad36986f2031c66ba8`,
+The preceding release was `release-d4d7835b20160e6bad85d6ad36986f2031c66ba8`,
 running healthy image
 `sha256:6cfe29a74001813031e15ca435c0e8209aed8b325a2332aedea1ac64d55fb4ee`.
 It repairs spent-input and delayed-change balance recovery, gives one visible
